@@ -1,0 +1,12 @@
+{
+  "name": "moteur-ferme",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test tests/*.test.js",
+    "test:one": "node --test",
+    "check": "node --check src/main.js",
+    "serve": "python3 -m http.server 8080"
+  }
+}

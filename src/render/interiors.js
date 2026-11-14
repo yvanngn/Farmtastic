@@ -1,0 +1,61 @@
+// Intérieurs pré-rendus (maison, poulailler) à partir des plans de world/scenes.js.
+import { CFG } from '../config.js';
+import { LAYOUTS, SCENES } from '../world/scenes.js';
+import { rng } from '../world/map.js';
+import { shade, disc } from './pixel.js';
+const T = CFG.T;
+
+const THEME = {
+  house: { floor: '#b07a48', seam: '#8a5a32', wall: '#7fa36a', wallD: '#5f8450', trim: '#6b4226', beam: '#4a2c18' },
+  coop: { floor: '#d9c27a', seam: '#b49a52', wall: '#b8452f', wallD: '#93321f', trim: '#f0e6d0', beam: '#5a3a2a' }
+};
+
+export function buildInterior(name) {
+  const L = LAYOUTS[name], { W, H } = SCENES[name], th = THEME[name];
+  const c = document.createElement('canvas'); c.width = W * T; c.height = H * T;
+  const g = c.getContext('2d'), r = rng(7);
+  const R = (x, y, w, h, col) => { g.fillStyle = col; g.fillRect(x, y, w, h); };
+
+  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
+    const t = L[y][x], px = x * T, py = y * T;
+    if (t === '#') { R(px, py, T, T, th.beam); R(px, py + T - 2, T, 2, shade(th.beam, .7)); continue; }
+    if (t === 'W') {
+      R(px, py, T, T, th.wall);
+      if (name === 'house') { for (let k = 2; k < T; k += 5) R(px + k, py, 1, 11, th.wallD); }
+      else for (let k = 0; k < T; k += 4) R(px + k, py, 1, T, th.wallD);
+      R(px, py + 11, T, 5, th.trim); R(px, py + 11, T, 1, shade(th.trim, 1.25));
+      if (x % 4 === 2) { R(px + 2, py + 1, 12, 9, '#f0e6d0'); R(px + 3, py + 2, 10, 7, '#8fc4e2'); R(px + 3, py + 2, 10, 2, '#bfe0f2'); R(px + 7, py + 2, 1, 7, '#f0e6d0'); }
+      continue;
+    }
+    // sol
+    if (name === 'house') {
+      R(px, py, T, T, th.floor);
+      for (let k = 0; k < T; k += 4) R(px, py + k, T, 1, th.seam);
+      R(px + ((x * 5 + y * 3) % 12), py + 1, 1, 3, th.seam);
+    } else {
+      R(px, py, T, T, th.floor);
+      for (let k = 0; k < 10; k++) R(px + (r() * 14 | 0), py + (r() * 15 | 0), 2, 1, r() < .5 ? th.seam : '#efd98f');
+    }
+    if (t === 'D') { R(px, py, T, T, '#3b2414'); R(px + 2, py + 2, 12, 12, '#5a3a22'); R(px + 3, py + 8, 10, 1, '#d6b46a'); R(px + 4, py + 10, 8, 4, '#8a3a2a'); }
+  }
+  // meubles (dessinés après le sol, par blocs)
+  const seen = new Set();
+  const block = ch => { const pts = []; for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) if (L[y][x] === ch) pts.push([x, y]); return pts; };
+  const bbox = pts => { const xs = pts.map(p => p[0]), ys = pts.map(p => p[1]); return [Math.min(...xs) * T, Math.min(...ys) * T, (Math.max(...xs) - Math.min(...xs) + 1) * T, (Math.max(...ys) - Math.min(...ys) + 1) * T]; };
+  const draw = {
+    R: ([x, y, w, h]) => { R(x + 1, y + 1, w - 2, h - 2, '#a8392c'); R(x + 3, y + 3, w - 6, h - 6, '#d0573f'); R(x + 5, y + 5, w - 10, h - 10, '#e8c26a'); R(x + 7, y + 7, w - 14, h - 14, '#a8392c'); for (let k = x + 3; k < x + w - 3; k += 4) { R(k, y, 1, 2, '#e8c26a'); R(k, y + h - 2, 1, 2, '#e8c26a'); } },
+    B: ([x, y, w, h]) => { R(x, y, w, h, '#5a3a22'); R(x + 1, y + 1, w - 2, 7, '#f4efe4'); R(x + 2, y + 2, w - 4, 4, '#ffffff'); R(x + 1, y + 9, w - 2, h - 11, '#3f6fb0'); for (let k = 0; k < w - 4; k += 4) R(x + 2 + k, y + 10, 2, h - 13, '#5b8fd0'); R(x + 1, y + h - 3, w - 2, 2, '#2f548a'); },
+    K: ([x, y, w, h]) => { R(x, y, w, h, '#6b4226'); R(x, y, w, 4, '#c9b28a'); R(x, y + 4, w, 1, '#8a6a46'); for (let k = x + 2; k < x + w - 4; k += 8) { R(k, y + 6, 6, 8, '#835330'); R(k + 4, y + 9, 1, 2, '#e8c26a'); } R(x + w - 10, y - 2, 7, 4, '#3a3a40'); R(x + w - 9, y - 4, 5, 2, '#5a5a62'); },
+    T: ([x, y, w, h]) => { R(x + 1, y + 3, w - 2, h - 8, '#8a5a32'); R(x + 1, y + 3, w - 2, 2, '#b07a48'); R(x + 2, y + h - 5, 2, 5, '#5a3a22'); R(x + w - 4, y + h - 5, 2, 5, '#5a3a22'); disc(g, x + w / 2, y + 9, 3, '#f4efe4'); R(x + w / 2 - 1, y + 8, 2, 2, '#e08a3a'); },
+    P: ([x, y, w, h]) => { R(x + 4, y + 9, 8, 7, '#b0603a'); R(x + 4, y + 9, 8, 2, '#c97a4f'); disc(g, x + 8, y + 5, 5, '#3e8a34'); disc(g, x + 6, y + 4, 2, '#6bb33f'); },
+    C: ([x, y, w, h]) => { R(x + 1, y + 4, w - 2, h - 5, '#8a5a32'); R(x + 1, y + 4, w - 2, 4, '#b07a48'); R(x + 1, y + 8, w - 2, 1, '#e8c26a'); R(x + 7, y + 7, 2, 3, '#e8c26a'); },
+    H: ([x, y, w, h]) => { R(x, y + 4, w, h - 6, '#6b4226'); R(x + 1, y + 5, w - 2, 5, '#e3c45e'); for (let k = x + 2; k < x + w - 2; k += 3) R(k, y + 4, 1, 2, '#f2d77a'); R(x, y + h - 3, w, 1, '#4a2c18'); },
+    N: ([x, y, w, h]) => { R(x + 1, y + 2, w - 2, h - 4, '#5a3a22'); for (let k = 0; k < h - 6; k += 8) { disc(g, x + 8, y + 8 + k, 5, '#c9a64e'); disc(g, x + 8, y + 8 + k, 3, '#8a6a2e'); } }
+  };
+  for (const ch of Object.keys(draw)) {
+    if (seen.has(ch)) continue; seen.add(ch);
+    const pts = block(ch);
+    if (pts.length) draw[ch](bbox(pts));
+  }
+  return c;
+}

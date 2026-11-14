@@ -1,0 +1,47 @@
+// Aiguillage d'une action sur une tuile, selon la scène (ferme ou intérieur).
+import { isBin, key } from '../world/map.js';
+import { doorAt, tileAt, UI_TILES } from '../world/scenes.js';
+import { sleep } from './time.js';
+import { sellAll } from './economy.js';
+import { hitObject } from './resources.js';
+import { findAnimalAt, interactAnimal, feedAll } from './animals.js';
+import { farmAction, isRipe } from './farming.js';
+import { ITEMS } from '../data/items.js';
+import { TOOL_FOR } from './resources.js';
+
+const TOOL_IDS = ['hand', 'axe', 'pick', 'sickle', 'sword'];
+// Choisit l'outil adapté à la cible. Un objet tenu (graine, foin…) est gardé, sauf devant un arbre/rocher/monstre.
+export function smartTool(g, tx, ty) {
+  const S = g.S;
+  if ((S.scene || 'farm') !== 'farm') return S.sel;
+  const holdsItem = !TOOL_IDS.includes(S.sel);
+  if (g.enemies.some(e => Math.hypot(e.x - S.x, e.y - S.y) < 1.8)) return 'sword';
+  const o = S.objs[key(tx, ty)];
+  if (o) return TOOL_FOR[o.t];
+  if (holdsItem) return S.sel;
+  const p = S.plots[key(tx, ty)];
+  if (p && isRipe(p, g.now())) return 'sickle';
+  return S.sel === 'sword' || S.sel === 'axe' || S.sel === 'pick' ? 'hand' : S.sel;
+}
+
+export function enterScene(g, to, spawn) {
+  const S = g.S;
+  S.scene = to; S.x = spawn.x; S.y = spawn.y;
+  g.player.target = null;
+  g.bus.emit('sfx', 'door');
+  g.bus.emit('scene', to);
+}
+
+export function act(g, tx, ty) {
+  const S = g.S, sc = S.scene || 'farm';
+  const d = doorAt(sc, tx, ty);
+  if (d) { enterScene(g, d.to, d.spawn); return 'door'; }
+  if (sc === 'town') { const ui = UI_TILES[tileAt(sc, tx, ty)]; if (ui) { g.bus.emit('sfx', 'ui'); g.bus.emit('open', ui); return ui; } return 'none'; }
+  if (sc === 'house') return tileAt(sc, tx, ty) === 'B' ? (sleep(g) ? 'sleep' : 'none') : 'none';
+  if (sc === 'coop') return tileAt(sc, tx, ty) === 'H' ? (feedAll(g) ? 'feedAll' : 'none') : 'none';
+  if (isBin(tx, ty)) { sellAll(g); return 'sell'; }
+  if (S.objs[key(tx, ty)]) return hitObject(g, tx, ty) ? 'hit' : 'none';
+  const a = findAnimalAt(S, tx, ty);
+  if (a) return interactAnimal(g, a);
+  return farmAction(g, tx, ty) ? 'farm' : 'none';
+}

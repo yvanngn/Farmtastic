@@ -1,0 +1,189 @@
+// Moteur audio 100 % synthétisé (Web Audio) : musiques originales par ambiance,
+// enchaînées en fondu, avec réverbération ; bruitages ; ambiances en boucle.
+// Démarre au premier geste du joueur (règle des navigateurs).
+import { loadSettings, saveSettings, effective, pickTrack, pickAmbience } from './settings.js';
+
+const C4 = 261.63;
+const hz = semi => C4 * Math.pow(2, semi / 12);
+
+/* ---------- Musiques (mélodies originales) ---------- */
+const TRACKS = {
+  day: { bpm: 104, steps: 32, roots: [0, -3, 5, 7], inst: 'pluck',
+    mel: [16, null, 19, 21, 19, null, 16, 14, 12, null, 14, 16, 14, null, null, null, 16, null, 19, 21, 24, null, 21, 19, 21, null, 19, 16, 19, null, null, null] },
+  winter: { bpm: 84, steps: 32, roots: [0, -3, 5, 7], inst: 'bell',
+    mel: [24, null, null, 19, 21, null, 19, null, 16, null, null, null, 14, null, 16, null, 19, null, null, 16, 14, null, 12, null, 14, null, null, null, null, null, null, null] },
+  night: { bpm: 66, steps: 32, roots: [-3, 5, 0, 7], inst: 'bell', minor: true,
+    mel: [21, null, 16, null, 19, null, null, null, 17, null, 12, null, 16, null, null, null, 16, null, 12, null, 14, null, null, 16, 19, null, null, null, null, null, null, null] },
+  rain: { bpm: 74, steps: 32, roots: [2, 7, 0, -3], inst: 'epiano', minor: true,
+    mel: [null, null, 17, null, 16, null, 14, null, 12, null, null, null, null, null, null, null, null, null, 19, null, 17, null, 16, null, 14, null, null, null, null, null, null, null] }
+};
+
+export function createAudio(g, storage) {
+  const settings = loadSettings(storage);
+  let ac = null, master, musicBus, sfxBus, reverb, noiseBuf, sched = null;
+  let step = 0, nextT = 0, current = null, ambience = null;
+  const trackGains = {};
+
+  function noise(sec) {
+    const b = ac.createBuffer(1, ac.sampleRate * sec, ac.sampleRate), d = b.getChannelData(0);
+    for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+    return b;
+  }
+  function impulse(sec, decay) {
+    const b = ac.createBuffer(2, ac.sampleRate * sec, ac.sampleRate);
+    for (let c = 0; c < 2; c++) { const d = b.getChannelData(c); for (let i = 0; i < d.length; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / d.length, decay); }
+    return b;
+  }
+
+  function start() {
+    if (ac) { if (ac.state === 'suspended') ac.resume(); return; }
+    const AC = window.AudioContext || window.webkitAudioContext;
+    if (!AC) return;
+    ac = new AC();
+    master = ac.createGain(); master.connect(ac.destination);
+    musicBus = ac.createGain(); sfxBus = ac.createGain();
+    reverb = ac.createConvolver(); reverb.buffer = impulse(2.6, 3);
+    const wet = ac.createGain(); wet.gain.value = 0.35; reverb.connect(wet); wet.connect(master);
+    musicBus.connect(master); musicBus.connect(reverb); sfxBus.connect(master);
+    noiseBuf = noise(2);
+    apply();
+    nextT = ac.currentTime + 0.1;
+    sched = setInterval(tick, 90);
+  }
+
+  function apply() {
+    if (!ac) return;
+    musicBus.gain.setTargetAtTime(effective(settings, 'music') * 0.55, ac.currentTime, 0.05);
+    sfxBus.gain.setTargetAtTime(effective(settings, 'sfx'), ac.currentTime, 0.05);
+  }
+
+  /* ---------- Instruments ---------- */
+  function env(t, a, peak, dec, dest) {
+    const gn = ac.createGain();
+    gn.gain.setValueAtTime(0.0001, t); gn.gain.exponentialRampToValueAtTime(peak, t + a); gn.gain.exponentialRampToValueAtTime(0.0001, t + a + dec);
+    gn.connect(dest); return gn;
+  }
+  function osc(type, f, t, dur, gn, f2) {
+    const o = ac.createOscillator(); o.type = type; o.frequency.setValueAtTime(f, t);
+    if (f2) o.frequency.exponentialRampToValueAtTime(f2, t + dur);
+    o.connect(gn); o.start(t); o.stop(t + dur + 0.05); return o;
+  }
+  const inst = {
+    pluck(t, f, v, dest) { osc('triangle', f, t, 0.5, env(t, 0.005, 0.22 * v, 0.45, dest)); osc('sine', f * 2, t, 0.25, env(t, 0.005, 0.05 * v, 0.2, dest)); },
+    bell(t, f, v, dest) { osc('sine', f, t, 1.6, env(t, 0.004, 0.18 * v, 1.5, dest)); osc('sine', f * 3.01, t, 0.6, env(t, 0.002, 0.05 * v, 0.5, dest)); },
+    epiano(t, f, v, dest) {
+      const gn = env(t, 0.01, 0.16 * v, 1.2, dest), trem = ac.createGain(), lfo = ac.createOscillator(), d = ac.createGain();
+      lfo.frequency.value = 5; d.gain.value = 0.3; lfo.connect(d); d.connect(trem.gain); trem.gain.value = 0.7; trem.connect(gn);
+      osc('sine', f, t, 1.3, trem); osc('sine', f * 2, t, 0.4, env(t, 0.005, 0.03 * v, 0.3, dest)); lfo.start(t); lfo.stop(t + 1.4);
+    },
+    pad(t, freqs, dur, v, dest) {
+      const lp = ac.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 900; lp.connect(dest);
+      const gn = ac.createGain(); gn.connect(lp);
+      gn.gain.setValueAtTime(0.0001, t); gn.gain.exponentialRampToValueAtTime(0.05 * v, t + dur * 0.35); gn.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+      for (const f of freqs) { osc('sawtooth', f, t, dur, gn); osc('sawtooth', f * 1.005, t, dur, gn); }
+    },
+    bass(t, f, v, dest) { osc('sine', f, t, 0.5, env(t, 0.01, 0.22 * v, 0.45, dest)); }
+  };
+
+  /* ---------- Séquenceur ---------- */
+  function trackGain(name) {
+    if (!trackGains[name]) { const gn = ac.createGain(); gn.gain.value = 0.0001; gn.connect(musicBus); trackGains[name] = gn; }
+    return trackGains[name];
+  }
+  function switchTrack(name) {
+    if (name === current) return;
+    const t = ac.currentTime;
+    if (current) trackGains[current].gain.setTargetAtTime(0.0001, t, 0.8);
+    trackGain(name).gain.setTargetAtTime(1, t, 0.8);
+    current = name; step = 0;
+  }
+  function playStep(name, i, t) {
+    const tr = TRACKS[name], out = trackGains[name], bar = Math.floor(i / 8) % 4, root = tr.roots[bar];
+    const third = tr.minor && (root === -3 || root === 2) ? 3 : 4;
+    if (i % 8 === 0) inst.pad(t, [hz(root - 12), hz(root - 12 + third), hz(root - 5)], (60 / tr.bpm) * 4.2, 1, out);
+    if (i % 4 === 0) inst.bass(t, hz(root - 24), name === 'night' ? 0.6 : 1, out);
+    const m = tr.mel[i % tr.steps];
+    if (m != null) inst[tr.inst](t, hz(m), 1, out);
+    if (name === 'day' && i % 2 === 1 && i % 8 !== 7) inst.pluck(t, hz(root + 12 + [0, third, 7][(i >> 1) % 3]), 0.35, out);
+  }
+  function tick() {
+    if (!ac || ac.state !== 'running') return;
+    switchTrack(pickTrack(g.S));
+    setAmbience(pickAmbience(g.S));
+    const tr = TRACKS[current], dt = 60 / tr.bpm / 2;
+    while (nextT < ac.currentTime + 0.25) {
+      if (effective(settings, 'music') > 0) playStep(current, step, nextT);
+      step = (step + 1) % (tr.steps * 2); nextT += dt;
+    }
+    if (ambience === 'crickets' && Math.random() < 0.18) cricket();
+  }
+
+  /* ---------- Ambiances ---------- */
+  let rainNode = null;
+  function setAmbience(name) {
+    if (name === ambience) return;
+    ambience = name;
+    if (rainNode) { const n = rainNode; n.g.gain.setTargetAtTime(0.0001, ac.currentTime, 0.6); setTimeout(() => n.src.stop(), 3000); rainNode = null; }
+    if (name === 'rain') {
+      const src = ac.createBufferSource(); src.buffer = noiseBuf; src.loop = true;
+      const lp = ac.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 1400;
+      const gn = ac.createGain(); gn.gain.value = 0.0001; gn.gain.setTargetAtTime(g.S.weather === 'storm' ? 0.22 : 0.13, ac.currentTime, 0.8);
+      src.connect(lp); lp.connect(gn); gn.connect(sfxBus); src.start();
+      rainNode = { src, g: gn };
+    }
+  }
+  function cricket() {
+    const t = ac.currentTime + Math.random() * 0.2, f = 4200 + Math.random() * 600;
+    for (let k = 0; k < 3; k++) osc('sine', f, t + k * 0.05, 0.03, env(t + k * 0.05, 0.003, 0.012, 0.03, sfxBus));
+  }
+
+  /* ---------- Bruitages ---------- */
+  function burst(t, dur, type, freq, peak, q = 1) {
+    const src = ac.createBufferSource(); src.buffer = noiseBuf;
+    const f = ac.createBiquadFilter(); f.type = type; f.frequency.value = freq; f.Q.value = q;
+    src.connect(f); f.connect(env(t, 0.003, peak, dur, sfxBus)); src.start(t, Math.random()); src.stop(t + dur + 0.05);
+  }
+  const blip = (t, type, f, dur, peak, f2) => osc(type, f, t, dur, env(t, 0.003, peak, dur, sfxBus), f2);
+  const SFX = {
+    step: t => burst(t, 0.05, 'lowpass', 500 + Math.random() * 200, 0.08),
+    chop: t => { burst(t, 0.12, 'bandpass', 900, 0.5, 2); blip(t, 'sine', 140, 0.12, 0.35, 60); },
+    pick: t => { blip(t, 'square', 1400, 0.08, 0.12, 900); burst(t, 0.1, 'highpass', 2500, 0.25); },
+    break: t => { burst(t, 0.35, 'lowpass', 700, 0.5); blip(t, 'sine', 110, 0.3, 0.3, 45); },
+    plant: t => blip(t, 'sine', 520, 0.08, 0.25, 300),
+    harvest: t => { blip(t, 'triangle', hz(24), 0.12, 0.22); blip(t + 0.07, 'triangle', hz(28), 0.16, 0.22); blip(t + 0.14, 'sine', hz(36), 0.25, 0.1); },
+    coin: t => { blip(t, 'square', 988, 0.08, 0.12); blip(t + 0.08, 'square', 1319, 0.3, 0.12); },
+    buy: t => { blip(t, 'square', 784, 0.07, 0.1); blip(t + 0.07, 'square', 1047, 0.2, 0.1); },
+    craft: t => { for (let k = 0; k < 3; k++) burst(t + k * 0.09, 0.05, 'bandpass', 2200, 0.35, 4); blip(t + 0.3, 'sine', hz(31), 0.6, 0.15); },
+    feed: t => { for (let k = 0; k < 3; k++) burst(t + k * 0.1, 0.06, 'bandpass', 1500, 0.25, 3); },
+    cluck: t => { blip(t, 'square', 720, 0.06, 0.08, 520); blip(t + 0.09, 'square', 820, 0.08, 0.08, 560); },
+    collect: t => { blip(t, 'sine', hz(31), 0.4, 0.18); blip(t + 0.08, 'sine', hz(36), 0.5, 0.15); },
+    hit: t => { burst(t, 0.12, 'highpass', 1200, 0.3); blip(t, 'sine', 220, 0.15, 0.4, 70); },
+    hurt: t => blip(t, 'sawtooth', 320, 0.22, 0.15, 110),
+    denied: t => { blip(t, 'square', 220, 0.08, 0.08); blip(t + 0.1, 'square', 165, 0.14, 0.08); },
+    ui: t => blip(t, 'sine', 1200, 0.04, 0.08),
+    save: t => [0, 4, 7, 12].forEach((s, k) => blip(t + k * 0.07, 'sine', hz(24 + s), 0.6, 0.12)),
+    sleep: t => [12, 7, 4, 0].forEach((s, k) => blip(t + k * 0.18, 'sine', hz(12 + s), 0.9, 0.1)),
+    squeak: t => { blip(t, 'sine', 1800, 0.06, 0.08, 2400); blip(t + 0.08, 'sine', 2000, 0.05, 0.06, 2600); },
+    baa: t => { const o = blip(t, 'sawtooth', 220, 0.5, 0.07, 190); const l = ac.createOscillator(), d = ac.createGain(); l.frequency.value = 9; d.gain.value = 12; l.connect(d); d.connect(o.frequency); l.start(t); l.stop(t + 0.55); },
+    meow: t => { blip(t, 'triangle', 520, 0.12, 0.12, 820); blip(t + 0.12, 'triangle', 820, 0.3, 0.1, 420); },
+    levelup: t => [0, 4, 7, 12, 16, 19].forEach((s, k) => blip(t + k * 0.07, 'square', hz(24 + s), 0.25, 0.06)),
+    door: t => { burst(t, 0.18, 'lowpass', 400, 0.3); blip(t + 0.05, 'sine', 90, 0.15, 0.25, 60); },
+    day: t => [0, 4, 7, 11, 14].forEach((s, k) => blip(t + k * 0.09, 'triangle', hz(12 + s), 0.5, 0.1))
+  };
+
+  function play(name) {
+    if (!ac || ac.state !== 'running' || !SFX[name] || effective(settings, 'sfx') === 0) return;
+    SFX[name](ac.currentTime + 0.01);
+  }
+
+  // Premier geste = démarrage
+  const unlock = () => start();
+  addEventListener('pointerdown', unlock); addEventListener('keydown', unlock);
+  g.bus.on('sfx', play);
+
+  return {
+    play, settings,
+    update(fn) { fn(settings); saveSettings(storage, settings); apply(); },
+    get started() { return !!ac; }
+  };
+}

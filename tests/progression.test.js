@@ -1,0 +1,82 @@
+import { test } from 'node:test';
+import assert from 'node:assert/strict';
+import { makeGame, seq } from './helpers.js';
+import { add, canAdd } from '../src/systems/inventory.js';
+import { level, gainXp, canUpgrade, upgradeTool, miningLevel } from '../src/systems/skills.js';
+import { hitObject } from '../src/systems/resources.js';
+import { buyBag, bagCost } from '../src/systems/economy.js';
+import { attack } from '../src/systems/combat.js';
+import { CFG } from '../src/config.js';
+
+test('sac limité : une place par type d’objet', () => {
+  const { g, S, toasts } = makeGame({ state: { inv: {}, invSlots: 2 } });
+  assert.equal(add(g, 'wood', 5), 5);
+  assert.equal(add(g, 'stone', 1), 1);
+  assert.equal(add(g, 'egg', 1), 0);
+  assert.match(toasts().at(-1), /Sac plein/);
+  assert.equal(add(g, 'wood', 1), 1, 'pile existante : ok');
+  assert.equal(canAdd(S, 'egg'), false);
+});
+
+test('pile limitée à STACK', () => {
+  const { g, S } = makeGame({ state: { inv: { wood: CFG.STACK - 2 } } });
+  assert.equal(add(g, 'wood', 5), 2);
+  assert.equal(S.inv.wood, CFG.STACK);
+});
+
+test('agrandir le sac', () => {
+  const { g, S } = makeGame({ state: { money: 5000 } });
+  const c = bagCost(S);
+  assert.equal(buyBag(g), true);
+  assert.equal(S.invSlots, CFG.INV_SLOTS + 6);
+  assert.equal(S.money, 5000 - c);
+});
+
+test('niveaux de minage', () => {
+  assert.equal(level(0), 1);
+  assert.equal(level(30), 2);
+  assert.equal(level(5000), 10);
+});
+
+test('casser des pierres donne de l’XP et fait monter de niveau', () => {
+  const { g, S, sounds } = makeGame({ rnd: seq(0) });
+  S.sel = 'pick'; S.objs['30,20'] = { t: 'rock', hp: 2 };
+  hitObject(g, 30, 20); hitObject(g, 30, 20);
+  assert.equal(S.skills.mining.xp, 2 + 2 + 5);
+  gainXp(g, 'mining', 25);
+  assert.equal(miningLevel(S), 2);
+  assert.ok(sounds().includes('levelup'));
+});
+
+test('gros rocher : pioche Cuivre requise', () => {
+  const { g, S, toasts } = makeGame();
+  S.sel = 'pick'; S.objs['40,10'] = { t: 'boulder', hp: 6 };
+  assert.equal(hitObject(g, 40, 10), false);
+  assert.match(toasts()[0], /Cuivre/);
+  S.tools.pick = 2;
+  hitObject(g, 40, 10); hitObject(g, 40, 10); hitObject(g, 40, 10);
+  assert.equal(S.objs['40,10'], undefined);
+  assert.ok(S.inv.stone >= 8);
+});
+
+test('forge : niveau, argent et pierre requis', () => {
+  const { g, S } = makeGame({ state: { money: 1000, inv: { stone: 20 } } });
+  assert.equal(canUpgrade(S, 'pick').why, 'level');
+  S.skills.mining.xp = 30;
+  assert.equal(upgradeTool(g, 'pick'), true);
+  assert.equal(S.tools.pick, 2);
+  assert.equal(S.money, 750);
+  assert.equal(S.inv.stone, 5);
+});
+
+test('un outil amélioré coûte moins d’énergie et frappe plus fort', () => {
+  const { g, S } = makeGame({ rnd: seq(0) });
+  S.sel = 'axe'; S.tools.axe = 3; S.objs['30,20'] = { t: 'tree', hp: 3 };
+  hitObject(g, 30, 20);
+  assert.equal(S.objs['30,20'], undefined, 'abattu en un coup');
+  assert.equal(S.energy, 99.5);
+  const e = { x: S.x + 1, y: S.y, hp: 100, cd: 0, hit: 0 };
+  g.enemies.push(e); S.tools.sword = 3;
+  attack(g, e);
+  assert.equal(e.hp, 32);
+});

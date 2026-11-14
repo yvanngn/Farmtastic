@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<title>Moteur Ferme</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&family=Pixelify+Sans:wght@500;600;700&display=swap">
+<link rel="stylesheet" href="css/style.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+
+</head>
+<body>
+<canvas id="game"></canvas>
+
+<div id="hud" class="box" style="display:none">
+  <div class="ligne"><b id="hName"></b><span>🪙 <b id="hMoney"></b></span></div>
+  <div id="hTime"></div>
+  <span class="lbl">⚡ Énergie</span><div class="bar"><i id="hEn"></i></div>
+  <span class="lbl">❤️ Vie</span><div class="bar"><i id="hHp"></i></div>
+  <div id="saveDot"></div>
+</div>
+<div id="topbtns" style="display:none">
+  <button id="bMap" title="Carte" aria-label="Carte">🗺️</button>
+  <button id="bBag" title="Menu" aria-label="Menu">📜</button>
+  <button id="bSave" title="Sauvegarder" aria-label="Sauvegarder">💾</button>
+  <button id="bLook" title="Apparence" aria-label="Apparence">👕</button>
+  <button id="bSet" title="Réglages" aria-label="Réglages">⚙</button>
+</div>
+<div id="controls" style="display:none">
+  <div id="stick" aria-label="Joystick"><div id="knob"></div></div>
+  <div id="droite">
+    <button id="bTools" class="rond" aria-label="Roue des outils">🛠️</button>
+    <button id="bItems" class="rond" aria-label="Roue du sac">🎒</button>
+    <button id="bAct" aria-label="Action"><span id="bActIcon">✋</span></button>
+  </div>
+</div>
+<div id="ovWheel" class="overlay"><div id="wheelRing"></div><div id="wheelCenter"></div></div>
+<div id="ovMap" class="overlay">
+  <div class="panel box carte">
+    <div class="row" style="justify-content:space-between;margin:0"><h2>🗺️ Carte</h2><button id="mapClose" aria-label="Fermer">✕</button></div>
+    <canvas id="mapCv"></canvas>
+    <div class="row zoom"><button id="mapOut" aria-label="Dézoomer">−</button><span id="mapLvl">×1</span><button id="mapIn" aria-label="Zoomer">+</button><button id="mapMe">📍 Moi</button></div>
+  </div>
+</div>
+<div id="toast" class="box"></div>
+
+<div id="ovLook" class="overlay">
+  <div class="panel box">
+    <div class="titre-jeu">Moteur Ferme</div>
+    <div class="sous-titre">Créez votre fermier</div>
+    <div class="perso">
+      <div class="apercu"><canvas id="preview" width="36" height="45"></canvas>
+        <div class="row"><button id="rotL" aria-label="Tourner à gauche">◀</button><button id="rotR" aria-label="Tourner à droite">▶</button></div></div>
+      <div class="options">
+        <label for="iName">Nom</label><input id="iName" type="text" maxlength="14" value="Fermier">
+        <div id="lookOpts"></div>
+      </div>
+    </div>
+    <div class="row" style="justify-content:flex-end;margin-top:12px"><button id="bContinue" style="display:none">Continuer la partie</button><button id="bStart" class="primaire">Commencer ▶</button></div>
+    <div id="netState"></div>
+  </div>
+</div>
+
+<div id="ovBag" class="overlay">
+  <div class="panel box">
+    <div class="row" style="justify-content:space-between;margin:0"><h2 id="menuTitle">📜 Menu</h2><button id="bClose" aria-label="Fermer">✕</button></div>
+    <div class="tabs" id="tabs"></div>
+    <div id="tabBody"></div>
+  </div>
+</div>
+
+<div id="ovBoard" class="overlay">
+  <div class="panel box">
+    <div class="row" style="justify-content:space-between;margin:0"><h2>📌 Panneau d'affichage</h2><button id="boardClose" aria-label="Fermer">✕</button></div>
+    <div id="boardBody"></div>
+  </div>
+</div>
+
+<div id="ovSet" class="overlay">
+  <div class="panel box">
+    <div class="row" style="justify-content:space-between;margin:0"><h2>⚙ Réglages</h2><button id="bSetClose" aria-label="Fermer">✕</button></div>
+    <div id="setBody"></div>
+  </div>
+</div>
+
+<script type="module" src="src/main.js"></script>
+</body>
+</html>
