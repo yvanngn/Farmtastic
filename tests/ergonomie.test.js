@@ -51,3 +51,10 @@ test('apparence : silhouette et bas par défaut, conservés au chargement', () =
   const f = migrate({ look: { body: 'f', bottom: 'skirt', hair: 5 } });
   assert.deepEqual([f.look.body, f.look.bottom, f.look.hair], ['f', 'skirt', 5]);
 });
+
+test('menu titre : Continuer seulement avec une sauvegarde', async () => {
+  const { titleMenu } = await import('../src/ui/title.js');
+  assert.deepEqual(titleMenu(false).map(i => i.id), ['new', 'howto', 'settings']);
+  assert.deepEqual(titleMenu(true).map(i => i.id), ['continue', 'new', 'howto', 'settings']);
+  assert.equal(titleMenu(true).find(i => i.main).id, 'continue');
+});

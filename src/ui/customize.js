@@ -6,7 +6,7 @@ import { GRASS } from '../render/ground.js';
 
 const ROT_L = [2, 3, 1, 0], ROT_R = [3, 2, 0, 1];
 
-export function createCustomizer({ getLook, getName, onStart, onContinue }) {
+export function createCustomizer({ getLook, getName, onStart, onContinue, onBack }) {
   const pctx = $('#preview').getContext('2d');
   let dir = 0, inGame = false;
 
@@ -28,13 +28,15 @@ export function createCustomizer({ getLook, getName, onStart, onContinue }) {
   $('#rotR').onclick = () => { dir = ROT_R[dir]; };
   $('#bStart').onclick = () => onStart(($('#iName').value.trim() || 'Fermier').slice(0, 14), inGame);
   $('#bContinue').onclick = () => onContinue();
+  $('#bBack').onclick = () => onBack && onBack();
 
   return {
     open(game, hasSave) {
       inGame = game;
       $('#ovLook').classList.add('on'); $('#iName').value = getName(); buildOpts();
       $('#bStart').textContent = game ? 'Valider ✔' : (hasSave ? 'Nouvelle partie ▶' : 'Commencer ▶');
-      $('#bContinue').style.display = !game && hasSave ? '' : 'none';
+      $('#bContinue').style.display = 'none';
+      $('#bBack').style.display = game ? 'none' : '';
     },
     close() { $('#ovLook').classList.remove('on'); },
     isOpen: () => $('#ovLook').classList.contains('on'),

@@ -43,3 +43,9 @@ test('les actions émettent leurs bruitages', () => {
   sellAll(g);
   assert.deepEqual(sounds(), ['plant', 'coin']);
 });
+
+test('écran titre : musique dédiée, pas d’ambiance', () => {
+  assert.equal(pickTrack({ minute: 1300, weather: 'rain', season: 0 }, 'title'), 'title');
+  assert.equal(pickAmbience({ minute: 1300, weather: 'rain', season: 0 }, 'title'), null);
+  assert.equal(pickTrack({ minute: 600, weather: 'sun', season: 0 }, null), 'day');
+});

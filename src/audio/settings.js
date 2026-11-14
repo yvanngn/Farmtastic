@@ -19,13 +19,15 @@ export function toggle(s, ch) { s[ch].on = !s[ch].on; return s; }
 export const effective = (s, ch) => (s[ch].on ? s[ch].vol : 0);
 
 // Une musique par ambiance.
-export function pickTrack(S) {
+export function pickTrack(S, screen) {
+  if (screen === 'title') return 'title';
   if (isWet(S.weather)) return 'rain';
   if (S.minute >= 1200 || S.minute < 360) return 'night';
   return S.season === 3 ? 'winter' : 'day';
 }
 // Ambiances en boucle (bruitages).
-export function pickAmbience(S) {
+export function pickAmbience(S, screen) {
+  if (screen === 'title') return null;
   if (isWet(S.weather)) return 'rain';
   if ((S.minute >= 1140) && S.season < 3) return 'crickets';
   return null;

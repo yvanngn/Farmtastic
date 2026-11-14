@@ -8,6 +8,8 @@ const hz = semi => C4 * Math.pow(2, semi / 12);
 
 /* ---------- Musiques (mélodies originales) ---------- */
 const TRACKS = {
+  title: { bpm: 96, steps: 32, roots: [0, 5, -3, 7], inst: 'bell',
+    mel: [12, 16, 19, 24, null, 21, 19, null, 17, null, 16, 14, 12, null, null, null, 14, 16, 19, 21, null, 19, 24, null, 23, null, 21, 19, 19, null, null, null] },
   day: { bpm: 104, steps: 32, roots: [0, -3, 5, 7], inst: 'pluck',
     mel: [16, null, 19, 21, 19, null, 16, 14, 12, null, 14, 16, 14, null, null, null, 16, null, 19, 21, 24, null, 21, 19, 21, null, 19, 16, 19, null, null, null] },
   winter: { bpm: 84, steps: 32, roots: [0, -3, 5, 7], inst: 'bell',
@@ -20,6 +22,7 @@ const TRACKS = {
 
 export function createAudio(g, storage) {
   const settings = loadSettings(storage);
+  let screen = null;
   let ac = null, master, musicBus, sfxBus, reverb, noiseBuf, sched = null;
   let step = 0, nextT = 0, current = null, ambience = null;
   const trackGains = {};
@@ -104,12 +107,12 @@ export function createAudio(g, storage) {
     if (i % 4 === 0) inst.bass(t, hz(root - 24), name === 'night' ? 0.6 : 1, out);
     const m = tr.mel[i % tr.steps];
     if (m != null) inst[tr.inst](t, hz(m), 1, out);
-    if (name === 'day' && i % 2 === 1 && i % 8 !== 7) inst.pluck(t, hz(root + 12 + [0, third, 7][(i >> 1) % 3]), 0.35, out);
+    if ((name === 'day' || name === 'title') && i % 2 === 1 && i % 8 !== 7) inst.pluck(t, hz(root + 12 + [0, third, 7][(i >> 1) % 3]), 0.35, out);
   }
   function tick() {
     if (!ac || ac.state !== 'running') return;
-    switchTrack(pickTrack(g.S));
-    setAmbience(pickAmbience(g.S));
+    switchTrack(pickTrack(g.S, screen));
+    setAmbience(pickAmbience(g.S, screen));
     const tr = TRACKS[current], dt = 60 / tr.bpm / 2;
     while (nextT < ac.currentTime + 0.25) {
       if (effective(settings, 'music') > 0) playStep(current, step, nextT);
@@ -168,6 +171,7 @@ export function createAudio(g, storage) {
     meow: t => { blip(t, 'triangle', 520, 0.12, 0.12, 820); blip(t + 0.12, 'triangle', 820, 0.3, 0.1, 420); },
     levelup: t => [0, 4, 7, 12, 16, 19].forEach((s, k) => blip(t + k * 0.07, 'square', hz(24 + s), 0.25, 0.06)),
     door: t => { burst(t, 0.18, 'lowpass', 400, 0.3); blip(t + 0.05, 'sine', 90, 0.15, 0.25, 60); },
+    stars: t => [24, 28, 31, 36, 40, 43, 48, 52].forEach((s, k) => { blip(t + k * 0.06, 'sine', hz(s), 0.7, 0.09); blip(t + k * 0.06 + 0.03, 'triangle', hz(s + 12), 0.3, 0.03); }),
     day: t => [0, 4, 7, 11, 14].forEach((s, k) => blip(t + k * 0.09, 'triangle', hz(12 + s), 0.5, 0.1))
   };
 
@@ -183,6 +187,7 @@ export function createAudio(g, storage) {
 
   return {
     play, settings,
+    setScreen(s) { screen = s; },
     update(fn) { fn(settings); saveSettings(storage, settings); apply(); },
     get started() { return !!ac; }
   };

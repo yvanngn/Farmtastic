@@ -15,6 +15,7 @@ import { createControls } from './ui/controls.js';
 import { createWheel } from './ui/wheel.js';
 import { createMapView } from './ui/mapView.js';
 import { createBoard } from './ui/board.js';
+import { createTitle } from './ui/title.js';
 import { isPath, isGate } from './world/map.js';
 import { createPlayerMarket } from './net/market.js';
 import { facingTile } from './systems/movement.js';
@@ -77,9 +78,16 @@ const custom = createCustomizer({
     g.S = defaultState(); g.S.look = look; g.S.name = name; g.S.objs = genObjects();
     begin();
   },
-  onContinue() { g.S = saved; if (!g.S.objs) g.S.objs = genObjects(); begin(); }
+  onContinue() { g.S = saved; if (!g.S.objs) g.S.objs = genObjects(); begin(); },
+  onBack() { custom.close(); overwriteArmed = false; title.open(); }
 });
-const input = createInput(cv, g, renderer, { isActive: () => started && !custom.isOpen(), onMenu: () => menu.open() });
+const title = createTitle({
+  audio,
+  onContinue() { title.close(); g.S = saved; if (!g.S.objs) g.S.objs = genObjects(); begin(); },
+  onNew() { title.close(); custom.open(false, !!saved); },
+  onSettings() { settingsPanel.open(); }
+});
+const input = createInput(cv, g, renderer, { isActive: () => started && !custom.isOpen() && !title.isOpen(), onMenu: () => menu.open() });
 
 // Bouton d'action : agit sur la tuile en face (ou frappe l'ennemi le plus proche avec l'épée).
 function doAction() {
@@ -98,7 +106,7 @@ function doAction() {
 const controls = createControls(g, input, { onAct: doAction, onTools: () => wheel.open('tools'), onItems: () => wheel.open('items') });
 const hud = createHud(g, controls);
 addEventListener('keydown', e => {
-  if (!started || custom.isOpen() || e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') return;
+  if (!started || custom.isOpen() || title.isOpen() || e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') return;
   const k = e.key.toLowerCase();
   if (k === ' ') { e.preventDefault(); doAction(); }
   else if (k === '1' || k === 'tab') { e.preventDefault(); wheel.open('tools'); }
@@ -149,11 +157,12 @@ function loop(now) {
     if ((hudT += dt) > 0.25) { hudT = 0; hud.update(); }
   }
   if (custom.isOpen()) custom.draw(now);
+  if (title.isOpen()) title.draw(now);
   requestAnimationFrame(loop);
 }
 
 (async () => {
-  custom.open(false, false);
+  title.open(false);
   requestAnimationFrame(loop);
   net = await initSupabase();
   custom.status(net.status);
@@ -163,5 +172,5 @@ function loop(now) {
   setInterval(() => doSave(false), CFG.AUTOSAVE_MS);
   document.addEventListener('visibilitychange', () => { if (document.hidden) doSave(false); });
   saved = await saver.load();
-  if (saved) { g.S.look = { ...saved.look }; g.S.name = saved.name; custom.open(false, true); }
+  if (saved) { g.S.look = { ...saved.look }; g.S.name = saved.name; title.setSave(true); }
 })();
