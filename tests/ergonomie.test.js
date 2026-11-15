@@ -87,3 +87,12 @@ test('index.html (GitHub Pages) est à jour avec play.html (claude.ai)', async (
   const idx = readFileSync(new URL('../index.html', import.meta.url), 'utf8'), play = readFileSync(new URL('../play.html', import.meta.url), 'utf8');
   for (const id of [...play.matchAll(/id="([^"]+)"/g)].map(m => m[1])) assert.ok(idx.includes(`id="${id}"`), 'manque dans index.html : #' + id);
 });
+
+test('enseignes : police pixel nette, accents compris, largeur prévisible', async () => {
+  const { pixText, pixTextWidth } = await import('../src/render/pixfont.js');
+  const px = []; pixText((x, y) => px.push([x, y]), 'É', 10, 10, '#000');
+  assert.ok(px.some(([, y]) => y < 10), 'accent au-dessus');
+  assert.equal(pixTextWidth('MARCHÉ'), 23);
+  const all = []; pixText((x, y) => all.push(x), 'CENTRE-VILLE →', 0, 0, '#000');
+  assert.ok(Math.max(...all) - Math.min(...all) <= pixTextWidth('CENTRE-VILLE →'));
+});

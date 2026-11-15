@@ -6,6 +6,7 @@ import { rng } from '../world/map.js';
 import { shade, disc } from './pixel.js';
 import { GRASS, drawLunaHouse, drawFranckHouse } from './ground.js';
 import { treeSprite } from './sprites.js';
+import { signBoard } from './pixfont.js';
 const T = CFG.T;
 
 // Lampadaires allumés la nuit (px du village).
@@ -49,8 +50,7 @@ export function buildTown(season) {
     const bx = mx + 8 + k * 14; R(bx, my + 18, 12, 9, '#8a5a32'); R(bx, my + 18, 12, 2, '#a8774a');
     for (let j = 0; j < 5; j++) disc(g, bx + 3 + (j % 3) * 3, my + 17 - (j > 2 ? 2 : 0), 2, goods[(k + j) % goods.length]);
   }
-  R(mx + mw / 2 - 22, my - 16, 44, 11, '#3f2615'); R(mx + mw / 2 - 21, my - 15, 42, 9, '#e8c26a');
-  g.fillStyle = '#3b2414'; g.font = 'bold 8px Georgia'; g.textAlign = 'center'; g.fillText('MARCHÉ', mx + mw / 2, my - 8);
+  signBoard(R, mx + mw / 2, my - 16, 'MARCHÉ', 44);
 
   // panneau d'affichage (x14-16, y3) : toit, cadre, affiches épinglées
   const qx = 14 * T, qy = 3 * T;
@@ -76,8 +76,7 @@ export function buildTown(season) {
   // sacs et caisses devant
   disc(g, ux + 8, uy + 38, 5, '#c9a66a'); R(ux + 6, uy + 32, 4, 2, '#8a6a3a'); disc(g, ux + 9, uy + 37, 2, '#dcc394');
   R(ux + 46, uy + 32, 12, 10, '#a8774a'); R(ux + 46, uy + 32, 12, 2, '#c99560'); R(ux + 51, uy + 32, 2, 10, '#7a4f2e');
-  R(ux + 4, uy - 2, uw - 8, 9, '#3f2615'); R(ux + 5, uy - 1, uw - 10, 7, '#e8c26a');
-  g.fillStyle = '#3b2414'; g.font = 'bold 6px Georgia'; g.textAlign = 'center'; g.fillText('AMÉLIORATIONS', ux + uw / 2, uy + 5);
+  signBoard(R, ux + uw / 2, uy - 3, 'AMÉLIORATIONS');
 
   // échoppe générique : murs de planches, toit, fenêtres, enseigne
   function shop(x0, y0, w, roofA, roofB, sign, deco) {
@@ -90,8 +89,7 @@ export function buildTown(season) {
     const dx = ux + uw / 2 - 8; R(dx, uy + 14, 16, 26, '#4a2c18'); R(dx + 2, uy + 16, 12, 24, '#6e4426'); R(dx + 11, uy + 28, 2, 2, '#e8c26a');
     R(ux + 5, uy + 8, 12, 12, '#3b2414'); R(ux + 6, uy + 9, 10, 10, '#ffd98a'); R(ux + 10, uy + 9, 1, 10, '#3b2414');
     if (w > 3) { R(ux + uw - 19, uy + 8, 12, 12, '#3b2414'); R(ux + uw - 18, uy + 9, 10, 10, '#ffd98a'); R(ux + uw - 14, uy + 9, 1, 10, '#3b2414'); }
-    R(ux + 4, uy - 2, uw - 8, 9, '#3f2615'); R(ux + 5, uy - 1, uw - 10, 7, '#e8c26a');
-    g.fillStyle = '#3b2414'; g.font = 'bold 6px Georgia'; g.textAlign = 'center'; g.fillText(sign, ux + uw / 2, uy + 5);
+    signBoard(R, ux + uw / 2, uy - 3, sign);
     deco(ux, uy, uw);
   }
   // charpentier (x4-7, y11-13) : planches empilées, scie, rondins

@@ -4,6 +4,7 @@ import { CFG } from '../config.js';
 import { ground, isFence, isPond, rng } from '../world/map.js';
 import { shade, disc } from './pixel.js';
 import { BUILDINGS } from '../data/buildings.js';
+import { signBoard } from './pixfont.js';
 const T = CFG.T;
 
 export const GRASS = ['#6bb64a', '#58a23c', '#a8a347', '#e4ecef'];
@@ -71,8 +72,8 @@ export function buildGround(season, built = {}, fixed = { house: true, grange: t
   drawBin(R);
   drawGrange(R); if (!fixed.grange) drawRuins(R, 10 * T, 14 * T, 1 * T + 10 - 18, 5 * T, 'grange');
   drawStation(R);
-  // panneau au bout de la route de l'est : « Village → »
-  R(46 * T + 7, 4 * T, 2, 14, '#5b3a22'); R(46 * T + 1, 3 * T + 6, 15, 9, '#3f2615'); R(46 * T + 2, 3 * T + 7, 13, 7, '#e8c26a'); R(46 * T + 4, 3 * T + 10, 7, 1, '#5b3a22'); R(46 * T + 11, 3 * T + 9, 2, 3, '#5b3a22');
+  // panneau au bout de la route de l'est : « Centre-ville → »
+  R(44 * T + 7, 6 * T + 6, 2, 12, '#5b3a22'); signBoard(R, 44 * T + 8, 6 * T + 2, 'CENTRE-VILLE →');
   drawMystHouse(R);
   drawFieldStakes(R);
   drawWildGate(R);

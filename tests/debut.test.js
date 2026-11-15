@@ -207,3 +207,7 @@ test('le centre-ville est à droite : la route de l’est y mène', () => {
   assert.equal(act(g, 47, 5), 'door'); assert.equal(S.scene, 'town');
   assert.equal(SCENES.town.doors[0].x, 0, 'on arrive en ville par l’ouest');
 });
+
+test('la route de l’est va jusqu’au bord de la ferme (on voit qu’elle continue)', () => {
+  assert.equal(ground(47, 5), 'path');
+});
