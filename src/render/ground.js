@@ -71,12 +71,12 @@ export function buildGround(season, built = {}, fixed = { house: true, grange: t
   drawBin(R);
   drawGrange(R); if (!fixed.grange) drawRuins(R, 10 * T, 14 * T, 1 * T + 10 - 18, 5 * T, 'grange');
   drawStation(R);
+  // panneau au bout de la route de l'est : « Village → »
+  R(46 * T + 7, 4 * T, 2, 14, '#5b3a22'); R(46 * T + 1, 3 * T + 6, 15, 9, '#3f2615'); R(46 * T + 2, 3 * T + 7, 13, 7, '#e8c26a'); R(46 * T + 4, 3 * T + 10, 7, 1, '#5b3a22'); R(46 * T + 11, 3 * T + 9, 2, 3, '#5b3a22');
   drawMystHouse(R);
   drawFieldStakes(R);
   drawWildGate(R);
   drawForestArch(R);
-  drawLunaHouse(R);
-  drawFranckHouse(R);
   if (built.coop) drawCoop(R); else drawLot(g, R, 'coop');
   if (built.pigsty) drawPigsty(R); else drawLot(g, R, 'pigsty');
   if (built.barn) drawBarn(R); else drawLot(g, R, 'barn');
@@ -84,7 +84,7 @@ export function buildGround(season, built = {}, fixed = { house: true, grange: t
   return c;
 }
 
-// Portail vers le village, en bas du chemin (tuile 16,35).
+// Portail vers le quartier, en bas du chemin (tuile 16,35). La route du village part à l'est (47,5).
 function drawGate(R) {
   const x = 16 * T, y = 35 * T;
   R(x - 6, y - 14, 3, 30, '#5b3a22'); R(x + T + 3, y - 14, 3, 30, '#5b3a22');
@@ -244,7 +244,7 @@ function drawGrange(R) {
 }
 
 // Maison de Franck (x25-29, y29-31) : maison grise et bleue, volets (dessinés à part), banc devant.
-function drawFranckHouse(R) {
+export function drawFranckHouse(R) {
   const x0 = 25 * T, x1 = 30 * T, top = 29 * T + 6, bot = 32 * T;
   R(x0 - 2, bot, x1 - x0 + 4, 3, 'rgba(20,12,8,.3)');
   R(x0, top, x1 - x0, bot - top, '#b8bcc4'); for (let y = top + 4; y < bot; y += 5) R(x0, y, x1 - x0, 1, '#9ca0aa');
@@ -262,7 +262,7 @@ function drawFranckHouse(R) {
 }
 
 // Maison de Luna (x18-22, y29-31) : petite maison mauve, cartons devant, boîte aux lettres.
-function drawLunaHouse(R) {
+export function drawLunaHouse(R) {
   const x0 = 18 * T, x1 = 23 * T, top = 29 * T + 6, bot = 32 * T;
   R(x0 - 2, bot, x1 - x0 + 4, 3, 'rgba(20,12,8,.3)');
   R(x0, top, x1 - x0, bot - top, '#e8d8c0'); for (let y = top + 4; y < bot; y += 5) R(x0, y, x1 - x0, 1, '#cdb898');

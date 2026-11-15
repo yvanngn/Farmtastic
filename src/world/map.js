@@ -17,16 +17,16 @@ export function buildingAt(built, x, y) {
 }
 export const isCoop = (x, y, built = { coop: true }) => buildingAt(built, x, y) === 'coop';
 // Maison de Luna, au bord du chemin, près du portail (porte en 20,31).
-export const isLunaHouse = (x, y) => inRect(x, y, 18, 29, 22, 31);
-export const isLunaLot = (x, y) => inRect(x, y, 17, 27, 30, 34);
+export const isLunaHouse = () => false;   // Luna et Franck habitent maintenant le quartier (scène « quartier »)
+export const isLunaLot = () => false;
 // Maison de Franck, juste à côté (porte en 27,31).
-export const isFranckHouse = (x, y) => inRect(x, y, 25, 29, 29, 31);
+export const isFranckHouse = () => false;
 // Grange de la maison (x10-13, y1-4), porte en 12,4 : l'entrée des tunnels.
 export const isGrange = (x, y) => inRect(x, y, 10, 1, 13, 4);
 export const isGate = (x, y) => x === 16 && y === 35; // portail vers le village
 export const isFence = (x, y, built) => inRect(x, y, 18, 6, 33, 13) && !isPen(x, y) && !(x === 18 && y === 9) && !buildingAt(built, x, y);
 export const isPond = (x, y) => ((x - 12) ** 2) / 25 + ((y - 24) ** 2) / 9 < 1;
-export const isPath = (x, y) => (y === 5 && x >= 2 && x <= 43) || (y === 20 && x >= 3 && x <= 15) || (x === 42 && y === 4) || (x === 16 && y >= 5 && y <= 35) || (y === 9 && x === 17);
+export const isPath = (x, y) => (y === 5 && x >= 2 && x <= 46) || (y === 20 && x >= 3 && x <= 15) || (x === 42 && y === 4) || (x === 16 && y >= 5 && y <= 35) || (y === 9 && x === 17);
 export const isForest = (x) => x >= 34;
 // Gare (à l'ouest) : petit bâtiment x1-3 y14-16, quai x1-2 y17-23, voie ferrée x0 dès y13.
 export const isStation = (x, y) => inRect(x, y, 1, 14, 3, 16);
@@ -65,7 +65,7 @@ export function rng(seed) {
 
 export function freeForObj(x, y) {
   return !isHouse(x, y) && !isPlot(x, y) && !isPond(x, y) && !isPath(x, y) && !inRect(x, y, 17, 5, 33, 14)
-    && !isBin(x, y) && !isLunaLot(x, y) && !inRect(x, y, 9, 0, 14, 5) && !inRect(x, y, 44, 16, 47, 20) && !inRect(x, y, 0, 8, 3, 24) && !inRect(x, y, 4, 5, 9, 7) && !inRect(x, y, 39, 0, 46, 6) && !AXE_SPOT(x, y) && !BUSH_SET.has(x + ',' + y) && x > 0 && y > 0 && x < CFG.W - 1 && y < CFG.H - 1;
+    && !isBin(x, y) && !isLunaLot(x, y) && !inRect(x, y, 9, 0, 14, 5) && !inRect(x, y, 44, 16, 47, 20) && !inRect(x, y, 0, 8, 3, 24) && !inRect(x, y, 4, 5, 9, 7) && !inRect(x, y, 39, 0, 47, 6) && !AXE_SPOT(x, y) && !BUSH_SET.has(x + ',' + y) && x > 0 && y > 0 && x < CFG.W - 1 && y < CFG.H - 1;
 }
 
 const KINDS = ['oak', 'pine', 'birch'];

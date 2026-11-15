@@ -4,7 +4,7 @@
 export const LUNA = {
   id: 'luna', name: 'Luna', de: "d'elle", color: '#c9a0ff', voice: 'voiceLuna',
   look: { body: 'f', bottom: 'pant', skin: '#f1c7a5', hair: 1, hairC: '#3a2a3e', shirt: '#5aa88a', pants: '#4a4a6a' },
-  home: 'luna', day: { x: 21.5, y: 33.2 }, inside: { x: 5.5, y: 4.6 },
+  home: 'luna', outScene: 'quartier', day: { x: 7.5, y: 8.4 }, inside: { x: 5.5, y: 4.6 },
   walks: [{ scene: 'foret', from: 960, to: 1020, every: 2, at: { x: 9.5, y: 7.5 } }],   // balade en forêt, un jour sur deux, 16 h – 17 h (💡)
   // Personnalité (💡 proposée par Claude, à valider) : ancienne informaticienne, rêve d'une ferme, budget serré, bricole sa maison.
   traits: ['Ancienne informaticienne', 'Rêve de sa propre ferme', 'Budget serré', 'Retape sa petite maison'],
@@ -100,7 +100,7 @@ export const FRANCK = {
   id: 'franck', name: 'Franck', de: 'de lui', color: '#8ab4d8', voice: 'voiceFranck',
   // décrit par l'utilisateur : grand, cheveux mi-longs, l'air triste
   look: { body: 'h', bottom: 'pant', skin: '#e8c4a4', hair: 1, hairC: '#5a4636', shirt: '#7d8794', pants: '#3a3f4a', tall: true, sad: true },
-  home: 'franck', inside: { x: 5.5, y: 2.7 }, day: { x: 27.5, y: 33.3 },
+  home: 'franck', outScene: 'quartier', inside: { x: 5.5, y: 2.7 }, day: { x: 13.5, y: 8.3 },
   walks: [{ scene: 'foret', from: 390, to: 450, every: 2, at: { x: 5.5, y: 12.5 } }],   // à l'aube, quand personne ne le voit (à partir de 2 cœurs) (💡)
   shy: { minHearts: 2, from: 1020, to: 1140 },   // à partir de 2 cœurs, il s'assoit devant chez lui en fin de journée
   traits: ['Timide', 'Sort peu', 'Laisse passer le temps', 'Aimait peut-être fabriquer des choses'],

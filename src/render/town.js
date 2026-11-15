@@ -4,7 +4,7 @@ import { CFG } from '../config.js';
 import { LAYOUTS } from '../world/scenes.js';
 import { rng } from '../world/map.js';
 import { shade, disc } from './pixel.js';
-import { GRASS } from './ground.js';
+import { GRASS, drawLunaHouse, drawFranckHouse } from './ground.js';
 import { treeSprite } from './sprites.js';
 const T = CFG.T;
 
@@ -149,5 +149,35 @@ export function buildTown(season) {
     R(dx, top + 40, 18, bot - top - 40, '#5a2e18'); R(dx + 1, top + 41, 8, bot - top - 42, '#7a4426'); R(dx + 9, top + 41, 8, bot - top - 42, '#7a4426'); R(dx + 7, top + 52, 2, 2, '#f2cf73'); R(dx + 10, top + 52, 2, 2, '#f2cf73');
     R(dx - 4, bot - 2, 26, 3, '#c2bdb4');
     for (const fx of [x0 + 4, x1 - 8]) { R(fx, bot - 8, 6, 6, '#8a5a32'); R(fx + 1, bot - 11, 4, 4, '#f07ab0'); } }
+  return c;
+}
+
+// Quartier résidentiel (au sud de la ferme) : herbe, rue pavée, maisons de Luna et de Franck, arbres, bancs.
+export function buildQuartier(season) {
+  const L = LAYOUTS.quartier, H = L.length, W = L[0].length;
+  const c = document.createElement('canvas'); c.width = W * T; c.height = H * T;
+  const g = c.getContext('2d'), r = rng(57 + season);
+  const R = (x, y, w, h, col) => { g.fillStyle = col; g.fillRect(x, y, w, h); };
+  const B = GRASS[season];
+  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
+    const px = x * T, py = y * T, ch = L[y][x];
+    if (ch === '.' || ch === 'D') {
+      R(px, py, T, T, '#a9a29a');
+      for (let k = 0; k < 4; k++) { const sx = px + (k % 2) * 8 + ((y % 2) * 4), sy = py + (k >> 1) * 8; R(sx + 1, sy + 1, 6, 6, ['#bcb5ac', '#b3aca2', '#c6c0b7'][r() * 3 | 0]); R(sx + 1, sy + 6, 6, 1, '#8f887f'); }
+      continue;
+    }
+    for (let by = 0; by < T; by += 4) for (let bx = 0; bx < T; bx += 4) R(px + bx, py + by, 4, 4, [B, B, shade(B, .93), shade(B, 1.06)][r() * 4 | 0]);
+    if (r() < .06) { const col = ['#ffffff', '#f5e050', '#f07ab0'][r() * 3 | 0]; R(px + 7, py + 7, 3, 1, col); R(px + 8, py + 6, 1, 3, col); }
+  }
+  // haies et boîtes aux lettres devant chaque maison, bordure de trottoir
+  R(T, 8 * T - 1, (W - 2) * T, 2, '#8f887f'); R(T, 10 * T - 1, (W - 2) * T, 2, '#8f887f');
+  const shift = (dx, dy) => (x, y, w, h, col) => R(x + dx, y + dy, w, h, col);
+  drawLunaHouse(shift(-14 * T, -25 * T));
+  drawFranckHouse(shift(-14 * T, -25 * T));
+  // terrains libres pour de futurs habitants (piquets + panneau)
+  for (const x0 of [18 * T, 24 * T]) { R(x0, 4 * T, 4 * T, 3 * T, 'rgba(120,84,48,.18)'); for (const px of [x0, x0 + 4 * T - 2]) R(px, 4 * T, 2, 8, '#8a5a32'); R(x0 + 2 * T - 1, 5 * T, 2, 12, '#5b3a22'); R(x0 + 2 * T - 9, 5 * T - 6, 18, 9, '#3f2615'); R(x0 + 2 * T - 8, 5 * T - 5, 16, 7, '#e8c26a'); }
+  // bancs et lampadaires le long de la rue
+  for (const x of [3 * T, 20 * T]) { R(x, 10 * T + 6, 22, 3, '#8a5a32'); R(x, 10 * T + 6, 22, 1, '#c99560'); R(x + 1, 10 * T + 9, 2, 3, '#5b3a22'); R(x + 19, 10 * T + 9, 2, 3, '#5b3a22'); }
+  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) if (L[y][x] === 'T') g.drawImage(treeSprite(season, (x + y) % 4), x * T - 9, y * T - 28);
   return c;
 }

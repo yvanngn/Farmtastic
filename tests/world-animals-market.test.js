@@ -103,14 +103,13 @@ test('ancienne sauvegarde (commandes du jour) migrée vers le panneau', () => {
 test('village : portail, halle du marché et panneau d’affichage', () => {
   const { g, S } = makeGame();
   const opened = []; g.bus.on('open', w => opened.push(w));
-  assert.ok(isSolid(S, 16, 35), 'portail');
-  assert.equal(act(g, 16, 35), 'door');
+  assert.equal(act(g, 47, 5), 'door', 'la route de l’est mène en ville');
   assert.equal(S.scene, 'town');
   assert.equal(act(g, 6, 4), 'market');
   assert.equal(act(g, 15, 3), 'board');
   assert.deepEqual(opened, ['market', 'board']);
   assert.ok(!isSolid(S, 12, 6), 'la place est praticable');
-  assert.equal(act(g, 12, 0), 'door');
+  assert.equal(act(g, 0, 10), 'door');
   assert.equal(S.scene, 'farm');
 });
 

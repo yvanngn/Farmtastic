@@ -85,8 +85,9 @@ function buildTown() {
   const W = 24, H = 28;
   const m = Array.from({ length: H }, (_, y) => Array.from({ length: W }, (_, x) => (x < 2 || x > 21 || y < 1 || y > 20 ? 'g' : '.')));
   const put = (ch, x0, y0, w = 1, h = 1) => { for (let y = y0; y < y0 + h; y++) for (let x = x0; x < x0 + w; x++) m[y][x] = ch; };
-  put('D', 12, 0);
-  for (const y of [1, 4, 7, 10, 13, 16, 19]) { put('T', 0, y); put('T', 23, y); }
+  put('D', 0, 10); put('.', 1, 10);   // entrée à l'ouest : la route qui vient de la ferme
+  for (const y of [1, 4, 7, 13, 16, 19]) { put('T', 0, y); put('T', 23, y); }
+  put('T', 23, 10);
   for (const x of [3, 9, 15, 21]) put('T', x, 21);
   put('M', 4, 2, 7, 3);       // halle du marché
   put('Q', 14, 3, 3, 1);      // panneau d'affichage, juste à côté
@@ -109,6 +110,18 @@ function buildTown() {
   return m.map(r => r.join(''));
 }
 LAYOUTS.town = buildTown();
+// Quartier : g herbe, . pavés, X maison (Luna x4-8, Franck x11-15, y4-6), T arbre, D sortie vers la ferme, b banc, f jardinière.
+LAYOUTS.quartier = (() => {
+  const W = 30, H = 16, m = Array.from({ length: H }, (_, y) => Array.from({ length: W }, (_, x) => (x === 0 || x === W - 1 || y === H - 1 ? 'T' : 'g')));
+  for (let x = 1; x < W - 1; x++) { m[8][x] = '.'; m[9][x] = '.'; }   // la rue
+  for (let y = 0; y < 8; y++) m[y][22] = '.';                          // l'allée qui monte vers la ferme
+  m[0][22] = 'D'; for (const x of [6, 13]) m[7][x] = '.';              // devant les portes
+  for (let y = 4; y <= 6; y++) for (let x = 4; x <= 8; x++) m[y][x] = 'X';
+  for (let y = 4; y <= 6; y++) for (let x = 11; x <= 15; x++) m[y][x] = 'X';
+  for (const x of [2, 10, 18, 26]) m[11][x] = 'T';
+  for (const x of [0, 1, 2, 3, 9, 10, 16, 17, 18, 19, 20, 21, 23, 24, 25, 26, 27, 28, 29]) if (m[0][x] === 'g') m[0][x] = 'T';
+  return m.map(r => r.join(''));
+})();
 // Terres sauvages : 3 × 2 salles bordées d'arbres (T) et de rochers (#), passages entre salles, sortie D.
 function buildWild() {
   const RW = 10, RH = 8, W = RW * 3, H = RH * 2;
@@ -152,20 +165,21 @@ export const SCENES = {
     { x: 20, y: 7, to: 'pigsty', spawn: { x: 4.5, y: 5.4 } },
     { x: 28, y: 7, to: 'barn', spawn: { x: 5.5, y: 6.4 } },
     { x: 12, y: 4, to: 'grange', spawn: { x: 5.5, y: 5.2 } },
-    { x: 27, y: 31, to: 'franck', spawn: { x: 4.5, y: 5.4 } },
-    { x: 20, y: 31, to: 'luna', spawn: { x: 4.5, y: 5.4 } },
     { x: 0, y: 10, to: 'foret', spawn: { x: 28.2, y: 9.6 } },
     { x: 47, y: 18, to: 'wild', spawn: { x: 1.6, y: 4.5 } },
-    { x: 16, y: 35, to: 'town', spawn: { x: 12.5, y: 1.8 } }
+    { x: 16, y: 35, to: 'quartier', spawn: { x: 22.5, y: 1.8 } },
+    { x: 47, y: 5, to: 'town', spawn: { x: 1.6, y: 10.6 } }
   ] },
-  town: { W: 24, H: 28, outdoor: true, doors: [{ x: 12, y: 0, to: 'farm', spawn: { x: 16.5, y: 34.4 } }] },
+  town: { W: 24, H: 28, outdoor: true, doors: [{ x: 0, y: 10, to: 'farm', spawn: { x: 45.6, y: 5.6 } }] },
   house: { W: 12, H: 9, doors: [{ x: 5, y: 8, to: 'farm', spawn: { x: 5.5, y: 5.9 } }] },
   coop: { W: 10, H: 7, doors: [{ x: 4, y: 6, to: 'farm', spawn: { x: 24.5, y: 8.9 } }] },
   foret: { W: 30, H: 18, outdoor: true, doors: [{ x: 29, y: 9, to: 'farm', spawn: { x: 1.6, y: 10.6 } }] },
   wild: { W: 30, H: 16, outdoor: true, rooms: { w: 10, h: 8 }, doors: [{ x: 0, y: 4, to: 'farm', spawn: { x: 46.4, y: 18.5 } }] },
   grange: { W: 22, H: 11, dark: true, doors: [{ x: 5, y: 6, to: 'farm', spawn: { x: 12.5, y: 5.6 } }] },
-  franck: { W: 9, H: 7, doors: [{ x: 4, y: 6, to: 'farm', spawn: { x: 27.5, y: 32.6 } }] },
-  luna: { W: 9, H: 7, doors: [{ x: 4, y: 6, to: 'farm', spawn: { x: 20.5, y: 32.6 } }] },
+  franck: { W: 9, H: 7, doors: [{ x: 4, y: 6, to: 'quartier', spawn: { x: 13.5, y: 7.8 } }] },
+  luna: { W: 9, H: 7, doors: [{ x: 4, y: 6, to: 'quartier', spawn: { x: 6.5, y: 7.8 } }] },
+  // Quartier résidentiel, au sud de la ferme : les maisons des habitants.
+  quartier: { W: 30, H: 16, outdoor: true, doors: [{ x: 22, y: 0, to: 'farm', spawn: { x: 16.5, y: 34.4 } }, { x: 6, y: 6, to: 'luna', spawn: { x: 4.5, y: 5.4 } }, { x: 13, y: 6, to: 'franck', spawn: { x: 4.5, y: 5.4 } }] },
   pigsty: { W: 10, H: 7, doors: [{ x: 4, y: 6, to: 'farm', spawn: { x: 20.5, y: 8.9 } }] },
   barn: { W: 12, H: 8, doors: [{ x: 5, y: 7, to: 'farm', spawn: { x: 28.5, y: 8.9 } }] }
 };

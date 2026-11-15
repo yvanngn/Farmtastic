@@ -94,10 +94,10 @@ export function placeNPC(n, S, OUT_FROM, OUT_TO) {
   else if (!n.home) { n.scene = out ? (n.dayScene || 'town') : 'none'; Object.assign(n, n.day); }
   else if (n.shy) { // sort seulement en fin de journée, une fois qu'il a assez confiance
     const r = S.social[n.id], goes = r && hearts(r) >= n.shy.minHearts && S.minute >= n.shy.from && S.minute < n.shy.to;
-    n.scene = goes ? 'farm' : n.home; Object.assign(n, goes ? n.day : n.inside);
+    n.scene = goes ? (n.outScene || 'farm') : n.home; Object.assign(n, goes ? n.day : n.inside);
     if (goes && r && !r.wentOut) { r.wentOut = true; n.justOut = true; }
   }
-  else { n.scene = out ? 'farm' : n.home; Object.assign(n, out ? n.day : n.inside); }
+  else { n.scene = out ? (n.outScene || 'farm') : n.home; Object.assign(n, out ? n.day : n.inside); }
   // se tourne vers le joueur s'il est tout près
   if (S.scene === n.scene && Math.hypot(S.x - n.x, S.y - n.y) < 2.5) n.dir = Math.abs(S.x - n.x) > Math.abs(S.y - n.y) ? (S.x < n.x ? 2 : 3) : (S.y < n.y ? 1 : 0);
   else n.dir = 0;

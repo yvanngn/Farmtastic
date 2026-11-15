@@ -9,6 +9,11 @@ const CH = [
   { k: 'sfx', label: 'Bruitages', on: '🔔', off: '🔕' }
 ];
 
+// Zoom : nombre de cases visibles sur le petit côté de l'écran (mémorisé sur cet appareil).
+export const ZOOMS = { 9: 'Proche', 12: 'Normal', 15: 'Loin' };
+export const ZOOM_DEFAULT = 12;   // un peu plus large qu'avant (10)
+export function getZoom() { try { const v = +localStorage.getItem('ferme_zoom'); return ZOOMS[v] ? v : ZOOM_DEFAULT; } catch { return ZOOM_DEFAULT; } }
+function setZoom(v) { try { localStorage.setItem('ferme_zoom', v); } catch {} window.dispatchEvent(new Event('ferme-zoom')); }
 export function createSettingsPanel(audio) {
   const body = $('#setBody');
   function render() {
@@ -23,6 +28,7 @@ export function createSettingsPanel(audio) {
       <div class="ecran"><b>📱 Écran</b>
         <div class="row">${Object.entries(ORIENTS).map(([k, v]) => `<button data-orient="${k}" class="${getOrient() === k ? 'on' : ''}">${v}</button>`).join('')}</div>
         <div class="row"><button data-fs="1" class="primaire">⛶ Plein écran</button>${document.fullscreenElement ? '<button data-fs="0">Quitter</button>' : ''}</div>
+        <div class="row"><span>🔍 Zoom</span>${Object.entries(ZOOMS).map(([k, v]) => `<button data-zoom="${k}" class="${getZoom() === +k ? 'on' : ''}">${v}</button>`).join('')}</div>
         <small>Le verrouillage de l'orientation marche en plein écran sur Android. Sur iPhone : Partager → « Sur l'écran d'accueil ».</small></div>`;
   }
   body.addEventListener('input', e => {
@@ -35,6 +41,7 @@ export function createSettingsPanel(audio) {
   body.addEventListener('click', async e => {
     const d = e.target.dataset;
     if (d.orient) { setOrient(d.orient); audio.play('ui'); if (document.fullscreenElement) toast(await goFullscreen(d.orient)); render(); return; }
+    if (d.zoom) { setZoom(+d.zoom); audio.play('ui'); render(); return; }
     if (d.fs === '1') { toast(await goFullscreen()); render(); return; }
     if (d.fs === '0') { exitFullscreen(); setTimeout(render, 200); return; }
     const k = d.mute; if (!k) return;

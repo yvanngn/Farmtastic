@@ -63,7 +63,7 @@ test('ancienne sauvegarde : outils gardés, pas d’accueil', () => {
 // ---- 15/11 midi : maire, chiens, forêt, emplacements de ferme ----
 import { ensureShrooms, pickShroom } from '../src/systems/foret.js';
 import { MUSHROOMS, ITEMS } from '../src/data/items.js';
-import { LUNA, FRANCK } from '../src/data/npcs.js';
+
 import { buyAnimal, build, canBuyAnimal } from '../src/systems/economy.js';
 import { FARM_LOTS } from '../src/data/buildings.js';
 import { applyPresence } from '../src/net/multiplayer.js';
@@ -100,7 +100,7 @@ test('forêt : des habitants s’y promènent à certaines heures', () => {
   placeNPC(g.npcs.luna, S, OUT_FROM, OUT_TO);
   assert.equal(g.npcs.luna.scene, 'foret');
   S.day = 3; placeNPC(g.npcs.luna, S, OUT_FROM, OUT_TO);
-  assert.equal(g.npcs.luna.scene, 'farm', 'pas tous les jours');
+  assert.equal(g.npcs.luna.scene, 'quartier', 'pas tous les jours');
   S.minute = 400; S.day = 2; placeNPC(g.npcs.franck, S, OUT_FROM, OUT_TO);
   assert.equal(g.npcs.franck.scene, 'franck', 'Franck, trop timide au début');
   for (const n of [LUNA, FRANCK, CHEF]) for (const w of n.walks) assert.equal(LAYOUTS.foret[Math.floor(w.at.y)][Math.floor(w.at.x)], '.');
@@ -183,4 +183,27 @@ test('vieilles sauvegardes : cabane et grange déjà debout', () => {
   const s = migrate({ name: 'x', tools: { axe: 1 }, intro: { met: true } });
   assert.equal(isRepaired(s, 'house'), true); assert.equal(isRepaired(s, 'grange'), true);
   assert.equal(s.intro.myst, 'done');
+});
+
+// ---- 15/11 soir (5) : quartier résidentiel au sud, centre-ville à droite ----
+import { SCENES } from '../src/world/scenes.js';
+import { LUNA, FRANCK } from '../src/data/npcs.js';
+
+
+test('quartier au sud de la ferme : Luna et Franck y habitent', () => {
+  const { g, S } = start({ minute: 600 });
+  assert.equal(act(g, 16, 35), 'door'); assert.equal(S.scene, 'quartier');
+  assert.ok(LAY.quartier.some(r => r.includes('X')));
+  registerNPC(g, LUNA); placeNPC(g.npcs.luna, S, OUT_FROM, OUT_TO);
+  assert.equal(g.npcs.luna.scene, 'quartier', 'Luna sort dans le quartier');
+  S.x = 6.5; S.y = 7.6; assert.equal(act(g, 6, 6), 'door'); assert.equal(S.scene, 'luna');
+  assert.equal(SCENES.franck.doors[0].to, 'quartier');
+  assert.equal(SCENES.farm.doors.some(d => d.to === 'luna' || d.to === 'franck'), false, 'plus de maisons d’habitants sur la ferme');
+});
+
+test('le centre-ville est à droite : la route de l’est y mène', () => {
+  const { g, S } = start();
+  for (let x = 2; x <= 46; x++) assert.equal(ground(x, 5), 'path');
+  assert.equal(act(g, 47, 5), 'door'); assert.equal(S.scene, 'town');
+  assert.equal(SCENES.town.doors[0].x, 0, 'on arrive en ville par l’ouest');
 });

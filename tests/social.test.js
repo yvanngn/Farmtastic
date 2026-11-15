@@ -37,7 +37,7 @@ import { act } from '../src/systems/actions.js';
 import { isSolid } from '../src/world/map.js';
 
 function withLuna(state = {}) {
-  const t = makeGame({ state: { minute: 600, ...state } });
+  const t = makeGame({ state: { minute: 600, scene: 'quartier', ...state } });
   registerNPC(t.g, LUNA); placeNPC(t.g.npcs.luna, t.S, OUT_FROM, OUT_TO);
   const said = []; t.g.bus.on('say', d => said.push(...d.lines));
   return { ...t, said };
@@ -100,13 +100,13 @@ test('Luna : parler au bouton d’action, offrir l’objet tenu (un cadeau par j
   assert.equal(S.inv.bread, 1);
 });
 
-test('Luna : dehors le jour devant sa maison, chez elle le soir ; sa maison est solide', () => {
+test('Luna : dehors le jour devant sa maison (quartier), chez elle le soir ; sa maison est solide', () => {
   const { g, S } = withLuna();
-  assert.equal(g.npcs.luna.scene, 'farm');
+  assert.equal(g.npcs.luna.scene, 'quartier');
   S.minute = 1200; placeNPC(g.npcs.luna, S, OUT_FROM, OUT_TO);
   assert.equal(g.npcs.luna.scene, 'luna');
-  assert.equal(isSolid(S, 19, 30), true);
-  S.minute = 600; assert.equal(act(g, 20, 31), 'door');
+  assert.equal(isSolid(S, 5, 5), true);
+  S.minute = 600; assert.equal(act(g, 6, 6), 'door');
   assert.equal(S.scene, 'luna');
 });
 
@@ -120,7 +120,7 @@ test('Franck reste chez lui ; à 2 cœurs il sort s’asseoir devant chez lui en
   placeNPC(n, S, OUT_FROM, OUT_TO);
   assert.equal(n.scene, 'franck', 'timide : il reste à l’intérieur');
   S.social.franck.points = 2 * POINTS_PER_HEART; placeNPC(n, S, OUT_FROM, OUT_TO);
-  assert.equal(n.scene, 'farm');
+  assert.equal(n.scene, 'quartier');
   assert.equal(n.justOut, true, 'première sortie annoncée');
   S.minute = 700; placeNPC(n, S, OUT_FROM, OUT_TO);
   assert.equal(n.scene, 'franck', 'pas en pleine journée');
@@ -138,9 +138,9 @@ test('Franck ne parle jamais de son traumatisme ; la quête avance avec la confi
 });
 
 test('maison de Franck à côté de celle de Luna, on y entre par sa porte', () => {
-  const { g, S } = makeGame({ state: { minute: 600 } });
-  assert.equal(isSolid(S, 26, 30), true);
-  assert.equal(act(g, 27, 31), 'door');
+  const { g, S } = makeGame({ state: { minute: 600, scene: 'quartier' } });
+  assert.equal(isSolid(S, 12, 5), true);
+  assert.equal(act(g, 13, 6), 'door');
   assert.equal(S.scene, 'franck');
 });
 

@@ -1,3 +1,4 @@
+import { getZoom } from '../ui/settingsPanel.js';
 import { toolTier } from '../systems/skills.js';
 import { MIN_PICK } from '../data/tools.js';
 // Rendu : caméra, culling, tri en profondeur, eau animée, lumière dynamique,
@@ -58,7 +59,7 @@ function drawRainbow(c, fx, fy, minute, R) {
 import { buildGround, drawWaterShimmer, LIGHTS, drawSoil } from './ground.js';
 import { drawChar, drawTree, drawRock, drawCrop, drawAnimal, drawSlime, drawSwing, treeSprite, KIND_SPRITE } from './sprites.js';
 import { buildInterior } from './interiors.js';
-import { buildTown, TOWN_LIGHTS } from './town.js';
+import { buildQuartier, buildTown, TOWN_LIGHTS } from './town.js';
 import { PICKUPS, isBroken } from '../systems/grange.js';
 import { buildWild, drawMob, drawZRock, drawShroom } from './wild.js';
 import { MUSHROOMS } from '../data/items.js';
@@ -113,8 +114,8 @@ export function createRenderer(cv, g) {
     dpr = Math.min(window.devicePixelRatio || 1, 3);
     cv.width = Math.round(innerWidth * dpr); cv.height = Math.round(innerHeight * dpr);
     cv.style.width = innerWidth + 'px'; cv.style.height = innerHeight + 'px';
-    // ~10 tuiles sur le plus petit côté, quelle que soit la taille de l'écran
-    scale = Math.max(2, Math.min(8, Math.round(Math.min(cv.width, cv.height) / (T * 10))));
+    // ~12 tuiles sur le plus petit côté (réglable : Proche 9 / Normal 12 / Loin 15)
+    scale = Math.max(2, Math.min(8, Math.round(Math.min(cv.width, cv.height) / (T * getZoom()))));
     ctx.imageSmoothingEnabled = false;
     vignette = document.createElement('canvas'); vignette.width = cv.width; vignette.height = cv.height;
     const v = vignette.getContext('2d'), gr = v.createRadialGradient(cv.width / 2, cv.height / 2, Math.min(cv.width, cv.height) * .35, cv.width / 2, cv.height / 2, Math.hypot(cv.width, cv.height) / 2);
@@ -186,7 +187,7 @@ export function createRenderer(cv, g) {
     const scene = S.scene || 'farm', outside = scene === 'farm', sky = outside || !!SCENES[scene].outdoor, SC = SCENES[scene];
     if (scene === 'house' && cacheScene === 'house' && cache !== interiors['house' + !!S.workbench + (S.bed !== false)]) cacheScene = ''; // établi réparé
     if (cacheSeason !== S.season || cacheScene !== scene) {
-      cache = outside ? farmGround() : scene === 'wild' ? (interiors['wild' + S.season] ||= buildWild(S.season)) : scene === 'foret' ? (interiors['foret' + S.season] ||= buildWild(S.season, 'foret')) : scene === 'town' ? (interiors['town' + S.season] ||= buildTown(S.season)) : (scene === 'house' ? (interiors['house' + !!S.workbench] ||= buildInterior(scene, S)) : (interiors[scene] ||= buildInterior(scene, S)));
+      cache = outside ? farmGround() : scene === 'wild' ? (interiors['wild' + S.season] ||= buildWild(S.season)) : scene === 'foret' ? (interiors['foret' + S.season] ||= buildWild(S.season, 'foret')) : scene === 'town' ? (interiors['town' + S.season] ||= buildTown(S.season)) : scene === 'quartier' ? (interiors['quartier' + S.season] ||= buildQuartier(S.season)) : (scene === 'house' ? (interiors['house' + !!S.workbench + (S.bed !== false)] ||= buildInterior(scene, S)) : (interiors[scene] ||= buildInterior(scene, S)));
       if (cacheSeason !== S.season) initWeather();
       cacheSeason = S.season; cacheScene = scene;
     }
@@ -227,9 +228,9 @@ export function createRenderer(cv, g) {
       for (const k in (S.wild && S.wild.rocks) || {}) { const [x, y] = k.split(',').map(Number), o = S.wild.rocks[k]; list.push({ z: y + .9, d: () => drawZRock(ctx, x, y, o) }); }
       for (const s2 of g.shots || []) list.push({ z: s2.y, d: () => { ctx.fillStyle = '#3a2020'; ctx.fillRect(Math.round(s2.x * T) - 2, Math.round(s2.y * T) - 2, 4, 4); ctx.fillStyle = '#e0a060'; ctx.fillRect(Math.round(s2.x * T) - 1, Math.round(s2.y * T) - 1, 2, 2); } });
     }
-    if (outside) { // volets de Franck : fermés tant qu'il n'a pas 3 cœurs
-      const r = S.social && S.social.franck, open = r && r.points >= 750, wx = 25 * T + 6, wy = 29 * T + 12;
-      list.push({ z: 31.95, d: () => {
+    if (scene === 'quartier') { // volets de Franck : fermés tant qu'il n'a pas 3 cœurs
+      const r = S.social && S.social.franck, open = r && r.points >= 750, wx = 11 * T + 6, wy = 4 * T + 12;
+      list.push({ z: 6.95, d: () => {
         if (open) { ctx.fillStyle = '#ffd98a'; ctx.fillRect(wx + 2, wy + 2, 10, 8); ctx.fillStyle = '#3e5a7a'; ctx.fillRect(wx - 5, wy, 5, 12); ctx.fillRect(wx + 14, wy, 5, 12); }
         else { ctx.fillStyle = '#3e5a7a'; ctx.fillRect(wx, wy, 14, 12); ctx.fillStyle = '#2a4058'; for (let k = 2; k < 12; k += 3) ctx.fillRect(wx, wy + k, 14, 1); ctx.fillRect(wx + 7, wy, 1, 12); }
       } });
@@ -385,7 +386,7 @@ export function createRenderer(cv, g) {
     };
   }
 
-  addEventListener('resize', resize);
+  addEventListener('resize', resize); addEventListener('ferme-zoom', resize);
   resize();
   return { render, resize, initWeather, updateParticles: update, screenToTile, farmGround };
 }
