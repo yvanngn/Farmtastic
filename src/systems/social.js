@@ -106,20 +106,20 @@ function walkTo(n, t, st = 0.06) {
   n.walking = true; n.x += dx / d * st; n.y += dy / d * st; return false;
 }
 const faceP = (n, S) => { if (S.scene === n.scene && Math.hypot(S.x - n.x, S.y - n.y) < 3) n.dir = Math.abs(S.x - n.x) > Math.abs(S.y - n.y) ? (S.x < n.x ? 2 : 3) : (S.y < n.y ? 1 : 0); else n.dir = 0; };
-// Myst : à l'arrivée du joueur, il somnole devant la cabane ; il se réveille quand on approche, accueille,
-// montre le plan, puis redescend chez lui (au fond du quartier). Ensuite, il ne sort que le soir.
+// Myst : il attend le joueur sur le quai ; après les premières pensées du héros, il vient lui parler (plan,
+// tente, liste des tâches, outil pour couper les arbres), puis redescend chez lui. Ensuite, il ne sort que le soir.
 export const MYST_WAKE = 3.5;
 export function placeMyst(n, S) {
   const st = S.intro && S.intro.myst, R = n.route;
   n.sleeping = false;
-  if (st === 'sleep' || st === 'talk') {
-    n.scene = 'farm'; Object.assign(n, n.sleepAt); n.walking = false; n.leg = R.length - 1;
-    if (st === 'sleep') { n.sleeping = true; n.dir = 0; if ((S.scene || 'farm') === 'farm' && Math.hypot(S.x - n.x, S.y - n.y) < MYST_WAKE) S.intro.myst = 'talk'; }
-    else faceP(n, S);
+  if (st === 'sleep' || st === 'wait' || st === 'talk') {   // il attend le joueur sur le quai
+    n.scene = 'farm'; Object.assign(n, n.waitAt); n.walking = false; n.leg = R.length - 1;
+    if (st !== 'talk' && S.intro.arrived && (S.scene || 'farm') === 'farm') S.intro.myst = 'talk';
+    faceP(n, S);
     return;
   }
   if (st === 'leaving') {
-    if (n.scene !== 'farm' || !Number.isFinite(n.x)) { n.scene = 'farm'; Object.assign(n, n.sleepAt); n.leg = R.length - 1; }
+    if (n.scene !== 'farm' || !Number.isFinite(n.x)) { n.scene = 'farm'; Object.assign(n, n.waitAt); n.leg = R.length - 1; }
     if (n.leg == null) n.leg = R.length - 1;
     if (walkTo(n, R[Math.max(0, n.leg)])) { if (n.leg > 0) n.leg--; else { S.intro.myst = 'done'; n.scene = 'none'; } }
     return;

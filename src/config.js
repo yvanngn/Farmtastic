@@ -15,7 +15,8 @@ export const CFG = {
   NIGHT_FROM: 1200,          // monstres dès 20h
   INV_SLOTS: 12,             // places du sac au départ
   INV_MAX: 36,               // places max après agrandissements
-  ACCES_TEST: true,          // TEST : portail des Caverne sombre ouvert dès le début + épée posée devant (mettre false pour le jeu normal)
+  CAVE_OPEN: false,          // la Caverne sombre est fermée pour l'instant (pas d'épée non plus)
+  ACCES_TEST: false,          // TEST : portail des Caverne sombre ouvert dès le début + épée posée devant (mettre false pour le jeu normal)
   VERSION: 1,
   LSKEY: 'ferme_save_v1'
 };

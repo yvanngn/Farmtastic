@@ -22,13 +22,13 @@ test('nouvelle partie : aucun outil, arrivée en train, cabane et grange délabr
   assert.equal(hasTool(S, 'hand'), true);
   assert.equal(hasTool(S, 'axe'), false);
 });
-test('sans hache : on ne coupe pas, le message parle de la grange', () => {
+test('sans hache : on ne coupe pas, et pas d’indice précis sur l’emplacement', () => {
   const { g, S, toasts } = start({ sel: 'hand' });
   S.objs['30,20'] = { t: 'tree', k: 'oak', g: 3, hp: 3 };
   assert.equal(smartTool(g, 30, 20), 'hand');
   S.x = 30.5; S.y = 21.5; S.dir = 1;
   act(g, 30, 20);
-  assert.match(toasts().at(-1), /hache/);
+  assert.match(toasts().at(-1), /outil pour couper/);
   assert.equal(canUpgrade(S, 'axe').why, 'missing');
 });
 
@@ -154,17 +154,19 @@ test('grange délabrée : fermée jusqu’à sa réparation', () => {
   assert.equal(act(g, 12, 4), 'door');
 });
 
-test('Myst somnole devant la cabane, se réveille quand on approche, accueille, montre le plan et redescend au quartier', () => {
+test('Myst attend sur le quai, vient parler après les pensées du héros (plan, tente, tâches, outil), puis redescend au quartier', () => {
   const { g, S } = start({ ...ruined0(), minute: 600, x: 2, y: 20.6 });
-  S.intro.myst = 'sleep';
+  S.intro.myst = 'wait'; S.intro.arrived = false;
   registerNPC(g, MYST); const n = g.npcs.myst;
   placeNPC(n, S, OUT_FROM, OUT_TO);
-  assert.equal(n.scene, 'farm'); assert.equal(n.sleeping, true, 'il dort devant la cabane');
-  S.x = 7.5; S.y = 8.5; placeNPC(n, S, OUT_FROM, OUT_TO);
-  assert.equal(S.intro.myst, 'talk', 'il nous aperçoit');
+  assert.equal(n.scene, 'farm'); assert.equal(S.intro.myst, 'wait', 'il attend que le héros ait fini de penser');
+  S.intro.arrived = true; placeNPC(n, S, OUT_FROM, OUT_TO);
+  assert.equal(S.intro.myst, 'talk');
   const said = [], maps = []; g.bus.on('say', d => said.push(d)); g.bus.on('showMap', () => maps.push(1));
   assert.equal(mystTick(g), true); assert.equal(mystTick(g), false, 'une seule fois');
-  assert.ok(said[0].lines.some(l => /quartier/.test(l)), 'il dit qu’il habite au quartier');
+  const all = said[0].lines.join(' ');
+  for (const re of [/plan/, /Déployer/, /tâches/, /outil/, /quartier/]) assert.match(all, re);
+  assert.doesNotMatch(all, /sud.*hache|hache.*sud/, 'pas d’indice précis sur la hache');
   said[0].onEnd(); assert.equal(maps.length, 1, 'il montre le plan');
   for (let i = 0; i < 3000 && S.intro.myst === 'leaving'; i++) placeNPC(n, S, OUT_FROM, OUT_TO);
   assert.equal(S.intro.myst, 'done'); assert.equal(n.scene, 'none');

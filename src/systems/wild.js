@@ -10,7 +10,7 @@ import { CFG } from '../config.js';
 import { MINING_GAIN, energyCost } from '../data/tools.js';
 
 export const roomOf = (x, y) => (Math.floor(y / ROOM_H) * ROOMS_X + Math.floor(x / ROOM_W));
-export const isOpen = S => !!S.wildOpen || CFG.ACCES_TEST;
+export const isOpen = S => CFG.CAVE_OPEN && (!!S.wildOpen || CFG.ACCES_TEST);
 
 // TEST : une épée posée devant le portail, à ramasser dès le début.
 export const TEST_SWORD = { x: 45, y: 18 };
@@ -26,7 +26,7 @@ export function pickTestSword(g, x, y) {
 // Ouverture de la zone : le chef confie la clé du vieux portail et une épée.
 export function openWild(g) {
   const S = g.S;
-  if (S.wildOpen) return false;
+  if (S.wildOpen || !CFG.CAVE_OPEN) return false;   // caverne fermée pour l'instant
   S.wildOpen = true;
   S.tools = { ...S.tools, sword: Math.max(1, S.tools.sword || 0) };
   g.bus.emit('sfx', 'levelup');

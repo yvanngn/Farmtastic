@@ -140,18 +140,20 @@ export const MYST = {
   look: { body: 'h', bottom: 'pant', skin: '#e2cfc0', hair: 0, hairC: '#1c181c', shirt: '#1d1b22', pants: '#141218', tall: true, coat: true },
   home: null, mystic: true,
   // trajet du quartier jusqu'à la cabane : du portail sud de la ferme, on remonte le grand chemin
-  route: [{ x: 16.5, y: 34.4 }, { x: 16.5, y: 5.6 }, { x: 7.5, y: 5.6 }],
+  route: [{ x: 16.5, y: 34.4 }, { x: 16.5, y: 20.6 }, { x: 3.6, y: 20.6 }],   // de la gare au quartier par le grand chemin
   outScene: 'quartier', night: { from: 1140, to: 1380, at: { x: 33.5, y: 6.6 } },   // sort le soir devant chez lui (💡 19h-23h)
   traits: ['Grand et mince', 'Long manteau noir', 'Sort le soir', 'Parle peu, écoute tout', 'Mis de côté par le village'],
   taste: { adore: [], aime: ['colchique', 'lavande'], naime: ['slime'], deteste: [] },   // 💡 fleurs calmes du soir
-  // Accueil : il somnole devant la cabane à l'arrivée du joueur, se réveille, l'accueille et lui montre le plan.
-  sleepAt: { x: 7.5, y: 6.5 },
+  // Accueil : il attend sur le quai de la gare, vient parler au joueur après ses premières pensées,
+  // explique le plan, la tente (sac) et la liste des tâches, parle d'un outil pour couper les arbres, puis repart.
+  waitAt: { x: 3.6, y: 19.6 },
   arrival: [
-    "Mmh… ? Oh. Je somnolais. Il fait bon, devant cette cabane.",
-    "Tu dois être la personne de l'annonce. Bienvenue. Moi, c'est Myst.",
+    "Bonjour. Tu dois être la personne de l'annonce. Moi, c'est Myst.",
     "Personne n'habite ici depuis longtemps. Au village, ils disent que l'endroit est hanté. Moi, je n'y crois pas trop.",
-    "Tiens, je te montre le plan. Ici, ta ferme. Le chemin du sud descend au quartier résidentiel : c'est là que j'habite, tout au fond.",
-    "À l'est, la route mène au centre-ville. À l'ouest, la gare, et la forêt un peu plus haut.",
+    "Tiens, voici le plan. Tu le retrouveras avec le bouton 🗺️, en haut à droite. Le quartier résidentiel est au sud : c'est là que j'habite, tout au fond.",
+    "Ta cabane ne tiendra pas la nuit. Ouvre ton sac 🎒, choisis la tente et appuie sur « Déployer », juste à côté de la cabane.",
+    "Si tu te demandes quoi faire, ta liste des tâches 📜, en haut à droite, te le dira.",
+    "Pour réparer la cabane, il te faudra du bois. On peut couper les arbres… J'ai cru voir un outil pour ça, dans les environs.",
     "Ça leur fera du bien, qu'on bouscule un peu les choses. … Bon. À plus tard."
   ],
   story: [

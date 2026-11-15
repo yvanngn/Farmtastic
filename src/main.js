@@ -189,7 +189,7 @@ async function begin() {
   for (const id in g.npcs) placeNPC(g.npcs[id], g.S, OUT_FROM, OUT_TO);
   if (!g.S.intro.arrived) { // arrivée en train : le train repart pendant que le héros repense à l'annonce
     g.trainT = performance.now();
-    setTimeout(() => g.bus.emit('say', { name: g.S.name, color: '#ffdf8a', lines: INTRO_LINES, onEnd: () => { g.S.intro.arrived = true; toast('🏚️ Ta cabane est au nord, au bout du chemin.'); } }), 2600);
+    setTimeout(() => g.bus.emit('say', { name: g.S.name, color: '#ffdf8a', lines: INTRO_LINES, onEnd: () => { g.S.intro.arrived = true; } }), 2600);
   }
   started = true; custom.close(); hud.show(); renderer.initWeather(); ensureOrders(g);
   if (net.sb) { playerMarket = createPlayerMarket(net.sb, net.uid, g); await upsertProfile(net.sb, net.uid, g.S); if (game && game.mode === 'multi') { mp = createMultiplayer({ sb: net.sb, uid: net.uid, g, world: game.id }); mp.join(); } }

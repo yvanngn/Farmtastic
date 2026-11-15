@@ -3,7 +3,7 @@ import { CFG } from '../config.js';
 // État sauvegardé d'un joueur. Tout ce qui doit persister vit ici, rien d'autre.
 export function defaultState() {
   return {
-    v: CFG.VERSION, name: 'Fermier',
+    v: CFG.VERSION, name: 'Claude Gémini',   // nom par défaut (modifiable à la création)
     look: { body: 'h', bottom: 'pant', skin: '#f6d2b0', hair: 0, hairC: '#7a4a22', shirt: '#d04a3a', pants: '#3a4a8a' },
     money: 500, energy: 100, maxE: 100, hp: 100, maxHp: 100,
     day: 1, season: 0, year: 1, minute: CFG.DAY_START, weather: 'sun',
@@ -18,7 +18,7 @@ export function defaultState() {
     village: { done: [], progress: 0 }, festival: null, caravan: { tokens: 0, unlocked: [] },
     skills: { mining: { xp: 0 } },
     tools: {},                       // aucun outil au départ : ils sont dans la grange
-    intro: { met: true, myst: 'sleep', arrived: false },   // arrivée en train ; Myst somnole devant la cabane et accueille le joueur
+    intro: { met: true, myst: 'wait', arrived: false },   // arrivée en train ; Myst attend sur le quai et accueille le joueur
     repair: { house: { wood: 0, stone: 0 }, grange: { wood: 0, stone: 0 } },   // cabane et grange délabrées au début
     tilled: {},
     farmLot: 0, game: null,          // partie en cours { id, code, mode: 'solo'|'multi' }                      // emplacement de ferme de ce joueur (multijoueur : un par joueur)

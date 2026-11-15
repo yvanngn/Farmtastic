@@ -26,7 +26,7 @@ export function createCustomizer({ getLook, getName, onStart, onContinue, onBack
   };
   $('#rotL').onclick = () => { dir = ROT_L[dir]; };
   $('#rotR').onclick = () => { dir = ROT_R[dir]; };
-  $('#bStart').onclick = () => onStart(($('#iName').value.trim() || 'Fermier').slice(0, 14), inGame);
+  $('#bStart').onclick = () => onStart(($('#iName').value.trim() || 'Claude Gémini').slice(0, 14), inGame);
   $('#bContinue').onclick = () => onContinue();
   $('#bBack').onclick = () => onBack && onBack();
 

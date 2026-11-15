@@ -1,3 +1,4 @@
+import { CFG } from '../src/config.js';
 // Lot 10 : Terres sauvages (zone de combat façon Zelda Game Boy).
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
@@ -19,7 +20,8 @@ test('le vieux portail est fermé au début', () => {
   assert.equal(S.scene, 'farm');
 });
 
-test('le premier chantier fini (lampadaires) ouvre la zone et donne l’épée', () => {
+test('le premier chantier fini (lampadaires) ouvre la zone et donne l’épée (quand la caverne sera ouverte)', () => {
+  CFG.CAVE_OPEN = true;
   const { g, S } = makeGame({ state: { wildOpen: false, tools: { axe: 1 }, inv: { wood: PROJECTS[0].goal } } });
   village(S);
   S.market = { slots: [{ order: { id: 'a', kind: 'chantier', item: 'wood', qty: PROJECTS[0].goal, price: 1, bot: 'x' }, next: 0 }] };
@@ -29,6 +31,7 @@ test('le premier chantier fini (lampadaires) ouvre la zone et donne l’épée',
   assert.equal(openWild(g), false, 'une seule fois');
   assert.equal(act(g, GATE.x, GATE.y), 'door');
   assert.equal(S.scene, 'wild');
+  CFG.CAVE_OPEN = false;
 });
 
 test('chaque salle a ses monstres ; ils apparaissent en entrant dans la salle', () => {
@@ -91,7 +94,7 @@ test('K.O. dans la zone : retour à la ferme', () => {
 test('mode test : portail ouvert dès le début et épée posée devant', async () => {
   const { CFG } = await import('../src/config.js');
   const { pickTestSword, TEST_SWORD } = await import('../src/systems/wild.js');
-  CFG.ACCES_TEST = true;
+  CFG.ACCES_TEST = true; CFG.CAVE_OPEN = true;
   try {
     const { g, S } = makeGame({ state: { tools: {}, wildOpen: false, scene: 'farm' } });
     assert.equal(pickTestSword(g, TEST_SWORD.x, TEST_SWORD.y), true);
@@ -99,7 +102,7 @@ test('mode test : portail ouvert dès le début et épée posée devant', async 
     assert.equal(pickTestSword(g, TEST_SWORD.x, TEST_SWORD.y), false, 'une seule fois');
     assert.equal(act(g, 47, 18), 'door');
     assert.equal(S.scene, 'wild');
-  } finally { CFG.ACCES_TEST = false; }
+  } finally { CFG.ACCES_TEST = false; CFG.CAVE_OPEN = false; }
 });
 
 test('mort dans la mine : retour à la ferme, -10 %, et le clignotement s’arrête', async () => {
@@ -130,4 +133,11 @@ test('caverne sombre : 15 salles, sortie dès l’arrivée, escalier vers l’é
   while (q.length) { const [x, y] = q.pop(); for (const [a, b] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) { const nx = x + a, ny = y + b, k = nx + ',' + ny; if (!seen.has(k) && L[ny] && '.S'.includes(L[ny][nx] || 'T')) { seen.add(k); q.push([nx, ny]); } } }
   const rooms = new Set([...seen].map(k => { const [x, y] = k.split(',').map(Number); return roomOf(x, y); }));
   assert.equal(rooms.size, 15);
+});
+
+test('pour l’instant : caverne fermée, pas d’épée', async () => {
+  const { isOpen } = await import('../src/systems/wild.js');
+  const { g, S } = makeGame({ state: { wildOpen: true, tools: {} } });
+  assert.equal(isOpen(S), false);
+  assert.equal(openWild(g), false); assert.equal(S.tools.sword, undefined);
 });

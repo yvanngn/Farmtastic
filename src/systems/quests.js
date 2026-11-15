@@ -8,7 +8,7 @@ export const QUESTS = {
     steps: [
       { id: 'tente', t: 'Ouvrir le sac 🎒, choisir la tente et « Déployer » à côté de la cabane', done: S => !!S.tent || isRepaired(S, 'house') },
       { id: 'nuit', t: 'Dès 18h il fait nuit : dormir sous la tente (sinon pas d’énergie le lendemain ; à 0 d’énergie, clinique et 10 % de frais)', done: S => !!S.quests?.debut?.dormi || isRepaired(S, 'house') },
-      { id: 'outils', t: 'Trouver la pioche (contre la grange) et la hache (parmi les arbres, au sud)', done: S => !!(S.tools?.pick && S.tools?.axe) },
+      { id: 'outils', t: 'Trouver la pioche (contre la grange) et un outil pour couper les arbres', done: S => !!(S.tools?.pick && S.tools?.axe) },
       { id: 'feu', t: 'Faire un feu de camp (🔥 Recettes : 5 bois + 2 cailloux)', done: S => (S.fires || []).length > 0 || (S.inv?.campfire || 0) > 0 || isRepaired(S, 'house') },
       { id: 'cabane', t: 'Rafistoler la cabane : 100 bois et 50 pierres', done: S => isRepaired(S, 'house') }
     ]
