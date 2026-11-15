@@ -109,7 +109,7 @@ function act0(g, tx, ty) {
     return t === 'B' ? (sleep(g) ? 'sleep' : 'none') : 'none';
   }
   if (BUILDINGS[sc]) return tileAt(sc, tx, ty) === 'H' ? (feedAll(g, sc) ? 'feedAll' : 'none') : 'none';
-  if (isBin(tx, ty)) { sellAll(g); return 'sell'; }
+  if (isBin(tx, ty)) { g.bus.emit('open', 'sell'); return 'sell'; }
   if (S.objs[key(tx, ty)]) return hitObject(g, tx, ty) ? 'hit' : 'none';
   const a = findAnimalAt(S, tx, ty);
   if (a) return interactAnimal(g, a);

@@ -29,6 +29,26 @@ export function buyStack(g) {
 }
 export { STACKS };
 
+// Bac de vente : on choisit quoi vendre et combien. Les ventes sont notées (les 30 dernières) pour savoir ce qu'on a vendu.
+export const sellable = id => !!ITEMS[id] && !ITEMS[id].keep;
+export function sellItems(g, picks) {
+  const S = g.S, sold = [];
+  let gain = 0;
+  for (const [id, want] of Object.entries(picks)) {
+    const n = Math.min(Math.floor(want) || 0, S.inv[id] || 0);
+    if (n <= 0 || !sellable(id)) continue;
+    const v = ITEMS[id].p * n; gain += v;
+    S.inv[id] -= n; if (S.inv[id] <= 0) { delete S.inv[id]; if (S.sel === id) S.sel = 'hand'; }
+    sold.push({ id, n, v });
+  }
+  if (!sold.length) { g.bus.emit('sfx', 'denied'); g.bus.emit('toast', 'Rien de choisi à vendre'); return 0; }
+  S.money += gain;
+  S.saleLog = [...sold.map(x => ({ ...x, day: S.day, season: S.season, year: S.year })), ...(S.saleLog || [])].slice(0, 30);
+  g.bus.emit('inv'); g.bus.emit('sfx', 'coin');
+  g.bus.emit('toast', `Vendu : ${sold.map(x => `${x.n} ${ITEMS[x.id].n}`).join(', ')} → ${gain} 💰`);
+  return gain;
+}
+
 // Vend tout sauf graines et objets marqués keep.
 export function sellAll(g) {
   const S = g.S;

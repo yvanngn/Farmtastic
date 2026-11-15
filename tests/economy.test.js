@@ -164,3 +164,16 @@ test('sac en cases : rangement à la main et tri automatique par type', async ()
   assert.equal(S.invOrder[0], 'wheat_seed');
   assert.equal(orderedCells(S)[0].id, 'wheat_seed');
 });
+
+test('bac de vente : on choisit quoi vendre et combien ; les ventes sont notées', async () => {
+  const { sellItems } = await import('../src/systems/economy.js');
+  const { g, S } = makeGame({ state: { money: 0, inv: { wood: 10, berry: 3, tent: 1 } } });
+  const gain = sellItems(g, { wood: 4, berry: 99, tent: 1 });
+  assert.equal(S.inv.wood, 6, 'le reste du bois est gardé');
+  assert.equal(S.inv.berry, undefined, 'pas plus que ce qu’on a');
+  assert.equal(S.inv.tent, 1, 'la tente ne se vend pas ici');
+  assert.equal(S.money, gain); assert.ok(gain > 0);
+  assert.deepEqual(S.saleLog.map(x => [x.id, x.n]), [['wood', 4], ['berry', 3]]);
+  const opened = []; g.bus.on('open', w => opened.push(w));
+  assert.equal(act(g, 8, 4), 'sell'); assert.deepEqual(opened, ['sell'], 'toucher le bac ouvre la fenêtre de vente');
+});
