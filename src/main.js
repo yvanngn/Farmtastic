@@ -171,7 +171,7 @@ function loop(now) {
     const wf = g.player.walkFrame; if (wf !== lastFrame && (wf === 1 || wf === 3)) audio.play('step'); lastFrame = wf;
     tickTime(g, dt * 1000);
     wander(g, dt);
-    updateWild(g, dt); // les monstres ne vivent que dans les Terres sauvages
+    updateWild(g, dt); // les monstres ne vivent que dans les Caverne sombre
     autoPickup(g);
     pickTestSword(g, Math.floor(g.S.x), Math.floor(g.S.y - .2)); pickFieldTool(g, Math.floor(g.S.x), Math.floor(g.S.y - .2)); mystTick(g); cookTick(g);
     ensureNature(g, g.S.scene || 'farm'); rainbowTick(g);

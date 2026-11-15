@@ -9,7 +9,7 @@ export const EXAMINE = {
     luna: 'La maison de Luna. Il y a encore des cartons derrière la fenêtre.',
     franck: 'Chez Franck. Les volets sont fermés, comme toujours.',
     franckOpen: 'Chez Franck. Les volets sont ouverts, pour une fois !',
-    gate: "Un vieux portail de pierre, couvert de mousse.",
+    gate: "L'entrée de la Caverne sombre. Il en sort un air froid… et des bruits visqueux.",
     coop: 'Le poulailler. On entend glousser là-dedans.',
     pigsty: 'La porcherie. Ça sent… la porcherie.',
     barn: 'La bergerie. Toute rouge, comme dans les livres.',

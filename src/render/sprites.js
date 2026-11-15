@@ -357,10 +357,29 @@ function slimeSprite(hit) {
     return outline(s, '#1d3a1e');
   });
 }
-export function drawSlime(c, e, now) {
-  const px = Math.round(e.x * T), py = Math.round(e.y * T), b = Math.round(Math.abs(Math.sin(now / 180 + e.x)) * 3);
-  groundShadow(c, px, py + 4, 6 - b / 2, 2);
-  c.globalAlpha = .92; c.drawImage(slimeSprite(e.hit > 0), px - 8, py - 9 - b); c.globalAlpha = 1;
+export function drawSlime(c, e, now) { drawJelly(c, Math.round(e.x * T), Math.round(e.y * T) + 4, '#56c45a', now, e.x, e.hit > 0, 180); }
+
+// Slime : goutte de gelée à fond plat qui s'écrase et s'étire en sautillant, contour sombre,
+// cœur translucide, gros reflet brillant, deux yeux et une petite bouche.
+export function drawJelly(c, px, py, col, now, seed, hit, speed = 180) {
+  const ph = Math.sin(now / speed + seed * 3), up = Math.max(0, ph) * 4 | 0;   // saut
+  const sq = ph < 0 ? -ph : 0, w = Math.round(7 + sq * 2), h = Math.round(9 - sq * 2 + (up ? 1 : 0));
+  const base = hit ? '#ffffff' : col, dark = shade(base, .55), mid = shade(base, .8), light = shade(base, 1.25);
+  groundShadow(c, px, py, w - up / 2, 2, .3);
+  const top = py - h - up, R = (x, y, ww, hh, cc) => { c.fillStyle = cc; c.fillRect(x, y, ww, hh); };
+  for (let i = 0; i <= h; i++) {   // dôme rangée par rangée
+    const t = (h - i) / h, hw = i === h ? w - 1 : Math.max(1, Math.round(w * Math.sqrt(1 - t * t * .92)));
+    R(px - hw - 1, top + i, 1, 1, dark); R(px + hw, top + i, 1, 1, dark);
+    R(px - hw, top + i, hw * 2, 1, i > h * .6 ? mid : base);
+  }
+  R(px - w + 1, top + h + 1, w * 2 - 2, 1, dark);                                // fond plat
+  R(px - w + 2, top - 1, (w - 2) * 2, 1, dark);                                    // sommet
+  c.globalAlpha = .35; R(px - 2, top + h - 4, 5, 3, light); c.globalAlpha = 1;     // cœur translucide
+  R(px - w + 2, top + 2, 2, 2, '#ffffff'); R(px - w + 4, top + 1, 2, 1, light);    // reflet
+  const ey = top + Math.round(h * .45);
+  R(px - 3, ey, 2, 3, '#1a1420'); R(px + 2, ey, 2, 3, '#1a1420'); R(px - 3, ey, 1, 1, '#fff'); R(px + 2, ey, 1, 1, '#fff');
+  R(px - 1, ey + 4, 3, 1, dark);                                                   // bouche
+  if (!up) { R(px + w - 3, top + h + 1, 1, 2, mid); }                              // petite goutte
 }
 
 /* ---------------- Lapin, mouton, chat ---------------- */

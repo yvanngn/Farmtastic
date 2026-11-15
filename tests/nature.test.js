@@ -11,7 +11,7 @@ let k = 7; const rnd = () => ((k = (k * 9301 + 49297) % 233280) / 233280);
 const game = (st = {}) => makeGame({ rnd, state: { inv: {}, season: 0, ...st } });
 
 test('fleurs de saison partout sauf en ville, à cueillir', () => {
-  for (const sc of ['farm', 'foret', 'wild']) {
+  for (const sc of ['farm', 'foret']) {   // pas de fleurs dans la caverne
     const { g, S } = game({ scene: sc });
     const N = ensureNature(g, sc), ids = FLOWERS[0].map(f => f.id);
     assert.ok(Object.keys(N.flowers).length > 0, sc);
@@ -54,4 +54,10 @@ test('arc-en-ciel les jours de pluie, avec un trésor à son pied', () => {
   const m = S.money; assert.ok(digTreasure(g, R.x, R.y)); assert.ok(S.money > m);
   assert.equal(rainbowVisible(S), false, 'une seule fois');
   S.weather = 'sun'; assert.equal(rollRainbow(g), null, 'pas sans pluie');
+});
+
+test('caverne : des filons, mais pas de fleurs', () => {
+  const { g } = game({ scene: 'wild' });
+  const N = ensureNature(g, 'wild');
+  assert.equal(Object.keys(N.flowers).length, 0);
 });

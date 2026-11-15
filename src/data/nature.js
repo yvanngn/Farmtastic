@@ -13,7 +13,7 @@ export const ROCK_HP = 4;
 export const NATURE = {
   farm: { flowers: 6, rocks: 4, rocksDay: 2, veins: 1, veinP: 0.35 },
   foret: { flowers: 8, rocks: 5, rocksDay: 2, veins: 2, veinP: 0.5 },
-  wild: { flowers: 3, rocks: 0, rocksDay: 0, veins: 3, veinP: 0.8 }
+  wild: { flowers: 0, rocks: 0, rocksDay: 0, veins: 6, veinP: 0.9 }   // pas de fleurs dans la caverne
 };
 export const P_RARE_FLOWER = 0.15, P_MID_FLOWER = 0.35;
 // Arc-en-ciel : certains jours de pluie, un trésor au pied de l'arc (sur la ferme).

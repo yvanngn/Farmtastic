@@ -122,20 +122,27 @@ LAYOUTS.quartier = (() => {
   for (const x of [0, 1, 2, 3, 9, 10, 16, 17, 18, 19, 20, 21, 23, 24, 25, 26, 27, 28, 29]) if (m[0][x] === 'g') m[0][x] = 'T';
   return m.map(r => r.join(''));
 })();
-// Terres sauvages : 3 × 2 salles bordées d'arbres (T) et de rochers (#), passages entre salles, sortie D.
+// Caverne sombre, étage 1 : 5 × 3 salles de 10 × 8 séparées par des parois (T), passages de 2 cases,
+// piliers rocheux (#), sortie D juste à l'arrivée, escalier S vers l'étage suivant (bloqué pour l'instant).
+export const CAVE = { RX: 5, RY: 3, RW: 10, RH: 8 };
 function buildWild() {
-  const RW = 10, RH = 8, W = RW * 3, H = RH * 2;
+  const { RX, RY, RW, RH } = CAVE, W = RW * RX, H = RH * RY;
   const m = Array.from({ length: H }, () => Array(W).fill('.'));
   for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
     const lx = x % RW, ly = y % RH;
     if (lx === 0 || lx === RW - 1 || ly === 0 || ly === RH - 1) m[y][x] = 'T';
   }
-  // passages : entre salles voisines, deux cases
-  for (let ry = 0; ry < 2; ry++) for (let rx = 0; rx < 2; rx++) for (const dy of [3, 4]) { m[ry * RH + dy][rx * RW + RW - 1] = '.'; m[ry * RH + dy][(rx + 1) * RW] = '.'; }
-  for (let rx = 0; rx < 3; rx++) for (const dx of [4, 5]) { m[RH - 1][rx * RW + dx] = '.'; m[RH][rx * RW + dx] = '.'; }
-  m[4][0] = 'D'; // retour à la ferme
-  // décor : quelques rochers et arbres dans les salles
-  for (const [x, y, c] of [[3, 2, '#'], [6, 5, 'T'], [13, 2, '#'], [14, 2, '#'], [16, 5, 'T'], [23, 2, 'T'], [26, 5, '#'], [3, 11, 'T'], [7, 13, '#'], [12, 10, '#'], [16, 13, 'T'], [22, 10, '#'], [23, 10, '#'], [27, 13, 'T']]) m[y][x] = c;
+  // passages entre salles voisines (certains fermés, pour faire un vrai labyrinthe)
+  const shut = new Set(['h1,0', 'h3,1', 'v2,0', 'h0,2', 'v4,1']);
+  for (let ry = 0; ry < RY; ry++) for (let rx = 0; rx < RX - 1; rx++) if (!shut.has(`h${rx},${ry}`)) for (const dy of [3, 4]) { m[ry * RH + dy][rx * RW + RW - 1] = '.'; m[ry * RH + dy][(rx + 1) * RW] = '.'; }
+  for (let ry = 0; ry < RY - 1; ry++) for (let rx = 0; rx < RX; rx++) if (!shut.has(`v${rx},${ry}`)) for (const dx of [4, 5]) { m[ry * RH + RH - 1][rx * RW + dx] = '.'; m[(ry + 1) * RH][rx * RW + dx] = '.'; }
+  m[4][0] = 'D'; // sortie, juste à l'arrivée
+  // piliers rocheux : quelques-uns par salle, à des places fixes (jamais devant un passage)
+  for (let ry = 0; ry < RY; ry++) for (let rx = 0; rx < RX; rx++) {
+    const k = rx * 7 + ry * 11;
+    for (const [lx, ly] of [[2 + k % 3, 2], [6 + (k >> 1) % 2, 5], [3, 5 + k % 2]]) if ((k + lx) % 3 && !(rx === 0 && ry === 0 && lx < 4)) m[ry * RH + ly][rx * RW + lx] = '#';
+  }
+  m[(RY - 1) * RH + 4][(RX - 1) * RW + 5] = 'S'; // escalier vers l'étage 2 (plus tard)
   return m.map(r => r.join(''));
 }
 LAYOUTS.wild = buildWild();
@@ -174,7 +181,7 @@ export const SCENES = {
   house: { W: 12, H: 9, doors: [{ x: 5, y: 8, to: 'farm', spawn: { x: 5.5, y: 5.9 } }] },
   coop: { W: 10, H: 7, doors: [{ x: 4, y: 6, to: 'farm', spawn: { x: 24.5, y: 8.9 } }] },
   foret: { W: 30, H: 18, outdoor: true, doors: [{ x: 29, y: 9, to: 'farm', spawn: { x: 1.6, y: 10.6 } }] },
-  wild: { W: 30, H: 16, outdoor: true, rooms: { w: 10, h: 8 }, doors: [{ x: 0, y: 4, to: 'farm', spawn: { x: 46.4, y: 18.5 } }] },
+  wild: { W: 50, H: 24, dark: true, cave: true, rooms: { w: 10, h: 8 }, doors: [{ x: 0, y: 4, to: 'farm', spawn: { x: 46.4, y: 18.5 } }] },
   grange: { W: 22, H: 11, dark: true, doors: [{ x: 5, y: 6, to: 'farm', spawn: { x: 12.5, y: 5.6 } }] },
   franck: { W: 9, H: 7, doors: [{ x: 4, y: 6, to: 'quartier', spawn: { x: 13.5, y: 7.8 } }] },
   luna: { W: 9, H: 7, doors: [{ x: 4, y: 6, to: 'quartier', spawn: { x: 6.5, y: 7.8 } }] },

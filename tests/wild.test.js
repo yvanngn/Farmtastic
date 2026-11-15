@@ -113,3 +113,21 @@ test('mort dans la mine : retour à la ferme, -10 %, et le clignotement s’arr�
   for (let i = 0; i < 120; i++) up(g, 1 / 60);
   assert.equal(g.player.iframe, 0, 'il ne clignote plus');
 });
+
+test('caverne sombre : 15 salles, sortie dès l’arrivée, escalier vers l’étage 2 (bloqué)', async () => {
+  const { LAYOUTS, SCENES } = await import('../src/world/scenes.js');
+  const { ROOMS_X, ROOMS_Y } = await import('../src/data/wild.js');
+  const L = LAYOUTS.wild;
+  assert.equal(ROOMS_X * ROOMS_Y, 15); assert.equal(ROOM_MOBS.length, 15);
+  assert.equal(L[0].length, 50); assert.equal(L.length, 24);
+  assert.equal(SCENES.wild.dark, true, 'il fait sombre');
+  assert.equal(L[4][0], 'D', 'la sortie est juste à côté de l’arrivée');
+  const { g, S } = makeGame({ state: { wildOpen: true, scene: 'wild', x: 44.5, y: 21 } });
+  let sx, sy; L.forEach((r, y) => { const x = r.indexOf('S'); if (x >= 0) { sx = x; sy = y; } });
+  assert.equal(act(g, sx, sy), 'stairs');
+  // toutes les salles sont reliées (on peut se balader partout)
+  const seen = new Set(['1,4']), q = [[1, 4]];
+  while (q.length) { const [x, y] = q.pop(); for (const [a, b] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) { const nx = x + a, ny = y + b, k = nx + ',' + ny; if (!seen.has(k) && L[ny] && '.S'.includes(L[ny][nx] || 'T')) { seen.add(k); q.push([nx, ny]); } } }
+  const rooms = new Set([...seen].map(k => { const [x, y] = k.split(',').map(Number); return roomOf(x, y); }));
+  assert.equal(rooms.size, 15);
+});

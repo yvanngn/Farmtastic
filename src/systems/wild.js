@@ -1,15 +1,15 @@
-// Zone de combat (Terres sauvages) : salles façon Zelda Game Boy, monstres par salle,
+// Zone de combat (Caverne sombre, la « mine ») : salles façon Zelda Game Boy, monstres par salle,
 // cochons qui tirent, cailloux à minerais. Logique pure : pas de DOM ni de hasard direct.
 import { isSolid, key } from '../world/map.js';
 import { LAYOUTS } from '../world/scenes.js';
 import { add } from './inventory.js';
 import { damage, useEnergy } from './player.js';
 import { gainXp, toolTier, hasTool } from './skills.js';
-import { ROOM_W, ROOM_H, MOBS, ROOM_MOBS, ZROCKS, ZROCK_COUNT, ZROCK_P3, ZROCK_P2, ORES, GATE } from '../data/wild.js';
+import { ROOMS_X, ROOM_W, ROOM_H, MOBS, ROOM_MOBS, ZROCKS, ZROCK_COUNT, ZROCK_P3, ZROCK_P2, ORES, GATE } from '../data/wild.js';
 import { CFG } from '../config.js';
 import { MINING_GAIN, energyCost } from '../data/tools.js';
 
-export const roomOf = (x, y) => (Math.floor(y / ROOM_H) * 3 + Math.floor(x / ROOM_W));
+export const roomOf = (x, y) => (Math.floor(y / ROOM_H) * ROOMS_X + Math.floor(x / ROOM_W));
 export const isOpen = S => !!S.wildOpen || CFG.ACCES_TEST;
 
 // TEST : une épée posée devant le portail, à ramasser dès le début.
@@ -32,8 +32,8 @@ export function openWild(g) {
   g.bus.emit('sfx', 'levelup');
   const n = g.npcs && g.npcs.chef;
   g.bus.emit('say', { name: n ? n.name : 'Le chef du village', color: n ? n.color : '#e8c26a', voice: 'voiceChef', lines: [
-    'Les lampadaires brillent de nouveau, grâce à toi ! Tiens, voici la clé du vieux portail, tout à l\'est de ta ferme.',
-    'Derrière, ce sont les Terres sauvages. Des slimes et des cochons pas commodes y rôdent : prends cette épée.'] });
+    'Les lampadaires brillent de nouveau, grâce à toi ! Tiens, voici la clé de la vieille grille, tout à l\'est de ta ferme.',
+    'Derrière, il y a la Caverne sombre. Des slimes et des cochons pas commodes y rôdent : prends cette épée.'] });
   g.bus.emit('inv');
   return true;
 }
@@ -44,8 +44,8 @@ export function ensureRocks(g) {
   S.wild ||= { day: null, rocks: {} };
   if (S.wild.day === day) return S.wild.rocks;
   const L = LAYOUTS.wild, rocks = {};
-  for (let tries = 0, n = 0; n < ZROCK_COUNT && tries < 400; tries++) {
-    const x = 1 + (g.rnd() * 28 | 0), y = 1 + (g.rnd() * 14 | 0), k = key(x, y);
+  for (let tries = 0, n = 0; n < ZROCK_COUNT && tries < 1500; tries++) {
+    const x = 1 + (g.rnd() * (L[0].length - 2) | 0), y = 1 + (g.rnd() * (L.length - 2) | 0), k = key(x, y);
     if (L[y][x] !== '.' || rocks[k] || (x < 4 && y < 7)) continue;
     const v = g.rnd(), t = v < ZROCK_P3 ? 'zrock3' : v < ZROCK_P2 ? 'zrock2' : 'zrock1';
     rocks[k] = { t, hp: ZROCKS[t].hp }; n++;
@@ -78,9 +78,9 @@ export function hitZRock(g, x, y) {
 // Entrer dans une salle : ses monstres apparaissent (comme dans Zelda, ils reviennent si on repasse).
 export function spawnRoom(g, room) {
   g.enemies.length = 0; (g.shots ||= []).length = 0;
-  const rx = room % 3, ry = Math.floor(room / 3), L = LAYOUTS.wild;
+  const rx = room % ROOMS_X, ry = Math.floor(room / ROOMS_X), L = LAYOUTS.wild;
   for (const type of ROOM_MOBS[room] || []) {
-    for (let tries = 0; tries < 30; tries++) {
+    for (let tries = 0; tries < 120; tries++) {
       const x = rx * ROOM_W + 2 + g.rnd() * (ROOM_W - 4), y = ry * ROOM_H + 2 + g.rnd() * (ROOM_H - 4);
       if (L[y | 0][x | 0] === '.' && !(g.S.wild && g.S.wild.rocks[key(x | 0, y | 0)]) && Math.hypot(x - g.S.x, y - g.S.y) > 3) {
         g.enemies.push({ type, x, y, hp: MOBS[type].hp, cd: 1, hit: 0, room, t: g.rnd() * 3 }); break;

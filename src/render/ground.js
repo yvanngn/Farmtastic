@@ -208,13 +208,14 @@ function drawForestArch(R) {
   R(x + 22, y + T + 5, 2, 10, '#5b3a22');
 }
 
-// Vieux portail de pierre, tout à l'est (x47, y16-20) : l'entrée des Terres sauvages.
-function drawWildGate(R) {
+// Tout à l'est (x47, y16-20) : l'entrée de la Caverne sombre (la « mine »).
+function drawWildGate(R) {   // entrée de la Caverne sombre : bloc rocheux, bouche noire, vieille grille
   const x = 47 * T, y = 16 * T;
-  R(x - 2, y, 18, 5 * T, '#5a5560'); for (let k = 0; k < 5 * T; k += 6) R(x - 2, y + k, 18, 1, '#46424c');
-  R(x - 4, y + 2 * T - 6, 20, 6, '#6e6a76'); R(x - 1, y + 2 * T, 14, T + 2, '#2a2228');
-  for (let k = 0; k < 3; k++) R(x + 1 + k * 4, y + 2 * T, 2, T + 2, '#6e4a2e');
-  R(x + 5, y + 2 * T + 7, 4, 4, '#c9a330');
+  R(x - 10, y - 6, 26, 5 * T + 8, '#5a5560'); for (let k = 0; k < 5 * T; k += 6) R(x - 10 + (k % 12), y + k, 22, 1, '#46424c');
+  R(x - 12, y - 8, 22, 6, '#6e6a76'); R(x - 8, y + 5 * T - 2, 24, 4, '#3a3640');
+  R(x - 6, y + T + 6, 20, 2 * T + 6, '#0c0a10'); R(x - 4, y + T + 2, 16, 4, '#0c0a10'); R(x - 6, y + T + 6, 20, 2, '#2a2630');
+  for (let k = 0; k < 4; k++) R(x - 4 + k * 5, y + T + 6, 1, 2 * T + 6, '#6a5a48');
+  R(x - 6, y + 2 * T + 6, 20, 1, '#6a5a48'); R(x + 3, y + 2 * T + 8, 4, 4, '#c9a330');
 }
 
 // Piquets aux quatre coins du champ (x4-13, y8-13) : on voit où bêcher.

@@ -1,4 +1,6 @@
 import { getZoom } from '../ui/settingsPanel.js';
+// Caverne : la lumière du jour entre par la sortie ; quelques cristaux luisent.
+const CAVE_LIGHTS = [{ x: 8, y: 72, r: 60 }, { x: 25 * 16, y: 12 * 16, r: 18 }, { x: 44 * 16, y: 20 * 16, r: 18 }];
 import { toolTier } from '../systems/skills.js';
 import { MIN_PICK } from '../data/tools.js';
 // Rendu : caméra, culling, tri en profondeur, eau animée, lumière dynamique,
@@ -235,7 +237,7 @@ export function createRenderer(cv, g) {
         else { ctx.fillStyle = '#3e5a7a'; ctx.fillRect(wx, wy, 14, 12); ctx.fillStyle = '#2a4058'; for (let k = 2; k < 12; k += 3) ctx.fillRect(wx, wy + k, 14, 1); ctx.fillRect(wx + 7, wy, 1, 12); }
       } });
     }
-    { // fleurs, cailloux et filons (ferme, forêt, Terres sauvages)
+    { // fleurs, cailloux et filons (ferme, forêt, Caverne sombre)
       const N = S.nature && S.nature[scene];
       if (N) {
         for (const k in N.flowers) { const [x, y] = k.split(',').map(Number); if (x >= x0 && x <= x1 && y >= y0 && y <= y1) list.push({ z: y + .5, d: () => drawFlower(ctx, x, y, FLOWER_COL[N.flowers[k]] || '#fff', now) }); }
@@ -334,7 +336,7 @@ export function createRenderer(cv, g) {
     ctx.setTransform(1, 0, 0, 1, 0, 0);
     const toScreen = (wx, wy) => [(wx - camX) * scale, (wy - camY) * scale];
     const dark = sky ? Math.min(.7, darkness(S) * 1.15) : SC.dark ? .62 : 0;
-    const LIGHTS_HERE = scene === 'grange' ? GRANGE_LIGHTS : outside ? LIGHTS.filter((l, i) => i !== 1 || (S.built && S.built.coop)) : scene === 'town' ? TOWN_LIGHTS : [];
+    const LIGHTS_HERE = scene === 'grange' ? GRANGE_LIGHTS : outside ? LIGHTS.filter((l, i) => i !== 1 || (S.built && S.built.coop)) : scene === 'town' ? TOWN_LIGHTS : scene === 'wild' ? CAVE_LIGHTS : [];
     if (!sky) { ctx.fillStyle = 'rgba(255,180,100,.07)'; ctx.fillRect(0, 0, cv.width, cv.height); }
     if (sky && S.minute > 1020 && S.minute < 1170) { ctx.fillStyle = `rgba(255,140,60,${.12 * Math.sin((S.minute - 1020) / 150 * Math.PI)})`; ctx.fillRect(0, 0, cv.width, cv.height); }
     if (sky && (S.weather === 'rain' || S.weather === 'storm')) { ctx.fillStyle = 'rgba(70,95,160,.14)'; ctx.fillRect(0, 0, cv.width, cv.height); }

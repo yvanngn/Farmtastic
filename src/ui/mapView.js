@@ -45,11 +45,11 @@ export function createMapView(g, renderer, audio) {
     }
     const me = FARM_LOTS.find(l => l.id === (S.farmLot || 0)), [mx, my] = P(me.x, me.y);
     ctx.font = `${4.5 * u}px serif`; ctx.textAlign = 'center';
-    ctx.fillText('🌲', mx - 15 * u, my - 6 * u); ctx.fillText('⚔️', mx + 15 * u, my - 6 * u);
+    ctx.fillText('🌲', mx - 15 * u, my - 6 * u); ctx.fillText('🕳️', mx + 15 * u, my - 6 * u);
     ctx.font = `${2.4 * u}px Nunito, sans-serif`; ctx.fillStyle = '#fff6e0';
     ctx.fillText('🏘️', mx, my + 12 * u); ctx.fillText('🏙️', mx + 22 * u, my + 2 * u);
     ctx.font = `${2.4 * u}px Nunito, sans-serif`; ctx.fillText('Quartier', mx, my + 15 * u); ctx.fillText('Centre-ville', mx + 22 * u, my + 5 * u);
-    ctx.fillText('Forêt', mx - 15 * u, my - 2 * u); ctx.fillText(S.wildOpen ? 'Terres sauvages' : 'Portail fermé', mx + 15 * u, my - 2 * u);
+    ctx.fillText('Forêt', mx - 15 * u, my - 2 * u); ctx.fillText(S.wildOpen || CFG.ACCES_TEST ? 'Caverne sombre' : 'Grille fermée', mx + 15 * u, my - 2 * u);
     $('#mapLvl').textContent = 'Région';
     raf = requestAnimationFrame(draw);
   }

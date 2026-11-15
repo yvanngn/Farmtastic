@@ -156,7 +156,7 @@
 135. *(luna)* La maison de Luna. Il y a encore des cartons derrière la fenêtre. 🆕
 136. *(franck)* Chez Franck. Les volets sont fermés, comme toujours. 🆕
 137. *(franckOpen)* Chez Franck. Les volets sont ouverts, pour une fois ! 🆕
-138. *(gate)* Un vieux portail de pierre, couvert de mousse. 🆕
+138. *(gate)* L'entrée de la Caverne sombre. Il en sort un air froid… et des bruits visqueux. 🆕
 139. *(coop)* Le poulailler. On entend glousser là-dedans. 🆕
 140. *(pigsty)* La porcherie. Ça sent… la porcherie. 🆕
 141. *(barn)* La bergerie. Toute rouge, comme dans les livres. 🆕

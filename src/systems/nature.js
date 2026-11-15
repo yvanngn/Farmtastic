@@ -1,4 +1,4 @@
-// Nature : fleurs à cueillir, cailloux et filons à piocher (ferme, forêt, Terres sauvages ; jamais en ville),
+// Nature : fleurs à cueillir, cailloux et filons à piocher (ferme, forêt, Caverne sombre ; jamais en ville),
 // et arc-en-ciel les jours de pluie avec un trésor à son pied. Logique pure.
 import { LAYOUTS } from '../world/scenes.js';
 import { key, freeForObj, isSolid } from '../world/map.js';
