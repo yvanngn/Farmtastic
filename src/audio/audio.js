@@ -168,6 +168,7 @@ export function createAudio(g, storage) {
     sleep: t => [12, 7, 4, 0].forEach((s, k) => blip(t + k * 0.18, 'sine', hz(12 + s), 0.9, 0.1)),
     squeak: t => { blip(t, 'sine', 1800, 0.06, 0.08, 2400); blip(t + 0.08, 'sine', 2000, 0.05, 0.06, 2600); },
     baa: t => { const o = blip(t, 'sawtooth', 220, 0.5, 0.07, 190); const l = ac.createOscillator(), d = ac.createGain(); l.frequency.value = 9; d.gain.value = 12; l.connect(d); d.connect(o.frequency); l.start(t); l.stop(t + 0.55); },
+    oink: t => { burst(t, 0.12, 'bandpass', 380, 0.35, 3); burst(t + 0.16, 0.1, 'bandpass', 420, 0.3, 3); blip(t, 'sawtooth', 140, 0.12, 0.05, 110); },
     meow: t => { blip(t, 'triangle', 520, 0.12, 0.12, 820); blip(t + 0.12, 'triangle', 820, 0.3, 0.1, 420); },
     levelup: t => [0, 4, 7, 12, 16, 19].forEach((s, k) => blip(t + k * 0.07, 'square', hz(24 + s), 0.25, 0.06)),
     door: t => { burst(t, 0.18, 'lowpass', 400, 0.3); blip(t + 0.05, 'sine', 90, 0.15, 0.25, 60); },

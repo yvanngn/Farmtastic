@@ -358,6 +358,12 @@ function animalSprite(type, flip, sit) {
       disc(c, 7, 7, 2, '#ffffff'); disc(c, 11, 11, 2, '#dcd6ca');
       R(13, 6, 4, 5, '#3b3440'); R(13, 6, 4, 1, '#f4f1ea'); R(15, 8, 1, 1, '#f5f0e8'); R(12, 6, 1, 2, '#3b3440');
       R(5, 13, 2, 2, '#3b3440'); R(10, 13, 2, 2, '#3b3440');
+    } else if (type === 'pig') {
+      const p = '#f2a7b4', d = '#d98394', l = '#ffc8d2';
+      R(2, 7, 11, 6, p); R(3, 6, 9, 1, p); R(2, 12, 11, 1, d); R(3, 7, 6, 2, l);
+      R(12, 6, 5, 6, p); R(16, 8, 2, 3, d); R(16, 9, 1, 1, '#8a4a58'); R(14, 7, 1, 1, '#2a1d18'); R(12, 5, 2, 2, d); R(15, 5, 1, 2, d);
+      R(1, 8, 1, 2, d); R(0, 7, 1, 1, d);
+      R(3, 13, 2, 2, d); R(6, 13, 2, 2, d); R(9, 13, 2, 2, d); R(12, 12, 2, 2, d);
     } else { // chat roux tigré
       const o = '#e08a3a', d = '#b8642a';
       if (sit) { R(5, 7, 7, 7, o); R(6, 8, 1, 5, d); R(8, 8, 1, 5, d); R(3, 12, 3, 2, o); R(2, 10, 2, 3, o); }
@@ -369,7 +375,7 @@ function animalSprite(type, flip, sit) {
   });
 }
 
-const PROD_COL = { egg: '#fdf6e3', wool: '#ffffff', rabbit_wool: '#f6dfe6' };
+const PROD_COL = { egg: '#fdf6e3', wool: '#ffffff', rabbit_wool: '#f6dfe6', truffle: '#6b4a36' };
 export function drawAnimal(c, a, now, def) {
   if (a.type === 'chicken') return drawChicken(c, a, now);
   const px = Math.round(a.x * T), py = Math.round(a.y * T + (a.moving ? Math.sin(now / (a.type === 'rabbit' ? 60 : 110)) * (a.type === 'rabbit' ? 2 : 1) : 0));

@@ -12,6 +12,7 @@ export const ITEMS = {
   hay: { n: 'Foin', p: 1, i: '🟨', buy: 10, keep: true },
   wool: { n: 'Laine', p: 120, i: '🧶' },
   rabbit_wool: { n: 'Laine de lapin', p: 90, i: '🤍' },
+  truffle: { n: 'Truffe', p: 160, i: '🍄' },
   slime: { n: 'Gelée', p: 5, i: '🟢' },
   fence: { n: 'Clôture', p: 4, i: '🚧' },
   potion: { n: 'Potion', p: 30, i: '🧪', eat: { h: 40 }, keep: true }

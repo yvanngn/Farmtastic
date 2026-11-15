@@ -10,7 +10,8 @@ export function defaultState() {
     inv: { wheat_seed: 10, hay: 5 }, sel: 'hand',
     x: 6.5, y: 6.8, dir: 0,
     plots: {}, objs: null,
-    animals: [{ id: 'a1', type: 'chicken', x: 21.5, y: 9.5, fed: false, petted: false, love: 20, produced: false }],
+    animals: [],
+    built: { coop: false, pigsty: false, barn: false },
     social: {}, savedAt: 0,
     scene: 'farm', invSlots: CFG.INV_SLOTS, stackLvl: 0, rockQueue: [],
     skills: { mining: { xp: 0 } },
@@ -27,6 +28,9 @@ export function migrate(raw) {
   s.look = Object.assign(d.look, raw.look || {});
   s.tools = Object.assign(d.tools, raw.tools || {});
   s.skills = Object.assign(d.skills, raw.skills || {});
+  // Avant le lot 4, le poulailler existait d'office (et la bergerie si on avait des moutons).
+  if (!raw.built) s.built = { coop: true, pigsty: false, barn: (raw.animals || []).some(a => a.type === 'sheep') };
+  else s.built = Object.assign(d.built, raw.built);
   s.v = CFG.VERSION;
   return s;
 }

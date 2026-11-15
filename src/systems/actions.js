@@ -35,7 +35,7 @@ export function enterScene(g, to, spawn) {
 export function act(g, tx, ty) {
   const S = g.S, sc = S.scene || 'farm';
   const d = doorAt(sc, tx, ty);
-  if (d) { enterScene(g, d.to, d.spawn); return 'door'; }
+  if (d && !(sc === 'farm' && d.to === 'coop' && !(S.built && S.built.coop))) { enterScene(g, d.to, d.spawn); return 'door'; }
   if (sc === 'town') { const ui = UI_TILES[tileAt(sc, tx, ty)]; if (ui) { g.bus.emit('sfx', 'ui'); g.bus.emit('open', ui); return ui; } return 'none'; }
   if (sc === 'house') return tileAt(sc, tx, ty) === 'B' ? (sleep(g) ? 'sleep' : 'none') : 'none';
   if (sc === 'coop') return tileAt(sc, tx, ty) === 'H' ? (feedAll(g) ? 'feedAll' : 'none') : 'none';

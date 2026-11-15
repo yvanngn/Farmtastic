@@ -79,6 +79,34 @@ export function buildTown(season) {
   R(ux + 4, uy - 2, uw - 8, 9, '#3f2615'); R(ux + 5, uy - 1, uw - 10, 7, '#e8c26a');
   g.fillStyle = '#3b2414'; g.font = 'bold 6px Georgia'; g.textAlign = 'center'; g.fillText('AMÉLIORATIONS', ux + uw / 2, uy + 5);
 
+  // échoppe générique : murs de planches, toit, fenêtres, enseigne
+  function shop(x0, y0, w, roofA, roofB, sign, deco) {
+    const ux = x0 * T, uy = y0 * T, uw = w * T;
+    R(ux + 2, uy - 4, uw - 4, 3 * T + 2, '#9a6a3c');
+    for (let k = 0; k < 3 * T; k += 4) R(ux + 2, uy - 4 + k, uw - 4, 1, '#7e5430');
+    R(ux + uw - 10, uy - 4, 8, 3 * T + 2, '#7a4e2a');
+    for (let i = 0; i < 9; i++) R(ux - 3 + i * 2, uy - 24 + i * 2, uw + 6 - i * 4, 2, i % 2 ? roofA : roofB);
+    R(ux - 4, uy - 6, uw + 8, 3, '#3b2414');
+    const dx = ux + uw / 2 - 8; R(dx, uy + 14, 16, 26, '#4a2c18'); R(dx + 2, uy + 16, 12, 24, '#6e4426'); R(dx + 11, uy + 28, 2, 2, '#e8c26a');
+    R(ux + 5, uy + 8, 12, 12, '#3b2414'); R(ux + 6, uy + 9, 10, 10, '#ffd98a'); R(ux + 10, uy + 9, 1, 10, '#3b2414');
+    if (w > 3) { R(ux + uw - 19, uy + 8, 12, 12, '#3b2414'); R(ux + uw - 18, uy + 9, 10, 10, '#ffd98a'); R(ux + uw - 14, uy + 9, 1, 10, '#3b2414'); }
+    R(ux + 4, uy - 2, uw - 8, 9, '#3f2615'); R(ux + 5, uy - 1, uw - 10, 7, '#e8c26a');
+    g.fillStyle = '#3b2414'; g.font = 'bold 6px Georgia'; g.textAlign = 'center'; g.fillText(sign, ux + uw / 2, uy + 5);
+    deco(ux, uy, uw);
+  }
+  // charpentier (x4-7, y11-13) : planches empilées, scie, rondins
+  shop(4, 11, 4, '#7a3a22', '#94482a', 'CHARPENTIER', (ux, uy, uw) => {
+    for (let k = 0; k < 3; k++) { R(ux - 2, uy + 36 - k * 3, 18, 3, ['#c99560', '#b07a48', '#d9a870'][k]); R(ux - 2, uy + 36 - k * 3, 18, 1, '#e8c08a'); }
+    for (const [x, y] of [[uw - 6, 38], [uw - 1, 38], [uw - 4, 34]]) { disc(g, ux + x, uy + y, 3, '#7a4f2e'); disc(g, ux + x, uy + y, 2, '#c99560'); R(ux + x, uy + y, 1, 1, '#7a4f2e'); }
+    R(ux + 20, uy + 22, 10, 3, '#c2c7cc'); for (let k = 0; k < 10; k += 2) R(ux + 20 + k, uy + 25, 1, 1, '#8a8f96'); R(ux + 30, uy + 21, 4, 5, '#7a4f2e');
+  });
+  // marchand d'animaux (x17-19, y11-13) : botte de foin, abreuvoir, fer à cheval
+  shop(17, 11, 3, '#2f5a3a', '#3b7048', 'ANIMAUX', (ux, uy, uw) => {
+    R(ux - 3, uy + 32, 14, 10, '#e6c34a'); R(ux - 3, uy + 32, 14, 2, '#f5dd7a'); for (let k = 0; k < 14; k += 3) R(ux - 3 + k, uy + 35, 1, 6, '#c9a330');
+    R(ux + uw - 12, uy + 36, 14, 6, '#7a4f2e'); R(ux + uw - 11, uy + 37, 12, 3, '#5a9ad0');
+    R(ux + uw / 2 - 3, uy + 10, 6, 1, '#9aa0a8'); R(ux + uw / 2 - 3, uy + 10, 1, 4, '#9aa0a8'); R(ux + uw / 2 + 2, uy + 10, 1, 4, '#9aa0a8');
+  });
+
   // fontaine (x11-13, y8-10)
   const fx = 11 * T + 24, fy = 8 * T + 24;
   disc(g, fx, fy + 2, 23, '#6f6a73'); disc(g, fx, fy, 22, '#9a958c'); disc(g, fx, fy, 18, '#3a7cc2'); disc(g, fx - 4, fy - 5, 6, '#6aa8e0');

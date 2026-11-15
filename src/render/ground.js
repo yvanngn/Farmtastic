@@ -3,6 +3,7 @@
 import { CFG } from '../config.js';
 import { ground, isFence, isPond, rng } from '../world/map.js';
 import { shade, disc } from './pixel.js';
+import { BUILDINGS } from '../data/buildings.js';
 const T = CFG.T;
 
 export const GRASS = ['#6bb64a', '#58a23c', '#a8a347', '#e4ecef'];
@@ -10,7 +11,7 @@ export const WATER = '#3a7cc2';
 // Fenêtres de la maison et du poulailler (px monde) : éclairées la nuit.
 export const LIGHTS = [{ x: 51, y: 60, r: 46 }, { x: 384, y: 116, r: 26 }];
 
-export function buildGround(season) {
+export function buildGround(season, built = {}) {
   const c = document.createElement('canvas'); c.width = CFG.W * T; c.height = CFG.H * T;
   const g = c.getContext('2d'), r = rng(99 + season);
   const R = (x, y, w, h, col) => { g.fillStyle = col; g.fillRect(x, y, w, h); };
@@ -57,10 +58,10 @@ export function buildGround(season) {
 
   // clôtures
   for (let y = 0; y < CFG.H; y++) for (let x = 0; x < CFG.W; x++) {
-    if (!isFence(x, y)) continue;
+    if (!isFence(x, y, built)) continue;
     const px = x * T, py = y * T;
-    if (isFence(x - 1, y) || isFence(x + 1, y)) { R(px, py + 5, T, 2, '#b9864f'); R(px, py + 7, T, 1, '#6e4424'); R(px, py + 10, T, 2, '#b9864f'); R(px, py + 12, T, 1, '#6e4424'); }
-    if (isFence(x, y - 1) || isFence(x, y + 1)) { R(px + 7, py, 2, T, '#b9864f'); R(px + 9, py, 1, T, '#6e4424'); }
+    if (isFence(x - 1, y, built) || isFence(x + 1, y, built)) { R(px, py + 5, T, 2, '#b9864f'); R(px, py + 7, T, 1, '#6e4424'); R(px, py + 10, T, 2, '#b9864f'); R(px, py + 12, T, 1, '#6e4424'); }
+    if (isFence(x, y - 1, built) || isFence(x, y + 1, built)) { R(px + 7, py, 2, T, '#b9864f'); R(px + 9, py, 1, T, '#6e4424'); }
     R(px + 5, py + 1, 6, 14, '#3f2615'); R(px + 6, py + 2, 4, 12, '#a8774a'); R(px + 6, py + 2, 1, 12, '#c99560'); R(px + 9, py + 2, 1, 12, '#7a4f2e');
     R(px + 5, py + 14, 6, 2, 'rgba(20,12,8,.25)');
   }
@@ -68,7 +69,9 @@ export function buildGround(season) {
   drawGate(R);
   drawHouse(g, R);
   drawBin(R);
-  drawCoop(R);
+  if (built.coop) drawCoop(R); else drawLot(g, R, 'coop');
+  if (built.pigsty) drawPigsty(R); else drawLot(g, R, 'pigsty');
+  if (built.barn) drawBarn(R); else drawLot(g, R, 'barn');
   return c;
 }
 
@@ -125,6 +128,40 @@ function drawCoop(R) {
   for (let i = 0; i < 8; i++) R(x - 3 + i * 3, y + 8 - i, 50 - i * 6, 1, i % 2 ? '#5a3a2a' : '#6e4a36');
   R(x + 16, y + 13, 12, 13, '#3b2414'); R(x + 16, y + 13, 12, 1, '#f0e6d0'); R(x + 21, y + 13, 1, 13, '#f0e6d0');
   R(x + 4, y + 13, 7, 6, '#f0e6d0'); R(x + 5, y + 14, 5, 4, '#7fb6d9');
+}
+
+// Emplacement vide : piquets, cordeau et petit panneau « charpentier ».
+function drawLot(g, R, id) {
+  const b = BUILDINGS[id], x = b.x0 * T, w = (b.x1 - b.x0 + 1) * T, y = 7 * T;
+  R(x + 2, y + 2, w - 4, 12, 'rgba(120,84,48,.28)');
+  for (const px of [x + 2, x + w - 4]) { R(px, y, 2, 8, '#8a5a32'); R(px, y, 2, 1, '#c99560'); }
+  R(x + 3, y + 2, w - 6, 1, '#e8dcc0');
+  const sx = x + w / 2 - 8; R(sx + 7, y + 4, 2, 10, '#5b3a22'); R(sx, y - 2, 16, 9, '#3f2615'); R(sx + 1, y - 1, 14, 7, '#e8c26a');
+  R(sx + 3, y + 1, 10, 1, '#7a5a3a'); R(sx + 3, y + 3, 7, 1, '#7a5a3a');
+}
+
+// Porcherie (x19-21) : cabane de planches basse, toit de tôle, boue devant.
+function drawPigsty(R) {
+  const x = 19 * T - 1, y = 98, w = 3 * T + 2;
+  R(x, y + 26, w, 3, 'rgba(20,12,8,.3)');
+  R(x, y + 10, w, 16, '#9a6a3c'); for (let i = 0; i < w; i += 5) R(x + i, y + 10, 1, 16, '#7a4e2a');
+  R(x, y + 10, w, 2, '#c99560');
+  for (let i = 0; i < 6; i++) R(x - 3 + i, y + 9 - i, w + 6 - i * 2, 1, i % 2 ? '#8a9096' : '#a7adb3');
+  R(x + 18, y + 15, 14, 11, '#3b2414'); R(x + 18, y + 15, 14, 1, '#c99560');
+  R(x + 4, y + 14, 8, 6, '#3b2414'); R(x + 5, y + 15, 6, 4, '#ffd98a');
+  R(x + 6, y + 28, w - 12, 6, '#6e4a2e'); R(x + 9, y + 29, 8, 2, '#8a5e3a'); R(x + 24, y + 30, 6, 2, '#8a5e3a');
+}
+
+// Bergerie (x27-30) : grange rouge à double pente, grande porte en croix.
+function drawBarn(R) {
+  const x = 27 * T - 1, y = 94, w = 4 * T + 2;
+  R(x, y + 30, w, 3, 'rgba(20,12,8,.3)');
+  R(x, y + 10, w, 20, '#b8452f'); for (let i = 0; i < w; i += 4) R(x + i, y + 10, 1, 20, '#93321f');
+  R(x, y + 28, w, 2, '#f0e6d0');
+  for (let i = 0; i < 10; i++) { const inset = i < 4 ? i : 4 + (i - 4) * 3; R(x - 3 + inset, y + 10 - i, w + 6 - inset * 2, 1, i % 2 ? '#5a3a2a' : '#6e4a36'); }
+  R(x + 22, y + 15, 22, 15, '#f0e6d0'); R(x + 23, y + 16, 20, 14, '#6e2a1f');
+  for (let k = 0; k < 14; k++) { R(x + 23 + k * 1.4, y + 16 + k, 2, 1, '#f0e6d0'); R(x + 42 - k * 1.4, y + 16 + k, 2, 1, '#f0e6d0'); }
+  R(x + 4, y + 15, 10, 8, '#f0e6d0'); R(x + 5, y + 16, 8, 6, '#7fb6d9'); R(x + 9, y + 16, 1, 6, '#f0e6d0');
 }
 
 // Reflets animés sur l'eau, seulement pour les tuiles visibles.

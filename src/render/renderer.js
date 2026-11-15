@@ -16,7 +16,7 @@ export function createRenderer(cv, g) {
   let scale = 3, dpr = 1, cache = null, cacheSeason = -1, cacheScene = '';
   const interiors = {};
   let farm = null, farmSeason = -1;
-  function farmGround() { if (farmSeason !== g.S.season) { farm = buildGround(g.S.season); farmSeason = g.S.season; } return farm; }
+  function farmGround() { const b = g.S.built || {}, key = g.S.season + JSON.stringify(b); if (farmSeason !== key) { farm = buildGround(g.S.season, b); farmSeason = key; } return farm; }
   let vignette = null, light = null, lastStep = 0;
   const cam = { x: 0, y: 0 }, screenFx = [], worldFx = [];
   let swing = null;
@@ -111,6 +111,7 @@ export function createRenderer(cv, g) {
       if (cacheSeason !== S.season) initWeather();
       cacheSeason = S.season; cacheScene = scene;
     }
+    if (outside) cache = farmGround(); // reconstruit si un bâtiment vient d'être construit
     const vw = cv.width / scale, vh = cv.height / scale, MW = SC.W * T, MH = SC.H * T;
     cam.x = MW <= vw ? (MW - vw) / 2 : Math.max(0, Math.min(MW - vw, S.x * T - vw / 2));
     cam.y = MH <= vh ? (MH - vh) / 2 : Math.max(0, Math.min(MH - vh, S.y * T - vh / 2));
@@ -160,7 +161,7 @@ export function createRenderer(cv, g) {
     ctx.setTransform(1, 0, 0, 1, 0, 0);
     const toScreen = (wx, wy) => [(wx - camX) * scale, (wy - camY) * scale];
     const dark = sky ? Math.min(.7, darkness(S) * 1.15) : 0;
-    const LIGHTS_HERE = outside ? LIGHTS : scene === 'town' ? TOWN_LIGHTS : [];
+    const LIGHTS_HERE = outside ? LIGHTS.filter((l, i) => i === 0 || (S.built && S.built.coop)) : scene === 'town' ? TOWN_LIGHTS : [];
     if (!sky) { ctx.fillStyle = 'rgba(255,180,100,.07)'; ctx.fillRect(0, 0, cv.width, cv.height); }
     if (sky && S.minute > 1020 && S.minute < 1170) { ctx.fillStyle = `rgba(255,140,60,${.12 * Math.sin((S.minute - 1020) / 150 * Math.PI)})`; ctx.fillRect(0, 0, cv.width, cv.height); }
     if (sky && (S.weather === 'rain' || S.weather === 'storm')) { ctx.fillStyle = 'rgba(70,95,160,.14)'; ctx.fillRect(0, 0, cv.width, cv.height); }

@@ -5,12 +5,19 @@ export const inRect = (x, y, x0, y0, x1, y1) => x >= x0 && x <= x1 && y >= y0 &&
 export const isHouse = (x, y) => inRect(x, y, 2, 1, 6, 4);
 export const isBin = (x, y) => x === 8 && y === 4;
 export const isPlot = (x, y) => inRect(x, y, 4, 8, 13, 13);
-export const isPen = (x, y) => inRect(x, y, 19, 7, 25, 12);
-export const PEN_BOUNDS = { x0: 19.5, y0: 8.5, w: 6, h: 4 };
+export const isPen = (x, y) => inRect(x, y, 19, 7, 32, 12);
+export const PEN_BOUNDS = { x0: 19.5, y0: 8.5, w: 13, h: 4 };
 export const ROAM_BOUNDS = { x0: 3, y0: 5.6, w: 12, h: 1.6 };
-export const isCoop = (x, y) => inRect(x, y, 23, 6, 25, 7);
+import { BUILDINGS, BUILD_Y0, BUILD_Y1 } from '../data/buildings.js';
+// Bâtiment construit sur cette case (null sinon). built = S.built.
+export function buildingAt(built, x, y) {
+  if (!built || y < BUILD_Y0 || y > BUILD_Y1) return null;
+  for (const id in BUILDINGS) if (built[id] && x >= BUILDINGS[id].x0 && x <= BUILDINGS[id].x1) return id;
+  return null;
+}
+export const isCoop = (x, y, built = { coop: true }) => buildingAt(built, x, y) === 'coop';
 export const isGate = (x, y) => x === 16 && y === 35; // portail vers le village
-export const isFence = (x, y) => inRect(x, y, 18, 6, 26, 13) && !isPen(x, y) && !(x === 18 && y === 9);
+export const isFence = (x, y, built) => inRect(x, y, 18, 6, 33, 13) && !isPen(x, y) && !(x === 18 && y === 9) && !buildingAt(built, x, y);
 export const isPond = (x, y) => ((x - 12) ** 2) / 25 + ((y - 24) ** 2) / 9 < 1;
 export const isPath = (x, y) => (y === 5 && x >= 2 && x <= 33) || (x === 16 && y >= 5 && y <= 35) || (y === 9 && x === 17);
 export const isForest = (x) => x >= 34;
@@ -25,7 +32,7 @@ import { tileAt, SOLID_TILES } from './scenes.js';
 export function isSolid(S, x, y) {
   if (S.scene && S.scene !== 'farm') return SOLID_TILES.includes(tileAt(S.scene, x, y));
   if (x < 0 || y < 0 || x >= CFG.W || y >= CFG.H) return true;
-  return isPond(x, y) || isHouse(x, y) || isCoop(x, y) || isGate(x, y) || isFence(x, y) || isBin(x, y) || !!(S.objs && S.objs[key(x, y)]);
+  return isPond(x, y) || isHouse(x, y) || !!buildingAt(S.built, x, y) || isGate(x, y) || isFence(x, y, S.built) || isBin(x, y) || !!(S.objs && S.objs[key(x, y)]);
 }
 
 // Générateur pseudo-aléatoire déterministe (même carte pour une même graine).
@@ -35,7 +42,7 @@ export function rng(seed) {
 }
 
 export function freeForObj(x, y) {
-  return !isHouse(x, y) && !isPlot(x, y) && !isPond(x, y) && !isPath(x, y) && !inRect(x, y, 17, 5, 27, 14)
+  return !isHouse(x, y) && !isPlot(x, y) && !isPond(x, y) && !isPath(x, y) && !inRect(x, y, 17, 5, 33, 14)
     && !isBin(x, y) && !inRect(x, y, 4, 5, 9, 7) && x > 0 && y > 0 && x < CFG.W - 1 && y < CFG.H - 1;
 }
 

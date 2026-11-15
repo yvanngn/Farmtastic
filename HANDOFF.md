@@ -6,7 +6,7 @@ Document à donner à une nouvelle conversation pour reprendre le jeu sans rien 
 - **Code** : dépôt GitHub `yvanngn/Farmtastic` (branche `main`). README.md et CLAUDE.md font foi.
 - **Version jouable** : page claude.ai « Moteur Ferme » (publiée depuis `play.html` + `css/` + `src/`). Republier toujours sur la même page.
 - **Base de données** : `supabase_schema.sql` (profils, sauvegardes, mondes, objets partagés, PNJ, liens sociaux, marché entre joueurs). Supabase n'est pas encore branché (`src/config.js` vide → jeu solo, sauvegarde locale).
-- **Tests** : `npm test` (node:test, 78 tests au vert). Un fichier par système dans `tests/`.
+- **Tests** : `npm test` (node:test, 84 tests au vert). Un fichier par système dans `tests/`.
 
 ## Mémoire du projet
 - **`docs/CARNET.md`** : histoire, personnages, lots, ce qui existe, contradictions, idées non validées. Le lire en premier, le mettre à jour à la fin de chaque séance (skill `carnet-de-projet`).
@@ -42,7 +42,7 @@ Document à donner à une nouvelle conversation pour reprendre le jeu sans rien 
 3. ✅ **Ressources** :
    - Arbres : poussent **aléatoirement dans la zone de bois à l'est** de la ferme, mettent **3 jours** à pousser, **nombre max** dans la zone, **3 types d'arbres** qui donnent tous du bois.
    - Pierres : mêmes règles, **2 types** ; les plus grosses rapportent **2 pierres**.
-4. **Tout débloquer petit à petit avec de l'argent** : le **poulailler n'existe pas au départ**. Un **charpentier** vend poulailler, porcherie, etc. Un **marchand d'animaux**.
+4. ✅ **Tout débloquer petit à petit avec de l'argent** : le **poulailler n'existe pas au départ**. Un **charpentier** vend poulailler, porcherie, etc. Un **marchand d'animaux**.
 5. **Commerces** : **boulanger, boucher, poissonnier** (on fera de bons plats plus tard).
 6. **Premier habitant : Luna**, avec sa maison. Jeune femme célibataire arrivée récemment ; elle travaillait dans l'informatique, l'IA a remplacé son poste ; elle veut monter sa ferme mais doit d'abord gagner de l'argent. Les dialogues des PNJ doivent **distiller lentement** leur vie et leurs ambitions (répliques débloquées avec l'amitié).
 7. **Demandes avec code couleur** mélangeant les 4 idées :

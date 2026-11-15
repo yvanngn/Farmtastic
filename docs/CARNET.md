@@ -27,7 +27,7 @@ Règle des dialogues : répliques débloquées par paliers d'amitié ; Claude li
 | 1 | Écran titre façon Witch'rok (titre lumineux qui flotte, menu de jeu), police « jeu de ferme » | ✅ 15/11/2026 |
 | 2 | Inventaire : 10 objets max par case, améliorations au magasin d'amélioration | ✅ 15/11/2026 |
 | 3 | Arbres (zone de bois à l'est, 3 jours, nombre max, 3 types → bois) ; pierres (mêmes règles, 2 types, les grosses = 2 pierres) | ✅ 15/11/2026 |
-| 4 | Tout se débloque avec l'argent : pas de poulailler au départ, charpentier, marchand d'animaux | ⏳ |
+| 4 | Tout se débloque avec l'argent : pas de poulailler au départ, charpentier, marchand d'animaux | ✅ 15/11/2026 |
 | 5 | Boulanger, boucher, poissonnier | ⏳ |
 | 6 | Luna et sa maison, dialogues qui distillent sa vie | ⏳ |
 | 7 | Demandes à **code couleur** mélangeant 4 idées : reconstruction du village (jauge commune), fête de saison, demandes des habitants (amitié), caravane commerciale (graines, animaux, outils) | ⏳ |
@@ -39,6 +39,10 @@ Règle des dialogues : répliques débloquées par paliers d'amitié ; Claude li
 - **Inventaire** : 12 cases au départ (+6 par achat, max 36) ; **10 objets max par case** (25 bois = 3 cases). Magasin d'amélioration au village : sac plus grand, piles 10 → 20 → 30 → 50 → 99 (800 / 2 000 / 4 500 / 9 000 🪙).
 - **Bois de l'est** (à partir de la colonne 34) : 3 essences, **chêne, sapin, bouleau**, qui donnent toutes 3 à 5 bois. Chaque nuit, jusqu'à 4 pousses apparaissent au hasard, sans dépasser **70 arbres** dans le bois. Une pousse devient arbuste puis petit arbre, et elle est adulte au bout de **3 jours** ; avant ça, la hache refuse (« pousse encore (n j) »). Le sapin reste vert l'hiver, le bouleau perd ses feuilles.
 - **Pierres du bois** : la petite pierre donne **1 pierre**, la plus grosse **2 pierres**. Chaque nuit, jusqu'à 3 pierres sont prévues, sans dépasser **30** ; elles sortent de terre **3 jours** plus tard. Rien ne repousse sur la ferme elle-même : on la défriche une fois pour toutes.
+- **Départ** : ni poulailler, ni animaux. L'enclos est agrandi jusqu'au bois. Il garde trois emplacements balisés (piquets, cordeau, panneau) au nord.
+- **Charpentier** (village, en bas à gauche) : poulailler (1 500 🪙, 40 🪵, 10 🪨, 8 places, poules et lapins), porcherie (2 500 🪙, 60 🪵, 20 🪨, 6 places, cochons), bergerie (4 000 🪙, 80 🪵, 30 🪨, 6 places, moutons). Le bâtiment apparaît tout de suite sur son emplacement.
+- **Marchand d'animaux** (village, en bas à droite) : poule, lapin, cochon, mouton, chat. Il faut le bon bâtiment, avec de la place ; le chat vit en liberté.
+- **Cochon** : produit une truffe (160 🪙) tous les 2 jours s'il est nourri au foin.
 - **Bâtiments** : maison (lit), poulailler (mangeoire). **Village** : halle du marché (marché entre joueurs), panneau d'affichage (6 demandes, renouvelées toutes les 2 h réelles), magasin d'amélioration, fontaine.
 - **Animaux** : poule, lapin, mouton, chat à caresser.
 - **Monde** : temps, saisons, météo, nuit éclairée, particules, combat (slimes la nuit), carte zoomable.
@@ -47,8 +51,9 @@ Règle des dialogues : répliques débloquées par paliers d'amitié ; Claude li
 - **Technique** : sauvegarde auto 30 s + manuelle, multijoueur Supabase prêt mais pas branché (jeu solo, sauvegarde locale).
 
 ## 5. Contradictions et points à trancher
-- **Poulailler** : il existe dès le départ (avec une poule dans la sauvegarde neuve), alors qu'il doit être acheté au charpentier. → à corriger au lot 4.
-- **Animaux** : la Boutique du menu vend encore les animaux ; ils doivent passer chez le marchand d'animaux. → lot 4.
+- ✅ Réglé au lot 4 : le poulailler n'existe plus au départ, et les animaux ne se vendent plus que chez le marchand d'animaux. Une ancienne sauvegarde garde son poulailler, et sa bergerie si elle avait des moutons.
+- **Bâtiments sans intérieur** : la porcherie et la bergerie n'ont pas d'intérieur. On nourrit leurs animaux à la main, ou avec la mangeoire du poulailler, qui nourrit tous les animaux.
+- **Boutique du menu** : elle vend encore les graines et le foin depuis n'importe où. Faut-il la réserver à un commerce du village ? → à voir au lot 5.
 - **Anciennes sauvegardes** : avec les piles de 10, un ancien sac (piles jusqu'à 99) peut dépasser le nombre de cases. Rien n'est perdu, mais on ne peut plus rien ramasser tant qu'on n'a pas vendu ou acheté une amélioration.
 - **Nom de la page** : l'artefact claude.ai s'appelle encore « Moteur Ferme » dans la liste, alors que le jeu s'appelle Farm'tastic.
 
@@ -59,6 +64,7 @@ Règle des dialogues : répliques débloquées par paliers d'amitié ; Claude li
 
 ## 6. Idées de Claude (💡 à valider)
 - Sous-titre de l'écran titre : « ✦ une ferme à partager ✦ » (déjà affiché, à garder ou retirer).
+- Cochon et truffe (pour que la porcherie serve à quelque chose), les prix et le nombre de places des bâtiments, leur position au nord de l'enclos, la bergerie pour les moutons.
 - Noms des essences (chêne, sapin, bouleau) et leurs looks : choisis par Claude, l'utilisateur avait seulement demandé « 3 types ».
 - Enseigne « AMÉLIORATIONS » et échoppe à toit d'ardoise pour le magasin ; pas encore de marchand dedans (un PNJ pourra y être placé si l'utilisateur en décrit un).
 

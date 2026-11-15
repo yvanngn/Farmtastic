@@ -2,6 +2,7 @@
 import { ITEMS } from '../data/items.js';
 import { ANIMALS } from '../data/animals.js';
 import { RECIPES } from '../data/recipes.js';
+import { BUILDINGS } from '../data/buildings.js';
 import { add, has, slots, canAdd, stackSize, STACKS } from './inventory.js';
 import { CFG } from '../config.js';
 
@@ -52,12 +53,43 @@ export function buy(g, id, n = 1) {
   return true;
 }
 
+// Charpentier : construire un bâtiment (argent + bois + pierre).
+export function canBuild(S, id) {
+  const b = BUILDINGS[id];
+  if (!b) return { ok: false, why: 'unknown' };
+  if (S.built && S.built[id]) return { ok: false, why: 'built' };
+  if (S.money < b.cost.money) return { ok: false, why: 'money' };
+  if (!has(S, 'wood', b.cost.wood)) return { ok: false, why: 'wood' };
+  if (!has(S, 'stone', b.cost.stone)) return { ok: false, why: 'stone' };
+  return { ok: true };
+}
+export function build(g, id) {
+  const S = g.S, r = canBuild(S, id);
+  if (!r.ok) { g.bus.emit('sfx', 'denied'); return false; }
+  const b = BUILDINGS[id];
+  S.money -= b.cost.money; add(g, 'wood', -b.cost.wood); add(g, 'stone', -b.cost.stone);
+  S.built = { ...S.built, [id]: true };
+  g.bus.emit('sfx', 'craft'); g.bus.emit('toast', `${b.n} construit ! ${b.i}`); g.bus.emit('built', id);
+  return true;
+}
+export const homeCount = (S, home) => S.animals.filter(a => ANIMALS[a.type] && ANIMALS[a.type].home === home).length;
+// Marchand d'animaux : il faut le bon bâtiment, avec de la place.
+export function canBuyAnimal(S, type) {
+  const def = ANIMALS[type];
+  if (!def) return { ok: false, why: 'unknown' };
+  if (def.home && !(S.built && S.built[def.home])) return { ok: false, why: 'home' };
+  if (def.home && homeCount(S, def.home) >= BUILDINGS[def.home].cap) return { ok: false, why: 'full' };
+  if (S.money < def.buy) return { ok: false, why: 'money' };
+  return { ok: true };
+}
+
 export function buyAnimal(g, type) {
   const def = ANIMALS[type];
-  if (!def || g.S.money < def.buy) return false;
+  if (!canBuyAnimal(g.S, type).ok) { g.bus.emit('sfx', 'denied'); return false; }
   g.S.money -= def.buy;
   g.bus.emit('sfx', 'buy');
-  g.S.animals.push({ id: 'a' + g.now() + (g.rnd() * 1e6 | 0), type, x: 22, y: 10, fed: false, petted: false, love: 0, produced: false });
+  const bx = def.home ? (BUILDINGS[def.home].x0 + BUILDINGS[def.home].x1) / 2 + .5 : 8;
+  g.S.animals.push({ id: 'a' + g.now() + (g.rnd() * 1e6 | 0), type, x: bx, y: def.home ? 9.5 : 6.5, fed: false, petted: false, love: 0, produced: false });
   return true;
 }
 
