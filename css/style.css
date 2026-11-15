@@ -255,3 +255,5 @@ img.pix { width: 1.15em; height: 1.15em; image-rendering: pixelated; vertical-al
 .etapes .fait { color: var(--energie) }
 .etapes .encours { color: var(--or-vif); font-weight: 700 }
 .etapes .avenir { color: var(--doux); opacity: .7 }
+.ecran { padding: 12px 0 4px; display: grid; gap: 4px }
+.ecran small { color: var(--doux) }

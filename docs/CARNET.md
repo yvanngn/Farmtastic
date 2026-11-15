@@ -107,6 +107,7 @@ Mots de l'utilisateur, à respecter tels quels :
 - **Manuel** est le nom du chef du village. Ses répliques d'histoire glissent des indices discrets (« surtout le jour », « séminaire », « bronzage », « frais de représentation ») 💡 en vue de la future enquête.
 - **Objets au sol** (15/11) : ce qui ne rentre pas dans le sac tombe au sol, au lieu d'être perdu. On le ramasse en passant dessus. Si le sac est plein, une bulle propose d'**échanger une case du sac** contre l'objet au sol (« Poser 🪨 Pierre (×10) »), ou de le laisser.
 - **Relecture des dialogues** : `docs/DIALOGUES.md` liste toutes les répliques, avec 🆕 sur celles pas encore validées ; dès 100 🆕, le fichier part en relecture chez l'utilisateur.
+- **Plein écran et orientation** (15/11, choix 1 de l'utilisateur) : dans le menu ⚙, une rubrique « 📱 Écran » propose Auto, Portrait ou Paysage (mémorisé sur l'appareil) et un bouton « ⛶ Plein écran », qui verrouille l'orientation choisie sur Android. Si c'est impossible, un message explique pourquoi.
 - **Plus de slimes la nuit sur la ferme.** L'épée n'est plus donnée au départ.
 - Une ancienne sauvegarde garde ses outils et ne revoit pas l'accueil.
 - **Départ d'une nouvelle partie** : seules les graines de blé, les poules et le chat sont disponibles ; tout le reste vient de la caravane. Une ancienne sauvegarde garde tout débloqué.
@@ -204,7 +205,7 @@ Goûts de Franck (💡) : adore le croissant ; aime le pain, les œufs et le boi
 - **Moins de pierres qu'avant** : une pierre donnait 2 à 4 pierres, maintenant 1 ou 2. La forge demande 15, 30, 45 puis 60 pierres par amélioration : la progression sera plus lente. À équilibrer si c'est trop long.
 - **Anciennes sauvegardes** : le bois peut contenir plus de 70 arbres (ancienne génération plus dense). Rien ne repousse tant qu'on n'est pas repassé sous la limite.
 
-- **Orientation du téléphone** : une page web ne peut pas faire pivoter un iPhone. Sur Android, c'est possible seulement en plein écran. Le jeu s'adapte déjà au portrait comme au paysage. → l'utilisateur dira s'il veut un bouton « plein écran » qui verrouille l'orientation (Android).
+- **Orientation du téléphone** : une page web ne peut pas faire pivoter un iPhone, et dans la page claude.ai le plein écran peut être bloqué par le cadre. Sur iPhone, l'astuce reste « Sur l'écran d'accueil ».
 - **Quête de l'enquête sur Manuel** : à écrire. Qu'apprend-on de louche, et par qui ?
 
 ## 6. Idées de Claude (💡 à valider)
