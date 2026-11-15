@@ -22,12 +22,8 @@ export function newDay(g, slept) {
   if (S.day > 28) { S.day = 1; S.season = (S.season + 1) % 4; if (S.season === 0) S.year++; }
   S.minute = CFG.DAY_START;
   g.timeAcc = 0;
-  S.energy = slept ? S.maxE : Math.round(S.maxE * 0.6);
-  if (!slept) {
-    S.money = Math.round(S.money * 0.9);
-    S.x = SPAWN.x; S.y = SPAWN.y;
-    g.bus.emit('toast', "Évanoui de fatigue… -10% d'argent");
-  }
+  if (slept) S.energy = S.maxE;
+  else g.bus.emit('toast', "🌙 Nuit passée dehors sans dormir : aucune énergie récupérée. Dors sous ta tente !");   // l'énergie reste comme elle était
   S.weather = rollWeather(S.season, g.rnd());
   rollRainbow(g);
   animalsNewDay(S);
@@ -40,6 +36,7 @@ export function newDay(g, slept) {
 export function sleep(g) {
   if (g.S.minute < CFG.SLEEP_FROM) { g.bus.emit('toast', 'Trop tôt pour dormir (après 18h)'); return false; }
   newDay(g, true);
+  ((g.S.quests ||= {}).debut ||= {}).dormi = true;
   g.bus.emit('sfx', 'sleep');
   g.bus.emit('toast', 'Bonne nuit… 🌙');
   return true;

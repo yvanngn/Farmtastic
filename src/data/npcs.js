@@ -171,6 +171,40 @@ export const MYST = {
   chat: ['…', 'Hm.'],
   questions: []
 };
+// Hailey (décrite par l'utilisateur) : infirmière de la clinique, fraîchement diplômée, motivée ; elle découvre
+// peu à peu qu'elle travaille beaucoup pour peu, que beaucoup viennent pour rien, que les vraies urgences sont
+// saturées et qu'elle reçoit le surplus ; de longues journées… elle frise le burn-out. (Histoire dévoilée par cœurs.)
+export const HAILEY = {
+  id: 'hailey', name: 'Hailey', de: "d'elle", color: '#7cc8c0', voice: 'voiceLuna',
+  look: { body: 'f', bottom: 'pant', skin: '#f3d0b4', hair: 1, hairC: '#c8843a', shirt: '#8fd0c8', pants: '#6fb4ac' },   // tenue d'infirmière turquoise 💡
+  home: null, worker: { scene: 'clinique', at: { x: 6.5, y: 3.7 }, from: 420, to: 1380 },   // de 7h à 23h (💡) : de très longues journées
+  traits: ['Infirmière', 'Fraîchement diplômée', 'Motivée', 'Travaille beaucoup', 'Fatiguée'],
+  taste: { adore: [], aime: ['berry_cooked', 'lavande'], naime: ['slime'], deteste: [] },   // 💡 un petit quelque chose qui réconforte
+  story: [
+    { h: 0, t: 'Bonjour ! Je suis Hailey, l\'infirmière. Toute nouvelle, diplômée cette année !' },
+    { h: 0, t: "Si vous avez le moindre bobo, je suis là. C'est pour ça que j'ai choisi ce métier." },
+    { h: 1, t: "Aujourd'hui, j'ai eu trois personnes pour un rhume. Et une pour une écharde. Ce n'est rien, hein… mais ça remplit la journée." },
+    { h: 1, t: "Les urgences de la grande ville sont pleines. Alors on m'envoie ceux qu'elles ne peuvent pas prendre." },
+    { h: 2, t: "J'ai fait le compte : douze heures hier. Et le salaire… disons que je ne suis pas là pour l'argent. Heureusement." },
+    { h: 2, t: "Je croyais que j'aurais le temps de vraiment soigner les gens. Je cours, surtout." },
+    { h: 3, t: "Je m'endors en rentrant, sans manger. Et je rêve de la salle d'attente." },
+    { h: 3, t: "Si quelqu'un a vraiment besoin de moi et que je suis trop fatiguée pour bien faire… ça me fait peur." },
+    { h: 4, t: "Je crois que je suis au bord du burn-out. Je n'avais jamais dit ce mot à voix haute." },
+    { h: 4, t: "Merci de passer me voir sans être malade. Ça me fait du bien, vraiment." }
+  ],
+  topics: [
+    { t: 'Ça va, le travail ?', lines: ["Ça va ! Enfin… il y a beaucoup de monde. Mais ça va !"] },
+    { t: 'Tu prends des pauses ?', h: 2, lines: ['Des pauses ? Hm. Je mange debout entre deux patients, ça compte ?'] }
+  ],
+  chat: ['Bonjour ! Pas de bobo, j\'espère ?', 'Pensez à dormir la nuit, hein. Je dis ça à tout le monde… sauf à moi.'],
+  clinic: [
+    "Ah, vous vous réveillez ! On vous a trouvé(e) effondré(e), complètement épuisé(e).",
+    "Je vous ai gardé(e) un moment ici. Il faut dormir la nuit, d'accord ? Votre corps n'est pas une machine.",
+    "Pour les soins, il y a des frais, je suis désolée… ce n'est pas moi qui fixe les tarifs."
+  ],
+  questions: []
+};
+
 // Arrivée en train (pensées du héros, 🆕) : après un licenciement, il cherche un sens à sa vie.
 export const INTRO_LINES = [
   "Après mon licenciement, j'ai voulu donner un sens à ma vie.",
@@ -179,6 +213,6 @@ export const INTRO_LINES = [
   "Paraît que peu de gens sont venus, à cause d'une rumeur. Tant mieux pour moi !",
   "Le chemin part vers ma ferme, au nord, et descend vers le village, au sud."
 ];
-export const NPCS = { luna: LUNA, chef: CHEF, franck: FRANCK, myst: MYST };
+export const NPCS = { luna: LUNA, chef: CHEF, franck: FRANCK, myst: MYST, hailey: HAILEY };
 // Luna est dehors de 8 h à 19 h, chez elle le reste du temps.
 export const OUT_FROM = 480, OUT_TO = 1140;

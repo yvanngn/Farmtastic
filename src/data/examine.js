@@ -15,6 +15,7 @@ export const EXAMINE = {
     barn: 'La bergerie. Toute rouge, comme dans les livres.',
     houseRuin: "Ma cabane… enfin, ce qu'il en reste. Avec du bois et des pierres, je peux la rafistoler.",
     grangeRuin: "La grange tient à peine debout. Impossible d'entrer pour l'instant.",
+    clinic: 'La clinique du quartier. On y soigne les bobos… et les gens épuisés.',
     myst: "Une vieille maison sombre, un peu à l'écart. Les rideaux sont tirés.",
     station: 'La petite gare. Le train ne repassera pas avant un moment.',
     rails: 'La voie ferrée. Elle file vers le sud.'

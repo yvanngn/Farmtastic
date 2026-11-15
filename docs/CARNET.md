@@ -274,3 +274,10 @@ Ordre convenu : 1 mort/clignotement ✅ · 2 tente ✅ · 3 recettes (feu), baie
 - ✅ Écran titre : **Nouvelle partie** → Solo / Créer une partie à plusieurs (code `FERME-XXXX`, 4 joueurs max, emplacement libre attribué) / Rejoindre avec un code. **Continuer** (dernière partie) et **Mes parties** (dès 2 parties). Le code s'affiche sur la carte « Région ».
 - Hors ligne (ou sur claude.ai, qui bloque Supabase) : partie solo sur l'appareil.
 - ⏳ À faire par l'utilisateur : coller `supabase_ferme.sql` dans SQL Editor, activer « Anonymous sign-ins ». Puis tester sur GitHub Pages.
+
+## Séance du 15/11/2026 (nuit)
+- ✅ Bras pendant les coups : contour sombre, manche, main, geste un peu plus lent (0,36 s) : bien visible.
+- ✅ **Myst** habite maintenant **au fond du quartier**, derrière une rangée d'arbres (x31-36). Il vient à la cabane par le portail sud de la ferme, puis le grand chemin.
+- ✅ Quête **« Premiers pas »** : déployer la tente depuis le sac (bouton « ⛺ Déployer », tuto de l'inventaire) → dormir dès 18h → pioche et hache → 💡 feu de camp → cabane. Conseil affiché une fois à 18h.
+- ✅ Nouvelle règle : ne pas dormir = **aucune énergie récupérée** (plus d'amende) ; **énergie à 0 = clinique**, 10 % de frais, réveil avec 💡 50 % d'énergie, 2 h plus tard.
+- ✅ **Clinique** dans le quartier (x18-21) et **Hailey**, infirmière (7h-23h 💡), histoire par cœurs : jeune diplômée motivée → beaucoup de gens pour rien, surplus des urgences saturées → 12 h par jour, mal payée → fatigue → burn-out. Répliques 🆕 à relire.

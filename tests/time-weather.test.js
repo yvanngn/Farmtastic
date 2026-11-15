@@ -11,13 +11,13 @@ test('le temps avance d’une minute toutes les MS_PER_MIN', () => {
   assert.equal(S.minute, 370);
 });
 
-test('passer 2h du matin = évanouissement (-10 %, énergie 60 %)', () => {
-  const { g, S, toasts } = makeGame({ state: { minute: CFG.DAY_END - 1, money: 100 } });
+test('passer 2h du matin sans dormir : nouvelle journée, mais aucune énergie récupérée', () => {
+  const { g, S, toasts } = makeGame({ state: { minute: CFG.DAY_END - 1, money: 100, energy: 30 } });
   tickTime(g, CFG.MS_PER_MIN);
   assert.equal(S.day, 2);
-  assert.equal(S.money, 90);
-  assert.equal(S.energy, 60);
-  assert.match(toasts()[0], /Évanoui/);
+  assert.equal(S.money, 100);
+  assert.equal(S.energy, 30);
+  assert.match(toasts()[0], /aucune énergie/);
 });
 
 test('dormir seulement après 18h, énergie pleine', () => {

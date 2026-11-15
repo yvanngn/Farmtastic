@@ -1,10 +1,15 @@
+import { toClinic } from './clinic.js';
 import { ITEMS } from '../data/items.js';
 import { SPAWN } from '../world/map.js';
 import { add, has } from './inventory.js';
 
 export function useEnergy(g, n) {
-  if (g.S.energy < n) { g.bus.emit('toast', 'Trop fatigué… allez dormir 🛏️'); g.bus.emit('sfx', 'denied'); return false; }
+  if (g.S.energy < n) {
+    if (g.S.energy <= 0) { toClinic(g); return false; }
+    g.bus.emit('toast', 'Trop fatigué… allez dormir 🛏️'); g.bus.emit('sfx', 'denied'); return false;
+  }
   g.S.energy -= n;
+  if (g.S.energy <= 0) toClinic(g);   // vidé : on s'effondre
   return true;
 }
 

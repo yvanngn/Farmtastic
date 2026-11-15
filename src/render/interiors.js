@@ -12,6 +12,7 @@ const THEME = {
   franck: { floor: '#8a6a4e', seam: '#6e5238', wall: '#9aa4b0', wallD: '#86909c', trim: '#5a5f6a', beam: '#2e2a30' },
   luna: { floor: '#c49a6a', seam: '#a07850', wall: '#d8c2e8', wallD: '#bca4d0', trim: '#7a5a8a', beam: '#4a2c3a' },
   pigsty: { floor: '#c9a66a', seam: '#a8854a', wall: '#9a6a3c', wallD: '#7a4e2a', trim: '#c99560', beam: '#4a2c18' },
+  clinique: { floor: '#dfe6e4', seam: '#c4cecb', wall: '#eef4f2', wallD: '#d6e2de', trim: '#5aa8a0', beam: '#3a4a48' },
   barn: { floor: '#d4b870', seam: '#b0944c', wall: '#b8452f', wallD: '#93321f', trim: '#f0e6d0', beam: '#4a2c18' }
 };
 
@@ -48,7 +49,9 @@ export function buildInterior(name, S = {}) {
       for (let k = 0; k < 8; k++) R(px + (r() * 14 | 0), py + (r() * 15 | 0), 2, 1, r() < .5 ? th.seam : '#86684a');
       if ((t === 'p' || t === 'r' || t === 'E') && t === 'E') { R(px, py, T, T, '#3a3230'); for (let k = 0; k < 9; k++) { const a = r() * 12 | 0, b = r() * 12 | 0; R(px + a, py + b, 5, 4, ['#6a605a', '#544844', '#7a706a'][k % 3]); } }
       if (x <= 8 && y <= 5 && r() < .25) for (let k = 0; k < 4; k++) R(px + (r() * 12 | 0), py + (r() * 14 | 0), 3, 1, '#d9b84a');
-    } else {
+    } else if (name === 'clinique') { // carrelage propre
+      R(px, py, T, T, (x + y) % 2 ? th.floor : '#e8eeec'); R(px, py, T, 1, th.seam); R(px, py, 1, T, th.seam);
+  } else {
       R(px, py, T, T, th.floor);
       for (let k = 0; k < 10; k++) R(px + (r() * 14 | 0), py + (r() * 15 | 0), 2, 1, r() < .5 ? th.seam : '#efd98f');
     }
@@ -58,6 +61,7 @@ export function buildInterior(name, S = {}) {
   const seen = new Set();
   const block = ch => { const pts = []; for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) if (L[y][x] === ch) pts.push([x, y]); return pts; };
   const bbox = pts => { const xs = pts.map(p => p[0]), ys = pts.map(p => p[1]); return [Math.min(...xs) * T, Math.min(...ys) * T, (Math.max(...xs) - Math.min(...xs) + 1) * T, (Math.max(...ys) - Math.min(...ys) + 1) * T]; };
+  const bedC = ([x, y, w, h]) => { R(x + 1, y + 2, w - 2, h - 3, '#c4cecb'); R(x + 2, y + 3, w - 4, h - 6, '#ffffff'); R(x + 3, y + 4, w - 6, 5, '#f4f8f7'); R(x + 2, y + 12, w - 4, h - 16, '#7cc8c0'); R(x + 1, y + h - 2, 2, 2, '#6a7472'); R(x + w - 3, y + h - 2, 2, 2, '#6a7472'); };
   const draw = {
     R: ([x, y, w, h]) => { R(x + 1, y + 1, w - 2, h - 2, '#a8392c'); R(x + 3, y + 3, w - 6, h - 6, '#d0573f'); R(x + 5, y + 5, w - 10, h - 10, '#e8c26a'); R(x + 7, y + 7, w - 14, h - 14, '#a8392c'); for (let k = x + 3; k < x + w - 3; k += 4) { R(k, y, 1, 2, '#e8c26a'); R(k, y + h - 2, 1, 2, '#e8c26a'); } },
     B: ([x, y, w, h]) => { if (S.bed === false) { R(x + 2, y + 2, w - 4, 1, 'rgba(0,0,0,.18)'); R(x + 2, y + h - 3, w - 4, 1, 'rgba(0,0,0,.18)'); R(x + 2, y + 2, 1, h - 4, 'rgba(0,0,0,.18)'); R(x + w - 3, y + 2, 1, h - 4, 'rgba(0,0,0,.18)'); return; } R(x, y, w, h, '#5a3a22'); R(x + 1, y + 1, w - 2, 7, '#f4efe4'); R(x + 2, y + 2, w - 4, 4, '#ffffff'); R(x + 1, y + 9, w - 2, h - 11, '#3f6fb0'); for (let k = 0; k < w - 4; k += 4) R(x + 2 + k, y + 10, 2, h - 13, '#5b8fd0'); R(x + 1, y + h - 3, w - 2, 2, '#2f548a'); },
@@ -77,6 +81,8 @@ export function buildInterior(name, S = {}) {
     X: () => { for (const [cx, cy, s2] of [[1, 2, 13], [2, 2, 11], [1, 3, 12]]) { const x = cx * T + 1, y = cy * T + 2; R(x, y, s2, s2 - 2, '#b8875a'); R(x, y, s2, 3, '#d4a878'); R(x + s2 / 2 - 1, y, 2, s2 - 2, '#e8dcc0'); R(x, y + s2 - 3, s2, 1, '#8a5a32'); } },
     G: ([x, y, w, h]) => { R(x + 2, y + 2, w - 4, h - 4, '#6e4a2e'); R(x + 4, y + 4, w - 8, h - 8, '#7d5636'); for (const [a, b] of [[6, 6], [w - 14, 9], [12, h - 10]]) { R(x + a, y + b, 6, 2, '#8f6642'); R(x + a + 1, y + b, 3, 1, '#a07650'); } },
     Y: ([x, y, w, h]) => { R(x + 1, y + 3, w - 2, h - 4, '#c9a330'); R(x + 1, y + 3, w - 2, 3, '#f5dd7a'); for (let k = x + 2; k < x + w - 2; k += 3) R(k, y + 6, 1, h - 8, '#a8862a'); R(x + 1, y + h - 2, w - 2, 1, '#7a5f1e'); },
+    m: bedC, n: bedC,
+    c: ([x, y, w, h]) => { R(x, y + 4, w, h - 6, '#e6ece9'); R(x, y + 4, w, 2, '#ffffff'); R(x, y + h - 3, w, 2, '#9aa8a4'); R(x + 4, y - 2, 10, 8, '#3a4a48'); R(x + 5, y - 1, 8, 5, '#8fd0e8'); R(x + 18, y + 2, 7, 4, '#ffffff'); R(x + 19, y + 3, 5, 1, '#9aa8a4'); },
     N: ([x, y, w, h]) => { R(x + 1, y + 2, w - 2, h - 4, '#5a3a22'); for (let k = 0; k < h - 6; k += 8) { disc(g, x + 8, y + 8 + k, 5, '#c9a64e'); disc(g, x + 8, y + 8 + k, 3, '#8a6a2e'); } }
   };
   for (const ch of Object.keys(draw)) {

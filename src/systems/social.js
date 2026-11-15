@@ -78,6 +78,11 @@ export const hearts = r => Math.floor(Math.max(0, r.points) / POINTS_PER_HEART);
 // Position du PNJ selon l'heure (dehors le jour, chez lui le soir).
 export function placeNPC(n, S, OUT_FROM, OUT_TO) {
   if (n.mystic) return placeMyst(n, S);
+  if (n.worker) { // au travail de longues heures, sinon introuvable
+    const w = n.worker, on = S.minute >= w.from && S.minute < w.to;
+    n.scene = on ? w.scene : 'none'; Object.assign(n, w.at); n.walking = false; n.dir = 0;
+    return;
+  }
   const out = S.minute >= OUT_FROM && S.minute < OUT_TO;
   if (n.welcome && S.intro && !S.intro.met) { n.scene = 'farm'; Object.assign(n, n.welcome); n.walking = false; return; } // accueil du joueur
   if (n.leaving) { // après l'accueil, il redescend le chemin vers le village

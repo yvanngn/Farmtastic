@@ -1,3 +1,4 @@
+import { deployTent } from '../systems/camp.js';
 // Menu : sac, fabrication, boutique, forge, marché, liens.
 import { $ } from './dom.js';
 import { iconHTML } from './icons.js';
@@ -45,7 +46,7 @@ export function createMenu(g, opts) {
     },
     sac(S) {
       const ids = Object.keys(S.inv);
-      return `<p class="info">${usedSlots(S)}/${slots(S)} cases utilisées · ${stackSize(S)} objets max par case</p>` + (ids.length ? '<div class="grid">' + ids.map(id => card(`<div class="t">${it(id).i} <b>${it(id).n}</b></div><div>×${S.inv[id]} · ${Math.ceil(S.inv[id] / stackSize(S))} case(s) · ${it(id).p}🪙/u</div>${it(id).eat ? `<button data-use="${id}">Utiliser</button>` : ''}`)).join('') + '</div>' : 'Sac vide.');
+      return `<p class="info">${usedSlots(S)}/${slots(S)} cases utilisées · ${stackSize(S)} objets max par case</p>` + (ids.length ? '<div class="grid">' + ids.map(id => card(`<div class="t">${it(id).i} <b>${it(id).n}</b></div><div>×${S.inv[id]} · ${Math.ceil(S.inv[id] / stackSize(S))} case(s) · ${it(id).p}🪙/u</div>${it(id).eat ? `<button data-use="${id}">Utiliser</button>` : it(id).tent ? `<button data-deploy="${id}" class="primaire">⛺ Déployer</button>` : ''}`)).join('') + '</div>' : 'Sac vide.');
     },
     workshop(S) { return '<p class="info">Ton établi, à la maison. D\'autres plans viendront plus tard.</p>' + views.craft(S); },
     craft(S) {
@@ -149,7 +150,7 @@ export function createMenu(g, opts) {
   }
 
   const handlers = {
-    use: id => consume(g, id), craft: i => craft(g, +i), hcraft: id => craftHand(g, id), buy: id => buy(g, id), buy5: id => buy(g, id, 5), animal: id => buyAnimal(g, id),
+    use: id => consume(g, id), deploy: () => { if (deployTent(g)) $('#ovBag').classList.remove('on'); }, craft: i => craft(g, +i), hcraft: id => craftHand(g, id), buy: id => buy(g, id), buy5: id => buy(g, id, 5), animal: id => buyAnimal(g, id),
     bag: () => buyBag(g), bench: () => repairBench(g), build: id => build(g, id), stack: () => buyStack(g), up: id => upgradeTool(g, id)
   };
   function render() {

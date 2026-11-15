@@ -21,6 +21,7 @@ import { NPCS, OUT_FROM, OUT_TO, INTRO_LINES } from './data/npcs.js';
 import { placeNPC, findNPCAt, mystTick } from './systems/social.js';
 import { pickFieldTool } from './systems/repair.js';
 import { cookTick } from './systems/cooking.js';
+import { nightTip } from './systems/camp.js';
 import { BUSHES } from './data/recipes.js';
 import { createRepairPanel } from './ui/repairPanel.js';
 import { autoPickup } from './systems/grange.js';
@@ -71,6 +72,7 @@ function wireBus() {
   g.bus.on('pop', p => g.fx.push({ ...p, life: 1 }));
   g.bus.on('newDay', () => { renderer.initWeather(); audio.play('day'); doSave(false); });
   g.bus.on('scene', () => { g.enemies.length = 0; });
+  g.bus.on('clinic', () => { const h = NPCS.hailey; setTimeout(() => g.bus.emit('say', { name: h.name, color: h.color, voice: h.voice, lines: h.clinic }), 600); });
   g.bus.on('open', what => what === 'board' ? board.open() : menu.open(what, true));
 }
 wireBus();
@@ -210,7 +212,7 @@ function loop(now) {
     wander(g, dt);
     updateWild(g, dt); // les monstres ne vivent que dans les Caverne sombre
     autoPickup(g);
-    pickTestSword(g, Math.floor(g.S.x), Math.floor(g.S.y - .2)); pickFieldTool(g, Math.floor(g.S.x), Math.floor(g.S.y - .2)); mystTick(g); cookTick(g);
+    pickTestSword(g, Math.floor(g.S.x), Math.floor(g.S.y - .2)); pickFieldTool(g, Math.floor(g.S.x), Math.floor(g.S.y - .2)); mystTick(g); cookTick(g); nightTip(g);
     ensureNature(g, g.S.scene || 'farm'); rainbowTick(g);
     pickFlower(g, Math.floor(g.S.x), Math.floor(g.S.y - .2)); digTreasure(g, Math.floor(g.S.x), Math.floor(g.S.y - .2));
     if (g.S.scene === 'foret') { ensureShrooms(g); pickShroom(g, Math.floor(g.S.x), Math.floor(g.S.y - .2)); }

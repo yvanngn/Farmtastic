@@ -38,6 +38,7 @@ export function sleepTent(g) {
   const t = S.tent;
   newDay(g, true);
   S.energy = Math.round(S.maxE * TENT_ENERGY);
+  ((S.quests ||= {}).debut ||= {}).dormi = true;
   S.x = t.x + .5; S.y = t.y + 1.6; S.scene = 'farm';
   g.bus.emit('sfx', 'sleep'); g.bus.emit('toast', 'Nuit sous la tente… le sol est dur (50 % d’énergie) ⛺');
   return true;
@@ -48,5 +49,32 @@ export function useTent(g) {
   g.bus.emit('say', { name: g.S.name, color: '#ffdf8a', lines: ['Ma tente. Pas très confortable, mais ça dépanne.'],
     choices: ['Dormir', 'Replier la tente', 'Rien.'],
     onChoose: i => { if (i === 0) sleepTent(g); else if (i === 1) foldTent(g); } });
+  return true;
+}
+
+// Déployer la tente depuis le sac (tuto de l'inventaire) : sur la case libre la plus proche, à côté de la cabane.
+export function deployTent(g) {
+  const S = g.S;
+  if (!(S.inv.tent > 0)) return false;
+  let best = null;
+  for (let y = TENT_ZONE.y0; y <= TENT_ZONE.y1; y++) for (let x = TENT_ZONE.x0; x <= TENT_ZONE.x1; x++) {
+    const d = Math.hypot(x + .5 - S.x, y + .5 - S.y);
+    if (canPitch(S, x, y) && d > 1 && (!best || d < best.d)) best = { x, y, d };
+  }
+  if (!best || best.d > 5) { g.bus.emit('sfx', 'denied'); g.bus.emit('toast', '⛺ Va juste à côté de ta cabane (au nord du chemin) pour déployer la tente.'); return false; }
+  return pitchTent(g, best.x, best.y);
+}
+
+// À 18h, la première fois : on explique la nuit, la tente et la clinique.
+export const NIGHT_TIP = [
+  '🌙 Il est 18h : la nuit tombe.',
+  'Dors sous ta tente pour récupérer ton énergie (touche la tente → Dormir).',
+  "Si tu ne dors pas, tu ne récupères rien le lendemain. Et si ton énergie tombe à 0, tu t'effondres : réveil à la clinique, avec 10 % de frais !"
+];
+export function nightTip(g) {
+  const S = g.S, q = ((S.quests ||= {}).debut ||= {});
+  if (q.nuit || S.minute < CFG.SLEEP_FROM || q.dormi) return false;
+  q.nuit = true;
+  g.bus.emit('say', { name: 'Conseil', color: '#ffdf8a', lines: NIGHT_TIP });
   return true;
 }
