@@ -149,8 +149,12 @@ export function drawSwing(c, S, tool, p) {
   // le bras suit l'outil : levé pendant l'élan, abaissé pendant le coup
   const ox = Math.round(S.x * T - 6), oy = Math.round(S.y * T - 19), sh = [[6, 11], [6, 10], [4, 11], [8, 11]][S.dir];
   const dx = Math.sin(step), dy = -Math.cos(step), L = S.look || {};
-  const hxp = Math.round(ox + sh[0] + dx * 5), hyp = Math.round(oy + sh[1] + dy * 5);
-  for (let k = 0; k <= 5; k++) { c.fillStyle = k < 4 ? (L.shirt || '#d04a3a') : (L.skin || '#f6d2b0'); c.fillRect(Math.round(ox + sh[0] + dx * k) - 1, Math.round(oy + sh[1] + dy * k) - 1, 2, 2); }
+  const AL = 7, hxp = Math.round(ox + sh[0] + dx * AL), hyp = Math.round(oy + sh[1] + dy * AL);
+  const pt = k => [Math.round(ox + sh[0] + dx * k), Math.round(oy + sh[1] + dy * k)];
+  c.fillStyle = '#241a14'; for (let k = 0; k <= AL; k++) { const [x, y] = pt(k); c.fillRect(x - 2, y - 2, 4, 4); }   // contour sombre : le bras se détache du corps
+  c.fillStyle = shade(L.shirt || '#d04a3a', .78); for (let k = 0; k <= AL - 2; k++) { const [x, y] = pt(k); c.fillRect(x - 1, y - 1, 2, 2); }   // manche
+  c.fillStyle = L.skin || '#f6d2b0'; for (let k = AL - 2; k <= AL; k++) { const [x, y] = pt(k); c.fillRect(x - 1, y - 1, 2, 2); }   // avant-bras et main
+  c.fillRect(hxp - 1, hyp - 1, 3, 3);
   c.save(); c.translate(hxp, hyp); c.rotate(step);
   draw(c); c.restore();
 }
