@@ -20,8 +20,8 @@ export function knockout(g) {
   const S = g.S;
   S.hp = Math.round(S.maxHp / 2);
   S.money = Math.round(S.money * 0.9);
-  S.x = SPAWN.x; S.y = SPAWN.y;
-  g.enemies.length = 0;
+  S.x = SPAWN.x; S.y = SPAWN.y; S.scene = 'farm';
+  g.enemies.length = 0; if (g.shots) g.shots.length = 0;
   g.bus.emit('toast', "K.O. ! Ramené à la maison (-10% d'argent)");
 }
 

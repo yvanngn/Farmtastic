@@ -3,6 +3,7 @@ import { add } from './inventory.js';
 import { damage, useEnergy } from './player.js';
 import { isNight } from './weather.js';
 import { toolTier } from './skills.js';
+import { mobLoot } from './wild.js';
 
 export const MAX_ENEMIES = 5;
 export const SWORD_DMG = 34;
@@ -41,8 +42,8 @@ export function attack(g, e) {
   e.x += (e.x - S.x) / d * 0.6; e.y += (e.y - S.y) / d * 0.6;
   if (e.hp <= 0) {
     g.enemies.splice(g.enemies.indexOf(e), 1);
-    add(g, 'slime');
-    g.bus.emit('pop', { t: '+🟢', x: e.x, y: e.y });
+    if (e.type) mobLoot(g, e);
+    else { add(g, 'slime'); g.bus.emit('pop', { t: '+🟢', x: e.x, y: e.y }); }
   }
   return true;
 }

@@ -34,8 +34,8 @@ Règle des dialogues : répliques débloquées par paliers d'amitié ; Claude li
 
 ## 3 bis. Nouvelles demandes du 15/11/2026 (8 h 20) — pas encore commencées
 Mots de l'utilisateur, à respecter tels quels :
-- **Zone de combat à explorer** (⏳) : un endroit séparé pour les combats, façon **Zelda sur Game Boy**. Mobs : **slime bleu, slime vert, cochon qui tire**. **Bouclier** envisagé plus tard. L'accès n'est **pas ouvert au début**.
-- **Cailloux de la zone de combat** (⏳) : 3 types ; le type 2 est rare, le type 3 encore plus. Chaque caillou a de **très faibles chances** de donner un minerai rare, plus souvent sur le type 2 et encore plus sur le type 3. Minerais pour l'instant : **rubis** et **émeraude**.
+- **Zone de combat à explorer** (✅ lot 10, 15/11/2026 ; bouclier ⏳) : un endroit séparé pour les combats, façon **Zelda sur Game Boy**. Mobs : **slime bleu, slime vert, cochon qui tire**. **Bouclier** envisagé plus tard. L'accès n'est **pas ouvert au début**.
+- **Cailloux de la zone de combat** (✅ lot 10) : 3 types ; le type 2 est rare, le type 3 encore plus. Chaque caillou a de **très faibles chances** de donner un minerai rare, plus souvent sur le type 2 et encore plus sur le type 3. Minerais pour l'instant : **rubis** et **émeraude**.
 - **Atelier de fabrication à la maison** (⏳), à débloquer plus tard.
 - **Franck** (⏳), nouveau voisin de Luna. Timide, il sort peu. Une des **quêtes principales** sera de l'aider à sortir. Il a vécu un **traumatisme quand il était jeune**, dont il ne veut pas parler : **on ne le saura jamais**, on laisse l'imagination au joueur, mais ça a forgé son caractère. Depuis, il laisse passer le temps, comme si rien ne l'animait. Un jour, on lui **fabriquera un objet** qui l'animera et le **changera radicalement**.
 - **Début de partie** (✅ lot 8, 15/11/2026 — voir § 4) :
@@ -89,6 +89,10 @@ Mots de l'utilisateur, à respecter tels quels :
   Un outil se ramasse en marchant dessus ou avec le bouton d'action. Sans le bon outil, un message dit d'aller voir la grange.
 - **Champ (lot 9)** : au départ, le champ devant la maison est en herbe, avec quatre piquets aux coins. Il faut **bêcher chaque case à la pelle** (1 d'énergie par case) avant de planter. Avec des graines en main devant une case non bêchée, le bouton d'action prend la pelle tout seul.
 - **Foin** : les **graines de foin** (4 🪙) se vendent à l'étal de la halle du marché. Le foin pousse en 1 min 30 réelle, donne 3 foins par case, et sert à nourrir les animaux. Une ancienne sauvegarde garde son champ entièrement bêché.
+- **Terres sauvages (lot 10)** : la zone de combat se trouve derrière le **vieux portail de pierre**, tout à l'est de la ferme. Il est **fermé au début**. Quand le premier chantier du village est fini (les lampadaires), le chef du village confie la clé et une **épée**.
+  - Elle compte **6 salles** de 10 × 8 cases, façon Zelda Game Boy : la caméra reste dans la salle et le reste est noir. Les monstres de la salle apparaissent quand on y entre, et reviennent si on repasse.
+  - **Slime vert** (lent, 10 de dégâts), **slime bleu** (rapide, plus résistant, 15), **cochon qui tire** (garde ses distances, tire en ligne droite toutes les 2 s, 12 par tir ; il laisse 5 à 15 🪙). Après un coup, le joueur clignote et reste invincible 0,8 s. Un K.O. ramène à la maison (−10 % d'argent).
+  - **12 cailloux par jour**, de 3 types : le caillou simple (1 pierre, 2 % de minerai), le **caillou veiné**, rare (2 pierres, 8 %), et le **caillou cristallin**, encore plus rare (3 pierres, 20 %). Les minerais sont le **rubis** (250 🪙) et l'**émeraude** (300 🪙).
 - **Plus de slimes la nuit sur la ferme.** L'épée n'est plus donnée au départ.
 - Une ancienne sauvegarde garde ses outils et ne revoit pas l'accueil.
 - **Départ d'une nouvelle partie** : seules les graines de blé, les poules et le chat sont disponibles ; tout le reste vient de la caravane. Une ancienne sauvegarde garde tout débloqué.
@@ -170,6 +174,7 @@ Goûts du chef (💡) : aime le pain et les œufs ; déteste la gelée.
 ## 6. Idées de Claude (💡 à valider)
 - Sous-titre de l'écran titre : « ✦ une ferme à partager ✦ » (déjà affiché, à garder ou retirer).
 - **Goûts de Luna** (tirés de sa personnalité : ancienne informaticienne, rêve de ferme, budget serré, retape sa maison) : adore les graines de carotte et de blé ; aime le pain, le croissant et le bois ; n'aime pas la pierre ni le foin ; déteste la gelée. Il n'existe pas encore de fleurs ni de bijoux à offrir.
+- **Lot 10** : le nom « Terres sauvages », l'ouverture par le premier chantier, les points de vie, dégâts et vitesses des monstres, le cochon au lance-pierre qui laisse de l'argent, les pourcentages de minerai, le nombre de salles.
 - **Lot 9** : temps de pousse et rendement du foin, prix des graines, bêchage limité au champ devant la maison.
 - **Lot 7** : noms et objectifs des chantiers, primes, nom des fêtes, coûts en jetons de la caravane, poids de chaque famille de demandes.
 - **Luna** : son apparence (cheveux longs foncés, haut vert), sa maison mauve, ses horaires, le détail de la bouilloire, de la ville, du champ de blé et des petits boulots. Elle n'a pas encore de cadeau préféré : dis-moi ce qu'elle aime et déteste.

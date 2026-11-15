@@ -6,7 +6,7 @@ Document à donner à une nouvelle conversation pour reprendre le jeu sans rien 
 - **Code** : dépôt GitHub `yvanngn/Farmtastic` (branche `main`). README.md et CLAUDE.md font foi.
 - **Version jouable** : page claude.ai « Moteur Ferme » (publiée depuis `play.html` + `css/` + `src/`). Republier toujours sur la même page.
 - **Base de données** : `supabase_schema.sql` (profils, sauvegardes, mondes, objets partagés, PNJ, liens sociaux, marché entre joueurs). Supabase n'est pas encore branché (`src/config.js` vide → jeu solo, sauvegarde locale).
-- **Tests** : `npm test` (node:test, 107 tests au vert). Un fichier par système dans `tests/`.
+- **Tests** : `npm test` (node:test, 115 tests au vert). Un fichier par système dans `tests/`.
 
 ## Mémoire du projet
 - **`docs/CARNET.md`** : histoire, personnages, lots, ce qui existe, contradictions, idées non validées. Le lire en premier, le mettre à jour à la fin de chaque séance (skill `carnet-de-projet`).
@@ -54,7 +54,7 @@ Document à donner à une nouvelle conversation pour reprendre le jeu sans rien 
 ## À faire ensuite (demandes du 15/11/2026, détail dans docs/CARNET.md § 3 bis)
 8. ✅ Début de partie : aucun outil, accueil par le chef du village, grange-tunnels de la maison (hache, puis pioche et pelle).
 9. ✅ Champ de foin à préparer + graines de foin au magasin.
-10. Zone de combat façon Zelda Game Boy (slimes bleu/vert, cochon qui tire), fermée au début ; cailloux 3 types + rubis/émeraude.
+10. ✅ Zone de combat façon Zelda Game Boy (slimes bleu/vert, cochon qui tire), fermée au début ; cailloux 3 types + rubis/émeraude.
 11. Franck, voisin timide de Luna, et sa quête principale (le faire sortir ; objet fabriqué qui le change).
 12. Atelier de fabrication à la maison (à débloquer).
 Plus tard : bouclier, suite des tunnels.

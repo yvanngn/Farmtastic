@@ -1,0 +1,27 @@
+// Lot 10 — zone de combat façon Zelda Game Boy : « Les Terres sauvages » (nom 💡).
+// 3 × 2 salles de 10 × 8 cases ; la caméra reste dans la salle du joueur.
+export const ROOM_W = 10, ROOM_H = 8, ROOMS_X = 3, ROOMS_Y = 2;
+export const MOBS = {
+  slime_v: { n: 'Slime vert', hp: 60, speed: 1.1, dmg: 10, drop: 'slime', color: '#56c45a' },
+  slime_b: { n: 'Slime bleu', hp: 100, speed: 1.7, dmg: 15, drop: 'slime', color: '#4a8ae0' },
+  pig: { n: 'Cochon qui tire', hp: 90, speed: 1.0, dmg: 10, shot: 12, reload: 2.2, money: [5, 15] }
+};
+// Monstres de chaque salle (index = y * 3 + x), réapparaissent quand on revient dans la salle.
+export const ROOM_MOBS = [
+  ['slime_v', 'slime_v'],
+  ['slime_v', 'slime_v', 'slime_b'],
+  ['pig', 'slime_b'],
+  ['slime_v'],
+  ['slime_b', 'slime_b', 'pig'],
+  ['pig', 'pig', 'slime_b']
+];
+// Cailloux : 3 types (le 2 est rare, le 3 encore plus) ; minerais rares, plus fréquents sur 2 et 3.
+export const ZROCKS = {
+  zrock1: { n: 'Caillou', hp: 2, stone: 1, ore: 0.02 },
+  zrock2: { n: 'Caillou veiné', hp: 4, stone: 2, ore: 0.08 },
+  zrock3: { n: 'Caillou cristallin', hp: 6, stone: 3, ore: 0.2 }
+};
+export const ZROCK_COUNT = 12, ZROCK_P3 = 0.06, ZROCK_P2 = 0.25;
+export const ORES = ['ruby', 'emerald'];
+// Entrée : le vieux portail tout à l'est de la ferme (fermé au début).
+export const GATE = { x: 47, y: 18 };

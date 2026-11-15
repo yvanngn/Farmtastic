@@ -10,6 +10,7 @@ import { ITEMS } from '../data/items.js';
 import { BUILDINGS } from '../data/buildings.js';
 import { hasTool } from './skills.js';
 import { grangeAction } from './grange.js';
+import { hitZRock, isOpen } from './wild.js';
 import { findNPCAt, talk, gift } from './social.js';
 import { add } from './inventory.js';
 import { TOOL_FOR } from './resources.js';
@@ -19,6 +20,7 @@ const own = (S, t) => (hasTool(S, t) ? t : 'hand');
 // Choisit l'outil adapté à la cible. Un objet tenu (graine, foin…) est gardé, sauf devant un arbre/rocher/monstre.
 export function smartTool(g, tx, ty) {
   const S = g.S;
+  if (S.scene === 'wild') return S.wild && S.wild.rocks[key(tx, ty)] ? own(S, 'pick') : (hasTool(S, 'sword') ? 'sword' : S.sel);
   if (S.scene === 'grange') { const t = tileAt('grange', tx, ty); return t === 'p' ? own(S, 'axe') : t === 'r' ? own(S, 'pick') : S.sel; }
   if ((S.scene || 'farm') !== 'farm') return S.sel;
   if (findNPCAt(g, tx, ty)) return TOOL_IDS.includes(S.sel) ? 'hand' : S.sel;
@@ -50,8 +52,10 @@ export function act(g, tx, ty) {
     talk(g, npc.id); return 'talk';
   }
   const d = doorAt(sc, tx, ty);
+  if (d && d.to === 'wild' && !isOpen(S)) { g.bus.emit('sfx', 'denied'); g.bus.emit('toast', 'Le vieux portail est fermé à clé. Le chef du village saura peut-être…'); return 'locked'; }
   if (d && !(sc === 'farm' && BUILDINGS[d.to] && !(S.built && S.built[d.to]))) { enterScene(g, d.to, d.spawn); return 'door'; }
   if (sc === 'grange') { const r = grangeAction(g, tx, ty); if (r !== 'none') return r; }
+  if (sc === 'wild') return S.wild && S.wild.rocks[key(tx, ty)] ? (hitZRock(g, tx, ty) ? 'hit' : 'none') : 'none';
   if (sc === 'town') { const ui = UI_TILES[tileAt(sc, tx, ty)]; if (ui) { g.bus.emit('sfx', 'ui'); g.bus.emit('open', ui); return ui; } return 'none'; }
   if (sc === 'house') return tileAt(sc, tx, ty) === 'B' ? (sleep(g) ? 'sleep' : 'none') : 'none';
   if (BUILDINGS[sc]) return tileAt(sc, tx, ty) === 'H' ? (feedAll(g, sc) ? 'feedAll' : 'none') : 'none';

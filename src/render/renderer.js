@@ -6,6 +6,7 @@ import { drawChar, drawTree, drawRock, drawCrop, drawAnimal, drawSlime, drawSwin
 import { buildInterior } from './interiors.js';
 import { buildTown, TOWN_LIGHTS } from './town.js';
 import { PICKUPS, isBroken } from '../systems/grange.js';
+import { buildWild, drawMob, drawZRock } from './wild.js';
 import { LAYOUTS } from '../world/scenes.js';
 import { toolIcon } from './sprites.js';
 import { SCENES } from '../world/scenes.js';
@@ -115,7 +116,7 @@ export function createRenderer(cv, g) {
     const S = g.S;
     const scene = S.scene || 'farm', outside = scene === 'farm', sky = outside || !!SCENES[scene].outdoor, SC = SCENES[scene];
     if (cacheSeason !== S.season || cacheScene !== scene) {
-      cache = outside ? farmGround() : scene === 'town' ? (interiors['town' + S.season] ||= buildTown(S.season)) : (interiors[scene] ||= buildInterior(scene));
+      cache = outside ? farmGround() : scene === 'wild' ? (interiors['wild' + S.season] ||= buildWild(S.season)) : scene === 'town' ? (interiors['town' + S.season] ||= buildTown(S.season)) : (interiors[scene] ||= buildInterior(scene));
       if (cacheSeason !== S.season) initWeather();
       cacheSeason = S.season; cacheScene = scene;
     }
@@ -123,6 +124,10 @@ export function createRenderer(cv, g) {
     const vw = cv.width / scale, vh = cv.height / scale, MW = SC.W * T, MH = SC.H * T;
     cam.x = MW <= vw ? (MW - vw) / 2 : Math.max(0, Math.min(MW - vw, S.x * T - vw / 2));
     cam.y = MH <= vh ? (MH - vh) / 2 : Math.max(0, Math.min(MH - vh + (g.talking ? vh * .3 : 0), S.y * T - vh / 2 + (g.talking ? vh * .22 : 0))); // la bulle ne cache pas les personnages
+    if (SC.rooms) { // salles façon Game Boy : la caméra reste centrée sur la salle du joueur
+      const rw = SC.rooms.w * T, rh = SC.rooms.h * T;
+      cam.x = Math.floor(S.x * T / rw) * rw - (vw - rw) / 2; cam.y = Math.floor(S.y * T / rh) * rh - (vh - rh) / 2 + (g.talking ? vh * .22 : 0);
+    }
     const camX = Math.round(cam.x * scale) / scale, camY = Math.round(cam.y * scale) / scale;
     ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.fillStyle = '#16121f'; ctx.fillRect(0, 0, cv.width, cv.height);
     ctx.setTransform(scale, 0, 0, scale, -camX * scale, -camY * scale);
@@ -143,6 +148,11 @@ export function createRenderer(cv, g) {
     }
     if (outside) for (const a of S.animals) list.push({ z: a.y, d: () => drawAnimal(ctx, a, now, ANIMALS[a.type]) });
     if (outside) for (const e of g.enemies) list.push({ z: e.y, d: () => drawSlime(ctx, e, now) });
+    if (scene === 'wild') {
+      for (const e of g.enemies) list.push({ z: e.y, d: () => drawMob(ctx, e, now) });
+      for (const k in (S.wild && S.wild.rocks) || {}) { const [x, y] = k.split(',').map(Number), o = S.wild.rocks[k]; list.push({ z: y + .9, d: () => drawZRock(ctx, x, y, o) }); }
+      for (const s2 of g.shots || []) list.push({ z: s2.y, d: () => { ctx.fillStyle = '#3a2020'; ctx.fillRect(Math.round(s2.x * T) - 2, Math.round(s2.y * T) - 2, 4, 4); ctx.fillStyle = '#e0a060'; ctx.fillRect(Math.round(s2.x * T) - 1, Math.round(s2.y * T) - 1, 2, 2); } });
+    }
     if (scene === 'grange') {
       // outils au sol (avec un éclat) et passages encore fermés
       for (const p of PICKUPS) if (!S.grange.found.includes(p.tool)) list.push({ z: p.y + .5, d: () => {
@@ -163,7 +173,7 @@ export function createRenderer(cv, g) {
     for (const id in g.others) { const o = g.others[id]; if (!o.look || (o.scene || 'farm') !== scene) continue; list.push({ z: o.y, d: () => { drawChar(ctx, Math.round(o.x * T - 6), Math.round(o.y * T - 19), o.look, o.dir, o.f, now + 777); label(o.name, o.x * T, o.y * T - 25); } }); }
     list.push({ z: S.y, d: () => {
       if (swing && S.dir === 1) drawSwing(ctx, S, swing.tool, swing.p);
-      drawChar(ctx, Math.round(S.x * T - 6), Math.round(S.y * T - 19), S.look, S.dir, g.player.walkFrame, now);
+      if (!(g.player.iframe > 0 && ((now / 80) | 0) % 2)) drawChar(ctx, Math.round(S.x * T - 6), Math.round(S.y * T - 19), S.look, S.dir, g.player.walkFrame, now);
       if (swing && S.dir !== 1) drawSwing(ctx, S, swing.tool, swing.p);
     } });
     for (const f of worldFx) if (f.k === 'fall' && outside) list.push({ z: f.y + .95, d: () => {
@@ -176,6 +186,12 @@ export function createRenderer(cv, g) {
     for (const f of worldFx) if (f.k === 'chip') list.push({ z: f.floor / T, d: () => { ctx.globalAlpha = Math.min(1, f.life * 3); ctx.fillStyle = f.col; ctx.fillRect(Math.round(f.x), Math.round(f.y), 2, 2); ctx.globalAlpha = 1; } });
     list.sort((a, b) => a.z - b.z).forEach(o => o.d());
 
+    if (SC.rooms) { // tout ce qui n'est pas la salle courante est masqué
+      const rw = SC.rooms.w * T, rh = SC.rooms.h * T, rx = Math.floor(S.x * T / rw) * rw, ry = Math.floor(S.y * T / rh) * rh;
+      ctx.fillStyle = '#16121f';
+      ctx.fillRect(cam.x - 2, cam.y - 2, rx - cam.x + 2, vh + 4); ctx.fillRect(rx + rw, cam.y - 2, vw, vh + 4);
+      ctx.fillRect(rx, cam.y - 2, rw, ry - cam.y + 2); ctx.fillRect(rx, ry + rh, rw, vh);
+    }
     const t = g.player.target;
     if (t) brackets(t.tx, t.ty, now);
     ctx.font = 'bold 8px Georgia'; ctx.lineWidth = 2; ctx.strokeStyle = '#1b1226';

@@ -6,6 +6,7 @@ import { ITEMS } from '../data/items.js';
 import { add, has } from './inventory.js';
 import { KINDS, KIND_WEIGHTS, PROJECTS, FESTIVAL_GOAL, FESTIVAL_REWARD, FESTIVALS, UNLOCKS } from '../data/requests.js';
 import { tasteOf } from './social.js';
+import { openWild } from './wild.js';
 
 export const ORDER_SLOTS = 6;
 export const RENEW_MS = 2 * 3600 * 1000;
@@ -68,6 +69,7 @@ function contribute(g, o) {
     S.village.progress += o.qty;
     if (S.village.progress >= p.goal) {
       S.village.done.push(p.id); S.village.progress = 0; S.money += p.reward;
+      if (p.id === 'lampadaires') openWild(g); // le chef confie la clé des Terres sauvages
       g.bus.emit('sfx', 'levelup'); g.bus.emit('toast', `🔨 Chantier terminé : ${p.n} ! +${p.reward} 🪙`);
     }
   } else if (o.kind === 'fete' && !S.festival.done) {

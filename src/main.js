@@ -20,6 +20,7 @@ import { createDialog } from './ui/dialog.js';
 import { NPCS, OUT_FROM, OUT_TO } from './data/npcs.js';
 import { placeNPC, findNPCAt, welcome } from './systems/social.js';
 import { autoPickup } from './systems/grange.js';
+import { updateWild } from './systems/wild.js';
 import { isLunaLot } from './world/map.js';
 import { isPath, isGate } from './world/map.js';
 import { createPlayerMarket } from './net/market.js';
@@ -102,7 +103,7 @@ function doAction() {
   const ft = facingTile(S);
   if (findNPCAt(g, ft.tx, ft.ty)) { act(g, ft.tx, ft.ty); return; } // parler / offrir avant de manger
   S.sel = smartTool(g, ft.tx, ft.ty);
-  if (S.sel === 'sword' && (S.scene || 'farm') === 'farm') {
+  if (S.sel === 'sword' && ['farm', 'wild'].includes(S.scene || 'farm')) {
     const en = g.enemies.reduce((b, e) => { const d = Math.hypot(e.x - S.x, e.y - S.y); return d < 1.8 && (!b || d < b.d) ? { e, d } : b; }, null);
     if (en) { attack(g, en.e); return; }
   }
@@ -156,7 +157,7 @@ function loop(now) {
     const wf = g.player.walkFrame; if (wf !== lastFrame && (wf === 1 || wf === 3)) audio.play('step'); lastFrame = wf;
     tickTime(g, dt * 1000);
     wander(g, dt);
-    updateEnemies(g, dt); // les monstres ne vivent plus sur la ferme (zone de combat à venir)
+    updateWild(g, dt); // les monstres ne vivent que dans les Terres sauvages
     autoPickup(g);
     rainBoost(g, dt);
     lerpOthers(g.others, dt);

@@ -1,0 +1,89 @@
+// Lot 10 : Terres sauvages (zone de combat façon Zelda Game Boy).
+import { test } from 'node:test';
+import assert from 'node:assert/strict';
+import { makeGame, seq } from './helpers.js';
+import { act } from '../src/systems/actions.js';
+import { updateWild, ensureRocks, hitZRock, roomOf, openWild, spawnRoom } from '../src/systems/wild.js';
+import { attack } from '../src/systems/combat.js';
+import { ROOM_MOBS, ZROCKS, ZROCK_COUNT, GATE } from '../src/data/wild.js';
+import { fulfillOrder, village } from '../src/systems/market.js';
+import { PROJECTS } from '../src/data/requests.js';
+import { defaultState } from '../src/core/state.js';
+
+const rand = (k = 5) => () => ((k = (k * 9301 + 49297) % 233280) / 233280);
+
+test('le vieux portail est fermé au début', () => {
+  assert.equal(defaultState().wildOpen, false);
+  const { g, S } = makeGame({ state: { wildOpen: false } });
+  assert.equal(act(g, GATE.x, GATE.y), 'locked');
+  assert.equal(S.scene, 'farm');
+});
+
+test('le premier chantier fini (lampadaires) ouvre la zone et donne l’épée', () => {
+  const { g, S } = makeGame({ state: { wildOpen: false, tools: { axe: 1 }, inv: { wood: PROJECTS[0].goal } } });
+  village(S);
+  S.market = { slots: [{ order: { id: 'a', kind: 'chantier', item: 'wood', qty: PROJECTS[0].goal, price: 1, bot: 'x' }, next: 0 }] };
+  fulfillOrder(g, 'a');
+  assert.equal(S.wildOpen, true);
+  assert.equal(S.tools.sword, 1);
+  assert.equal(openWild(g), false, 'une seule fois');
+  assert.equal(act(g, GATE.x, GATE.y), 'door');
+  assert.equal(S.scene, 'wild');
+});
+
+test('chaque salle a ses monstres ; ils apparaissent en entrant dans la salle', () => {
+  const { g, S } = makeGame({ rnd: rand(), state: { wildOpen: true, scene: 'wild', x: 1.6, y: 4.5 } });
+  updateWild(g, 0.016);
+  assert.equal(roomOf(S.x, S.y), 0);
+  assert.equal(g.enemies.length, ROOM_MOBS[0].length);
+  S.x = 15; S.y = 4.5; updateWild(g, 0.016);
+  assert.deepEqual(g.enemies.map(e => e.type).sort(), [...ROOM_MOBS[1]].sort());
+  assert.ok(g.enemies.every(e => e.room === 1));
+});
+
+test('le cochon tire ; une balle blesse le joueur, puis il clignote (invincible un instant)', () => {
+  const { g, S } = makeGame({ rnd: rand(), state: { wildOpen: true, scene: 'wild', x: 25, y: 4.5, hp: 100 } });
+  g.wildRoom = 2; g.enemies.length = 0; g.shots = [];
+  g.enemies.push({ type: 'pig', x: 21, y: 4.5, hp: 90, cd: 0, hit: 0, room: 2, t: 0 });
+  updateWild(g, 0.016);
+  assert.equal(g.shots.length, 1);
+  assert.ok(g.shots[0].vx > 0 && g.shots[0].vy === 0, 'tir en ligne droite');
+  for (let i = 0; i < 120 && S.hp === 100; i++) updateWild(g, 0.016);
+  assert.equal(S.hp, 88);
+  g.shots.push({ x: S.x, y: S.y - .3, vx: 0, vy: 0, life: 1, dmg: 12 }); updateWild(g, 0.016);
+  assert.equal(S.hp, 88, 'invincible juste après');
+});
+
+test('épée : vaincre un slime bleu donne de la gelée, un cochon de l’argent', () => {
+  const { g, S } = makeGame({ rnd: seq(0.5), state: { scene: 'wild', x: 5, y: 4, money: 0, inv: {} } });
+  const slime = { type: 'slime_b', x: 5.5, y: 4, hp: 100, cd: 1, hit: 0, room: 0, t: 0 }, pig = { type: 'pig', x: 4.5, y: 4, hp: 30, cd: 1, hit: 0, room: 0, t: 0 };
+  g.enemies.push(slime, pig);
+  for (let i = 0; i < 3; i++) attack(g, slime);
+  assert.equal(S.inv.slime, 1);
+  attack(g, pig);
+  assert.equal(S.money, 10);
+});
+
+test('cailloux : 3 types (le 2 rare, le 3 plus rare), renouvelés chaque jour', () => {
+  const { g, S } = makeGame({ rnd: rand(9) });
+  let n = { zrock1: 0, zrock2: 0, zrock3: 0 };
+  for (let d = 1; d <= 40; d++) { S.day = d; for (const o of Object.values(ensureRocks(g))) n[o.t]++; }
+  assert.equal(Object.values(ensureRocks(g)).length, ZROCK_COUNT);
+  assert.ok(n.zrock1 > n.zrock2 && n.zrock2 > n.zrock3 && n.zrock3 > 0, JSON.stringify(n));
+});
+
+test('minerais : rubis ou émeraude, plus souvent sur les gros cailloux', () => {
+  assert.ok(ZROCKS.zrock1.ore < ZROCKS.zrock2.ore && ZROCKS.zrock2.ore < ZROCKS.zrock3.ore && ZROCKS.zrock1.ore <= 0.02);
+  const { g, S } = makeGame({ rnd: seq(0.01, 0.9), state: { scene: 'wild', sel: 'pick', inv: {}, tools: { pick: 5 } } });
+  S.wild = { day: S.year + '-' + S.season + '-' + S.day, rocks: { '5,5': { t: 'zrock3', hp: 6 } } };
+  hitZRock(g, 5, 5); hitZRock(g, 5, 5);
+  assert.equal(S.inv.stone, 3);
+  assert.equal((S.inv.ruby || 0) + (S.inv.emerald || 0), 1);
+});
+
+test('K.O. dans la zone : retour à la ferme', () => {
+  const { g, S } = makeGame({ state: { scene: 'wild', hp: 5 } });
+  g.player.iframe = 0; g.shots = [{ x: S.x, y: S.y - .3, vx: 0, vy: 0, life: 1, dmg: 12 }]; g.wildRoom = roomOf(S.x, S.y);
+  updateWild(g, 0.016);
+  assert.equal(S.scene, 'farm');
+});

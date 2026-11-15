@@ -23,6 +23,8 @@ export const ITEMS = {
   shrimp: { n: 'Crevettes', p: 55, i: '🦐', buy: 110 },
   salmon: { n: 'Saumon', p: 90, i: '🍣', buy: 180 },
   truffle: { n: 'Truffe', p: 160, i: '🍄' },
+  ruby: { n: 'Rubis', p: 250, i: '♦️' },
+  emerald: { n: 'Émeraude', p: 300, i: '💚' },
   slime: { n: 'Gelée', p: 5, i: '🟢' },
   fence: { n: 'Clôture', p: 4, i: '🚧' },
   potion: { n: 'Potion', p: 30, i: '🧪', eat: { h: 40 }, keep: true }

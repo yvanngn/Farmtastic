@@ -18,7 +18,8 @@ export function defaultState() {
     skills: { mining: { xp: 0 } },
     tools: {},                       // aucun outil au départ : ils sont dans la grange
     intro: { met: false },
-    tilled: {},                      // cases du champ bêchées (à la pelle)           // accueil du chef du village
+    tilled: {},
+    wildOpen: false, wild: null,     // Terres sauvages (zone de combat), fermées au début                      // cases du champ bêchées (à la pelle)           // accueil du chef du village
     grange: { found: [], broken: [] },
     market: { slots: [] }
   };
