@@ -98,10 +98,12 @@ export function createRenderer(cv, g) {
   function farmGround() { const b = g.S.built || {}, fx = { house: isRepaired(g.S, 'house'), grange: isRepaired(g.S, 'grange') }, key = g.S.season + JSON.stringify(b) + fx.house + fx.grange; if (farmSeason !== key) { farm = buildGround(g.S.season, b, fx); farmSeason = key; } return farm; }
   let vignette = null, light = null, lastStep = 0;
   const cam = { x: 0, y: 0 }, screenFx = [], worldFx = [];
-  let swing = null;
+  let trans = 0; const TRANS_MS = 650;
+let swing = null;
   const SEASON_LEAF = ['#4a8f36', '#3b7f31', '#e08a2a', '#eef5f7'];
   // Animation de l'outil (coup) et effets d'impact : copeaux, éclats, chute d'arbre.
   g.bus.on('swing', tool => { swing = { tool, p: 0 }; });
+  g.bus.on('scene', () => { trans = performance.now(); });   // transition d'entrée dans une zone
   g.bus.on('objHit', ({ x, y, t, broken, k }) => {
     const cx = x * T + 8, cy = y * T + (t === 'tree' ? 6 : 9), stone = t !== 'tree';
     const n = broken ? 14 : 5, cols = stone ? ['#9a958c', '#c2bdb4', '#6a6670'] : ['#c9955a', '#8a5a32', SEASON_LEAF[g.S.season]];
@@ -380,6 +382,18 @@ export function createRenderer(cv, g) {
       else if (p.k === 'leaf') { ctx.fillStyle = p.col; ctx.fillRect(p.x, p.y, 3 * px, 2 * px); }
     }
     ctx.drawImage(vignette, 0, 0);
+    // transition de changement de zone : un cercle s'ouvre sur le héros, avec un liseré doré
+    if (trans) {
+      const t = Math.min(1, (now - trans) / TRANS_MS), e = t * t * (3 - 2 * t) * t;
+      if (t >= 1) trans = 0;
+      else {
+        const [hx, hy] = toScreen(S.x * T, S.y * T - 8), R = Math.hypot(cv.width, cv.height) * e + 2;
+        ctx.save(); ctx.beginPath(); ctx.rect(0, 0, cv.width, cv.height); ctx.arc(hx, hy, R, 0, Math.PI * 2, true);
+        ctx.fillStyle = '#120e1c'; ctx.fill('evenodd');
+        ctx.lineWidth = Math.max(2, 3 * dpr); ctx.strokeStyle = `rgba(242,200,80,${.8 * (1 - t)})`; ctx.beginPath(); ctx.arc(hx, hy, R, 0, Math.PI * 2); ctx.stroke();
+        ctx.restore();
+      }
+    }
   }
 
   function screenToTile(e) {
