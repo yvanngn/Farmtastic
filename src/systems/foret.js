@@ -24,9 +24,15 @@ export function ensureShrooms(g) {
 }
 
 // Ramasser le champignon d'une case (en marchant dessus ou avec le bouton d'action).
+// Le couteau (à venir) sert à cueillir les champignons.
+export const KNIFE_LINE = "Je préfère ne pas les ramasser à la main… même si c'est sûrement une idée reçue. Il me faudrait un couteau.";
 export function pickShroom(g, x, y) {
   const S = g.S, k = key(x, y), m = S.foret && S.foret.shrooms[k];
   if (!m) return null;
+  if (!(S.tools && S.tools.knife)) { // sans couteau, il préfère ne pas les cueillir à la main
+    if (g.now() - (g.knifeT || -1e9) > 4000) { g.knifeT = g.now(); g.bus.emit('toast', `🍄 ${KNIFE_LINE}`); }
+    return false;
+  }
   delete S.foret.shrooms[k];
   const id = `${m.sp}_${m.size}`;
   add(g, id, 1);

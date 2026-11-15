@@ -94,11 +94,25 @@ export function drawZRock(c, x, y, o) {
   if (o.t !== 'zrock1') { c.fillStyle = o.t === 'zrock3' ? '#e0f6ff' : '#e05a8a'; c.fillRect(px + 1, py - 2, 2, 2); c.fillRect(px - 2, py + 1, 1, 1); }
 }
 
-// Champignon au pied d'un arbre : chapeau coloré selon l'espèce, plus grand selon la taille.
+// Champignons dessinés à la main, un motif par espèce (C chapeau, D ombre, H reflet, G lamelles, W/w pied,
+// Y/y jaune, V volve, B noir). Petit = 1 pixel par case, moyen = 1,5, gros = 2.
+const SHROOM_PIX = {
+  cepe: ['  DDDD  ', ' DCCCCD ', 'DCHCCCCD', 'DCCCCCCD', ' GGGGGG ', '  WWWw  ', '  WWWw  ', ' WWWWww '],
+  girolle: [' CC  CC ', 'CCHCCCCC', ' CCCCCC ', '  GCCG  ', '   CC   ', '   CD   ', '  CCCD  '],
+  morille: ['   DD   ', '  DCDD  ', '  CDCD  ', ' DCDCDD ', ' CDCDCD ', ' DCDCDD ', '  WWWw  ', '  WWWw  '],
+  oronge: [' DCCCCD ', 'DCHCCCCD', 'DCCCCCCD', ' YYYYYY ', '   YY   ', '   Yy   ', '  VVVV  '],
+  truffe_blanche: ['  DCCD  ', ' CHCCCD ', 'DCCCDCCD', 'DCCCCCCD', ' DDDDDD '],
+  pied_mouton: [' CCCCCC ', 'CHCCCCCC', 'CCCCCCCD', ' GGGGGG ', '  WWWw  ', '  WWWw  '],
+  trompette: [' B    B ', ' BBBBBB ', '  BDDB  ', '  BDDB  ', '   BB   ', '   BB   '],
+  mousseron: ['  DCCD  ', ' CHCCCC ', ' DDDDDD ', '   Ww   ', '   Ww   ', '   Ww   ']
+};
 export function drawShroom(c, x, y, m, color) {
-  const k = m.size === 'l' ? 1.7 : m.size === 'm' ? 1.3 : 1, px = x * T + 8, py = y * T + 12;
-  c.fillStyle = 'rgba(0,0,0,.25)'; c.fillRect(px - 4 * k, py + 1, 8 * k, 2);
-  c.fillStyle = '#f4ead8'; c.fillRect(px - 1 * k, py - 4 * k, 2 * k, 5 * k);
-  c.fillStyle = color; c.beginPath(); c.ellipse(px, py - 4 * k, 4.5 * k, 3 * k, 0, Math.PI, 0); c.fill();
-  c.fillStyle = 'rgba(255,255,255,.55)'; c.fillRect(px - 2 * k, py - 6 * k, 1.5 * k, 1.2 * k);
+  const pat = SHROOM_PIX[m.sp] || SHROOM_PIX.cepe, k = m.size === 'l' ? 2 : m.size === 'm' ? 1.5 : 1;
+  const col = { C: color, D: shade(color, .72), H: shade(color, 1.45), G: '#e8dcc0', W: '#f4ead8', w: '#d2c6ae', Y: '#f2d23a', y: '#c8a82a', V: '#f4f0e6', B: '#2a2228' };
+  const h = pat.length, px = x * T + 8 - 4 * k, py = y * T + 14 - h * k;
+  c.fillStyle = 'rgba(0,0,0,.28)'; c.fillRect(Math.round(px), Math.round(y * T + 13), Math.round(8 * k), 2);
+  for (let r = 0; r < h; r++) for (let q = 0; q < 8; q++) {
+    const ch = pat[r][q]; if (ch === ' ') continue;
+    c.fillStyle = col[ch]; c.fillRect(Math.round(px + q * k), Math.round(py + r * k), Math.ceil(k), Math.ceil(k));
+  }
 }

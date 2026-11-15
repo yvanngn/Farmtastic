@@ -48,3 +48,25 @@ test('multijoueur : joueurs muets supprimés', () => {
   pruneStale(others, STALE_MS + 1);
   assert.deepEqual(others, {});
 });
+
+test('chaque joueur a sa ferme : on ne voit sur la sienne que ceux du même emplacement ; ailleurs on se croise', async () => {
+  const { applyPos, sceneOut } = await import('../src/net/multiplayer.js');
+  assert.equal(sceneOut('farm', 2), 'farm:2'); assert.equal(sceneOut('town', 2), 'town');
+  const others = {};
+  applyPos(others, { id: 'a', x: 1, y: 1, s: 'farm:1' }, 0, 0);
+  assert.notEqual(others.a.scene, 'farm', 'sur une autre ferme : pas chez moi');
+  applyPos(others, { id: 'a', x: 1, y: 1, s: 'farm:0' }, 0, 0);
+  assert.equal(others.a.scene, 'farm');
+  applyPos(others, { id: 'a', x: 1, y: 1, s: 'quartier' }, 0, 0);
+  assert.equal(others.a.scene, 'quartier');
+});
+
+test('nouvelle région : centre-ville → forêt → caverne (fermée), plus d’accès direct depuis la ferme', async () => {
+  const { SCENES } = await import('../src/world/scenes.js');
+  assert.equal(SCENES.farm.doors.some(d => d.to === 'foret' || d.to === 'wild'), false);
+  assert.ok(SCENES.town.doors.some(d => d.to === 'foret'));
+  assert.ok(SCENES.foret.doors.some(d => d.to === 'town') && SCENES.foret.doors.some(d => d.to === 'wild'));
+  const { g, S } = makeGame({ state: { scene: 'foret' } });
+  assert.equal(act(g, 29, 9), 'locked', 'la caverne est fermée');
+  assert.equal(act(g, 0, 9), 'door'); assert.equal(S.scene, 'town');
+});

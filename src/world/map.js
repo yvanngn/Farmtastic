@@ -54,7 +54,7 @@ export function isSolid(S, x, y) {
   if (S.scene === 'foret' && S.foret && S.foret.shrooms && S.foret.shrooms[x + ',' + y]) return false;
   if (S.scene && S.scene !== 'farm') { const t = tileAt(S.scene, x, y); if (S.scene === 'grange' && (t === 'p' || t === 'r') && S.grange && S.grange.broken.includes(x + ',' + y)) return false; return SOLID_TILES.includes(t); }
   if (x < 0 || y < 0 || x >= CFG.W || y >= CFG.H) return true;
-  return isPond(x, y) || isHouse(x, y) || isGrange(x, y) || (x === 0 && ((y >= 9 && y <= 11) || y >= 13)) || isStation(x, y) || isMystHouse(x, y) || isFranckHouse(x, y) || (x === 47 && y >= 16 && y <= 20) || isLunaHouse(x, y) || !!buildingAt(S.built, x, y) || isGate(x, y) || isFence(x, y, S.built) || isBin(x, y) || !!(S.objs && S.objs[key(x, y)]);
+  return isPond(x, y) || isHouse(x, y) || isGrange(x, y) || (x === 0 && ((y >= 9 && y <= 11) || y >= 13)) || isStation(x, y) || isMystHouse(x, y) || isFranckHouse(x, y) || isLunaHouse(x, y) || !!buildingAt(S.built, x, y) || isGate(x, y) || isFence(x, y, S.built) || isBin(x, y) || !!(S.objs && S.objs[key(x, y)]);
 }
 
 // Générateur pseudo-aléatoire déterministe (même carte pour une même graine).

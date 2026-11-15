@@ -19,6 +19,7 @@ export function pixText(R, text, cx, y, col) {
     const base = ACCENT[ch] || ch, g = G[base] || G[' '];
     for (let i = 0; i < 15; i++) if (g[i] === '1') R(x + i % 3, y + (i / 3 | 0), 1, 1, col);
     if (ch === 'É') R(x + 1, y - 2, 2, 1, col); else if (ch === 'È' || ch === 'À') R(x, y - 2, 2, 1, col);
+    else if ('ÊÔÛÎ'.includes(ch)) { R(x + 1, y - 2, 1, 1, col); R(x, y - 1, 1, 1, col); R(x + 2, y - 1, 1, 1, col); }
     else if (ch === 'Ç') R(x + 1, y + 5, 1, 1, col);
     x += 4;
   }

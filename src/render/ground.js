@@ -75,8 +75,6 @@ export function buildGround(season, built = {}, fixed = { house: true, grange: t
   // panneau au bout de la route de l'est : « Centre-ville → »
   R(44 * T + 7, 6 * T + 6, 2, 12, '#5b3a22'); signBoard(R, 44 * T + 8, 6 * T + 2, 'CENTRE-VILLE →');
   drawFieldStakes(R);
-  drawWildGate(R);
-  drawForestArch(R);
   if (built.coop) drawCoop(R); else drawLot(g, R, 'coop');
   if (built.pigsty) drawPigsty(R); else drawLot(g, R, 'pigsty');
   if (built.barn) drawBarn(R); else drawLot(g, R, 'barn');

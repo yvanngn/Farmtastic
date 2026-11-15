@@ -135,6 +135,8 @@ export function buildTown(season) {
     if (ch === 'L') { R(px + 7, py - 10, 2, 25, '#2b2730'); R(px + 5, py + 13, 6, 2, '#2b2730'); R(px + 4, py - 16, 8, 7, '#2b2730'); R(px + 5, py - 15, 6, 5, '#ffd98a'); R(px + 3, py - 17, 10, 2, '#3a3540'); }
   }
   for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) if (L[y][x] === 'T') g.drawImage(treeSprite(season, (x + y) % 4), x * T - 9, y * T - 28);
+  // panneau vers la forêt, près de la sortie est
+  R(22 * T + 7, 8 * T + 6, 2, 12, '#5b3a22'); signBoard(R, 21 * T + 4, 8 * T + 2, 'FORÊT →');
   // villa de Manuel, le maire (x9-14, y22-25) : grande maison blanche, toit de tuiles, colonnes, haie taillée
   { const x0 = 9 * T, x1 = 15 * T, top = 22 * T, bot = 26 * T;
     R(x0 - 6, top - 4, x1 - x0 + 12, bot - top + 8, '#3e7a34'); R(x0 - 4, top - 2, x1 - x0 + 8, bot - top + 4, '#5a9a46');   // haie

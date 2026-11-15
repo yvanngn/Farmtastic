@@ -22,4 +22,4 @@ export const ZROCKS = {
 export const ZROCK_COUNT = 34, ZROCK_P3 = 0.06, ZROCK_P2 = 0.25;
 export const ORES = ['ruby', 'emerald'];
 // Entrée : l'entrée de la caverne, tout à l'est de la ferme (fermée au début).
-export const GATE = { x: 47, y: 18 };
+export const GATE = { x: 29, y: 9 };   // au bout de la forêt (scène « foret »)

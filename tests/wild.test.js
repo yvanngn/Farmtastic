@@ -13,11 +13,11 @@ import { defaultState } from '../src/core/state.js';
 
 const rand = (k = 5) => () => ((k = (k * 9301 + 49297) % 233280) / 233280);
 
-test('le vieux portail est fermé au début', () => {
+test('l’entrée de la caverne (au bout de la forêt) est fermée au début', () => {
   assert.equal(defaultState().wildOpen, false);
-  const { g, S } = makeGame({ state: { wildOpen: false } });
+  const { g, S } = makeGame({ state: { wildOpen: false, scene: 'foret' } });
   assert.equal(act(g, GATE.x, GATE.y), 'locked');
-  assert.equal(S.scene, 'farm');
+  assert.equal(S.scene, 'foret');
 });
 
 test('le premier chantier fini (lampadaires) ouvre la zone et donne l’épée (quand la caverne sera ouverte)', () => {
@@ -29,7 +29,7 @@ test('le premier chantier fini (lampadaires) ouvre la zone et donne l’épée (
   assert.equal(S.wildOpen, true);
   assert.equal(S.tools.sword, 1);
   assert.equal(openWild(g), false, 'une seule fois');
-  assert.equal(act(g, GATE.x, GATE.y), 'door');
+  S.scene = 'foret'; assert.equal(act(g, GATE.x, GATE.y), 'door');
   assert.equal(S.scene, 'wild');
   CFG.CAVE_OPEN = false;
 });
@@ -100,7 +100,7 @@ test('mode test : portail ouvert dès le début et épée posée devant', async 
     assert.equal(pickTestSword(g, TEST_SWORD.x, TEST_SWORD.y), true);
     assert.equal(S.tools.sword, 1);
     assert.equal(pickTestSword(g, TEST_SWORD.x, TEST_SWORD.y), false, 'une seule fois');
-    assert.equal(act(g, 47, 18), 'door');
+    S.scene = 'foret'; assert.equal(act(g, 29, 9), 'door');
     assert.equal(S.scene, 'wild');
   } finally { CFG.ACCES_TEST = false; CFG.CAVE_OPEN = false; }
 });

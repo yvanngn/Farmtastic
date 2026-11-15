@@ -291,3 +291,12 @@ Ordre convenu : 1 mort/clignotement ✅ · 2 tente ✅ · 3 recettes (feu), baie
 - ✅ **Maisons des habitants** : on n'y entre qu'à partir de **5 cœurs sur 10** (la moitié). Avant, on frappe : si l'habitant est là, il vient parler à la porte.
 - 💡/📝 **Franck est un peu amoureux de Luna** (idée validée par l'utilisateur, à exploiter plus tard : il lui fait signe, il la trouve « gentille »…).
 - ✅ Dialogue : la caméra ne se décale plus quand une réplique s'affiche (ordinateur et téléphone vérifiés).
+
+## Séance du 15/11/2026 (nuit, suite)
+- ✅ **Tuto** : nom par défaut « Claude Gémini » (Prénom Nom). À l'arrivée, le héros dit pourquoi il est là, puis **Myst, qui attend sur le quai**, vient lui parler : plan (la carte s'ouvre), tente (sac → Déployer), liste des tâches 📜, et « on peut couper les arbres, j'ai cru voir un outil dans les environs ». Plus d'indice précis sur la hache (message et quête).
+- ✅ **Caverne fermée** pour l'instant, **pas d'épée** (`CFG.CAVE_OPEN = false`).
+- ✅ **Nouvelle région** : 4 fermes côte à côte en haut à gauche, chemins en croix ; gare à l'ouest ; quartier résidentiel au sud ; centre-ville à l'est ; **forêt à l'est du centre-ville** (entrée par la sortie est de la ville, panneau « FORÊT → ») ; au bout de la forêt, la zone de la caverne (fermée). La ferme n'a plus d'accès direct à la forêt ni à la caverne.
+- ✅ Multijoueur : chaque joueur a **sa** ferme (on n'y voit que les joueurs du même emplacement) ; on se croise partout ailleurs.
+- ✅ **Champignons redessinés** (un motif par espèce : cèpe, girolle, morille, oronge, truffe, pied-de-mouton, trompette, mousseron ; 3 tailles).
+- ✅ **Couteau** nécessaire pour cueillir les champignons ; sans lui le héros dit qu'il préfère ne pas les ramasser à la main, « même si c'est sûrement une idée reçue ». ⏳ Où trouver le couteau : à décider.
+- ⏳ Visiter la ferme d'un autre joueur (synchroniser ses objets) : plus tard.

@@ -13,9 +13,10 @@ export const WORKBENCH = { n: "Réparer l'établi", i: '🛠️', cost: { money:
 
 // Emplacements de ferme de départ autour du village : un par joueur (multijoueur).
 // En solo, les autres restent « libres » mais sont déjà visibles sur la carte de la région.
+// Les 4 fermes des joueurs, côte à côte en haut à gauche de la région, séparées par des chemins en croix.
 export const FARM_LOTS = [
-  { id: 0, n: 'Ferme du Nord', x: .5, y: .16 },
-  { id: 1, n: 'Ferme de l\'Est', x: .84, y: .5 },
-  { id: 2, n: 'Ferme du Sud', x: .5, y: .84 },
-  { id: 3, n: 'Ferme de l\'Ouest', x: .16, y: .5 }
+  { id: 0, n: 'Ferme Nord-Ouest', c: 0, r: 0 },
+  { id: 1, n: 'Ferme Nord-Est', c: 1, r: 0 },
+  { id: 2, n: 'Ferme Sud-Ouest', c: 0, r: 1 },
+  { id: 3, n: 'Ferme Sud-Est', c: 1, r: 1 }
 ];

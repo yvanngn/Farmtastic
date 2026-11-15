@@ -78,7 +78,7 @@ test('chiens : il faut un chenil, puis ils vivent en liberté', () => {
 });
 
 test('forêt : champignons de saison au pied des arbres, gros et rares plus chers', () => {
-  let k = 11; const { g, S } = makeGame({ rnd: () => ((k = (k * 9301 + 49297) % 233280) / 233280), state: { scene: 'foret', season: 2, inv: {} } });
+  let k = 11; const { g, S } = makeGame({ rnd: () => ((k = (k * 9301 + 49297) % 233280) / 233280), state: { scene: 'foret', season: 2, inv: {}, tools: { knife: 1 } } });
   const all = {};
   for (let d = 1; d <= 30; d++) { S.day = d; Object.assign(all, Object.fromEntries(Object.entries(ensureShrooms(g)).map(([kk, m]) => [d + ':' + kk, m]))); }
   const ms = Object.values(all), autumn = MUSHROOMS[2].map(m => m.id);
@@ -111,12 +111,6 @@ test('une ferme de départ par joueur : 4 emplacements, chacun annonce le sien',
   assert.equal(defaultState().farmLot, 0);
   const others = {}; applyPresence(others, { a: [{ name: 'Léa', look: {}, farmLot: 2 }] }, 'moi', 0);
   assert.equal(others.a.farmLot, 2);
-});
-
-test('l’entrée de la forêt est au nord-ouest de la ferme, au-dessus de la gare', () => {
-  const { g, S } = start();
-  assert.equal(act(g, 0, 10), 'door');
-  assert.equal(S.scene, 'foret');
 });
 
 // ---- 15/11 soir : cabane délabrée, Myst, gare, villa du maire ----
@@ -213,4 +207,13 @@ test('le centre-ville est à droite : la route de l’est y mène', () => {
 
 test('la route de l’est va jusqu’au bord de la ferme (on voit qu’elle continue)', () => {
   assert.equal(ground(47, 5), 'path');
+});
+
+test('champignons : sans couteau, le héros préfère ne pas les cueillir à la main', async () => {
+  const { pickShroom: pick } = await import('../src/systems/foret.js');
+  const { g, S, toasts } = start({ scene: 'foret', inv: {} });
+  S.foret = { day: null, shrooms: { '5,5': { sp: 'cepe', size: 'm' } } };
+  assert.equal(pick(g, 5, 5), false);
+  assert.ok(S.foret.shrooms['5,5'], 'il reste par terre');
+  assert.match(toasts().at(-1), /idée reçue/);
 });
