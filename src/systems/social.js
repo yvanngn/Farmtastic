@@ -112,17 +112,17 @@ function walkTo(n, t, st = 0.06) {
 const faceP = (n, S) => { if (S.scene === n.scene && Math.hypot(S.x - n.x, S.y - n.y) < 3) n.dir = Math.abs(S.x - n.x) > Math.abs(S.y - n.y) ? (S.x < n.x ? 2 : 3) : (S.y < n.y ? 1 : 0); else n.dir = 0; };
 // Myst : vient voir la cabane une fois réparée, repart chez lui, puis ne sort que le soir.
 export function placeMyst(n, S) {
-  const st = S.intro && S.intro.myst;
+  const st = S.intro && S.intro.myst, R = n.route;
   if (st === 'come' || st === 'talk' || st === 'leaving') {
-    if (n.scene !== 'farm' || !Number.isFinite(n.x)) { n.scene = 'farm'; Object.assign(n, n.door); }
-    if (st === 'come') { if (walkTo(n, n.y > 5.7 || n.y < 5.5 ? { x: n.x, y: 5.6 } : n.cabin)) if (n.x === n.cabin.x && n.y === n.cabin.y) S.intro.myst = 'talk'; }
-    else if (st === 'talk') { n.walking = false; faceP(n, S); }
-    else if (walkTo(n, Math.abs(n.y - 5.6) > .05 ? { x: n.x, y: 5.6 } : n.door)) { S.intro.myst = 'done'; n.scene = 'none'; }
+    if (n.scene !== 'farm' || !Number.isFinite(n.x)) { n.scene = 'farm'; Object.assign(n, st === 'leaving' ? R[R.length - 1] : R[0]); n.leg = st === 'leaving' ? R.length - 2 : 1; }
+    if (st === 'come') { if (walkTo(n, R[n.leg])) { if (n.leg < R.length - 1) n.leg++; else S.intro.myst = 'talk'; } }
+    else if (st === 'talk') { n.walking = false; faceP(n, S); n.leg = R.length - 2; }
+    else if (walkTo(n, R[Math.max(0, n.leg)])) { if (n.leg > 0) n.leg--; else { S.intro.myst = 'done'; n.scene = 'none'; } }
     return;
   }
   n.walking = false;
   const out = st === 'done' && S.minute >= n.night.from && S.minute < n.night.to;
-  n.scene = out ? 'farm' : 'none'; Object.assign(n, n.night.at);
+  n.scene = out ? n.outScene : 'none'; Object.assign(n, n.night.at);
   faceP(n, S);
 }
 // Arrivée de Myst devant la cabane : il parle une fois, puis repart.

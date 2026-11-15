@@ -74,7 +74,6 @@ export function buildGround(season, built = {}, fixed = { house: true, grange: t
   drawStation(R);
   // panneau au bout de la route de l'est : « Centre-ville → »
   R(44 * T + 7, 6 * T + 6, 2, 12, '#5b3a22'); signBoard(R, 44 * T + 8, 6 * T + 2, 'CENTRE-VILLE →');
-  drawMystHouse(R);
   drawFieldStakes(R);
   drawWildGate(R);
   drawForestArch(R);
@@ -180,7 +179,7 @@ function drawStation(R) {
 }
 
 // Maison de Myst (x40-45, y1-3, porche y4) : vieille maison sombre à deux étages, toit mansardé, fenêtres hautes.
-function drawMystHouse(R) {
+export function drawMystHouse(R) {
   const x0 = 40 * T, x1 = 46 * T, top = 1 * T - 4, bot = 4 * T + 6;
   R(x0 - 2, bot, x1 - x0 + 4, 4, 'rgba(10,8,12,.35)');
   R(x0 + 4, top + 16, x1 - x0 - 8, bot - top - 16, '#5e5a62');                          // façade

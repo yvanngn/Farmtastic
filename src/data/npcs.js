@@ -149,15 +149,16 @@ export const MYST = {
   id: 'myst', name: 'Myst', de: 'de lui', color: '#a99ad0', voice: 'voiceFranck',
   look: { body: 'h', bottom: 'pant', skin: '#e2cfc0', hair: 0, hairC: '#1c181c', shirt: '#1d1b22', pants: '#141218', tall: true, coat: true },
   home: null, mystic: true,
-  door: { x: 42.5, y: 5.6 }, cabin: { x: 7.5, y: 5.6 },
-  night: { from: 1140, to: 1380, at: { x: 41.5, y: 6.4 } },   // sort le soir devant chez lui (💡 19h-23h)
+  // trajet du quartier jusqu'à la cabane : du portail sud de la ferme, on remonte le grand chemin
+  route: [{ x: 16.5, y: 34.4 }, { x: 16.5, y: 5.6 }, { x: 7.5, y: 5.6 }],
+  outScene: 'quartier', night: { from: 1140, to: 1380, at: { x: 33.5, y: 6.6 } },   // sort le soir devant chez lui (💡 19h-23h)
   traits: ['Grand et mince', 'Long manteau noir', 'Sort le soir', 'Parle peu, écoute tout', 'Mis de côté par le village'],
   taste: { adore: [], aime: ['colchique', 'lavande'], naime: ['slime'], deteste: [] },   // 💡 fleurs calmes du soir
   arrival: [
     "… Tiens. Quelqu'un a réparé la cabane.",
     "Personne n'habite ici depuis longtemps. Au village, ils disent que l'endroit est hanté.",
     "Tu peux rester, si tu veux. Moi, ça ne me dérange pas.",
-    "Je m'appelle Myst. J'habite la vieille maison, un peu plus loin à l'est.",
+    "Je m'appelle Myst. J'habite la vieille maison au fond du quartier, un peu à l'écart.",
     "Ça leur fera du bien, qu'on bouscule un peu les choses."
   ],
   story: [

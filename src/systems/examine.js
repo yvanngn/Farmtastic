@@ -22,7 +22,7 @@ export function examineText(S, tx, ty) {
     return null;
   }
   const t = tileAt(sc, tx, ty);
-  if (sc === 'quartier') return t === 'X' ? (tx <= 8 ? E.luna : S.social && S.social.franck && S.social.franck.points >= 750 ? E.franckOpen : E.franck) : t === 'T' ? K.treeTown : null;
+  if (sc === 'quartier') return t === 'X' ? (tx >= 31 ? E.myst : tx <= 8 ? E.luna : S.social && S.social.franck && S.social.franck.points >= 750 ? E.franckOpen : E.franck) : t === 'T' ? K.treeTown : null;
   if (sc === 'town') return t === 'W' ? K.villa : t === 'T' ? K.treeTown : t === 'L' ? (S.village && S.village.done.includes('lampadaires') ? K.Lon : K.L) : K[t] || null;
   if (sc === 'wild') return t === 'T' ? K.treeWild : t === '#' ? K.rockWild : null;
   if (sc === 'grange') return t === '#' ? K.rockGrange : t === 'W' ? K.wallGrange : null;

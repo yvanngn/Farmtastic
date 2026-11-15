@@ -32,7 +32,7 @@ export const isForest = (x) => x >= 34;
 export const isStation = (x, y) => inRect(x, y, 1, 14, 3, 16);
 export const isPlatform = (x, y) => inRect(x, y, 1, 17, 2, 23);
 // Maison de Myst (au nord-est, un peu à l'écart) : x40-45, y1-3, porche y4.
-export const isMystHouse = (x, y) => inRect(x, y, 40, 1, 45, 3) || (y === 4 && x >= 40 && x <= 45 && x !== 42);
+export const isMystHouse = () => false;   // Myst habite maintenant au fond du quartier (scène « quartier »)
 const AXE_SPOT = (x, y) => inRect(x, y, 5, 30, 7, 32);
 export const key = (x, y) => x + ',' + y;
 

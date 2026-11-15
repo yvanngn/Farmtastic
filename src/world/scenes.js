@@ -112,14 +112,18 @@ function buildTown() {
 LAYOUTS.town = buildTown();
 // Quartier : g herbe, . pavés, X maison (Luna x4-8, Franck x11-15, y4-6), T arbre, D sortie vers la ferme, b banc, f jardinière.
 LAYOUTS.quartier = (() => {
-  const W = 30, H = 16, m = Array.from({ length: H }, (_, y) => Array.from({ length: W }, (_, x) => (x === 0 || x === W - 1 || y === H - 1 ? 'T' : 'g')));
+  const W = 38, H = 16, m = Array.from({ length: H }, (_, y) => Array.from({ length: W }, (_, x) => (x === 0 || x === W - 1 || y === H - 1 ? 'T' : 'g')));
   for (let x = 1; x < W - 1; x++) { m[8][x] = '.'; m[9][x] = '.'; }   // la rue
   for (let y = 0; y < 8; y++) m[y][22] = '.';                          // l'allée qui monte vers la ferme
   m[0][22] = 'D'; for (const x of [6, 13]) m[7][x] = '.';              // devant les portes
   for (let y = 4; y <= 6; y++) for (let x = 4; x <= 8; x++) m[y][x] = 'X';
   for (let y = 4; y <= 6; y++) for (let x = 11; x <= 15; x++) m[y][x] = 'X';
-  for (const x of [2, 10, 18, 26]) m[11][x] = 'T';
-  for (const x of [0, 1, 2, 3, 9, 10, 16, 17, 18, 19, 20, 21, 23, 24, 25, 26, 27, 28, 29]) if (m[0][x] === 'g') m[0][x] = 'T';
+  for (const x of [2, 10, 18, 26, 34]) m[11][x] = 'T';
+  // Myst, à l'écart : une rangée d'arbres, puis sa vieille maison au fond (x31-36, y2-4, porche y5, porte x33)
+  for (let y = 1; y <= 6; y++) m[y][29] = 'T';
+  for (let y = 2; y <= 5; y++) for (let x = 31; x <= 36; x++) m[y][x] = (y === 5 && x === 33) ? '.' : 'X';
+  for (let y = 6; y <= 7; y++) m[y][33] = '.';
+  for (let x = 0; x < W; x++) if (m[0][x] === 'g' && ![4, 5, 6, 7, 8, 11, 12, 13, 14, 15, 22].includes(x)) m[0][x] = 'T';
   return m.map(r => r.join(''));
 })();
 // Caverne sombre, étage 1 : 5 × 3 salles de 10 × 8 séparées par des parois (T), passages de 2 cases,
@@ -186,7 +190,7 @@ export const SCENES = {
   franck: { W: 9, H: 7, doors: [{ x: 4, y: 6, to: 'quartier', spawn: { x: 13.5, y: 7.8 } }] },
   luna: { W: 9, H: 7, doors: [{ x: 4, y: 6, to: 'quartier', spawn: { x: 6.5, y: 7.8 } }] },
   // Quartier résidentiel, au sud de la ferme : les maisons des habitants.
-  quartier: { W: 30, H: 16, outdoor: true, doors: [{ x: 22, y: 0, to: 'farm', spawn: { x: 16.5, y: 34.4 } }, { x: 6, y: 6, to: 'luna', spawn: { x: 4.5, y: 5.4 } }, { x: 13, y: 6, to: 'franck', spawn: { x: 4.5, y: 5.4 } }] },
+  quartier: { W: 38, H: 16, outdoor: true, doors: [{ x: 22, y: 0, to: 'farm', spawn: { x: 16.5, y: 34.4 } }, { x: 6, y: 6, to: 'luna', spawn: { x: 4.5, y: 5.4 } }, { x: 13, y: 6, to: 'franck', spawn: { x: 4.5, y: 5.4 } }] },
   pigsty: { W: 10, H: 7, doors: [{ x: 4, y: 6, to: 'farm', spawn: { x: 20.5, y: 8.9 } }] },
   barn: { W: 12, H: 8, doors: [{ x: 5, y: 7, to: 'farm', spawn: { x: 28.5, y: 8.9 } }] }
 };

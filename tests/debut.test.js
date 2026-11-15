@@ -168,7 +168,8 @@ test('Myst vient voir la cabane réparée, parle, repart, puis ne sort que le so
   said[0].onEnd();
   for (let i = 0; i < 2000 && S.intro.myst === 'leaving'; i++) placeNPC(n, S, OUT_FROM, OUT_TO);
   assert.equal(S.intro.myst, 'done'); assert.equal(n.scene, 'none');
-  S.minute = 1200; placeNPC(n, S, OUT_FROM, OUT_TO); assert.equal(n.scene, 'farm', 'il sort le soir');
+  S.minute = 1200; placeNPC(n, S, OUT_FROM, OUT_TO); assert.equal(n.scene, 'quartier', 'il sort le soir, devant chez lui au fond du quartier');
+  assert.ok(LAY.quartier[3].slice(31, 37) === 'XXXXXX' && LAY.quartier[3][29] === 'T', 'sa maison est à l’écart, derrière une rangée d’arbres');
   assert.equal(MYST.look.tall && MYST.look.coat, true, 'grand, long manteau');
 });
 

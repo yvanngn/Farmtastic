@@ -4,7 +4,7 @@ import { CFG } from '../config.js';
 import { LAYOUTS } from '../world/scenes.js';
 import { rng } from '../world/map.js';
 import { shade, disc } from './pixel.js';
-import { GRASS, drawLunaHouse, drawFranckHouse } from './ground.js';
+import { GRASS, drawLunaHouse, drawFranckHouse, drawMystHouse } from './ground.js';
 import { treeSprite } from './sprites.js';
 import { signBoard } from './pixfont.js';
 const T = CFG.T;
@@ -172,6 +172,7 @@ export function buildQuartier(season) {
   const shift = (dx, dy) => (x, y, w, h, col) => R(x + dx, y + dy, w, h, col);
   drawLunaHouse(shift(-14 * T, -25 * T));
   drawFranckHouse(shift(-14 * T, -25 * T));
+  drawMystHouse(shift(-9 * T, 1 * T));   // la maison de Myst, au fond, derrière les arbres
   // terrains libres pour de futurs habitants (piquets + panneau)
   for (const x0 of [18 * T, 24 * T]) { R(x0, 4 * T, 4 * T, 3 * T, 'rgba(120,84,48,.18)'); for (const px of [x0, x0 + 4 * T - 2]) R(px, 4 * T, 2, 8, '#8a5a32'); R(x0 + 2 * T - 1, 5 * T, 2, 12, '#5b3a22'); R(x0 + 2 * T - 9, 5 * T - 6, 18, 9, '#3f2615'); R(x0 + 2 * T - 8, 5 * T - 5, 16, 7, '#e8c26a'); }
   // bancs et lampadaires le long de la rue
