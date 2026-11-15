@@ -149,7 +149,7 @@ export function createTitle({ audio, onContinue, onNew, onGames = () => {}, onSe
       ov.classList.add('on'); audio.setScreen('title');
       if (phase === 'menu') showMenu();
     },
-    setSave(v, n = 1) { hasSave = v; many = n > 1; if (phase === 'menu') showMenu(); },
+    setSave(v, n = 1) { hasSave = v; many = n > 0; if (phase === 'menu') showMenu(); },
     close() { ov.classList.remove('on'); audio.setScreen(null); },
     isOpen: () => ov.classList.contains('on'),
     draw

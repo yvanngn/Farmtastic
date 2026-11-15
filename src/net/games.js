@@ -21,7 +21,7 @@ export function normCode(s) {
   const t = String(s || '').toUpperCase().replace(/[^A-Z0-9]/g, '').replace(/^FERME/, '');
   return t ? 'FERME-' + t : '';
 }
-export const gameLabel = x => x.mode === 'multi' ? `👥 Partie à plusieurs · ${x.code || '?'}${x.players ? ` (${x.players} joueur${x.players > 1 ? 's' : ''})` : ''}` : '🧑‍🌾 Partie solo';
+export const gameLabel = x => x.mode === 'multi' ? `👥 Partie à plusieurs · ${x.code || '?'}${x.players ? ` (${x.players} joueur${x.players > 1 ? 's' : ''})` : ''}` : '🧑‍🌾 Partie solo' + (x.name ? ' · ' + x.name : '');
 export const localGame = (now = Date.now()) => ({ id: 'solo-' + now.toString(36), code: null, mode: 'solo', lot: 0, offline: true });
 
 const row = r => ({ id: r.game_id, code: r.code, mode: r.mode, lot: r.farm_lot, players: r.players, at: r.saved_at ? Date.parse(r.saved_at) : 0 });
@@ -33,3 +33,11 @@ async function call(sb, fn, args) {
 export async function createOnlineGame(sb, mode, name) { return row((await call(sb, 'create_game', { p_mode: mode, p_name: name }))[0]); }
 export async function joinOnlineGame(sb, code, name) { return row((await call(sb, 'join_game', { p_code: normCode(code), p_name: name }))[0]); }
 export async function myOnlineGames(sb) { try { return (await call(sb, 'my_games', {})).map(row); } catch { return []; } }
+
+// Effacer une partie solo : sa sauvegarde locale, sa ligne dans l'index et, en ligne, la partie elle-même.
+export function removeFromIndex(storage, id) {
+  const list = readIndex(storage).filter(x => x.id !== id);
+  try { storage.setItem(IDX, JSON.stringify(list)); } catch { /* rien */ }
+  return list;
+}
+export async function deleteOnlineGame(sb, id) { await call(sb, 'delete_game', { p_game: id }); return true; }

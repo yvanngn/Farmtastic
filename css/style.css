@@ -304,3 +304,7 @@ img.pix { width: 1.15em; height: 1.15em; image-rendering: pixelated; vertical-al
 .inv-acts { display: flex; gap: 6px; flex-wrap: wrap }
 .inv-ghost { position: fixed; z-index: 99; pointer-events: none; transform: translate(-50%, -50%) scale(1.3); font-size: 30px; filter: drop-shadow(0 4px 6px rgba(0,0,0,.5)) }
 @media (max-width: 420px) { .inv-main { flex-direction: column-reverse } .inv-side { width: 100%; flex-direction: row; justify-content: space-between } .inv-side button { width: auto; padding: 8px 14px } }
+.gp-row { display: flex; gap: 8px; align-items: stretch }
+.gp-row > button:first-child { flex: 1; text-align: left; padding: 12px 14px; font-size: clamp(14px, 3.8vmin, 17px) }
+.gp-del { flex: 0 0 auto; min-width: 52px; padding: 0 10px; font-size: 18px }
+.gp-del.arme { background: #a8302b; color: #fff; font-size: 13px; font-weight: 800 }

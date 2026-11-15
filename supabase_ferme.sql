@@ -155,6 +155,13 @@ language sql security definer set search_path = public stable as $$
    order by 6 desc nulls last;
 $$;
 
+-- Effacer une de mes parties solo (la sauvegarde et la place partent avec elle).
+create or replace function public.ferme_delete_game(p_game uuid) returns void
+language plpgsql security definer set search_path = public as $$
+begin
+  delete from ferme_games where id = p_game and owner_id = auth.uid() and mode = 'solo';
+end $$;
+
 -- Marché : achat, retrait, encaissement atomiques.
 create or replace function public.ferme_buy_listing(p_id uuid) returns public.ferme_market_listings
 language plpgsql security definer set search_path = public as $$
@@ -184,7 +191,7 @@ begin
   return total;
 end $$;
 
-revoke all on function public.ferme_create_game(text, text), public.ferme_join_game(text, text), public.ferme_my_games(),
+revoke all on function public.ferme_create_game(text, text), public.ferme_join_game(text, text), public.ferme_my_games(), public.ferme_delete_game(uuid),
   public.ferme_buy_listing(uuid), public.ferme_cancel_listing(uuid), public.ferme_claim_sales(), public.ferme_is_member(uuid) from public, anon;
-grant execute on function public.ferme_create_game(text, text), public.ferme_join_game(text, text), public.ferme_my_games(),
+grant execute on function public.ferme_create_game(text, text), public.ferme_join_game(text, text), public.ferme_my_games(), public.ferme_delete_game(uuid),
   public.ferme_buy_listing(uuid), public.ferme_cancel_listing(uuid), public.ferme_claim_sales(), public.ferme_is_member(uuid) to authenticated;

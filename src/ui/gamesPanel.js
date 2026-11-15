@@ -1,7 +1,7 @@
 // Fenêtre des parties : nouvelle partie (solo, créer à plusieurs, rejoindre avec un code) et « Mes parties ».
 import { gameLabel, normCode } from '../net/games.js';
 
-export function createGamesPanel({ audio, online, onPick }) {
+export function createGamesPanel({ audio, online, onPick, onDelete = async () => {} }) {
   const ov = document.createElement('div');
   ov.id = 'ovGames'; ov.className = 'overlay';
   ov.innerHTML = '<div class="panel box"><div class="row" style="justify-content:space-between;margin:0"><h2 id="gpTitle"></h2><button id="gpClose" aria-label="Fermer">✕</button></div><div id="gpBody"></div></div>';
@@ -21,13 +21,19 @@ export function createGamesPanel({ audio, online, onPick }) {
   }
   function showList(games) {
     ov.querySelector('#gpTitle').textContent = '📂 Mes parties';
-    body.innerHTML = '<div class="gp-list">' + games.map((x, i) => `<button data-i="${i}" class="${i ? '' : 'primaire'}">${gameLabel(x)}<small>${x.offline ? 'Sur cet appareil · ' : ''}${fmt(x.at)}</small></button>`).join('') + '</div>';
+    body.innerHTML = '<div class="gp-list">' + (games.length ? games.map((x, i) => `<div class="gp-row"><button data-i="${i}" class="${i ? '' : 'primaire'}">${gameLabel(x)}<small>${x.offline ? 'Sur cet appareil · ' : ''}${fmt(x.at)}</small></button>${x.mode === 'multi' ? '' : `<button class="gp-del" data-del="${i}" aria-label="Effacer cette partie">🗑️</button>`}</div>`).join('') : '<small class="gp-off">Aucune partie pour l’instant.</small>') + '</div>';
     body.onclickGames = games; ov.classList.add('on');
   }
   body.addEventListener('click', e => {
     const b = e.target.closest('button'); if (!b || b.disabled) return;
     audio.play('ui');
     if (b.dataset.i != null) { close(); onPick({ kind: 'continue', game: body.onclickGames[+b.dataset.i] }); return; }
+    if (b.dataset.del != null) { // deux appuis : « Effacer ? » puis effacement
+      if (!b.classList.contains('arme')) { body.querySelectorAll('.gp-del.arme').forEach(x => { x.classList.remove('arme'); x.textContent = '🗑️'; }); b.classList.add('arme'); b.textContent = 'Effacer ?'; return; }
+      const gm = body.onclickGames[+b.dataset.del];
+      Promise.resolve(onDelete(gm)).then(list => showList(list || body.onclickGames.filter(x => x !== gm)));
+      return;
+    }
     const k = b.dataset.k; if (!k) return;
     if (k === 'join') { const code = normCode(body.querySelector('#gpCode').value); if (!code) { body.querySelector('#gpCode').focus(); return; } close(); onPick({ kind: 'join', code }); return; }
     close(); onPick({ kind: k });

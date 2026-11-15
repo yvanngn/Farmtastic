@@ -255,3 +255,4 @@ Ordre convenu : 1 mort/clignotement ✅ · 2 tente ✅ · 3 recettes (feu), baie
 - ✅ **Champignons redessinés** (un motif par espèce : cèpe, girolle, morille, oronge, truffe, pied-de-mouton, trompette, mousseron ; 3 tailles).
 - ✅ **Couteau** nécessaire pour cueillir les champignons ; sans lui le héros dit qu'il préfère ne pas les ramasser à la main, « même si c'est sûrement une idée reçue ». ⏳ Où trouver le couteau : à décider.
 - ⏳ Visiter la ferme d'un autre joueur (synchroniser ses objets) : plus tard.
+- ✅ **Effacer une partie solo** : « Mes parties » (dès une partie) → 🗑️ puis « Effacer ? » (deux appuis). Efface la sauvegarde de l'appareil et, en ligne, la partie (fonction SQL `ferme_delete_game`, ajoutée à `supabase_ferme.sql`). Les parties solo affichent le nom du personnage.

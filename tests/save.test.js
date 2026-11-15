@@ -84,3 +84,13 @@ test('rejoindre : appelle la fonction préfixée et explique les erreurs', async
   assert.equal(gm.lot, 2); assert.equal(gm.id, 'g1');
   await assert.rejects(joinOnlineGame(sb, 'full', 'Y'), /complète/);
 });
+
+test('effacer une partie solo : retirée de la liste, l’autre reste', async () => {
+  const { removeFromIndex, deleteOnlineGame } = await import('../src/net/games.js');
+  const mem = memoryStorage();
+  upsertIndex(mem, { id: 'a', mode: 'solo' }, 1); upsertIndex(mem, { id: 'b', mode: 'solo' }, 2);
+  assert.deepEqual(removeFromIndex(mem, 'a').map(x => x.id), ['b']);
+  assert.deepEqual(readIndex(mem).map(x => x.id), ['b']);
+  const calls = []; await deleteOnlineGame({ rpc: async (fn, a) => { calls.push([fn, a]); return { data: null }; } }, 'g9');
+  assert.deepEqual(calls[0], ['ferme_delete_game', { p_game: 'g9' }]);
+});

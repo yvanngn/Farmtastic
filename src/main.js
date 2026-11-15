@@ -49,7 +49,7 @@ import { registerNPC, talk, gift } from './systems/social.js';
 import { add } from './systems/inventory.js';
 import { initSupabase, upsertProfile } from './net/supabase.js';
 import { createSaveManager, localAdapter, supabaseAdapter, localKey } from './net/save.js';
-import { readIndex, upsertIndex, mergeGames, localGame, createOnlineGame, joinOnlineGame, myOnlineGames } from './net/games.js';
+import { removeFromIndex, deleteOnlineGame, readIndex, upsertIndex, mergeGames, localGame, createOnlineGame, joinOnlineGame, myOnlineGames } from './net/games.js';
 import { createGamesPanel } from './ui/gamesPanel.js';
 import { createInventoryGrid } from './ui/inventoryGrid.js';
 import { createMultiplayer, lerpOthers } from './net/multiplayer.js';
@@ -110,6 +110,7 @@ async function startPicked(name) {
     else if (p.kind === 'create') gm = await createOnlineGame(net.sb, 'multi', name);
     else gm = await joinOnlineGame(net.sb, p.code, name);
   } catch (err) { toast('⚠️ ' + err.message); return; }
+  gm.name = name;
   openGame(gm);
   const old = p.kind === 'join' ? await saver.load() : null;   // déjà membre de cette partie : on reprend sa ferme
   if (old) { g.S = old; g.S.name = name; }
@@ -134,7 +135,17 @@ async function continueGame(gm) {
   g.S.game = { id: gm.id, code: gm.code || null, mode: gm.mode || 'solo' }; if (gm.lot != null) g.S.farmLot = gm.lot;
   begin();
 }
-const gamesPanel = createGamesPanel({ audio, online: () => !!net.sb, onPick(p) {
+async function deleteGame(gm) {
+  if (gm.mode === 'multi') return games;
+  try { store && store.removeItem(localKey(gm.id)); } catch { /* rien */ }
+  if (store) removeFromIndex(store, gm.id);
+  if (net.sb && !gm.offline) await deleteOnlineGame(net.sb, gm.id).catch(() => toast('⚠️ Effacée ici, mais pas en ligne (réessaie plus tard).'));
+  games = games.filter(x => x.id !== gm.id);
+  title.setSave(games.length > 0, games.length);
+  toast('🗑️ Partie effacée.');
+  return games;
+}
+const gamesPanel = createGamesPanel({ audio, online: () => !!net.sb, onDelete: deleteGame, onPick(p) {
   if (p.kind === 'continue') return continueGame(p.game);
   pending = p; title.close(); custom.open(false, false);
 } });
