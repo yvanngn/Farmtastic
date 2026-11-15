@@ -239,3 +239,4 @@ Goûts de Franck (💡) : adore le croissant ; aime le pain, les œufs et le boi
 - ✅ Promenades en forêt (💡) : Luna 16h–17h tous les 2 jours, Manuel 13h–14h tous les 3 jours, Franck 6h30–7h30 tous les 2 jours dès 2 cœurs.
 - ✅ 4 emplacements de ferme (Nord = la tienne, Est, Sud, Ouest) visibles sur la carte « 🧭 Région », même en solo ; en multijoueur chacun annonce le sien.
 - ⏳ Choisir son emplacement en multijoueur (pour l'instant tout le monde a le Nord).
+- 🔨 **Mode test** (`CFG.ACCES_TEST: true` dans `src/config.js`) : portail des Terres sauvages ouvert dès le début, épée posée devant (case 45,18). Remettre `false` pour le jeu normal (le maire donne alors la clé et l'épée après les lampadaires).

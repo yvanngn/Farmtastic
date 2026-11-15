@@ -6,10 +6,22 @@ import { add } from './inventory.js';
 import { damage, useEnergy } from './player.js';
 import { gainXp, toolTier, hasTool } from './skills.js';
 import { ROOM_W, ROOM_H, MOBS, ROOM_MOBS, ZROCKS, ZROCK_COUNT, ZROCK_P3, ZROCK_P2, ORES, GATE } from '../data/wild.js';
+import { CFG } from '../config.js';
 import { MINING_GAIN, energyCost } from '../data/tools.js';
 
 export const roomOf = (x, y) => (Math.floor(y / ROOM_H) * 3 + Math.floor(x / ROOM_W));
-export const isOpen = S => !!S.wildOpen;
+export const isOpen = S => !!S.wildOpen || CFG.ACCES_TEST;
+
+// TEST : une épée posée devant le portail, à ramasser dès le début.
+export const TEST_SWORD = { x: 45, y: 18 };
+export const testSwordHere = S => CFG.ACCES_TEST && (S.scene || 'farm') === 'farm' && !(S.tools && S.tools.sword);
+export function pickTestSword(g, x, y) {
+  const S = g.S;
+  if (!testSwordHere(S) || x !== TEST_SWORD.x || y !== TEST_SWORD.y) return false;
+  S.tools = { ...S.tools, sword: 1 };
+  g.bus.emit('sfx', 'levelup'); g.bus.emit('toast', '🗡️ Tu as trouvé une épée !'); g.bus.emit('inv');
+  return true;
+}
 
 // Ouverture de la zone : le chef confie la clé du vieux portail et une épée.
 export function openWild(g) {

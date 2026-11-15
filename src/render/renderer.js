@@ -1,6 +1,7 @@
 // Rendu : caméra, culling, tri en profondeur, eau animée, lumière dynamique,
 // étalonnage météo, particules, vignettage. Responsive (devicePixelRatio, échelle entière).
 import { CFG } from '../config.js';
+import { TEST_SWORD, testSwordHere } from '../systems/wild.js';
 import { buildGround, drawWaterShimmer, LIGHTS, drawSoil } from './ground.js';
 import { drawChar, drawTree, drawRock, drawCrop, drawAnimal, drawSlime, drawSwing, treeSprite, KIND_SPRITE } from './sprites.js';
 import { buildInterior } from './interiors.js';
@@ -167,6 +168,11 @@ export function createRenderer(cv, g) {
         else { ctx.fillStyle = '#3e5a7a'; ctx.fillRect(wx, wy, 14, 12); ctx.fillStyle = '#2a4058'; for (let k = 2; k < 12; k += 3) ctx.fillRect(wx, wy + k, 14, 1); ctx.fillRect(wx + 7, wy, 1, 12); }
       } });
     }
+    if (scene === 'farm' && testSwordHere(S)) list.push({ z: TEST_SWORD.y + .4, d: () => {
+      const b = Math.round(Math.sin(now / 250) * 1.5), x = TEST_SWORD.x * T, y = TEST_SWORD.y * T;
+      ctx.fillStyle = 'rgba(0,0,0,.25)'; ctx.fillRect(x + 3, y + 12, 10, 2);
+      ctx.save(); ctx.translate(x + 8, y + 10 + b); ctx.rotate(-.6); ctx.fillStyle = '#5a3a22'; ctx.fillRect(-1, 2, 2, 4); ctx.fillStyle = '#e8c26a'; ctx.fillRect(-3, 1, 6, 1); ctx.fillStyle = '#d6dbe0'; ctx.fillRect(-1, -11, 2, 12); ctx.fillStyle = '#fff'; ctx.fillRect(-1, -11, 1, 11); ctx.restore();
+    } });
     for (const d of S.drops || []) if (d.scene === scene) list.push({ z: d.y + .4, d: () => {
       const b = Math.round(Math.sin(now / 250 + d.x) * 1.5), it = ITEMS[d.id];
       ctx.fillStyle = 'rgba(0,0,0,.25)'; ctx.fillRect(d.x * T + 3, d.y * T + 12, 10, 2);

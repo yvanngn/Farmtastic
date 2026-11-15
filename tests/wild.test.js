@@ -87,3 +87,17 @@ test('K.O. dans la zone : retour à la ferme', () => {
   updateWild(g, 0.016);
   assert.equal(S.scene, 'farm');
 });
+
+test('mode test : portail ouvert dès le début et épée posée devant', async () => {
+  const { CFG } = await import('../src/config.js');
+  const { pickTestSword, TEST_SWORD } = await import('../src/systems/wild.js');
+  CFG.ACCES_TEST = true;
+  try {
+    const { g, S } = makeGame({ state: { tools: {}, wildOpen: false, scene: 'farm' } });
+    assert.equal(pickTestSword(g, TEST_SWORD.x, TEST_SWORD.y), true);
+    assert.equal(S.tools.sword, 1);
+    assert.equal(pickTestSword(g, TEST_SWORD.x, TEST_SWORD.y), false, 'une seule fois');
+    assert.equal(act(g, 47, 18), 'door');
+    assert.equal(S.scene, 'wild');
+  } finally { CFG.ACCES_TEST = false; }
+});

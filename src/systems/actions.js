@@ -11,7 +11,7 @@ import { BUILDINGS } from '../data/buildings.js';
 import { hasTool } from './skills.js';
 import { grangeAction } from './grange.js';
 import { examineText } from './examine.js';
-import { hitZRock, isOpen } from './wild.js';
+import { hitZRock, isOpen, pickTestSword } from './wild.js';
 import { pickShroom } from './foret.js';
 import { findNPCAt, talk, gift } from './social.js';
 import { add } from './inventory.js';
@@ -62,6 +62,7 @@ function act0(g, tx, ty) {
     if (!TOOL_IDS.includes(S.sel) && S.inv[S.sel] > 0) { gift(g, npc.id, S.sel, add); return 'gift'; }
     talk(g, npc.id); return 'talk';
   }
+  if (pickTestSword(g, tx, ty)) return 'pick';
   const d = doorAt(sc, tx, ty);
   if (d && d.to === 'wild' && !isOpen(S)) { g.bus.emit('sfx', 'denied'); g.bus.emit('toast', 'Le vieux portail est fermé à clé. Le chef du village saura peut-être…'); return 'locked'; }
   if (d && !(sc === 'farm' && BUILDINGS[d.to] && !(S.built && S.built[d.to]))) { enterScene(g, d.to, d.spawn); return 'door'; }

@@ -1,3 +1,5 @@
+import { CFG } from '../src/config.js';
+CFG.ACCES_TEST = false; // les tests décrivent le jeu normal (le mode test est vérifié à part)
 // Outils communs : partie déterministe, horloge contrôlable, capture des événements.
 import { createGame } from '../src/core/game.js';
 import { defaultState } from '../src/core/state.js';
