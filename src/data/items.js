@@ -23,6 +23,9 @@ export const ITEMS = {
   shrimp: { n: 'Crevettes', p: 55, i: '🦐', buy: 110 },
   salmon: { n: 'Saumon', p: 90, i: '🍣', buy: 180 },
   truffle: { n: 'Truffe', p: 160, i: '🍄' },
+  campfire: { n: 'Feu de camp', p: 0, i: '🔥', keep: true },           // à poser par terre ; on y cuit en tenant l'aliment 5 s
+  berry: { n: 'Baies', p: 2, i: '🫐', eat: { e: 1 } },
+  berry_cooked: { n: 'Baies grillées', p: 6, i: '🍒', eat: { e: 5 } },
   backpack: { n: 'Sac à dos', p: 0, i: '🎒', keep: true },            // apporté du voyage
   tent: { n: 'Tente', p: 60, i: '⛺', keep: true, tent: true },        // à poser à côté de la cabane (💡 revente 60)
   ruby: { n: 'Rubis', p: 250, i: '♦️' },

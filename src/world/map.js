@@ -42,11 +42,14 @@ export function ground(x, y) {
 
 import { tileAt, SOLID_TILES } from './scenes.js';
 import { AXE_GROVE } from '../data/repairs.js';
+import { BUSHES } from '../data/recipes.js';
+const BUSH_SET = new Set(BUSHES.map(([x, y]) => x + ',' + y));
 
 export function isSolid(S, x, y) {
   const N = S.nature && S.nature[S.scene || 'farm'];
   if (N && N.rocks && N.rocks[x + ',' + y]) return true;   // cailloux et filons
   if (S.tent && (S.scene || 'farm') === 'farm' && S.tent.x === x && S.tent.y === y) return true;   // tente
+  if ((S.scene || 'farm') === 'farm' && (BUSH_SET.has(x + ',' + y) || (S.fires || []).some(f => f.x === x && f.y === y))) return true;   // buissons, feux
   if (S.scene === 'wild' && S.wild && S.wild.rocks && S.wild.rocks[x + ',' + y]) return true;
   if (S.scene === 'foret' && S.foret && S.foret.shrooms && S.foret.shrooms[x + ',' + y]) return false;
   if (S.scene && S.scene !== 'farm') { const t = tileAt(S.scene, x, y); if (S.scene === 'grange' && (t === 'p' || t === 'r') && S.grange && S.grange.broken.includes(x + ',' + y)) return false; return SOLID_TILES.includes(t); }
@@ -62,7 +65,7 @@ export function rng(seed) {
 
 export function freeForObj(x, y) {
   return !isHouse(x, y) && !isPlot(x, y) && !isPond(x, y) && !isPath(x, y) && !inRect(x, y, 17, 5, 33, 14)
-    && !isBin(x, y) && !isLunaLot(x, y) && !inRect(x, y, 9, 0, 14, 5) && !inRect(x, y, 44, 16, 47, 20) && !inRect(x, y, 0, 8, 3, 24) && !inRect(x, y, 4, 5, 9, 7) && !inRect(x, y, 39, 0, 46, 6) && !AXE_SPOT(x, y) && x > 0 && y > 0 && x < CFG.W - 1 && y < CFG.H - 1;
+    && !isBin(x, y) && !isLunaLot(x, y) && !inRect(x, y, 9, 0, 14, 5) && !inRect(x, y, 44, 16, 47, 20) && !inRect(x, y, 0, 8, 3, 24) && !inRect(x, y, 4, 5, 9, 7) && !inRect(x, y, 39, 0, 46, 6) && !AXE_SPOT(x, y) && !BUSH_SET.has(x + ',' + y) && x > 0 && y > 0 && x < CFG.W - 1 && y < CFG.H - 1;
 }
 
 const KINDS = ['oak', 'pine', 'birch'];

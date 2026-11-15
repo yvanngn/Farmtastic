@@ -5,6 +5,25 @@ import { TEST_SWORD, testSwordHere } from '../systems/wild.js';
 import { rainbowVisible } from '../systems/nature.js';
 import { isRepaired, fieldToolAt } from '../systems/repair.js';
 import { FIELD_TOOLS } from '../data/repairs.js';
+import { BUSHES } from '../data/recipes.js';
+import { bushRipe, cookProgress } from '../systems/cooking.js';
+// Buisson à baies (baies bleues quand il y en a).
+function drawBush(c, x, y, ripe) {
+  const px = x * T, py = y * T;
+  c.fillStyle = 'rgba(0,0,0,.25)'; c.fillRect(px + 1, py + 12, 14, 3);
+  c.fillStyle = '#2f6a2a'; c.fillRect(px + 1, py + 5, 14, 9); c.fillRect(px + 3, py + 2, 10, 3);
+  c.fillStyle = '#4a9a3a'; c.fillRect(px + 3, py + 4, 5, 4); c.fillRect(px + 9, py + 6, 4, 3); c.fillStyle = '#68b84c'; c.fillRect(px + 4, py + 4, 2, 1);
+  if (ripe) for (const [a, b] of [[3, 7], [7, 5], [11, 8], [5, 11], [10, 11], [13, 6]]) { c.fillStyle = '#3a4ad0'; c.fillRect(px + a, py + b, 2, 2); c.fillStyle = '#9aa8ff'; c.fillRect(px + a, py + b, 1, 1); }
+}
+// Feu de camp : pierres en cercle, bûches, flammes qui dansent.
+function drawFire(c, x, y, now) {
+  const px = x * T, py = y * T, f = (now / 120 | 0) % 3;
+  c.fillStyle = 'rgba(255,170,60,.18)'; c.fillRect(px - 4, py - 2, 24, 20);
+  for (const [a, b] of [[1, 11], [4, 13], [9, 13], [13, 11], [2, 8], [13, 8]]) { c.fillStyle = '#8f887f'; c.fillRect(px + a, py + b, 3, 2); }
+  c.fillStyle = '#6a4426'; c.fillRect(px + 3, py + 11, 10, 2); c.fillRect(px + 5, py + 9, 6, 2);
+  c.fillStyle = '#e8501f'; c.fillRect(px + 5, py + 4 + f, 6, 7 - f); c.fillStyle = '#f6a43a'; c.fillRect(px + 6, py + 2 + (2 - f), 4, 8 - (2 - f));
+  c.fillStyle = '#ffe28a'; c.fillRect(px + 7, py + 6, 2, 4);
+}
 import { VEINS } from '../data/nature.js';
 import { FLOWERS } from '../data/items.js';
 const FLOWER_COL = Object.fromEntries(FLOWERS.flat().map(f => [f.id, f.c]));
@@ -237,6 +256,12 @@ export function createRenderer(cv, g) {
       ctx.fillStyle = 'rgba(255,240,170,' + (.25 + .2 * Math.sin(now / 300)) + ')'; ctx.fillRect(x + 1, y + 1 + b, 14, 12);
       ctx.save(); ctx.translate(x + 8, y + 11 + b); ctx.rotate(-.5); drawToolPix(ctx, t.tool); ctx.restore();
     } });
+    if (scene === 'farm') {
+      for (const [x, y] of BUSHES) if (x >= x0 && x <= x1 && y >= y0 && y <= y1) list.push({ z: y + .8, d: () => drawBush(ctx, x, y, bushRipe(S, x, y)) });
+      for (const f of S.fires || []) list.push({ z: f.y + .7, d: () => drawFire(ctx, f.x, f.y, now) });
+      if (g.cooking) list.push({ z: 9997, d: () => { const p = cookProgress(g), x = g.cooking.x * T, y = g.cooking.y * T - 8;
+        ctx.fillStyle = 'rgba(0,0,0,.55)'; ctx.fillRect(x - 1, y - 1, 18, 5); ctx.fillStyle = '#f2a03a'; ctx.fillRect(x, y, Math.round(16 * p), 3); } });
+    }
     if (scene === 'farm' && S.tent) list.push({ z: S.tent.y + .9, d: () => { // tente du début
       const x = S.tent.x * T, y = S.tent.y * T;
       ctx.fillStyle = 'rgba(0,0,0,.28)'; ctx.fillRect(x - 3, y + 13, 22, 3);

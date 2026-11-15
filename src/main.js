@@ -20,6 +20,8 @@ import { createDialog } from './ui/dialog.js';
 import { NPCS, OUT_FROM, OUT_TO, INTRO_LINES } from './data/npcs.js';
 import { placeNPC, findNPCAt, mystTick } from './systems/social.js';
 import { pickFieldTool } from './systems/repair.js';
+import { cookTick } from './systems/cooking.js';
+import { BUSHES } from './data/recipes.js';
 import { createRepairPanel } from './ui/repairPanel.js';
 import { autoPickup } from './systems/grange.js';
 import { pickTestSword } from './systems/wild.js';
@@ -140,6 +142,7 @@ $('#bMap').onclick = () => { audio.play('ui'); mapView.open(); };
 async function begin() {
   // le chemin vers le village doit rester libre (anciennes sauvegardes)
   for (const k in g.S.objs) { const [x, y] = k.split(',').map(Number); if (isPath(x, y) || isGate(x, y) || isLunaLot(x, y)) delete g.S.objs[k]; }
+  for (const [x, y] of BUSHES) delete g.S.objs[x + ',' + y];   // les buissons à baies gardent leur place
   for (const id in NPCS) registerNPC(g, NPCS[id]);
   for (const id in g.npcs) placeNPC(g.npcs[id], g.S, OUT_FROM, OUT_TO);
   if (!g.S.intro.arrived) { // arrivée en train : le train repart pendant que le héros repense à l'annonce
@@ -170,7 +173,7 @@ function loop(now) {
     wander(g, dt);
     updateWild(g, dt); // les monstres ne vivent que dans les Terres sauvages
     autoPickup(g);
-    pickTestSword(g, Math.floor(g.S.x), Math.floor(g.S.y - .2)); pickFieldTool(g, Math.floor(g.S.x), Math.floor(g.S.y - .2)); mystTick(g);
+    pickTestSword(g, Math.floor(g.S.x), Math.floor(g.S.y - .2)); pickFieldTool(g, Math.floor(g.S.x), Math.floor(g.S.y - .2)); mystTick(g); cookTick(g);
     ensureNature(g, g.S.scene || 'farm'); rainbowTick(g);
     pickFlower(g, Math.floor(g.S.x), Math.floor(g.S.y - .2)); digTreasure(g, Math.floor(g.S.x), Math.floor(g.S.y - .2));
     if (g.S.scene === 'foret') { ensureShrooms(g); pickShroom(g, Math.floor(g.S.x), Math.floor(g.S.y - .2)); }

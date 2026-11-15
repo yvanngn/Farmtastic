@@ -13,6 +13,8 @@ import { QUESTS, questProgress } from '../systems/quests.js';
 import { isUnlocked } from '../systems/market.js';
 import { canRepairBench, repairBench } from '../systems/economy.js';
 import { WORKBENCH } from '../data/buildings.js';
+import { craftHand, canCraftHand } from '../systems/cooking.js';
+import { HAND_RECIPES } from '../data/recipes.js';
 import { build, canBuild, canBuyAnimal, homeCount, buy, buyAnimal, buyBag, bagCost, buyStack, stackCost, STACKS, canCraft, craft } from '../systems/economy.js';
 import { consume } from '../systems/player.js';
 import { hearts, POINTS_PER_HEART, DEGREES, DEGREE_NAMES, tasteOf } from '../systems/social.js';
@@ -20,7 +22,7 @@ import { ITEMS as ALL_ITEMS } from '../data/items.js';
 import { slots, usedSlots, stackSize } from '../systems/inventory.js';
 import { canUpgrade, upgradeTool, miningLevel, nextXp, toolTier, hasTool } from '../systems/skills.js';
 
-const TABS = { sac: 'Sac', quests: 'Quêtes', forge: 'Forge', social: 'Liens' };
+const TABS = { sac: 'Sac', recettes: '🔥 Recettes', quests: 'Quêtes', forge: 'Forge', social: 'Liens' };
 const TITLES = { market: '🏪 Marché', upgrades: '🧰 Magasin d\'amélioration', carpenter: '🪚 Charpentier', workshop: '🛠️ Établi', animals: '🐾 Marchand d\'animaux', bakery: '🥖 Boulangerie', butcher: '🥩 Boucherie', fishmonger: '🐟 Poissonnerie' };
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 const it = id => ITEMS[id] || { n: id, i: '❔', p: 0 };
@@ -36,6 +38,11 @@ export function createMenu(g, opts) {
     bakery: S => `<p class="info">Pain frais et farine pour cuisiner.</p>${shopGrid(S, 'bakery')}`,
     butcher: S => `<p class="info">De la bonne viande pour vos futurs plats.</p>${shopGrid(S, 'butcher')}`,
     fishmonger: S => `<p class="info">Arrivage du jour.</p>${shopGrid(S, 'fishmonger')}`,
+    recettes(S) {
+      const known = (S.recipes || []).filter(id => HAND_RECIPES[id]);
+      return '<p class="info">Les recettes que tu connais. On les fabrique n\'importe où, avec ce qu\'on a sur soi.</p><div class="grid">' + known.map(id => { const r = HAND_RECIPES[id];
+        return card(`<div class="t">${it(r.out).i} <b>${it(r.out).n}</b> ×${r.q}</div><div>${Object.entries(r.in).map(([k, n]) => `${it(k).i}${n} <small>(${S.inv[k] || 0})</small>`).join(' ')}</div><button data-hcraft="${id}" ${canCraftHand(S, id) ? '' : 'disabled'}>Fabriquer</button>`); }).join('') + '</div>';
+    },
     sac(S) {
       const ids = Object.keys(S.inv);
       return `<p class="info">${usedSlots(S)}/${slots(S)} cases utilisées · ${stackSize(S)} objets max par case</p>` + (ids.length ? '<div class="grid">' + ids.map(id => card(`<div class="t">${it(id).i} <b>${it(id).n}</b></div><div>×${S.inv[id]} · ${Math.ceil(S.inv[id] / stackSize(S))} case(s) · ${it(id).p}🪙/u</div>${it(id).eat ? `<button data-use="${id}">Utiliser</button>` : ''}`)).join('') + '</div>' : 'Sac vide.');
@@ -142,7 +149,7 @@ export function createMenu(g, opts) {
   }
 
   const handlers = {
-    use: id => consume(g, id), craft: i => craft(g, +i), buy: id => buy(g, id), buy5: id => buy(g, id, 5), animal: id => buyAnimal(g, id),
+    use: id => consume(g, id), craft: i => craft(g, +i), hcraft: id => craftHand(g, id), buy: id => buy(g, id), buy5: id => buy(g, id, 5), animal: id => buyAnimal(g, id),
     bag: () => buyBag(g), bench: () => repairBench(g), build: id => build(g, id), stack: () => buyStack(g), up: id => upgradeTool(g, id)
   };
   function render() {

@@ -8,7 +8,7 @@ export function defaultState() {
     money: 500, energy: 100, maxE: 100, hp: 100, maxHp: 100,
     day: 1, season: 0, year: 1, minute: CFG.DAY_START, weather: 'sun',
     inv: { wheat_seed: 10, hay: 5, backpack: 1, tent: 1 }, sel: 'hand',
-    tent: null, bed: false,          // tente posée {x,y} ; lit de la maison à construire
+    tent: null, bed: false, recipes: ['campfire'], fires: [], bushes: {},   // recettes connues, feux posés, buissons cueillis (jour)          // tente posée {x,y} ; lit de la maison à construire
     x: 2.0, y: 20.6, dir: 3,         // on descend du train, sur le quai de la gare
     plots: {}, objs: null,
     animals: [],
