@@ -16,6 +16,7 @@ Légende : ✅ fait · 🔨 en cours · ⏳ à faire · 💡 idée de Claude (à
 | Le joueur | Fermier personnalisable (homme/femme, peau, coiffure, couleurs, pantalon/jupe). | ✅ |
 | **Luna** | Jeune femme célibataire, arrivée récemment. Travaillait dans l'informatique ; l'IA a remplacé son poste. Veut monter sa ferme mais doit d'abord gagner de l'argent ; pour l'instant elle essaie d'en gagner un peu. A sa maison. | ✅ lot 6 (répliques à valider) |
 | Charpentier | Vend poulailler, porcherie, etc. | ⏳ lot 4 |
+| **Franck** | Voisin de Luna, timide, sort peu. Un traumatisme d'enfance dont il ne parle pas (on ne le saura jamais) a forgé son caractère. Il laisse passer le temps ; un objet fabriqué par le joueur l'animera et le changera radicalement. | ✅ lot 11 (répliques à valider, objet à définir) |
 | Marchand d'animaux | Vend les animaux. | ⏳ lot 4 |
 | Boulanger, boucher, poissonnier | Commerces pour cuisiner de bons plats plus tard. | ⏳ lot 5 |
 
@@ -37,7 +38,7 @@ Mots de l'utilisateur, à respecter tels quels :
 - **Zone de combat à explorer** (✅ lot 10, 15/11/2026 ; bouclier ⏳) : un endroit séparé pour les combats, façon **Zelda sur Game Boy**. Mobs : **slime bleu, slime vert, cochon qui tire**. **Bouclier** envisagé plus tard. L'accès n'est **pas ouvert au début**.
 - **Cailloux de la zone de combat** (✅ lot 10) : 3 types ; le type 2 est rare, le type 3 encore plus. Chaque caillou a de **très faibles chances** de donner un minerai rare, plus souvent sur le type 2 et encore plus sur le type 3. Minerais pour l'instant : **rubis** et **émeraude**.
 - **Atelier de fabrication à la maison** (⏳), à débloquer plus tard.
-- **Franck** (⏳), nouveau voisin de Luna. Timide, il sort peu. Une des **quêtes principales** sera de l'aider à sortir. Il a vécu un **traumatisme quand il était jeune**, dont il ne veut pas parler : **on ne le saura jamais**, on laisse l'imagination au joueur, mais ça a forgé son caractère. Depuis, il laisse passer le temps, comme si rien ne l'animait. Un jour, on lui **fabriquera un objet** qui l'animera et le **changera radicalement**.
+- **Franck** (✅ lot 11, 15/11/2026 ; objet final ⏳), nouveau voisin de Luna. Timide, il sort peu. Une des **quêtes principales** sera de l'aider à sortir. Il a vécu un **traumatisme quand il était jeune**, dont il ne veut pas parler : **on ne le saura jamais**, on laisse l'imagination au joueur, mais ça a forgé son caractère. Depuis, il laisse passer le temps, comme si rien ne l'animait. Un jour, on lui **fabriquera un objet** qui l'animera et le **changera radicalement**.
 - **Début de partie** (✅ lot 8, 15/11/2026 — voir § 4) :
   - on n'a **aucun outil** ;
   - à l'arrivée, le **chef du village** nous accueille et nous présente ce qu'on peut faire ;
@@ -93,6 +94,13 @@ Mots de l'utilisateur, à respecter tels quels :
   - Elle compte **6 salles** de 10 × 8 cases, façon Zelda Game Boy : la caméra reste dans la salle et le reste est noir. Les monstres de la salle apparaissent quand on y entre, et reviennent si on repasse.
   - **Slime vert** (lent, 10 de dégâts), **slime bleu** (rapide, plus résistant, 15), **cochon qui tire** (garde ses distances, tire en ligne droite toutes les 2 s, 12 par tir ; il laisse 5 à 15 🪙). Après un coup, le joueur clignote et reste invincible 0,8 s. Un K.O. ramène à la maison (−10 % d'argent).
   - **12 cailloux par jour**, de 3 types : le caillou simple (1 pierre, 2 % de minerai), le **caillou veiné**, rare (2 pierres, 8 %), et le **caillou cristallin**, encore plus rare (3 pierres, 20 %). Les minerais sont le **rubis** (250 🪙) et l'**émeraude** (300 🪙).
+- **Franck (lot 11)** : sa maison grise aux volets fermés est juste à côté de celle de Luna. Il reste **chez lui**, assis près de sa fenêtre. À **2 cœurs**, il sort s'asseoir sur le **banc devant chez lui en fin de journée** (17 h – 19 h), et un message l'annonce la première fois. À **3 cœurs**, ses **volets s'ouvrent**. Sa vie se dévoile comme celle de Luna (une réplique par jour, par paliers), mais il ne dit jamais ce qui lui est arrivé.
+- **Onglet Quêtes** (menu) : la quête principale **« Aider Franck à sortir »**, en 5 étapes. Les étapes suivantes restent cachées (« ??? ») :
+  1. frapper chez lui ;
+  2. 2 cœurs ;
+  3. les volets (3 cœurs) ;
+  4. il se confie (4 cœurs) ;
+  5. lui fabriquer l'objet qui l'animera (⏳ objet à définir par l'utilisateur).
 - **Plus de slimes la nuit sur la ferme.** L'épée n'est plus donnée au départ.
 - Une ancienne sauvegarde garde ses outils et ne revoit pas l'accueil.
 - **Départ d'une nouvelle partie** : seules les graines de blé, les poules et le chat sont disponibles ; tout le reste vient de la caravane. Une ancienne sauvegarde garde tout débloqué.
@@ -157,6 +165,25 @@ Paliers : il faut le nombre de cœurs indiqué pour qu'elle en parle.
 32. (conversation) Le village renaît un peu plus chaque jour.
 33. (conversation) Tu as fouillé la grange ? On dit qu'elle s'enfonce loin sous la colline.
 Goûts du chef (💡) : aime le pain et les œufs ; déteste la gelée.
+
+### Franck (à valider)
+34. (0 ♥) … Oh. Bonjour.
+35. (0 ♥) Je… je ne reçois pas beaucoup de visites.
+36. (0 ♥) Tu peux bien refermer la porte en partant ? Merci.
+37. (1 ♥) Je m'appelle Franck. J'habite ici depuis longtemps.
+38. (1 ♥) Les journées passent. Je regarde par la fenêtre, surtout.
+39. (2 ♥) Il s'est passé quelque chose, quand j'étais petit. Je… je préfère ne pas en parler.
+40. (2 ♥) Depuis, je laisse le temps passer. Rien ne me donne vraiment envie.
+41. (3 ♥) J'ai ouvert les volets, ce matin. Ça fait bizarre, toute cette lumière.
+42. (3 ♥) Luna m'a fait signe, hier. J'ai… fait signe aussi.
+43. (4 ♥) Avant, j'aimais bien fabriquer des choses, je crois. Je ne sais plus trop quoi.
+44. (4 ♥) Si un jour tu trouves quelque chose qui… je ne sais pas. Qui me donnerait envie.
+45. (conversation) …  /  Il fait beau ? Je n'ai pas regardé.
+46. Question (0 ♥) « Tu… tu restes longtemps ? » : a. Juste le temps de dire bonjour. (+12) → « D'accord. C'est… gentil. » · b. Toute la journée, si tu veux ! (−5) → « Ah. Euh… » · c. Je repasserai demain. (+8) → « … D'accord. »
+47. Question (1 ♥) « Tu sors beaucoup, toi ? » : a. Tous les jours, il y a tant à voir ! (+5) → « Ça doit être fatigant. » · b. Un peu. Tu pourrais venir avec moi, un jour. (+12) → « … Peut-être. Un jour. » · c. Pas plus que nécessaire. (+8) → « Je comprends. »
+48. Réactions aux cadeaux : adore « … Un croissant ? Pour moi ? … Merci. Vraiment. » · aime « … Merci. C'est gentil. » · neutre « Oh. … Merci. » · n'aime pas « … Je vais le poser là. » · déteste « Ça sent… fort. Tu peux le garder ? » · déjà offert « … Tu m'as déjà apporté quelque chose aujourd'hui. »
+Goûts de Franck (💡) : adore le croissant ; aime le pain, les œufs et le bois ; n'aime pas la gelée ; déteste la truffe. Apparence (💡) : cheveux bruns en épis, sweat gris.
+**À décider par l'utilisateur** : quel objet on lui fabriquera, et comment il le change.
 
 ## 5. Contradictions et points à trancher
 - ✅ Réglé au lot 4 : le poulailler n'existe plus au départ, et les animaux ne se vendent plus que chez le marchand d'animaux. Une ancienne sauvegarde garde son poulailler, et sa bergerie si elle avait des moutons.

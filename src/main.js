@@ -161,7 +161,7 @@ function loop(now) {
     autoPickup(g);
     rainBoost(g, dt);
     lerpOthers(g.others, dt);
-    for (const id in g.npcs) placeNPC(g.npcs[id], g.S, OUT_FROM, OUT_TO);
+    for (const id in g.npcs) { const n = g.npcs[id]; placeNPC(n, g.S, OUT_FROM, OUT_TO); if (n.justOut) { n.justOut = false; toast(`${n.name} est sorti s'asseoir devant chez lui !`); } }
     mp && mp.tick(now);
     for (const k in g.S.objs) { const o = g.S.objs[k]; if (o.shake > 0) o.shake -= dt; }
     for (let i = g.fx.length - 1; i >= 0; i--) { const f = g.fx[i]; f.life -= dt; f.y -= dt * 0.75; if (f.life <= 0) g.fx.splice(i, 1); }

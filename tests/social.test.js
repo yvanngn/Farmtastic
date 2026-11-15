@@ -109,3 +109,37 @@ test('Luna : dehors le jour devant sa maison, chez elle le soir ; sa maison est 
   S.minute = 600; assert.equal(act(g, 20, 31), 'door');
   assert.equal(S.scene, 'luna');
 });
+
+// ---- Lot 11 : Franck ----
+import { FRANCK } from '../src/data/npcs.js';
+import { questProgress } from '../src/systems/quests.js';
+
+test('Franck reste chez lui ; à 2 cœurs il sort s’asseoir devant chez lui en fin de journée', () => {
+  const { g, S } = makeGame({ state: { minute: 1060 } });
+  registerNPC(g, FRANCK); const n = g.npcs.franck;
+  placeNPC(n, S, OUT_FROM, OUT_TO);
+  assert.equal(n.scene, 'franck', 'timide : il reste à l’intérieur');
+  S.social.franck.points = 2 * POINTS_PER_HEART; placeNPC(n, S, OUT_FROM, OUT_TO);
+  assert.equal(n.scene, 'farm');
+  assert.equal(n.justOut, true, 'première sortie annoncée');
+  S.minute = 700; placeNPC(n, S, OUT_FROM, OUT_TO);
+  assert.equal(n.scene, 'franck', 'pas en pleine journée');
+});
+
+test('Franck ne parle jamais de son traumatisme ; la quête avance avec la confiance', () => {
+  assert.ok(FRANCK.story.every(l => !/(accident|mort|perdu|abandon)/i.test(l.t)), 'on ne saura jamais ce qui s’est passé');
+  const { g, S } = makeGame({ state: { minute: 600 } });
+  registerNPC(g, FRANCK);
+  assert.equal(questProgress(S, 'franck').cur, 0);
+  S.scene = 'franck'; placeNPC(g.npcs.franck, S, OUT_FROM, OUT_TO); talk(g, 'franck');
+  assert.equal(questProgress(S, 'franck').cur, 1);
+  S.social.franck.points = 4 * POINTS_PER_HEART;
+  assert.equal(questProgress(S, 'franck').cur, 4, 'reste : l’objet à fabriquer');
+});
+
+test('maison de Franck à côté de celle de Luna, on y entre par sa porte', () => {
+  const { g, S } = makeGame({ state: { minute: 600 } });
+  assert.equal(isSolid(S, 26, 30), true);
+  assert.equal(act(g, 27, 31), 'door');
+  assert.equal(S.scene, 'franck');
+});

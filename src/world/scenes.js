@@ -38,6 +38,16 @@ export const LAYOUTS = {
     '###############......#',
     '######################'
   ],
+  // Maison de Franck : rideaux tirés, fauteuil près de la fenêtre (A), lit (B)
+  franck: [
+    '#########',
+    '#WWWWWWW#',
+    '#B......#',
+    '#B..AA..#',
+    '#.......#',
+    '#.......#',
+    '####D####'
+  ],
   // X cartons de déménagement
   luna: [
     '#########',
@@ -110,7 +120,7 @@ function buildWild() {
   return m.map(r => r.join(''));
 }
 LAYOUTS.wild = buildWild();
-export const SOLID_TILES = '#WDBKTPCHNYXMQUJAOVZFLfprE';
+export const SOLID_TILES = '#WDBKTPCHNYXMQUJAOVZFLfprE';  // A = fauteuil (Franck) / marchand d'animaux (village)
 // Tuiles qui ouvrent une interface.
 export const UI_TILES = { M: 'market', Q: 'board', U: 'upgrades', J: 'carpenter', A: 'animals', O: 'bakery', V: 'butcher', Z: 'fishmonger' };
 
@@ -121,6 +131,7 @@ export const SCENES = {
     { x: 20, y: 7, to: 'pigsty', spawn: { x: 4.5, y: 5.4 } },
     { x: 28, y: 7, to: 'barn', spawn: { x: 5.5, y: 6.4 } },
     { x: 12, y: 4, to: 'grange', spawn: { x: 5.5, y: 5.2 } },
+    { x: 27, y: 31, to: 'franck', spawn: { x: 4.5, y: 5.4 } },
     { x: 20, y: 31, to: 'luna', spawn: { x: 4.5, y: 5.4 } },
     { x: 47, y: 18, to: 'wild', spawn: { x: 1.6, y: 4.5 } },
     { x: 16, y: 35, to: 'town', spawn: { x: 12.5, y: 1.8 } }
@@ -130,6 +141,7 @@ export const SCENES = {
   coop: { W: 10, H: 7, doors: [{ x: 4, y: 6, to: 'farm', spawn: { x: 24.5, y: 8.9 } }] },
   wild: { W: 30, H: 16, outdoor: true, rooms: { w: 10, h: 8 }, doors: [{ x: 0, y: 4, to: 'farm', spawn: { x: 46.4, y: 18.5 } }] },
   grange: { W: 22, H: 11, dark: true, doors: [{ x: 5, y: 6, to: 'farm', spawn: { x: 12.5, y: 5.6 } }] },
+  franck: { W: 9, H: 7, doors: [{ x: 4, y: 6, to: 'farm', spawn: { x: 27.5, y: 32.6 } }] },
   luna: { W: 9, H: 7, doors: [{ x: 4, y: 6, to: 'farm', spawn: { x: 20.5, y: 32.6 } }] },
   pigsty: { W: 10, H: 7, doors: [{ x: 4, y: 6, to: 'farm', spawn: { x: 20.5, y: 8.9 } }] },
   barn: { W: 12, H: 8, doors: [{ x: 5, y: 7, to: 'farm', spawn: { x: 28.5, y: 8.9 } }] }

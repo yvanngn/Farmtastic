@@ -73,6 +73,49 @@ export const CHEF = {
   chat: ['Le village renaît un peu plus chaque jour.', "Tu as fouillé la grange ? On dit qu'elle s'enfonce loin sous la colline."],
   react: { aime: 'Oh, c\'est gentil ! Merci.', neutre: 'Merci bien.', deteste: 'Hum… je vais faire semblant de ne pas avoir vu ça.' }
 };
-export const NPCS = { luna: LUNA, chef: CHEF };
+// Franck, voisin de Luna (décrit par l'utilisateur) : timide, sort peu. Un traumatisme d'enfance
+// dont il ne parle pas — on ne le saura jamais. Il laisse passer le temps ; un objet fabriqué l'animera un jour.
+// Apparence, goûts, répliques et questions : 💡 propositions de Claude, à valider.
+export const FRANCK = {
+  id: 'franck', name: 'Franck', de: 'de lui', color: '#8ab4d8', voice: 'voiceFranck',
+  look: { body: 'h', bottom: 'pant', skin: '#e8c4a4', hair: 2, hairC: '#5a4636', shirt: '#7d8794', pants: '#3a3f4a' },
+  home: 'franck', inside: { x: 5.5, y: 2.7 }, day: { x: 27.5, y: 33.3 },
+  shy: { minHearts: 2, from: 1020, to: 1140 },   // à partir de 2 cœurs, il s'assoit devant chez lui en fin de journée
+  traits: ['Timide', 'Sort peu', 'Laisse passer le temps', 'Aimait peut-être fabriquer des choses'],
+  taste: { adore: ['croissant'], aime: ['bread', 'egg', 'wood'], naime: ['slime'], deteste: ['truffle'] },
+  react: {
+    adore: '… Un croissant ? Pour moi ? … Merci. Vraiment.',
+    aime: '… Merci. C\'est gentil.',
+    neutre: 'Oh. … Merci.',
+    naime: '… Je vais le poser là.',
+    deteste: "Ça sent… fort. Tu peux le garder ?"
+  },
+  already: '… Tu m\'as déjà apporté quelque chose aujourd\'hui.',
+  story: [
+    { h: 0, t: '… Oh. Bonjour.' },
+    { h: 0, t: 'Je… je ne reçois pas beaucoup de visites.' },
+    { h: 0, t: 'Tu peux bien refermer la porte en partant ? Merci.' },
+    { h: 1, t: "Je m'appelle Franck. J'habite ici depuis longtemps." },
+    { h: 1, t: 'Les journées passent. Je regarde par la fenêtre, surtout.' },
+    { h: 2, t: "Il s'est passé quelque chose, quand j'étais petit. Je… je préfère ne pas en parler." },
+    { h: 2, t: 'Depuis, je laisse le temps passer. Rien ne me donne vraiment envie.' },
+    { h: 3, t: "J'ai ouvert les volets, ce matin. Ça fait bizarre, toute cette lumière." },
+    { h: 3, t: "Luna m'a fait signe, hier. J'ai… fait signe aussi." },
+    { h: 4, t: "Avant, j'aimais bien fabriquer des choses, je crois. Je ne sais plus trop quoi." },
+    { h: 4, t: "Si un jour tu trouves quelque chose qui… je ne sais pas. Qui me donnerait envie." }
+  ],
+  chat: ['…', "Il fait beau ? Je n'ai pas regardé."],
+  questions: [
+    { id: 'reste', h: 0, q: 'Tu… tu restes longtemps ?', a: [
+      { t: 'Juste le temps de dire bonjour.', pts: 12, r: "D'accord. C'est… gentil." },
+      { t: 'Toute la journée, si tu veux !', pts: -5, r: 'Ah. Euh…' },
+      { t: 'Je repasserai demain.', pts: 8, r: "… D'accord." }] },
+    { id: 'sortir', h: 1, q: 'Tu sors beaucoup, toi ?', a: [
+      { t: 'Tous les jours, il y a tant à voir !', pts: 5, r: 'Ça doit être fatigant.' },
+      { t: 'Un peu. Tu pourrais venir avec moi, un jour.', pts: 12, r: '… Peut-être. Un jour.' },
+      { t: 'Pas plus que nécessaire.', pts: 8, r: 'Je comprends.' }] }
+  ]
+};
+export const NPCS = { luna: LUNA, chef: CHEF, franck: FRANCK };
 // Luna est dehors de 8 h à 19 h, chez elle le reste du temps.
 export const OUT_FROM = 480, OUT_TO = 1140;

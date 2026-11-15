@@ -153,6 +153,13 @@ export function createRenderer(cv, g) {
       for (const k in (S.wild && S.wild.rocks) || {}) { const [x, y] = k.split(',').map(Number), o = S.wild.rocks[k]; list.push({ z: y + .9, d: () => drawZRock(ctx, x, y, o) }); }
       for (const s2 of g.shots || []) list.push({ z: s2.y, d: () => { ctx.fillStyle = '#3a2020'; ctx.fillRect(Math.round(s2.x * T) - 2, Math.round(s2.y * T) - 2, 4, 4); ctx.fillStyle = '#e0a060'; ctx.fillRect(Math.round(s2.x * T) - 1, Math.round(s2.y * T) - 1, 2, 2); } });
     }
+    if (outside) { // volets de Franck : fermés tant qu'il n'a pas 3 cœurs
+      const r = S.social && S.social.franck, open = r && r.points >= 750, wx = 25 * T + 6, wy = 29 * T + 12;
+      list.push({ z: 31.95, d: () => {
+        if (open) { ctx.fillStyle = '#ffd98a'; ctx.fillRect(wx + 2, wy + 2, 10, 8); ctx.fillStyle = '#3e5a7a'; ctx.fillRect(wx - 5, wy, 5, 12); ctx.fillRect(wx + 14, wy, 5, 12); }
+        else { ctx.fillStyle = '#3e5a7a'; ctx.fillRect(wx, wy, 14, 12); ctx.fillStyle = '#2a4058'; for (let k = 2; k < 12; k += 3) ctx.fillRect(wx, wy + k, 14, 1); ctx.fillRect(wx + 7, wy, 1, 12); }
+      } });
+    }
     if (scene === 'grange') {
       // outils au sol (avec un éclat) et passages encore fermés
       for (const p of PICKUPS) if (!S.grange.found.includes(p.tool)) list.push({ z: p.y + .5, d: () => {

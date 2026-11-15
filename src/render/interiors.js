@@ -9,6 +9,7 @@ const THEME = {
   house: { floor: '#b07a48', seam: '#8a5a32', wall: '#7fa36a', wallD: '#5f8450', trim: '#6b4226', beam: '#4a2c18' },
   coop: { floor: '#d9c27a', seam: '#b49a52', wall: '#b8452f', wallD: '#93321f', trim: '#f0e6d0', beam: '#5a3a2a' },
   grange: { floor: '#6e5236', seam: '#5a4028', wall: '#7a5a3a', wallD: '#5b3f26', trim: '#4a3220', beam: '#2e2622' },
+  franck: { floor: '#8a6a4e', seam: '#6e5238', wall: '#9aa4b0', wallD: '#86909c', trim: '#5a5f6a', beam: '#2e2a30' },
   luna: { floor: '#c49a6a', seam: '#a07850', wall: '#d8c2e8', wallD: '#bca4d0', trim: '#7a5a8a', beam: '#4a2c3a' },
   pigsty: { floor: '#c9a66a', seam: '#a8854a', wall: '#9a6a3c', wallD: '#7a4e2a', trim: '#c99560', beam: '#4a2c18' },
   barn: { floor: '#d4b870', seam: '#b0944c', wall: '#b8452f', wallD: '#93321f', trim: '#f0e6d0', beam: '#4a2c18' }
@@ -29,6 +30,7 @@ export function buildInterior(name) {
     if (t === '#') { R(px, py, T, T, th.beam); R(px, py + T - 2, T, 2, shade(th.beam, .7)); continue; }
     if (t === 'W') {
       R(px, py, T, T, th.wall);
+      if (name === 'franck') { for (let k = 2; k < T; k += 5) R(px + k, py, 1, 11, th.wallD); R(px, py + 11, T, 5, th.trim); if (x % 4 === 2) { R(px + 2, py + 1, 12, 9, '#4a3a5a'); R(px + 3, py + 2, 4, 8, '#6a5a7a'); R(px + 9, py + 2, 4, 8, '#6a5a7a'); } continue; }
       if (name === 'house' || name === 'luna') { for (let k = 2; k < T; k += 5) R(px + k, py, 1, 11, th.wallD); }
       else for (let k = 0; k < T; k += 4) R(px + k, py, 1, T, th.wallD);
       R(px, py + 11, T, 5, th.trim); R(px, py + 11, T, 1, shade(th.trim, 1.25));
@@ -37,7 +39,7 @@ export function buildInterior(name) {
       continue;
     }
     // sol
-    if (name === 'house' || name === 'luna') {
+    if (name === 'house' || name === 'luna' || name === 'franck') {
       R(px, py, T, T, th.floor);
       for (let k = 0; k < T; k += 4) R(px, py + k, T, 1, th.seam);
       R(px + ((x * 5 + y * 3) % 12), py + 1, 1, 3, th.seam);
@@ -64,6 +66,7 @@ export function buildInterior(name) {
     P: ([x, y, w, h]) => { R(x + 4, y + 9, 8, 7, '#b0603a'); R(x + 4, y + 9, 8, 2, '#c97a4f'); disc(g, x + 8, y + 5, 5, '#3e8a34'); disc(g, x + 6, y + 4, 2, '#6bb33f'); },
     C: ([x, y, w, h]) => { R(x + 1, y + 4, w - 2, h - 5, '#8a5a32'); R(x + 1, y + 4, w - 2, 4, '#b07a48'); R(x + 1, y + 8, w - 2, 1, '#e8c26a'); R(x + 7, y + 7, 2, 3, '#e8c26a'); },
     H: ([x, y, w, h]) => { R(x, y + 4, w, h - 6, '#6b4226'); R(x + 1, y + 5, w - 2, 5, '#e3c45e'); for (let k = x + 2; k < x + w - 2; k += 3) R(k, y + 4, 1, 2, '#f2d77a'); R(x, y + h - 3, w, 1, '#4a2c18'); },
+    A: ([x, y, w, h]) => { R(x + 4, y + 2, w - 8, h - 6, '#5a6a7a'); R(x + 2, y + 6, 4, h - 8, '#4a5866'); R(x + w - 6, y + 6, 4, h - 8, '#4a5866'); R(x + 6, y + 8, w - 12, 6, '#6e7e8e'); R(x + 5, y + h - 4, 2, 4, '#3a2a20'); R(x + w - 7, y + h - 4, 2, 4, '#3a2a20'); },
     X: () => { for (const [cx, cy, s2] of [[1, 2, 13], [2, 2, 11], [1, 3, 12]]) { const x = cx * T + 1, y = cy * T + 2; R(x, y, s2, s2 - 2, '#b8875a'); R(x, y, s2, 3, '#d4a878'); R(x + s2 / 2 - 1, y, 2, s2 - 2, '#e8dcc0'); R(x, y + s2 - 3, s2, 1, '#8a5a32'); } },
     G: ([x, y, w, h]) => { R(x + 2, y + 2, w - 4, h - 4, '#6e4a2e'); R(x + 4, y + 4, w - 8, h - 8, '#7d5636'); for (const [a, b] of [[6, 6], [w - 14, 9], [12, h - 10]]) { R(x + a, y + b, 6, 2, '#8f6642'); R(x + a + 1, y + b, 3, 1, '#a07650'); } },
     Y: ([x, y, w, h]) => { R(x + 1, y + 3, w - 2, h - 4, '#c9a330'); R(x + 1, y + 3, w - 2, 3, '#f5dd7a'); for (let k = x + 2; k < x + w - 2; k += 3) R(k, y + 6, 1, h - 8, '#a8862a'); R(x + 1, y + h - 2, w - 2, 1, '#7a5f1e'); },

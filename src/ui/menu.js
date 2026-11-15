@@ -9,6 +9,7 @@ import { TOOLS } from '../data/items.js';
 import { TIER_NAMES, UPGRADABLE, MAX_TIER } from '../data/tools.js';
 import { BUILDINGS } from '../data/buildings.js';
 import { SHOPS } from '../data/shops.js';
+import { QUESTS, questProgress } from '../systems/quests.js';
 import { isUnlocked } from '../systems/market.js';
 import { build, canBuild, canBuyAnimal, homeCount, buy, buyAnimal, buyBag, bagCost, buyStack, stackCost, STACKS, canCraft, craft } from '../systems/economy.js';
 import { consume } from '../systems/player.js';
@@ -17,7 +18,7 @@ import { ITEMS as ALL_ITEMS } from '../data/items.js';
 import { slots, usedSlots, stackSize } from '../systems/inventory.js';
 import { canUpgrade, upgradeTool, miningLevel, nextXp, toolTier, hasTool } from '../systems/skills.js';
 
-const TABS = { sac: 'Sac', craft: 'Atelier', forge: 'Forge', social: 'Liens' };
+const TABS = { sac: 'Sac', quests: 'Quêtes', craft: 'Atelier', forge: 'Forge', social: 'Liens' };
 const TITLES = { market: '🏪 Marché', upgrades: '🧰 Magasin d\'amélioration', carpenter: '🪚 Charpentier', animals: '🐾 Marchand d\'animaux', bakery: '🥖 Boulangerie', butcher: '🥩 Boucherie', fishmonger: '🐟 Poissonnerie' };
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 const it = id => ITEMS[id] || { n: id, i: '❔', p: 0 };
@@ -81,6 +82,13 @@ export function createMenu(g, opts) {
     market(S) {
       const players = opts.market ? '<div id="pm"><p class="info">Chargement…</p></div>' : '<p class="info">Hors ligne : le marché entre joueurs a besoin de la connexion.</p>';
       return `<h3>${SHOPS.stall.i} ${SHOPS.stall.n}</h3>${shopGrid(S, 'stall')}<h3>👥 Entre joueurs</h3><p class="info">Vendez vos produits aux autres joueurs, ou achetez les leurs. Les demandes du village sont sur le panneau d'affichage, à côté.</p>${players}`;
+    },
+    quests(S) {
+      return Object.keys(QUESTS).map(id => {
+        const { q, done, cur } = questProgress(S, id);
+        return card(`<div class="t" style="font-size:1.1em">${q.i} <b>${q.n}</b></div><ol class="etapes">` + q.steps.map((st, i) =>
+          `<li class="${done[i] ? 'fait' : i === cur ? 'encours' : 'avenir'}">${done[i] ? '✔ ' : i === cur ? '▸ ' : ''}${i <= cur || done[i] ? esc(st.t) : '???'}${st.locked && !done[i] && i === cur ? ' <small>(bientôt)</small>' : ''}</li>`).join('') + '</ol>');
+      }).join('');
     },
     social(S) {
       const ids = Object.keys(S.social);

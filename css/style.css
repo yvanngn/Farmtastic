@@ -251,3 +251,7 @@ img.pix { width: 1.15em; height: 1.15em; image-rendering: pixelated; vertical-al
 .affiche .pastille { position: absolute; right: 6px; top: 4px; font-size: 1.1em }
 .affiche[style*="--k"]::before { background: var(--k) }
 #ovBoard .panel { width: min(760px, 100%) }
+.etapes { margin: 6px 0 2px 1.2em; display: grid; gap: 4px }
+.etapes .fait { color: var(--energie) }
+.etapes .encours { color: var(--or-vif); font-weight: 700 }
+.etapes .avenir { color: var(--doux); opacity: .7 }

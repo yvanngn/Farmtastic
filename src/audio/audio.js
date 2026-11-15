@@ -169,6 +169,7 @@ export function createAudio(g, storage) {
     squeak: t => { blip(t, 'sine', 1800, 0.06, 0.08, 2400); blip(t + 0.08, 'sine', 2000, 0.05, 0.06, 2600); },
     baa: t => { const o = blip(t, 'sawtooth', 220, 0.5, 0.07, 190); const l = ac.createOscillator(), d = ac.createGain(); l.frequency.value = 9; d.gain.value = 12; l.connect(d); d.connect(o.frequency); l.start(t); l.stop(t + 0.55); },
     voiceChef: t => [0, -3, 2].forEach((s2, k) => blip(t + k * 0.08, 'square', hz(5 + s2 + (Math.random() * 2 | 0)), 0.08, 0.05)),
+    voiceFranck: t => [0, -2].forEach((s2, k) => blip(t + k * 0.11, 'sine', hz(7 + s2 + (Math.random() * 2 | 0)), 0.1, 0.05)),
     voiceLuna: t => [0, 4, 2].forEach((s2, k) => blip(t + k * 0.06, 'triangle', hz(19 + s2 + (Math.random() * 3 | 0)), 0.07, 0.07)),
     oink: t => { burst(t, 0.12, 'bandpass', 380, 0.35, 3); burst(t + 0.16, 0.1, 'bandpass', 420, 0.3, 3); blip(t, 'sawtooth', 140, 0.12, 0.05, 110); },
     meow: t => { blip(t, 'triangle', 520, 0.12, 0.12, 820); blip(t + 0.12, 'triangle', 820, 0.3, 0.1, 420); },

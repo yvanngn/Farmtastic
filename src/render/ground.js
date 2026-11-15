@@ -73,6 +73,7 @@ export function buildGround(season, built = {}) {
   drawFieldStakes(R);
   drawWildGate(R);
   drawLunaHouse(R);
+  drawFranckHouse(R);
   if (built.coop) drawCoop(R); else drawLot(g, R, 'coop');
   if (built.pigsty) drawPigsty(R); else drawLot(g, R, 'pigsty');
   if (built.barn) drawBarn(R); else drawLot(g, R, 'barn');
@@ -167,6 +168,24 @@ function drawGrange(R) {
   R(dx + 11, top + 16, 5, bot - top - 16, '#7a6a58'); R(dx + 12, top + 18, 1, bot - top - 20, '#5a4e40');
   R(dx - 2, bot, 20, 3, '#9a958c');
   R(x1 - 10, top + 30, 8, 6, '#c9a330'); R(x1 - 10, top + 30, 8, 2, '#f5dd7a');
+}
+
+// Maison de Franck (x25-29, y29-31) : maison grise et bleue, volets (dessinés à part), banc devant.
+function drawFranckHouse(R) {
+  const x0 = 25 * T, x1 = 30 * T, top = 29 * T + 6, bot = 32 * T;
+  R(x0 - 2, bot, x1 - x0 + 4, 3, 'rgba(20,12,8,.3)');
+  R(x0, top, x1 - x0, bot - top, '#b8bcc4'); for (let y = top + 4; y < bot; y += 5) R(x0, y, x1 - x0, 1, '#9ca0aa');
+  R(x0, bot - 3, x1 - x0, 3, '#7e828c');
+  for (let i = 0, y = top - 26; y < top; i++, y += 4) {
+    const inset = Math.max(0, 12 - i * 2), lx = x0 - 6 + inset, w = x1 - x0 + 12 - inset * 2;
+    R(lx, y, w, 4, '#3e5a7a'); R(lx, y, w, 1, '#5a7a9a'); for (let sx = lx + (i % 2 ? 3 : 0); sx < lx + w; sx += 6) R(sx, y + 1, 1, 3, '#2a4058');
+  }
+  R(x0 - 7, top - 2, x1 - x0 + 14, 3, '#2a3a4e');
+  R(x0 + 6, top + 6, 14, 12, '#e8e4dc'); R(x0 + 8, top + 8, 10, 8, '#3a3a4a');
+  const dx = 27 * T; R(dx, top + 8, 16, bot - top - 8, '#2a3a4e'); R(dx + 2, top + 10, 12, bot - top - 10, '#4a5f7a'); R(dx + 11, top + 22, 2, 2, '#c9c2b0');
+  R(dx - 2, bot, 20, 3, '#9a958c');
+  // banc devant la maison
+  const bx = 27 * T + 2, by = 33 * T + 4; R(bx - 6, by, 26, 3, '#8a5a32'); R(bx - 6, by, 26, 1, '#c99560'); R(bx - 6, by - 5, 26, 2, '#7a4f2e'); R(bx - 4, by + 3, 2, 5, '#3f2615'); R(bx + 16, by + 3, 2, 5, '#3f2615');
 }
 
 // Maison de Luna (x18-22, y29-31) : petite maison mauve, cartons devant, boîte aux lettres.
