@@ -12,7 +12,7 @@ export function craftHand(g, id) {
   if (!r || !canCraftHand(S, id)) { g.bus.emit('sfx', 'denied'); return false; }
   for (const [k, n] of Object.entries(r.in)) add(g, k, -n);
   add(g, r.out, r.q);
-  g.bus.emit('sfx', 'craft'); g.bus.emit('toast', `Fabriqué : ${r.out === 'campfire' ? 'un feu de camp 🔥 (prends-le en main et pose-le)' : r.out}`);
+  g.bus.emit('sfx', 'craft'); g.bus.emit('toast', `Fabriqué : ${r.out === 'campfire' ? 'un feu de camp 🔥 (prends-le en main et pose-le)' : r.out === 'chest' ? 'un coffre 📦' : r.out}`);
   return true;
 }
 

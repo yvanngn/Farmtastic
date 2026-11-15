@@ -3,6 +3,14 @@ import { hearts } from './social.js';
 import { isRepaired } from './repair.js';
 
 export const QUESTS = {
+  igor: {
+    n: 'Le bijou d’Igor', i: '💍',
+    steps: [
+      { id: 'rencontre', t: 'Parler à Igor, le forgeron, qui traîne dans le quartier', done: S => !!S.quests?.igor?.asked },
+      { id: 'bijou', t: 'Retrouver son bijou : « ici, ou près de la cabane »', done: S => !!S.quests?.igor?.found },
+      { id: 'rendre', t: 'Lui rapporter le bijou', done: S => !!S.quests?.igor?.done }
+    ]
+  },
   debut: {
     n: 'Premiers pas', i: '🌱',
     steps: [

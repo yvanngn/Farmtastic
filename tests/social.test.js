@@ -177,3 +177,24 @@ test('maisons des habitants : on frappe tant qu’on n’a pas 5 cœurs ; s’il
   S.social.franck.points = 5 * 250; g.knockT = -1e9;
   assert.equal(act(g, 10, 14), 'door'); assert.equal(S.scene, 'franck');
 });
+
+test('Igor le forgeron : il cherche son bijou (derrière la cabane) et nous apprend le coffre', async () => {
+  const { IGOR } = await import('../src/data/npcs.js');
+  const { JEWEL, jewelHere, pickJewel } = await import('../src/systems/igor.js');
+  const { talk: tk, registerNPC: reg } = await import('../src/systems/social.js');
+  const { questProgress } = await import('../src/systems/quests.js');
+  const { HAND_RECIPES } = await import('../src/data/recipes.js');
+  const { g, S } = makeGame({ state: { minute: 600, scene: 'quartier', recipes: ['campfire'], inv: {} } });
+  reg(g, IGOR); placeNPC(g.npcs.igor, S, OUT_FROM, OUT_TO);
+  assert.equal(g.npcs.igor.scene, 'quartier', 'il traîne dans le quartier');
+  const said = []; g.bus.on('say', d => said.push(d));
+  S.scene = 'farm'; assert.equal(jewelHere(S), false, 'pas de bijou tant qu’il n’en a pas parlé');
+  tk(g, 'igor'); assert.match(said[0].lines.join(' '), /cabane/);
+  assert.equal(jewelHere(S), true);
+  assert.equal(act(g, JEWEL.x, JEWEL.y), 'pick'); assert.equal(S.inv.igor_bijou, 1);
+  assert.equal(questProgress(S, 'igor').cur, 2);
+  tk(g, 'igor');
+  assert.ok(S.recipes.includes('chest')); assert.deepEqual(HAND_RECIPES.chest.in, { wood: 80, stone: 20 });
+  assert.equal(S.inv.igor_bijou || 0, 0); assert.equal(questProgress(S, 'igor').cur, 3);
+  assert.ok(IGOR.story.some(l => /olympiques/i.test(l.t)) && IGOR.story.some(l => /armes/.test(l.t)));
+});

@@ -1,6 +1,7 @@
 // Recettes qu'on connaît et qu'on fabrique n'importe où (onglet « Recettes »). Au début : seulement le feu.
 export const HAND_RECIPES = {
-  campfire: { out: 'campfire', q: 1, in: { wood: 5, stone: 2 } }
+  campfire: { out: 'campfire', q: 1, in: { wood: 5, stone: 2 } },
+  chest: { out: 'chest', q: 1, in: { wood: 80, stone: 20 } }   // appris auprès d'Igor
 };
 export const START_RECIPES = ['campfire'];
 // Cuisson au feu de camp : objet en main → objet cuit, en 5 secondes.

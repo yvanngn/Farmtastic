@@ -205,12 +205,44 @@ export const HAILEY = {
   questions: []
 };
 
+// Igor (décrit par l'utilisateur) : forgeron. Ancien sportif de haut niveau ; une cheville tordue a brisé ses rêves
+// de Jeux olympiques. Il s'est reconverti en forgeron, et il est plutôt bon : il fait de bons outils et aimerait
+// apprendre à faire des armes. Il traîne dans le quartier : il a perdu son bijou (ici ou près de la cabane).
+export const IGOR = {
+  id: 'igor', name: 'Igor', de: 'de lui', color: '#e0884a', voice: 'voiceChef',
+  look: { body: 'h', bottom: 'pant', skin: '#d9a07a', hair: 0, hairC: '#2a1e18', shirt: '#6a4a36', pants: '#3a3632', tall: true },   // 💡 tablier de cuir, carrure d'athlète
+  home: null, dayScene: 'quartier', day: { x: 18.5, y: 13.5 },   // il traîne dans la ruelle du quartier 💡
+  traits: ['Forgeron', 'Ancien sportif de haut niveau', 'Cheville abîmée', 'Fait de bons outils', 'Rêve de forger des armes'],
+  taste: { adore: [], aime: ['copper_ore', 'iron_ore'], naime: ['berry'], deteste: [] },   // 💡 un forgeron aime le minerai
+  lost: [
+    "Hé ! Tu n'aurais pas vu un bijou ? Une petite pièce à laquelle je tiens beaucoup.",
+    "Je l'ai fait tomber… ou bien ici, dans le quartier, ou bien près de la vieille cabane, là-haut.",
+    "Si tu le trouves, rapporte-le-moi. Je saurai te remercier."
+  ],
+  reminder: "Toujours pas de trace de mon bijou… Ici, ou près de la cabane, j'en suis sûr.",
+  thanks: [
+    "Mon bijou ! Tu l'as trouvé ! Merci, vraiment.",
+    "Pour te remercier, je vais t'apprendre un truc de forgeron : fabriquer un coffre.",
+    "Il te faudra 80 bois et 20 pierres. Pratique pour ranger tout ce que tu ramasses !"
+  ],
+  story: [
+    { h: 0, t: "Salut. Moi, c'est Igor, le forgeron. Enfin… depuis quelques années." },
+    { h: 1, t: "Avant, j'étais sportif. De haut niveau. Je m'entraînais pour les Jeux olympiques." },
+    { h: 2, t: "Et puis je me suis tordu la cheville. Mal. Fini, les Jeux. Du jour au lendemain." },
+    { h: 3, t: "Alors je me suis mis à la forge. Et tu sais quoi ? Je suis plutôt doué." },
+    { h: 4, t: "Je fais de bons outils. Mais ce que j'aimerais vraiment apprendre, c'est forger des armes." }
+  ],
+  topics: [{ t: 'Tu fais quoi, à la forge ?', lines: ['Des outils, surtout. Solides. Qui durent.'] }],
+  chat: ['La cheville tient le coup, aujourd’hui.', "Un bon outil, ça se respecte."],
+  questions: []
+};
+
 // Arrivée en train (pensées du héros, 🆕) : après un licenciement, il cherche un sens à sa vie.
 export const INTRO_LINES = [
   "Après mon licenciement, j'ai voulu redonner un sens à ma vie.",
   "J'ai toujours rêvé de construire ma propre maison. Alors, quand j'ai vu l'annonce qui disait que cette cabane abandonnée était offerte à la personne qui voulait s'en occuper…",
   "Il paraît que peu de gens sont venus essayer, à cause de la fameuse rumeur comme quoi la ferme serait hantée !",
 ];
-export const NPCS = { luna: LUNA, chef: CHEF, franck: FRANCK, myst: MYST, hailey: HAILEY };
+export const NPCS = { luna: LUNA, chef: CHEF, franck: FRANCK, myst: MYST, hailey: HAILEY, igor: IGOR };
 // Luna est dehors de 8 h à 19 h, chez elle le reste du temps.
 export const OUT_FROM = 480, OUT_TO = 1140;

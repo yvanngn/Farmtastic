@@ -1,5 +1,6 @@
 import { getZoom } from '../ui/settingsPanel.js';
 import { QUARTIER } from '../world/scenes.js';
+import { JEWEL, jewelHere } from '../systems/igor.js';
 // Caverne : la lumière du jour entre par la sortie ; quelques cristaux luisent.
 const CAVE_LIGHTS = [{ x: 8, y: 72, r: 60 }, { x: 25 * 16, y: 12 * 16, r: 18 }, { x: 44 * 16, y: 20 * 16, r: 18 }];
 import { toolTier } from '../systems/skills.js';
@@ -277,6 +278,11 @@ let swing = null;
       ctx.fillStyle = '#2e6070'; for (let i = 0; i < 12; i++) ctx.fillRect(x + 8 + i, y + 2 + i, 1, 1);
       ctx.fillStyle = '#1c2a30'; for (let i = 0; i < 7; i++) ctx.fillRect(x + 8 - (i >> 1), y + 7 + i, (i >> 1) * 2 + 1, 1);
       ctx.fillStyle = '#e8c26a'; ctx.fillRect(x + 7, y, 2, 3); ctx.fillStyle = '#7a4f2e'; ctx.fillRect(x - 3, y + 13, 2, 2); ctx.fillRect(x + 17, y + 13, 2, 2);
+    } });
+    if (scene === 'farm' && jewelHere(S)) list.push({ z: JEWEL.y + .3, d: () => { // bijou d'Igor qui scintille derrière la cabane
+      const x = JEWEL.x * T + 8, y = JEWEL.y * T + 11, tw = (now / 260 | 0) % 3;
+      ctx.fillStyle = '#c9a330'; ctx.fillRect(x - 2, y - 1, 4, 3); ctx.fillStyle = '#7ad0e8'; ctx.fillRect(x - 1, y - 3, 2, 2);
+      ctx.fillStyle = '#fff'; if (tw === 0) { ctx.fillRect(x + 2, y - 5, 1, 3); ctx.fillRect(x + 1, y - 4, 3, 1); } else if (tw === 1) ctx.fillRect(x - 3, y - 4, 1, 1);
     } });
     if (scene === 'farm' && g.trainT && now - g.trainT < 9000) list.push({ z: 9998, d: () => drawTrain(ctx, (now - g.trainT) / 1000) });
     if (scene === 'farm' && testSwordHere(S)) list.push({ z: TEST_SWORD.y + .4, d: () => {

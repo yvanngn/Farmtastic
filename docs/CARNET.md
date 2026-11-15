@@ -257,3 +257,13 @@ Ordre convenu : 1 mort/clignotement ✅ · 2 tente ✅ · 3 recettes (feu), baie
 - ⏳ Visiter la ferme d'un autre joueur (synchroniser ses objets) : plus tard.
 - ✅ **Effacer une partie solo** : « Mes parties » (dès une partie) → 🗑️ puis « Effacer ? » (deux appuis). Efface la sauvegarde de l'appareil et, en ligne, la partie (fonction SQL `ferme_delete_game`, ajoutée à `supabase_ferme.sql`). Les parties solo affichent le nom du personnage.
 - ✅ Coups d'outil : de profil, le bras « au repos » disparaît pendant le coup (seul le bras animé reste) ; de face et de dos, l'outil monte au-dessus de la tête puis s'abat vers l'avant, vu en raccourci (plus de vue de profil). Myst parle aussi de la vieille pioche abandonnée du côté de la grange.
+
+## Séance du 16/11/2026 (minuit)
+- ✅ **Progression ralentie** (💡) : expérience de minage ×3 environ par niveau ; améliorations de la pioche et de la hache plus chères (600 × palier² 🪙, 30 × palier pierres).
+- ✅ **Panneau d'affichage vide au début** (`CFG.BOARD_OPEN = false`) ; les demandes, chantiers, fêtes et caravane restent dans le code, gardés de côté.
+- ✅ **Jauges** d'énergie et de vie (la vie s'affiche dès qu'elle n'est plus pleine) : orange sous 50 %, rouge vif sous 20 %, tremblement dès 30 %.
+- ✅ **Bac de vente** : fenêtre où l'on choisit chaque objet et sa quantité (−, +, Tout), total avant de vendre, onglet « Ventes passées » (30 dernières).
+- ✅ **Quartier agrandi** (40 × 31) : Luna seule en 1re ligne, clinique près de l'entrée ; Franck et Hailey plus bas ; **Myst tout en bas à gauche**, derrière une rangée d'arbres, avec un petit chemin ; un terrain libre. **Pancartes** au nom de chaque habitant devant sa maison.
+- ✅ **Transition** entre les zones : un cercle s'ouvre sur le héros, avec un liseré doré.
+- ✅ **Igor le forgeron** (décrit par l'utilisateur) : ancien sportif de haut niveau, cheville tordue, rêves de JO brisés ; reconverti en forgeron, plutôt bon, fait de bons outils, aimerait apprendre les armes. Il traîne dans la ruelle du quartier. **Quête « Le bijou d'Igor »** : il l'a fait tomber « ici ou près de la cabane » → le bijou est **derrière la cabane** (il n'apparaît qu'après en avoir parlé) → en le lui rendant, il apprend la recette du **coffre (80 bois + 20 pierres)**. ⏳ Bijou craftable plus tard ; ⏳ poser et utiliser le coffre.
+- ⏳ Recettes rangées par onglets selon le type (demandé, pas encore fait).

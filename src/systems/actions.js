@@ -15,6 +15,7 @@ import { hitZRock, isOpen, pickTestSword } from './wild.js';
 import { pickShroom } from './foret.js';
 import { repairAt, contribute, pickFieldTool } from './repair.js';
 import { pitchTent, tentAt, useTent } from './camp.js';
+import { pickJewel } from './igor.js';
 import { fireAt, startCook, pickBush, placeFire } from './cooking.js';
 import { pickFlower, hitNature, natureAt, digTreasure } from './nature.js';
 import { findNPCAt, talk, gift, hearts } from './social.js';
@@ -84,6 +85,7 @@ function act0(g, tx, ty) {
   }
   if (pickTestSword(g, tx, ty)) return 'pick';
   if (pickFieldTool(g, tx, ty)) return 'pick';
+  if (pickJewel(g, tx, ty)) return 'pick';
   if (tentAt(S, tx, ty)) return useTent(g) && 'tent';
   if (fireAt(S, tx, ty)) return startCook(g, tx, ty) ? 'cook' : 'fire';
   { const b = pickBush(g, tx, ty); if (b != null) return b ? 'berries' : 'empty'; }
