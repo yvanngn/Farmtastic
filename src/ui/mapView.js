@@ -25,38 +25,89 @@ export function createMapView(g, renderer, audio) {
     center.y = CFG.H <= hh * 2 ? CFG.H / 2 : Math.max(hh, Math.min(CFG.H - hh, center.y));
   }
   // Vue « Région » : le village au centre, un emplacement de ferme par joueur autour.
-  // Plan de la région : 4 fermes côte à côte en haut à gauche (chemins en croix), gare à l'ouest,
-  // quartier résidentiel au sud, centre-ville à l'est, forêt après le centre-ville, puis la zone de la caverne.
+  // Plan de la région, façon carte illustrée : parchemin, chemins de terre, petits dessins pour chaque zone.
+  // 4 fermes côte à côte en haut à gauche (chemins en croix), gare à l'ouest, quartier au sud,
+  // centre-ville à l'est, forêt après le centre-ville, puis la montagne de la Caverne sombre.
   function drawRegion(now) {
-    const W = cv.width, H = cv.height, S = g.S, m = Math.min(W, H) * .04, u = Math.min(W, H) / 100;
+    const W = cv.width, H = cv.height, S = g.S, m = Math.min(W, H) * .05, u = Math.min(W, H) / 100;
     const X = f => m + f * (W - 2 * m), Y = f => m + f * (H - 2 * m);
-    ctx.fillStyle = '#5d9a46'; ctx.fillRect(0, 0, W, H);
-    const road = (x0, y0, x1, y1) => { ctx.strokeStyle = '#c9a66a'; ctx.lineWidth = 2.6 * u; ctx.lineCap = 'round'; ctx.beginPath(); ctx.moveTo(X(x0), Y(y0)); ctx.lineTo(X(x1), Y(y1)); ctx.stroke(); };
-    const zone = (x0, y0, x1, y1, fill, line, label, sub, glow) => {
-      ctx.fillStyle = fill; ctx.fillRect(X(x0), Y(y0), X(x1) - X(x0), Y(y1) - Y(y0));
-      ctx.lineWidth = glow ? 1.4 * u : .7 * u; ctx.strokeStyle = line; ctx.strokeRect(X(x0), Y(y0), X(x1) - X(x0), Y(y1) - Y(y0));
-      const cx = (X(x0) + X(x1)) / 2, cy = (Y(y0) + Y(y1)) / 2, fs = Math.min(3.4 * u, (X(x1) - X(x0)) / Math.max(6, [...label].length) * 1.6);
-      ctx.fillStyle = '#fff6e0'; ctx.textAlign = 'center'; ctx.font = `bold ${fs}px Nunito, sans-serif`; ctx.fillText(label, cx, cy + fs * .3);
-      if (sub) { ctx.font = `${fs * .75}px Nunito, sans-serif`; ctx.fillStyle = '#f5ecd6'; ctx.fillText(sub, cx, cy + fs * 1.4); }
+    const rnd = (k => () => ((k = (k * 9301 + 49297) % 233280) / 233280))(7);
+    const F = (c, x, y, w, h) => { ctx.fillStyle = c; ctx.fillRect(x, y, w, h); };
+    const circ = (c, x, y, r) => { ctx.fillStyle = c; ctx.beginPath(); ctx.arc(x, y, r, 0, 7); ctx.fill(); };
+    // parchemin
+    F('#e9d6a8', 0, 0, W, H);
+    const pg = ctx.createRadialGradient(W / 2, H / 2, Math.min(W, H) * .3, W / 2, H / 2, Math.max(W, H) * .75);
+    pg.addColorStop(0, 'rgba(255,248,220,0)'); pg.addColorStop(1, 'rgba(120,80,30,.45)'); F(pg, 0, 0, W, H);
+    // prairie peinte
+    ctx.fillStyle = '#9cc46a'; ctx.beginPath(); ctx.roundRect(X(-.01), Y(-.01), X(1.01) - X(-.01), Y(1.01) - Y(-.01), 4 * u); ctx.fill();
+    for (let k = 0; k < 260; k++) { const x = X(rnd()), y = Y(rnd()); F(rnd() < .5 ? '#8ab85a' : '#acd07a', x, y, 1.2 * u, .6 * u); }
+    // chemins de terre (bordure foncée puis terre claire)
+    const road = pts => { for (const [w, c] of [[3.2, '#8a6a3a'], [2.2, '#d9b878']]) { ctx.strokeStyle = c; ctx.lineWidth = w * u; ctx.lineCap = ctx.lineJoin = 'round'; ctx.beginPath(); pts.forEach(([a, b], i) => i ? ctx.lineTo(X(a), Y(b)) : ctx.moveTo(X(a), Y(b))); ctx.stroke(); } };
+    road([[.27, .02], [.27, .5], [.27, .62]]); road([[.02, .25], [.55, .25]]); road([[.75, .25], [.79, .25]]); road([[.92, .25], [.95, .25]]);
+    // petits dessins
+    const tree = (x, y, s, c = '#3f7a32') => { F('#6a4426', x - .25 * s, y, .5 * s, .8 * s); circ(c, x, y - .2 * s, .9 * s); circ('rgba(255,255,255,.15)', x - .3 * s, y - .5 * s, .35 * s); };
+    const pine = (x, y, s) => { F('#5a3a22', x - .2 * s, y, .4 * s, .7 * s); ctx.fillStyle = '#2c5f2a'; for (let i = 0; i < 3; i++) { ctx.beginPath(); ctx.moveTo(x, y - (2.2 - i * .6) * s); ctx.lineTo(x - (.7 + i * .3) * s, y - (.9 - i * .5) * s); ctx.lineTo(x + (.7 + i * .3) * s, y - (.9 - i * .5) * s); ctx.fill(); } };
+    const house = (x, y, s, wall, roof) => { F('rgba(0,0,0,.2)', x - s, y + .9 * s, 2.2 * s, .3 * s); F(wall, x - s, y, 2 * s, s); ctx.fillStyle = roof; ctx.beginPath(); ctx.moveTo(x - 1.2 * s, y); ctx.lineTo(x, y - .9 * s); ctx.lineTo(x + 1.2 * s, y); ctx.fill(); F('#5a3a22', x - .2 * s, y + .4 * s, .4 * s, .6 * s); F('#bfe3f5', x + .4 * s, y + .25 * s, .35 * s, .3 * s); };
+    const ribbon = (x, y, text, sub, gold) => {
+      const tu = W < H ? u * .72 : u;   // en portrait, étiquettes plus petites pour ne pas se chevaucher
+      ctx.font = `bold ${3.1* tu}px Nunito, sans-serif`; const w = Math.max(ctx.measureText(text).width, sub ? (ctx.font = `${2.3* tu}px Nunito, sans-serif`, ctx.measureText(sub).width) : 0) + 4* tu, h = sub ? 7* tu : 4.6* tu;
+      ctx.fillStyle = gold ? '#f2c832' : '#fff6e0'; ctx.strokeStyle = gold ? '#8a5a12' : '#6a4a2a'; ctx.lineWidth = .5* tu;
+      ctx.beginPath(); ctx.roundRect(x - w / 2, y - h / 2, w, h, 1.4* tu); ctx.fill(); ctx.stroke();
+      ctx.textAlign = 'center'; ctx.fillStyle = '#3b2414'; ctx.font = `bold ${3.1* tu}px Nunito, sans-serif`; ctx.fillText(text, x, y + (sub ? -.4* tu : 1.1* tu));
+      if (sub) { ctx.font = `${2.3* tu}px Nunito, sans-serif`; ctx.fillStyle = '#6a4a2a'; ctx.fillText(sub, x, y + 2.6* tu); }
     };
-    // routes
-    road(.27, .04, .27, .5); road(.06, .25, .48, .25);          // croix entre les fermes
-    road(.27, .5, .27, .62); road(.48, .25, .55, .25);           // vers le quartier, vers le centre-ville
-    road(.75, .25, .79, .25); road(.92, .25, .95, .25);          // centre-ville → forêt → caverne
-    road(.02, .25, .06, .25);                                     // gare
-    // fermes des joueurs
+    // les 4 fermes : champ en sillons, cabane, grange
     const others = Object.values(g.others || {});
     for (const l of FARM_LOTS) {
-      const x0 = .06 + l.c * .22, y0 = .04 + l.r * .23, mine = l.id === (S.farmLot || 0);
-      const who = mine ? S.name : (others.find(o => o.farmLot === l.id) || {}).name, pulse = mine ? .5 + .5 * Math.sin(now / 300) : 0;
-      zone(x0, y0, x0 + .19, y0 + .19, mine ? '#8a5a32' : who ? '#6e4a2e' : 'rgba(60,40,20,.45)', mine ? `rgba(255,223,138,${.6 + pulse * .4})` : '#3f2615',
-        mine ? '⭐ ' + S.name : who ? '🧑‍🌾 ' + who : l.n, mine ? 'ta ferme' : who ? '' : 'emplacement libre', mine);
+      const x0 = X(.06 + l.c * .22), y0 = Y(.04 + l.r * .23), w = X(.25) - X(.06), h = Y(.23) - Y(.04);
+      const mine = l.id === (S.farmLot || 0), who = mine ? S.name : (others.find(o => o.farmLot === l.id) || {}).name;
+      ctx.fillStyle = mine ? '#b8d888' : '#a8cc78'; ctx.beginPath(); ctx.roundRect(x0, y0, w, h, 1.5 * u); ctx.fill();
+      ctx.strokeStyle = '#8a6a3a'; ctx.setLineDash([1.2 * u, .8 * u]); ctx.lineWidth = .5 * u; ctx.stroke(); ctx.setLineDash([]);
+      for (let r = 0; r < 4; r++) F('#8a5a32', x0 + w * .52, y0 + h * (.45 + r * .12), w * .4, h * .06);
+      house(x0 + w * .22, y0 + h * .38, 2.4 * u, '#c99a6a', '#a8432f'); house(x0 + w * .55, y0 + h * .2, 2 * u, '#8a6a4a', '#5a3a2a');
+      tree(x0 + w * .15, y0 + h * .82, 1.6 * u); tree(x0 + w * .9, y0 + h * .15, 1.4 * u);
+      if (mine) { const p = .6 + .4 * Math.sin(now / 300); ctx.strokeStyle = `rgba(242,200,50,${p})`; ctx.lineWidth = 1.2 * u; ctx.beginPath(); ctx.roundRect(x0 - .6 * u, y0 - .6 * u, w + 1.2 * u, h + 1.2 * u, 2 * u); ctx.stroke(); }
+      ribbon(x0 + w / 2, y0 + h * .95, mine ? '⭐ ' + S.name : who ? '🧑‍🌾 ' + who : l.n, mine ? 'ta ferme' : who ? '' : 'libre', mine);
     }
-    zone(0, .18, .045, .32, '#8c6a5a', '#3f2615', '🚉', 'Gare');
-    zone(.06, .62, .48, .9, '#9a8f86', '#4a3a30', '🏘️ Quartier résidentiel', 'Luna, Franck, Hailey, Myst · clinique');
-    zone(.55, .06, .75, .46, '#a9a29a', '#5b3a22', '🏙️ Centre-ville', 'place, commerces, panneau');
-    zone(.79, .02, .92, .5, '#2f5a2a', '#1e3a1a', '🌲 Forêt', 'champignons');
-    zone(.95, .1, 1, .4, CFG.CAVE_OPEN ? '#3a3540' : 'rgba(40,36,48,.75)', '#16141a', '🕳️', CFG.CAVE_OPEN ? 'Caverne' : 'fermée');
+    // gare et rails
+    for (let k = 0; k < 12; k++) F('#6a4a30', X(.005), Y(.12 + k * .03), 1.6 * u, .4 * u);
+    F('#8c8f96', X(.005) + .2 * u, Y(.12), .3 * u, Y(.48) - Y(.12)); F('#8c8f96', X(.005) + 1.1 * u, Y(.12), .3 * u, Y(.48) - Y(.12));
+    house(X(.03), Y(.22), 2 * u, '#b5654a', '#3e5a7a'); ribbon(X(.03), Y(.33), '🚉 Gare');
+    // quartier : maisons colorées, arbres, maison sombre de Myst en bas à gauche
+    { const x0 = X(.06), y0 = Y(.62), w = X(.48) - X(.06), h = Y(.92) - Y(.62);
+      ctx.fillStyle = '#b4d08a'; ctx.beginPath(); ctx.roundRect(x0, y0, w, h, 2 * u); ctx.fill();
+      F('#c9c2b4', x0 + w * .02, y0 + h * .3, w * .96, h * .06); F('#c9c2b4', x0 + w * .02, y0 + h * .62, w * .96, h * .06);
+      house(x0 + w * .2, y0 + h * .14, 2.4 * u, '#d8c2e8', '#7a5a8a'); house(x0 + w * .72, y0 + h * .14, 2.4 * u, '#f4f6f2', '#5aa8a0');
+      house(x0 + w * .25, y0 + h * .48, 2.4 * u, '#9aa4b0', '#3e5a7a'); house(x0 + w * .65, y0 + h * .48, 2.2 * u, '#f2dce0', '#5aa8a0');
+      house(x0 + w * .1, y0 + h * .82, 2.4 * u, '#4a4650', '#24212a');
+      for (const f of [.04, .3, .45, .88, .95]) tree(x0 + w * f, y0 + h * .78, 1.4 * u, '#4f8a3a');
+      ribbon(x0 + w * .55, y0 + h * .86, '🏘️ Quartier résidentiel', 'Luna · Franck · Hailey · Igor · Myst · clinique'); }
+    // centre-ville : pavés, toits, fontaine
+    { const x0 = X(.55), y0 = Y(.06), w = X(.75) - X(.55), h = Y(.46) - Y(.06);
+      ctx.fillStyle = '#c9c2b4'; ctx.beginPath(); ctx.roundRect(x0, y0, w, h, 2 * u); ctx.fill();
+      for (let k = 0; k < 40; k++) F('#b3aca2', x0 + rnd() * w, y0 + rnd() * h, 1.2 * u, .8 * u);
+      circ('#7fb6d9', x0 + w / 2, y0 + h * .45, 2.6 * u); circ('#bfe3f5', x0 + w / 2, y0 + h * .45, 1.2 * u);
+      for (const [fx, fy, r] of [[.2, .15, '#c8553e'], [.8, .15, '#2f5a3a'], [.2, .75, '#c98a4a'], [.5, .78, '#a83a32'], [.8, .75, '#2f5a8a']]) house(x0 + w * fx, y0 + h * fy, 2.2 * u, '#9a6a3c', r);
+      house(x0 + w * .5, y0 + h * .98, 2.2 * u, '#f4efe4', '#b8432f');
+      ribbon(x0 + w / 2, y0 + h * .3, '🏙️ Centre-ville', 'commerces · place · villa de Manuel'); }
+    // forêt : sapins serrés et champignons
+    { const x0 = X(.79), y0 = Y(.02), w = X(.92) - X(.79), h = Y(.5) - Y(.02);
+      ctx.fillStyle = '#5a9a46'; ctx.beginPath(); ctx.roundRect(x0, y0, w, h, 3 * u); ctx.fill();
+      for (let k = 0; k < 26; k++) pine(x0 + w * (.1 + rnd() * .8), y0 + h * (.12 + rnd() * .82), 1.4 * u + rnd() * .6 * u);
+      circ('#e8602a', x0 + w * .3, y0 + h * .55, .6 * u); circ('#8a5a32', x0 + w * .7, y0 + h * .35, .6 * u);
+      ribbon(x0 + w / 2, y0 + h * .5, '🌲 Forêt', 'champignons'); }
+    // montagne de la caverne
+    { const cx = X(.975), by = Y(.42);
+      ctx.fillStyle = '#7a7480'; ctx.beginPath(); ctx.moveTo(cx - 7 * u, by); ctx.lineTo(cx - 2 * u, by - 14 * u); ctx.lineTo(cx + 1 * u, by - 10 * u); ctx.lineTo(cx + 3 * u, by - 16 * u); ctx.lineTo(cx + 7 * u, by); ctx.fill();
+      ctx.fillStyle = '#eef0f4'; ctx.beginPath(); ctx.moveTo(cx + 3 * u, by - 16 * u); ctx.lineTo(cx + 1.6 * u, by - 12.5 * u); ctx.lineTo(cx + 4.4 * u, by - 12.5 * u); ctx.fill();
+      ctx.fillStyle = '#16141a'; ctx.beginPath(); ctx.arc(cx, by, 2.4 * u, Math.PI, 0); ctx.fill();
+      if (!CFG.CAVE_OPEN) { ctx.font = `${3 * u}px serif`; ctx.textAlign = 'center'; ctx.fillText('🔒', cx, by - 3 * u); }
+      ribbon(cx - 1 * u, by + 4 * u, 'Caverne', CFG.CAVE_OPEN ? '' : 'fermée'); }
+    // rose des vents
+    { const cx = X(.93), cy = Y(.85), r = 5 * u;
+      ctx.fillStyle = 'rgba(255,248,220,.7)'; ctx.beginPath(); ctx.arc(cx, cy, r * 1.2, 0, 7); ctx.fill();
+      for (const [a, c] of [[0, '#a8302b'], [Math.PI / 2, '#3b2414'], [Math.PI, '#3b2414'], [-Math.PI / 2, '#3b2414']]) { ctx.fillStyle = c; ctx.beginPath(); ctx.moveTo(cx + Math.sin(a) * r, cy - Math.cos(a) * r); ctx.lineTo(cx + Math.cos(a) * r * .22, cy + Math.sin(a) * r * .22); ctx.lineTo(cx - Math.cos(a) * r * .22, cy - Math.sin(a) * r * .22); ctx.fill(); }
+      ctx.fillStyle = '#3b2414'; ctx.font = `bold ${2.4 * u}px Nunito, sans-serif`; ctx.textAlign = 'center'; ctx.fillText('N', cx, cy - r - .8 * u); }
     $('#mapLvl').textContent = S.game && S.game.code ? 'Code ' + S.game.code : 'Région';
     raf = requestAnimationFrame(draw);
   }
