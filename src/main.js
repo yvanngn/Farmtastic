@@ -226,7 +226,8 @@ let last = performance.now(), hudT = 0, lastFrame = 0;
 function loop(now) {
   const dt = Math.min(0.05, (now - last) / 1000); last = now;
   if (started) {
-    updatePlayer(g, dt, input.keys, (tx, ty) => act(g, tx, ty));
+    if (g.talking) { g.player.target = null; g.player.walkFrame = 0; }   // pendant un dialogue, on ne bouge pas
+    else updatePlayer(g, dt, input.keys, (tx, ty) => act(g, tx, ty));
     const wf = g.player.walkFrame; if (wf !== lastFrame && (wf === 1 || wf === 3)) audio.play('step'); lastFrame = wf;
     tickTime(g, dt * 1000);
     wander(g, dt);
