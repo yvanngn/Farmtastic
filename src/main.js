@@ -51,6 +51,7 @@ import { initSupabase, upsertProfile } from './net/supabase.js';
 import { createSaveManager, localAdapter, supabaseAdapter, localKey } from './net/save.js';
 import { readIndex, upsertIndex, mergeGames, localGame, createOnlineGame, joinOnlineGame, myOnlineGames } from './net/games.js';
 import { createGamesPanel } from './ui/gamesPanel.js';
+import { createInventoryGrid } from './ui/inventoryGrid.js';
 import { createMultiplayer, lerpOthers } from './net/multiplayer.js';
 
 const g = createGame();
@@ -61,6 +62,7 @@ let store = null; try { store = localStorage; } catch { /* stockage bloqué */ }
 const audio = createAudio(g, store);
 const settingsPanel = createSettingsPanel(audio);
 const wheel = createWheel(g, audio);
+const invGrid = createInventoryGrid(g, audio);
 const mapView = createMapView(g, renderer, audio);
 const board = createBoard(g, audio);
 const dialog = createDialog(g, audio);
@@ -160,14 +162,14 @@ function doAction() {
   if (it && it.eat && !it.seed) { if (consume(g, S.sel)) audio.play('feed'); return; }
   act(g, ft.tx, ft.ty);
 }
-const controls = createControls(g, input, { onAct: doAction, onTools: () => wheel.open('tools'), onItems: () => wheel.open('items') });
+const controls = createControls(g, input, { onAct: doAction, onTools: () => wheel.open('tools'), onItems: () => invGrid.open() });
 const hud = createHud(g, controls);
 addEventListener('keydown', e => {
   if (!started || custom.isOpen() || title.isOpen() || dialog.isOpen || e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') return;
   const k = e.key.toLowerCase();
   if (k === ' ') { e.preventDefault(); doAction(); }
   else if (k === '1' || k === 'tab') { e.preventDefault(); wheel.open('tools'); }
-  else if (k === '2' || k === 'i') wheel.open('items');
+  else if (k === '2' || k === 'i') invGrid.open();
   else if (k === 'm') mapView.isOpen ? mapView.close() : mapView.open();
   else if (k === 'escape') { wheel.close(); mapView.close(); document.querySelectorAll('.overlay.on').forEach(o => { if (o.id !== 'ovLook') o.classList.remove('on'); }); }
 });
@@ -240,7 +242,7 @@ function loop(now) {
     for (let i = g.fx.length - 1; i >= 0; i--) { const f = g.fx[i]; f.life -= dt; f.y -= dt * 0.75; if (f.life <= 0) g.fx.splice(i, 1); }
     renderer.updateParticles(dt);
     renderer.render(now);
-    if ((hudT += dt) > 0.25) { hudT = 0; hud.update(); repairPanel.update(started && !dialog.isOpen); }
+    if ((hudT += dt) > 0.25) { hudT = 0; hud.update(); repairPanel.update(started && !dialog.isOpen && !document.querySelector('.overlay.on')); }
   }
   if (custom.isOpen()) custom.draw(now);
   if (title.isOpen()) title.draw(now);

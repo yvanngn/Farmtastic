@@ -151,3 +151,16 @@ test('établi : cassé au départ, réparé par le charpentier, puis on fabrique
   assert.equal(craft(g, i), true);
   assert.equal(migrate({ name: 'x' }).workbench, true, 'ancienne partie : établi déjà là');
 });
+
+test('sac en cases : rangement à la main et tri automatique par type', async () => {
+  const { invOrder, moveItem, autoSort, orderedCells, catOf } = await import('../src/systems/inventory.js');
+  const { S } = makeGame({ state: { inv: { wood: 3, berry: 2, wheat_seed: 5, copper_ore: 1, tent: 1 }, invOrder: [] } });
+  assert.deepEqual(invOrder(S), ['wood', 'berry', 'wheat_seed', 'copper_ore', 'tent']);
+  moveItem(S, 'tent', 'wood');
+  assert.deepEqual(invOrder(S).slice(0, 2), ['tent', 'wood'], 'la tente prend la place du bois');
+  S.inv.paquerette = 1; assert.equal(invOrder(S).at(-1), 'paquerette', 'un nouvel objet arrive à la fin');
+  autoSort(S);
+  assert.deepEqual(S.invOrder.map(catOf), [...S.invOrder.map(catOf)].sort((a, b) => a - b), 'rangé par type');
+  assert.equal(S.invOrder[0], 'wheat_seed');
+  assert.equal(orderedCells(S)[0].id, 'wheat_seed');
+});

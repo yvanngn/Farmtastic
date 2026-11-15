@@ -1,3 +1,4 @@
+import { ITEMS } from '../data/items.js';
 // Sac à cases : chaque case contient au plus stackSize(S) unités d'un même objet.
 // 25 bois avec des piles de 10 = 3 cases. S.inv garde le total par objet.
 import { CFG } from '../config.js';
@@ -77,4 +78,44 @@ export function swapDrop(g, drop, give) {
   if (k < keep.n) S.drops.push({ ...keep, n: keep.n - k });
   g.bus.emit('sfx', 'collect'); g.bus.emit('inv');
   return true;
+}
+
+/* ---------- Ordre du sac (rangement à la main) et tri automatique par type ---------- */
+// Ordre des types pour « Tri auto » : graines, nourriture, fleurs, champignons, minerais, ressources, objets, le reste.
+export const SORT_CATS = ['Graines', 'Nourriture', 'Fleurs', 'Champignons', 'Minerais', 'Ressources', 'Objets', 'Divers'];
+const RES = ['wood', 'stone', 'hay', 'fiber', 'coal', 'clay'];
+export function catOf(id) {
+  const it = ITEMS[id] || {};
+  if (it.seed) return 0;
+  if (it.flower) return 2;
+  if (it.i === '🍄') return 3;
+  if (/_ore$/.test(id)) return 4;
+  if (RES.includes(id)) return 5;
+  if (it.eat) return 1;
+  if (it.keep) return 6;
+  return 7;
+}
+// Ordre courant : celui choisi par le joueur, les nouveaux objets à la fin.
+export function invOrder(S) {
+  const o = (S.invOrder || []).filter(id => (S.inv[id] || 0) > 0);
+  for (const id in S.inv) if (S.inv[id] > 0 && !o.includes(id)) o.push(id);
+  return o;
+}
+export function orderedCells(S) {
+  const st = stackSize(S), out = [];
+  for (const id of invOrder(S)) { let left = S.inv[id]; while (left > 0) { out.push({ id, n: Math.min(st, left) }); left -= st; } }
+  return out;
+}
+// Glisser un objet sur la case d'un autre : il prend sa place (les autres se décalent).
+export function moveItem(S, id, targetId) {
+  const o = invOrder(S).filter(x => x !== id);
+  const i = targetId ? o.indexOf(targetId) : -1;
+  if (i < 0) o.push(id); else o.splice(i, 0, id);
+  S.invOrder = o;
+  return o;
+}
+export function autoSort(S) {
+  const name = id => (ITEMS[id] ? ITEMS[id].n : id);
+  S.invOrder = invOrder(S).sort((a, b) => catOf(a) - catOf(b) || name(a).localeCompare(name(b), 'fr'));
+  return S.invOrder;
 }
