@@ -327,6 +327,11 @@ let swing = null;
     list.push({ z: S.y, d: () => {
       if (swing && S.dir === 1) drawSwing(ctx, S, swing.tool, swing.p);
       if (!(g.player.iframe > 0 && ((now / 80) | 0) % 2)) drawChar(ctx, Math.round(S.x * T - 6), Math.round(S.y * T - 19), S.look, S.dir, g.player.walkFrame, now, !!swing);
+      if (document.body.dataset.nrj === 'tete' || S.energy / S.maxE <= .3) { // alerte : jauge au-dessus du héros quand l'énergie devient basse
+        const r = Math.max(0, S.energy / S.maxE), bx = Math.round(S.x * T - 8), by = Math.round(S.y * T - (S.look.tall ? 29 : 26)), shake = r <= .3 ? Math.round(Math.sin(now / 40)) : 0;
+        ctx.fillStyle = 'rgba(20,14,30,.8)'; ctx.fillRect(bx - 1 + shake, by - 1, 18, 4);
+        ctx.fillStyle = r <= .2 ? '#ff2a2a' : r <= .5 ? '#f0a020' : '#6fd04a'; ctx.fillRect(bx + shake, by, Math.round(16 * r), 2);
+      }
       if (swing && S.dir !== 1) drawSwing(ctx, S, swing.tool, swing.p);
     } });
     for (const f of worldFx) if (f.k === 'fall' && outside) list.push({ z: f.y + .95, d: () => {

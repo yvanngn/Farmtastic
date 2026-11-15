@@ -20,6 +20,8 @@ function gauge(id, r) {
   bar.classList.toggle('orange', lvl === 'orange'); bar.classList.toggle('rouge', lvl === 'rouge');
   bar.classList.toggle('tremble', r <= SHAKE_FROM);
 }
+export const NRJ_MODES = { haut: 'Cadre (en haut)', arc: 'Autour du bouton ✋', vert: 'Barre verticale', tete: 'Au-dessus du héros' };
+export function nrjMode() { try { const m = localStorage.getItem('ferme_nrj'); return NRJ_MODES[m] ? m : 'arc'; } catch { return 'arc'; } }   // choisi par l'utilisateur : l'arc autour du bouton ✋
 export function createHud(g, controls) {
   return {
     show() { ['#hud', '#topbtns', '#controls'].forEach(s => { $(s).style.display = ''; }); },
@@ -29,6 +31,14 @@ export function createHud(g, controls) {
       const where = { house: ' · 🏠', coop: ' · 🐔', pigsty: ' · 🐷', barn: ' · 🐑', luna: ' · 🏡', franck: ' · 🏚️', grange: ' · 🕳️', wild: ' · 🕳️ Caverne (étage 1)', foret: ' · 🌲', town: ' · 🏙️', quartier: ' · 🏘️' }[S.scene] || '';
       $('#hTime').textContent = `${SEASONS[S.season]} j${S.day}, an ${S.year || 1} · ${fmtTime(S.minute)} · ${WEATHER_LABELS[S.weather].split(' ')[0]}${where}`;
       gauge('hEn', S.energy / S.maxE);
+      { // autres affichages de l'énergie (au choix dans les réglages) : arc autour du bouton, barre verticale, au-dessus du héros
+        const r = S.energy / S.maxE, lvl = gaugeLevel(r), mode = nrjMode();
+        document.body.dataset.nrj = mode;
+        const arc = $('#nrjArc'), v = $('#nrjVert');
+        arc.querySelector('.val').style.strokeDasharray = `${Math.max(0, r) * 100} 100`;
+        for (const el of [arc, v]) { el.classList.toggle('orange', lvl === 'orange'); el.classList.toggle('rouge', lvl === 'rouge'); el.classList.toggle('tremble', r <= SHAKE_FROM); }
+        v.querySelector('i').style.height = Math.max(0, r) * 100 + '%';
+      }
       const hpR = Math.max(0, S.hp) / S.maxHp; $('#hHpRow').hidden = hpR >= 1; if (hpR < 1) gauge('hHp', hpR);
       // vie : cœurs en haut, seulement en mode combat (Caverne sombre ou monstres proches)
       const fight = S.scene === 'wild' || g.enemies.length > 0, hb = $('#hearts');

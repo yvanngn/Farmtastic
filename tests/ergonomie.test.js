@@ -102,3 +102,9 @@ test('jauges : orange sous 50 %, rouge vif sous 20 %', async () => {
   assert.equal(gaugeLevel(.8), 'ok'); assert.equal(gaugeLevel(.4), 'orange'); assert.equal(gaugeLevel(.1), 'rouge');
   assert.ok(SHAKE_FROM > LOW_RED, 'elle tremble avant de passer au rouge');
 });
+
+test('énergie : affichée par défaut en arc autour du bouton d’action', async () => {
+  globalThis.localStorage ??= { getItem: () => null, setItem() {} };
+  const { nrjMode } = await import('../src/ui/hud.js');
+  assert.equal(nrjMode(), 'arc');
+});

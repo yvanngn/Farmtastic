@@ -338,3 +338,19 @@ img.pix { width: 1.15em; height: 1.15em; image-rendering: pixelated; vertical-al
 .chest-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 12px }
 .chest-cols h3 { margin: 4px 0 6px; font-size: 15px } .chest-cols h3 small { opacity: .75; font-weight: 400 }
 @media (max-width: 520px) { .chest-cols { grid-template-columns: 1fr } }
+
+/* Énergie : 4 affichages possibles (réglage) */
+#nrjArc, #nrjVert { display: none; pointer-events: none }
+body[data-nrj="arc"] #nrjArc { display: block; position: absolute; right: calc(var(--act) * -.12); bottom: calc(var(--act) * -.12); width: calc(var(--act) * 1.24); height: calc(var(--act) * 1.24); transform: rotate(-90deg) }
+#nrjArc circle { fill: none; stroke-width: 7 } #nrjArc .fond { stroke: rgba(0,0,0,.45) }
+#nrjArc .val { stroke: #6fd04a; stroke-linecap: round; transition: stroke-dasharray .3s; filter: drop-shadow(0 0 3px rgba(111,208,74,.7)) }
+#nrjArc.orange .val { stroke: #f0a020; filter: drop-shadow(0 0 3px #f0a020) } #nrjArc.rouge .val { stroke: #ff2a2a; filter: drop-shadow(0 0 5px #ff2a2a) }
+body[data-nrj="vert"] #nrjVert { display: block; position: fixed; right: calc(var(--sa-r) + var(--pad) * 2 + var(--act) * 1.9 + 10px); bottom: calc(var(--sa-b) + var(--pad) * 2); width: 16px; height: calc(var(--act) * 1.6);
+  border-radius: 9px; background: rgba(0,0,0,.45); border: 2px solid var(--or); overflow: hidden }
+#nrjVert i { position: absolute; left: 0; right: 0; bottom: 0; background: linear-gradient(0deg, #3e9a32, #a6e36e); transition: height .3s }
+#nrjVert.orange i { background: linear-gradient(0deg, #c86a10, #ffd060) } #nrjVert.rouge i { background: linear-gradient(0deg, #b00010, #ff7a6a); box-shadow: 0 0 8px #ff2a2a }
+#nrjVert b { position: absolute; top: -2px; left: 0; right: 0; text-align: center; font-size: 11px }
+#nrjArc.tremble, #nrjVert.tremble { animation: tremble .35s ease-in-out infinite }
+body[data-nrj="arc"] #nrjArc.tremble { animation: trembleArc .3s ease-in-out infinite }
+@keyframes trembleArc { 0%, 100% { transform: rotate(-90deg) } 25% { transform: rotate(-93deg) translateX(1px) } 75% { transform: rotate(-87deg) translateX(-1px) } }
+body:not([data-nrj="haut"]) #hEnBar, body:not([data-nrj="haut"]) #hud .lbl:first-of-type { display: none }
