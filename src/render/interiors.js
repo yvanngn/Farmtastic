@@ -1,4 +1,4 @@
-// Intérieurs pré-rendus (maison, poulailler) à partir des plans de world/scenes.js.
+// Intérieurs pré-rendus (maison, poulailler, porcherie, bergerie) à partir des plans de world/scenes.js.
 import { CFG } from '../config.js';
 import { LAYOUTS, SCENES } from '../world/scenes.js';
 import { rng } from '../world/map.js';
@@ -7,7 +7,9 @@ const T = CFG.T;
 
 const THEME = {
   house: { floor: '#b07a48', seam: '#8a5a32', wall: '#7fa36a', wallD: '#5f8450', trim: '#6b4226', beam: '#4a2c18' },
-  coop: { floor: '#d9c27a', seam: '#b49a52', wall: '#b8452f', wallD: '#93321f', trim: '#f0e6d0', beam: '#5a3a2a' }
+  coop: { floor: '#d9c27a', seam: '#b49a52', wall: '#b8452f', wallD: '#93321f', trim: '#f0e6d0', beam: '#5a3a2a' },
+  pigsty: { floor: '#c9a66a', seam: '#a8854a', wall: '#9a6a3c', wallD: '#7a4e2a', trim: '#c99560', beam: '#4a2c18' },
+  barn: { floor: '#d4b870', seam: '#b0944c', wall: '#b8452f', wallD: '#93321f', trim: '#f0e6d0', beam: '#4a2c18' }
 };
 
 export function buildInterior(name) {
@@ -50,6 +52,8 @@ export function buildInterior(name) {
     P: ([x, y, w, h]) => { R(x + 4, y + 9, 8, 7, '#b0603a'); R(x + 4, y + 9, 8, 2, '#c97a4f'); disc(g, x + 8, y + 5, 5, '#3e8a34'); disc(g, x + 6, y + 4, 2, '#6bb33f'); },
     C: ([x, y, w, h]) => { R(x + 1, y + 4, w - 2, h - 5, '#8a5a32'); R(x + 1, y + 4, w - 2, 4, '#b07a48'); R(x + 1, y + 8, w - 2, 1, '#e8c26a'); R(x + 7, y + 7, 2, 3, '#e8c26a'); },
     H: ([x, y, w, h]) => { R(x, y + 4, w, h - 6, '#6b4226'); R(x + 1, y + 5, w - 2, 5, '#e3c45e'); for (let k = x + 2; k < x + w - 2; k += 3) R(k, y + 4, 1, 2, '#f2d77a'); R(x, y + h - 3, w, 1, '#4a2c18'); },
+    G: ([x, y, w, h]) => { R(x + 2, y + 2, w - 4, h - 4, '#6e4a2e'); R(x + 4, y + 4, w - 8, h - 8, '#7d5636'); for (const [a, b] of [[6, 6], [w - 14, 9], [12, h - 10]]) { R(x + a, y + b, 6, 2, '#8f6642'); R(x + a + 1, y + b, 3, 1, '#a07650'); } },
+    Y: ([x, y, w, h]) => { R(x + 1, y + 3, w - 2, h - 4, '#c9a330'); R(x + 1, y + 3, w - 2, 3, '#f5dd7a'); for (let k = x + 2; k < x + w - 2; k += 3) R(k, y + 6, 1, h - 8, '#a8862a'); R(x + 1, y + h - 2, w - 2, 1, '#7a5f1e'); },
     N: ([x, y, w, h]) => { R(x + 1, y + 2, w - 2, h - 4, '#5a3a22'); for (let k = 0; k < h - 6; k += 8) { disc(g, x + 8, y + 8 + k, 5, '#c9a64e'); disc(g, x + 8, y + 8 + k, 3, '#8a6a2e'); } }
   };
   for (const ch of Object.keys(draw)) {

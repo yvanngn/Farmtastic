@@ -8,14 +8,15 @@ import { RECIPES } from '../data/recipes.js';
 import { TOOLS } from '../data/items.js';
 import { TIER_NAMES, UPGRADABLE, MAX_TIER } from '../data/tools.js';
 import { BUILDINGS } from '../data/buildings.js';
+import { SHOPS } from '../data/shops.js';
 import { build, canBuild, canBuyAnimal, homeCount, buy, buyAnimal, buyBag, bagCost, buyStack, stackCost, STACKS, canCraft, craft } from '../systems/economy.js';
 import { consume } from '../systems/player.js';
 import { hearts } from '../systems/social.js';
 import { slots, usedSlots, stackSize } from '../systems/inventory.js';
 import { canUpgrade, upgradeTool, miningLevel, nextXp, toolTier } from '../systems/skills.js';
 
-const TABS = { sac: 'Sac', craft: 'Atelier', shop: 'Boutique', forge: 'Forge', social: 'Liens' };
-const TITLES = { market: '🏪 Marché', upgrades: '🧰 Magasin d\'amélioration', carpenter: '🪚 Charpentier', animals: '🐾 Marchand d\'animaux' };
+const TABS = { sac: 'Sac', craft: 'Atelier', forge: 'Forge', social: 'Liens' };
+const TITLES = { market: '🏪 Marché', upgrades: '🧰 Magasin d\'amélioration', carpenter: '🪚 Charpentier', animals: '🐾 Marchand d\'animaux', bakery: '🥖 Boulangerie', butcher: '🥩 Boucherie', fishmonger: '🐟 Poissonnerie' };
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 const it = id => ITEMS[id] || { n: id, i: '❔', p: 0 };
 
@@ -23,18 +24,19 @@ export function createMenu(g, opts) {
   const { online, audio } = opts;
   let tab = 'sac';
   const card = (h, cls = '') => `<div class="card ${cls}">${h}</div>`;
+  // grille d'achat d'un commerce (×1 et ×5)
+  const shopGrid = (S, id) => '<div class="grid">' + SHOPS[id].sells.map(k => { const x = it(k);
+    return card(`<div class="t">${x.i} <b>${x.n}</b></div><div>${x.buy} 🪙${x.eat ? ' · se mange' : ''}</div><div class="row" style="margin:0"><button data-buy="${k}" ${S.money >= x.buy ? '' : 'disabled'}>Acheter</button><button data-buy5="${k}" ${S.money >= x.buy * 5 ? '' : 'disabled'}>×5</button></div>`); }).join('') + '</div>';
   const views = {
+    bakery: S => `<p class="info">Pain frais et farine pour cuisiner.</p>${shopGrid(S, 'bakery')}`,
+    butcher: S => `<p class="info">De la bonne viande pour vos futurs plats.</p>${shopGrid(S, 'butcher')}`,
+    fishmonger: S => `<p class="info">Arrivage du jour.</p>${shopGrid(S, 'fishmonger')}`,
     sac(S) {
       const ids = Object.keys(S.inv);
       return `<p class="info">${usedSlots(S)}/${slots(S)} cases utilisées · ${stackSize(S)} objets max par case</p>` + (ids.length ? '<div class="grid">' + ids.map(id => card(`<div class="t">${it(id).i} <b>${it(id).n}</b></div><div>×${S.inv[id]} · ${Math.ceil(S.inv[id] / stackSize(S))} case(s) · ${it(id).p}🪙/u</div>${it(id).eat ? `<button data-use="${id}">Utiliser</button>` : ''}`)).join('') + '</div>' : 'Sac vide.');
     },
     craft(S) {
       return '<div class="grid">' + RECIPES.map((r, i) => card(`<div class="t">${it(r.out).i} <b>${it(r.out).n}</b> ×${r.q}</div><div>${Object.entries(r.in).map(([k, n]) => `${it(k).i}${n} <small>(${S.inv[k] || 0})</small>`).join(' ')}</div><button data-craft="${i}" ${canCraft(S, r) ? '' : 'disabled'}>Fabriquer</button>`)).join('') + '</div>';
-    },
-    shop(S) {
-      return '<div class="grid">'
-        + Object.entries(ITEMS).filter(([, x]) => x.buy).map(([id, x]) => card(`<div class="t">${x.i} <b>${x.n}</b></div><div>${x.buy} 🪙</div><button data-buy="${id}" ${S.money >= x.buy ? '' : 'disabled'}>Acheter</button>`)).join('')
-        + '</div><p class="info">Vente rapide : bac 📦 près de la maison. Meilleurs prix : onglet Marché.</p>';
     },
     forge(S) {
       const lvl = miningLevel(S), xp = S.skills.mining.xp, nx = nextXp(xp), pct = nx ? Math.round(xp / nx * 100) : 100;
@@ -56,7 +58,7 @@ export function createMenu(g, opts) {
       }).join('') + '</div>';
     },
     animals(S) {
-      return '<div class="grid">' + Object.entries(ANIMALS).map(([id, a]) => {
+      return shopGrid(S, 'feed') + '<h3>🐾 Animaux</h3><div class="grid">' + Object.entries(ANIMALS).map(([id, a]) => {
         const r = canBuyAnimal(S, id), home = a.home && BUILDINGS[a.home];
         const why = { home: `Il faut d'abord ${home ? home.un : ''} (charpentier)`, full: home ? home.plein : '', money: "Pas assez d'argent" };
         return card(`<div class="t">${a.i} <b>${a.n}</b></div><div>${a.buy} 🪙${a.prod ? ` · ${it(a.prod).i} tous les ${a.every} j` : ' · compagnon'}</div>`
@@ -75,7 +77,8 @@ export function createMenu(g, opts) {
       return `<p class="info">Votre sac : ${slots(S)} cases, ${stackSize(S)} objets par case.</p><div class="grid">${bag}${pile}</div>`;
     },
     market(S) {
-      return `<p class="info">Vendez vos produits aux autres joueurs, ou achetez les leurs. Les demandes du village sont sur le panneau d'affichage, à côté.</p>${players}`;
+      const players = opts.market ? '<div id="pm"><p class="info">Chargement…</p></div>' : '<p class="info">Hors ligne : le marché entre joueurs a besoin de la connexion.</p>';
+      return `<h3>${SHOPS.stall.i} ${SHOPS.stall.n}</h3>${shopGrid(S, 'stall')}<h3>👥 Entre joueurs</h3><p class="info">Vendez vos produits aux autres joueurs, ou achetez les leurs. Les demandes du village sont sur le panneau d'affichage, à côté.</p>${players}`;
     },
     social(S) {
       const ids = Object.keys(S.social);
@@ -108,7 +111,7 @@ export function createMenu(g, opts) {
   }
 
   const handlers = {
-    use: id => consume(g, id), craft: i => craft(g, +i), buy: id => buy(g, id), animal: id => buyAnimal(g, id),
+    use: id => consume(g, id), craft: i => craft(g, +i), buy: id => buy(g, id), buy5: id => buy(g, id, 5), animal: id => buyAnimal(g, id),
     bag: () => buyBag(g), build: id => build(g, id), stack: () => buyStack(g), up: id => upgradeTool(g, id)
   };
   function render() {

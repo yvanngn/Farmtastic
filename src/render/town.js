@@ -33,7 +33,7 @@ export function buildTown(season) {
     }
   }
   // bordure de la place
-  R(2 * T, T - 1, 20 * T, 2, '#8f887f'); R(2 * T, 15 * T - 1, 20 * T, 2, '#8f887f');
+  R(2 * T, T - 1, 20 * T, 2, '#8f887f'); R(2 * T, 21 * T - 1, 20 * T, 2, '#8f887f');
 
   // halle du marché (x4-10, y2-4) : socle de pierre, poteaux, auvent rayé, étal garni
   const mx = 4 * T, my = 2 * T, mw = 7 * T;
@@ -105,6 +105,23 @@ export function buildTown(season) {
     R(ux - 3, uy + 32, 14, 10, '#e6c34a'); R(ux - 3, uy + 32, 14, 2, '#f5dd7a'); for (let k = 0; k < 14; k += 3) R(ux - 3 + k, uy + 35, 1, 6, '#c9a330');
     R(ux + uw - 12, uy + 36, 14, 6, '#7a4f2e'); R(ux + uw - 11, uy + 37, 12, 3, '#5a9ad0');
     R(ux + uw / 2 - 3, uy + 10, 6, 1, '#9aa0a8'); R(ux + uw / 2 - 3, uy + 10, 1, 4, '#9aa0a8'); R(ux + uw / 2 + 2, uy + 10, 1, 4, '#9aa0a8');
+  });
+
+  // boulangerie (x4-7, y16-18) : pains en vitrine, auvent crème
+  shop(4, 16, 4, '#c98a4a', '#e0a560', 'BOULANGERIE', (ux, uy, uw) => {
+    R(ux + 4, uy + 22, 14, 6, '#8a5a32'); for (let k = 0; k < 3; k++) { disc(g, ux + 7 + k * 4, uy + 22, 2, '#d9a050'); R(ux + 6 + k * 4, uy + 21, 3, 1, '#f2c88a'); }
+    R(ux + uw - 14, uy + 34, 10, 8, '#7a4f2e'); R(ux + uw - 13, uy + 32, 8, 3, '#e8c08a'); R(ux + uw - 12, uy + 31, 6, 1, '#f5dcae');
+  });
+  // boucherie (x10-13, y16-18) : auvent rayé rouge, jambons suspendus
+  shop(10, 16, 4, '#a83a32', '#f0e6d0', 'BOUCHERIE', (ux, uy, uw) => {
+    for (const k of [6, 12]) { R(ux + k + 2, uy + 20, 1, 3, '#5b3a22'); disc(g, ux + k + 2, uy + 26, 3, '#c25a4a'); R(ux + k + 1, uy + 27, 3, 2, '#f0e6d0'); }
+    R(ux + uw - 14, uy + 34, 12, 8, '#8a8f96'); R(ux + uw - 13, uy + 34, 10, 2, '#c2c7cc');
+  });
+  // poissonnerie (x17-20, y16-18) : auvent bleu, étal de glace et poissons
+  shop(17, 16, 4, '#2f5a8a', '#4a7cb0', 'POISSONNERIE', (ux, uy, uw) => {
+    R(ux - 2, uy + 32, 20, 10, '#7a4f2e'); R(ux - 1, uy + 32, 18, 4, '#dff2fb');
+    for (let k = 0; k < 3; k++) { R(ux + 1 + k * 6, uy + 33, 4, 2, ['#8aa8c0', '#e08a6a', '#a8b8c8'][k]); R(ux + 5 + k * 6, uy + 33, 1, 2, '#5a6a7a'); }
+    R(ux + uw - 10, uy + 36, 8, 6, '#3a5a7a'); R(ux + uw - 9, uy + 37, 6, 2, '#6aa0c8');
   });
 
   // fontaine (x11-13, y8-10)

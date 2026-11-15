@@ -28,12 +28,13 @@ export function interactAnimal(g, a) {
   return 'info';
 }
 
-// Mangeoire du poulailler : nourrit tous les animaux qui ont faim.
-export function feedAll(g) {
+// Mangeoire d'un bâtiment : nourrit tous ses animaux qui ont faim (home absent = tous).
+export function feedAll(g, home) {
   const S = g.S;
   let n = 0;
   for (const a of S.animals) {
     const def = ANIMALS[a.type];
+    if (home && def.home !== home) continue;
     if (def.food && !a.fed && has(S, def.food)) { add(g, def.food, -1); a.fed = true; n++; }
   }
   g.bus.emit('sfx', n ? 'feed' : 'denied');

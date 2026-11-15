@@ -7,6 +7,7 @@ import { hitObject } from './resources.js';
 import { findAnimalAt, interactAnimal, feedAll } from './animals.js';
 import { farmAction, isRipe } from './farming.js';
 import { ITEMS } from '../data/items.js';
+import { BUILDINGS } from '../data/buildings.js';
 import { TOOL_FOR } from './resources.js';
 
 const TOOL_IDS = ['hand', 'axe', 'pick', 'sickle', 'sword'];
@@ -35,10 +36,10 @@ export function enterScene(g, to, spawn) {
 export function act(g, tx, ty) {
   const S = g.S, sc = S.scene || 'farm';
   const d = doorAt(sc, tx, ty);
-  if (d && !(sc === 'farm' && d.to === 'coop' && !(S.built && S.built.coop))) { enterScene(g, d.to, d.spawn); return 'door'; }
+  if (d && !(sc === 'farm' && BUILDINGS[d.to] && !(S.built && S.built[d.to]))) { enterScene(g, d.to, d.spawn); return 'door'; }
   if (sc === 'town') { const ui = UI_TILES[tileAt(sc, tx, ty)]; if (ui) { g.bus.emit('sfx', 'ui'); g.bus.emit('open', ui); return ui; } return 'none'; }
   if (sc === 'house') return tileAt(sc, tx, ty) === 'B' ? (sleep(g) ? 'sleep' : 'none') : 'none';
-  if (sc === 'coop') return tileAt(sc, tx, ty) === 'H' ? (feedAll(g) ? 'feedAll' : 'none') : 'none';
+  if (BUILDINGS[sc]) return tileAt(sc, tx, ty) === 'H' ? (feedAll(g, sc) ? 'feedAll' : 'none') : 'none';
   if (isBin(tx, ty)) { sellAll(g); return 'sell'; }
   if (S.objs[key(tx, ty)]) return hitObject(g, tx, ty) ? 'hit' : 'none';
   const a = findAnimalAt(S, tx, ty);

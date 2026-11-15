@@ -68,7 +68,7 @@ test('marchand d’animaux : il faut le bâtiment, puis de la place', () => {
 });
 
 test('charpentier : construire coûte argent, bois et pierre ; une seule fois', () => {
-  const { g, S } = makeGame({ state: { money: 2000, inv: { wood: 40, stone: 5 }, built: { coop: false, pigsty: false, barn: false } } });
+  const { g, S } = makeGame({ state: { money: 3500, inv: { wood: 40, stone: 5 }, built: { coop: false, pigsty: false, barn: false } } });
   assert.equal(canBuild(S, 'coop').why, 'stone');
   S.inv.stone = 10;
   assert.equal(build(g, 'coop'), true);
@@ -96,4 +96,38 @@ test('village : charpentier et marchand d’animaux', async () => {
   const { UI_TILES, tileAt } = await import('../src/world/scenes.js');
   assert.equal(UI_TILES[tileAt('town', 5, 12)], 'carpenter');
   assert.equal(UI_TILES[tileAt('town', 18, 12)], 'animals');
+});
+
+// ---- Lot 5 : commerces du village ----
+import { SHOPS } from '../src/data/shops.js';
+import { ITEMS } from '../src/data/items.js';
+import { BUILDINGS } from '../src/data/buildings.js';
+
+test('commerces : boulangerie, boucherie, poissonnerie, chacun avec ses produits à vendre', async () => {
+  const { UI_TILES, tileAt } = await import('../src/world/scenes.js');
+  for (const [id, x] of [['bakery', 5], ['butcher', 11], ['fishmonger', 18]]) {
+    assert.equal(UI_TILES[tileAt('town', x, 17)], id);
+    for (const k of SHOPS[id].sells) assert.ok(ITEMS[k] && ITEMS[k].buy > 0, k);
+  }
+  const { g, S } = makeGame({ state: { money: 200, inv: {} } });
+  assert.equal(buy(g, 'bread', 5), true);
+  assert.equal(S.inv.bread, 5);
+  assert.equal(S.money, 0);
+});
+
+test('graines à l’étal du marché, foin chez le marchand d’animaux', () => {
+  assert.ok(SHOPS.stall.sells.includes('wheat_seed'));
+  assert.ok(SHOPS.feed.sells.includes('hay'));
+});
+
+test('bâtiments : prix doublés et un intérieur avec mangeoire pour chacun', () => {
+  const { g, S } = makeGame({ state: { inv: { hay: 3 }, animals: [
+    { id: 'p', type: 'pig', x: 20, y: 9, love: 0 }, { id: 's', type: 'sheep', x: 28, y: 9, love: 0 }, { id: 'c', type: 'chicken', x: 24, y: 9, love: 0 }] } });
+  assert.deepEqual(Object.values(BUILDINGS).map(b => b.cost.money), [3000, 5000, 8000]);
+  assert.equal(act(g, 20, 7), 'door');
+  assert.equal(S.scene, 'pigsty');
+  assert.equal(act(g, 2, 2), 'feedAll');
+  assert.deepEqual(S.animals.map(a => !!a.fed), [true, false, false], 'la mangeoire de la porcherie ne nourrit que les cochons');
+  act(g, 4, 6); assert.equal(S.scene, 'farm');
+  act(g, 28, 7); assert.equal(S.scene, 'barn');
 });

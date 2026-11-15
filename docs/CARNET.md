@@ -28,7 +28,7 @@ Règle des dialogues : répliques débloquées par paliers d'amitié ; Claude li
 | 2 | Inventaire : 10 objets max par case, améliorations au magasin d'amélioration | ✅ 15/11/2026 |
 | 3 | Arbres (zone de bois à l'est, 3 jours, nombre max, 3 types → bois) ; pierres (mêmes règles, 2 types, les grosses = 2 pierres) | ✅ 15/11/2026 |
 | 4 | Tout se débloque avec l'argent : pas de poulailler au départ, charpentier, marchand d'animaux | ✅ 15/11/2026 |
-| 5 | Boulanger, boucher, poissonnier | ⏳ |
+| 5 | Boulanger, boucher, poissonnier | ✅ 15/11/2026 |
 | 6 | Luna et sa maison, dialogues qui distillent sa vie | ⏳ |
 | 7 | Demandes à **code couleur** mélangeant 4 idées : reconstruction du village (jauge commune), fête de saison, demandes des habitants (amitié), caravane commerciale (graines, animaux, outils) | ⏳ |
 
@@ -40,9 +40,11 @@ Règle des dialogues : répliques débloquées par paliers d'amitié ; Claude li
 - **Bois de l'est** (à partir de la colonne 34) : 3 essences, **chêne, sapin, bouleau**, qui donnent toutes 3 à 5 bois. Chaque nuit, jusqu'à 4 pousses apparaissent au hasard, sans dépasser **70 arbres** dans le bois. Une pousse devient arbuste puis petit arbre, et elle est adulte au bout de **3 jours** ; avant ça, la hache refuse (« pousse encore (n j) »). Le sapin reste vert l'hiver, le bouleau perd ses feuilles.
 - **Pierres du bois** : la petite pierre donne **1 pierre**, la plus grosse **2 pierres**. Chaque nuit, jusqu'à 3 pierres sont prévues, sans dépasser **30** ; elles sortent de terre **3 jours** plus tard. Rien ne repousse sur la ferme elle-même : on la défriche une fois pour toutes.
 - **Départ** : ni poulailler, ni animaux. L'enclos est agrandi jusqu'au bois. Il garde trois emplacements balisés (piquets, cordeau, panneau) au nord.
-- **Charpentier** (village, en bas à gauche) : poulailler (1 500 🪙, 40 🪵, 10 🪨, 8 places, poules et lapins), porcherie (2 500 🪙, 60 🪵, 20 🪨, 6 places, cochons), bergerie (4 000 🪙, 80 🪵, 30 🪨, 6 places, moutons). Le bâtiment apparaît tout de suite sur son emplacement.
+- **Charpentier** (village, en bas à gauche) : poulailler (3 000 🪙, 40 🪵, 10 🪨, 8 places, poules et lapins), porcherie (5 000 🪙, 60 🪵, 20 🪨, 6 places, cochons), bergerie (8 000 🪙, 80 🪵, 30 🪨, 6 places, moutons). Les prix ont été doublés à la demande de l'utilisateur. Chaque bâtiment a son intérieur : la porcherie (boue, foin, mangeoire) et la bergerie (grange rouge, longue mangeoire, foin). La mangeoire ne nourrit que les animaux de son bâtiment. Le bâtiment apparaît tout de suite sur son emplacement.
 - **Marchand d'animaux** (village, en bas à droite) : poule, lapin, cochon, mouton, chat. Il faut le bon bâtiment, avec de la place ; le chat vit en liberté.
 - **Cochon** : produit une truffe (160 🪙) tous les 2 jours s'il est nourri au foin.
+- **Village agrandi vers le sud**, avec trois commerces : **boulangerie** (pain, croissant, farine), **boucherie** (bœuf, jambon, saucisse), **poissonnerie** (poisson, crevettes, saumon). Le pain et le croissant se mangent ; le reste servira à la cuisine.
+- **Plus de « Boutique » dans le menu** : les graines s'achètent à l'**étal de la halle du marché**, le foin chez le **marchand d'animaux**. Chaque commerce a un bouton ×5.
 - **Bâtiments** : maison (lit), poulailler (mangeoire). **Village** : halle du marché (marché entre joueurs), panneau d'affichage (6 demandes, renouvelées toutes les 2 h réelles), magasin d'amélioration, fontaine.
 - **Animaux** : poule, lapin, mouton, chat à caresser.
 - **Monde** : temps, saisons, météo, nuit éclairée, particules, combat (slimes la nuit), carte zoomable.
@@ -52,8 +54,9 @@ Règle des dialogues : répliques débloquées par paliers d'amitié ; Claude li
 
 ## 5. Contradictions et points à trancher
 - ✅ Réglé au lot 4 : le poulailler n'existe plus au départ, et les animaux ne se vendent plus que chez le marchand d'animaux. Une ancienne sauvegarde garde son poulailler, et sa bergerie si elle avait des moutons.
-- **Bâtiments sans intérieur** : la porcherie et la bergerie n'ont pas d'intérieur. On nourrit leurs animaux à la main, ou avec la mangeoire du poulailler, qui nourrit tous les animaux.
-- **Boutique du menu** : elle vend encore les graines et le foin depuis n'importe où. Faut-il la réserver à un commerce du village ? → à voir au lot 5.
+- ✅ Réglé au lot 5 : la porcherie et la bergerie ont leur intérieur, et la Boutique du menu est supprimée.
+- **Bug corrigé (lot 5)** : la halle du marché plantait à l'ouverture (variable manquante) depuis le début. Elle affiche maintenant l'étal de graines, puis le marché entre joueurs (ou « hors ligne »).
+- **Les commerces ne rachètent rien** : on vend toujours tout dans le bac près de la maison. Faut-il que le boulanger rachète le blé ou les œufs, par exemple ?
 - **Anciennes sauvegardes** : avec les piles de 10, un ancien sac (piles jusqu'à 99) peut dépasser le nombre de cases. Rien n'est perdu, mais on ne peut plus rien ramasser tant qu'on n'a pas vendu ou acheté une amélioration.
 - **Nom de la page** : l'artefact claude.ai s'appelle encore « Moteur Ferme » dans la liste, alors que le jeu s'appelle Farm'tastic.
 
@@ -64,6 +67,7 @@ Règle des dialogues : répliques débloquées par paliers d'amitié ; Claude li
 
 ## 6. Idées de Claude (💡 à valider)
 - Sous-titre de l'écran titre : « ✦ une ferme à partager ✦ » (déjà affiché, à garder ou retirer).
+- Produits et prix des trois commerces, l'étal de graines à la halle, le foin chez le marchand d'animaux.
 - Cochon et truffe (pour que la porcherie serve à quelque chose), les prix et le nombre de places des bâtiments, leur position au nord de l'enclos, la bergerie pour les moutons.
 - Noms des essences (chêne, sapin, bouleau) et leurs looks : choisis par Claude, l'utilisateur avait seulement demandé « 3 types ».
 - Enseigne « AMÉLIORATIONS » et échoppe à toit d'ardoise pour le magasin ; pas encore de marchand dedans (un PNJ pourra y être placé si l'utilisateur en décrit un).
