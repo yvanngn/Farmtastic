@@ -78,6 +78,17 @@ export function gift(g, id, item, add) {
 export const hearts = r => Math.floor(Math.max(0, r.points) / POINTS_PER_HEART);
 
 // Position du PNJ selon l'heure (dehors le jour, chez lui le soir).
+// Point situé à la fraction t (0 → 1) d'un trajet en lignes droites, et direction du pas.
+export function alongPath(pts, t) {
+  const segs = pts.slice(1).map((p, i) => Math.hypot(p.x - pts[i].x, p.y - pts[i].y)), L = segs.reduce((a, b) => a + b, 0);
+  let d = Math.max(0, Math.min(1, t)) * L;
+  for (let i = 0; i < segs.length; i++) { if (d <= segs[i] || i === segs.length - 1) { const f = segs[i] ? Math.min(1, d / segs[i]) : 1; return { x: pts[i].x + (pts[i + 1].x - pts[i].x) * f, y: pts[i].y + (pts[i + 1].y - pts[i].y) * f }; } d -= segs[i]; }
+  return { ...pts[pts.length - 1] };
+}
+function alongDir(pts, t, back) {
+  const a = alongPath(pts, t), b = alongPath(pts, Math.min(1, t + .02)), dx = (b.x - a.x) * (back ? -1 : 1), dy = (b.y - a.y) * (back ? -1 : 1);
+  return Math.abs(dx) > Math.abs(dy) ? (dx < 0 ? 2 : 3) : (dy < 0 ? 1 : 0);
+}
 export function placeNPC(n, S, OUT_FROM, OUT_TO) {
   if (n.mystic) return placeMyst(n, S);
   if (n.worker) { // au travail de longues heures, sinon introuvable
@@ -89,6 +100,11 @@ export function placeNPC(n, S, OUT_FROM, OUT_TO) {
   n.walking = false;
   const walk = (n.walks || []).find(w => S.day % (w.every || 1) === 0 && S.minute >= w.from && S.minute < w.to);
   if (walk && (!n.shy || hearts(S.social[n.id] || { points: 0 }) >= n.shy.minHearts)) { n.scene = walk.scene; Object.assign(n, walk.at); n.dir = 0; return; } // promenade en forêt
+  else if (!n.home && n.commute) { // il sort de chez lui et marche jusqu'à sa place (et rentre le soir)
+    const m = S.minute, k = n.commuteMin || 40, go = m >= OUT_FROM && m < OUT_FROM + k, back = m >= OUT_TO && m < OUT_TO + k;
+    if (go || back) { const t = go ? (m - OUT_FROM) / k : 1 - (m - OUT_TO) / k; n.scene = n.dayScene || 'town'; Object.assign(n, alongPath(n.commute, t)); n.walking = true; n.dir = alongDir(n.commute, t, back); }
+    else { n.scene = out ? (n.dayScene || 'town') : 'none'; Object.assign(n, n.day); }
+  }
   else if (!n.home) { n.scene = out ? (n.dayScene || 'town') : 'none'; Object.assign(n, n.day); }
   else if (n.shy) { // sort seulement en fin de journée, une fois qu'il a assez confiance
     const r = S.social[n.id], goes = r && hearts(r) >= n.shy.minHearts && S.minute >= n.shy.from && S.minute < n.shy.to;

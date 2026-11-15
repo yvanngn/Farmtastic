@@ -1,7 +1,7 @@
 // Couche statique pré-rendue (sol texturé, rivages, clôtures, bâtiments).
 // Reconstruite uniquement au changement de saison. L'eau animée est dessinée à part.
 import { CFG } from '../config.js';
-import { ground, isFence, isPond, rng } from '../world/map.js';
+import { ground, isFence, isPond, rng, isHedge } from '../world/map.js';
 import { shade, disc } from './pixel.js';
 import { BUILDINGS } from '../data/buildings.js';
 import { signBoard } from './pixfont.js';
@@ -72,6 +72,14 @@ export function buildGround(season, built = {}, fixed = { house: true, grange: t
   drawBin(R);
   drawGrange(R); if (!fixed.grange) drawRuins(R, 10 * T, 14 * T, 1 * T + 10 - 18, 5 * T, 'grange');
   drawStation(R);
+  // haies le long des bords sans sortie (bas et droite) : on voit tout de suite où sont les chemins
+  for (let y = 0; y < CFG.H; y++) for (let x = 0; x < CFG.W; x++) if (isHedge(x, y)) {
+    const px = x * T, py = y * T;
+    R(px, py + 4, T, T - 4, '#2f6a2a'); R(px + 1, py + 2, 6, 6, '#3f8a34'); R(px + 8, py + 1, 7, 7, '#3f8a34'); R(px + 3, py + 6, 10, 6, '#4a9a3a');
+    R(px + 2, py + 3, 2, 1, '#68b84c'); R(px + 10, py + 2, 2, 1, '#68b84c'); R(px, py + T - 2, T, 2, '#24521f');
+  }
+  // bordures de pierre le long des sorties élargies
+  for (const [x0, y0, x1, y1] of [[15, 33, 17, 35], [45, 4, 47, 6]]) { R(x0 * T - 2, y0 * T, 2, (y1 - y0 + 1) * T, '#8f887f'); R((x1 + 1) * T, y0 * T, 2, (y1 - y0 + 1) * T, '#8f887f'); if (y1 - y0 < 3) { R(x0 * T, y0 * T - 2, (x1 - x0 + 1) * T, 2, '#8f887f'); R(x0 * T, (y1 + 1) * T, (x1 - x0 + 1) * T, 2, '#8f887f'); } }
   // panneau au bout de la route de l'est : « Centre-ville → »
   R(44 * T + 7, 6 * T + 6, 2, 12, '#5b3a22'); signBoard(R, 44 * T + 8, 6 * T + 2, 'CENTRE-VILLE →');
   drawFieldStakes(R);

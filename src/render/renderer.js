@@ -280,6 +280,25 @@ let swing = null;
       if (g.cooking) list.push({ z: 9997, d: () => { const p = cookProgress(g), x = g.cooking.x * T, y = g.cooking.y * T - 8;
         ctx.fillStyle = 'rgba(0,0,0,.55)'; ctx.fillRect(x - 1, y - 1, 18, 5); ctx.fillStyle = '#f2a03a'; ctx.fillRect(x, y, Math.round(16 * p), 3); } });
     }
+    if (sky) { // sorties : flèches animées et nom de la destination, au bord de l'écran
+      const NAMES = { farm: 'Ma ferme', quartier: 'Quartier', town: 'Centre-ville', foret: 'Forêt', wild: 'Caverne' }, seen = new Set();
+      for (const d of SC.doors || []) {
+        const W = SC.W, H = SC.H, edge = d.x === 0 ? 'g' : d.x === W - 1 ? 'd' : d.y === 0 ? 'h' : d.y === H - 1 ? 'b' : null;
+        if (!edge || !NAMES[d.to] || seen.has(d.to + edge)) continue; seen.add(d.to + edge);
+        const grp = SC.doors.filter(o => o.to === d.to), cx = grp.reduce((a, o) => a + o.x, 0) / grp.length, cy = grp.reduce((a, o) => a + o.y, 0) / grp.length;
+        list.push({ z: 9990, d: () => {
+          const px = cx * T + 8, py = cy * T + 8, b = Math.sin(now / 220) * 2, [ax, ay] = { g: [-1, 0], d: [1, 0], h: [0, -1], b: [0, 1] }[edge];
+          ctx.fillStyle = 'rgba(255,240,170,.9)';
+          for (let k = 0; k < 2; k++) { const ox = px - ax * (6 - k * 5 - b), oy = py - ay * (6 - k * 5 - b); ctx.globalAlpha = .55 + k * .35; ctx.beginPath();
+            ctx.moveTo(ox + ax * 4, oy + ay * 4); ctx.lineTo(ox - ay * 4 - ax * 2, oy + ax * 4 - ay * 2); ctx.lineTo(ox + ay * 4 - ax * 2, oy - ax * 4 - ay * 2); ctx.fill(); }
+          ctx.globalAlpha = 1;
+          const lx = px - ax * 22, ly = py - ay * 18 - (ay ? 0 : 12), label = NAMES[d.to];
+          ctx.font = 'bold 6px Nunito, sans-serif'; const w = ctx.measureText(label).width + 6;
+          ctx.fillStyle = 'rgba(30,22,40,.75)'; ctx.fillRect(Math.round(lx - w / 2), Math.round(ly - 6), Math.round(w), 9);
+          ctx.fillStyle = '#ffe7a6'; ctx.textAlign = 'center'; ctx.fillText(label, lx, ly + 1); ctx.textAlign = 'start';
+        } });
+      }
+    }
     if (scene === 'farm' && S.tent) list.push({ z: S.tent.y + .9, d: () => { // tente du début
       const x = S.tent.x * T, y = S.tent.y * T;
       ctx.fillStyle = 'rgba(0,0,0,.28)'; ctx.fillRect(x - 3, y + 13, 22, 3);

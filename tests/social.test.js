@@ -198,3 +198,17 @@ test('Igor le forgeron : il cherche son bijou (derrière la cabane) et nous appr
   assert.equal(S.inv.igor_bijou || 0, 0); assert.equal(questProgress(S, 'igor').cur, 3);
   assert.ok(IGOR.story.some(l => /olympiques/i.test(l.t)) && IGOR.story.some(l => /armes/.test(l.t)));
 });
+
+test('Manuel sort de sa villa à 8h et marche jusqu’à la place (et rentre le soir)', async () => {
+  const { CHEF: C } = await import('../src/data/npcs.js');
+  const { registerNPC: reg } = await import('../src/systems/social.js');
+  const { g, S } = makeGame({ state: { minute: OUT_FROM - 10 } });
+  reg(g, C); const n = g.npcs.chef;
+  placeNPC(n, S, OUT_FROM, OUT_TO); assert.equal(n.scene, 'none', 'encore chez lui');
+  S.minute = OUT_FROM + 1; placeNPC(n, S, OUT_FROM, OUT_TO);
+  assert.equal(n.scene, 'town'); assert.ok(n.walking); assert.ok(n.y > 20, 'il part de la villa, au sud');
+  S.minute = OUT_FROM + 20; placeNPC(n, S, OUT_FROM, OUT_TO); const mid = n.y;
+  assert.ok(mid < 26 && mid > 12.6, 'il est en chemin');
+  S.minute = OUT_FROM + 60; placeNPC(n, S, OUT_FROM, OUT_TO); assert.deepEqual([n.x, n.y], [C.day.x, C.day.y]); assert.ok(!n.walking);
+  S.minute = OUT_TO + 20; placeNPC(n, S, OUT_FROM, OUT_TO); assert.ok(n.walking && n.y > 12.6, 'le soir, il rentre');
+});

@@ -15,9 +15,9 @@ export const ROOM_MOBS = [
 ];
 // Cailloux : 3 types (le 2 est rare, le 3 encore plus) ; minerais rares, plus fréquents sur 2 et 3.
 export const ZROCKS = {
-  zrock1: { n: 'Caillou', hp: 4, stone: 1, ore: 0.02 },
-  zrock2: { n: 'Caillou veiné', hp: 6, stone: 2, ore: 0.08 },
-  zrock3: { n: 'Caillou cristallin', hp: 8, stone: 3, ore: 0.2 }
+  zrock1: { n: 'Caillou', hp: 6, stone: 1, ore: 0.02 },
+  zrock2: { n: 'Caillou veiné', hp: 9, stone: 2, ore: 0.08 },
+  zrock3: { n: 'Caillou cristallin', hp: 12, stone: 3, ore: 0.2 }
 };
 export const ZROCK_COUNT = 34, ZROCK_P3 = 0.06, ZROCK_P2 = 0.25;
 export const ORES = ['ruby', 'emerald'];

@@ -272,3 +272,6 @@ Ordre convenu : 1 mort/clignotement ✅ · 2 tente ✅ · 3 recettes (feu), baie
 - ✅ **Énergie** : affichée en **arc autour du bouton ✋** (vert → orange → rouge, tremblement), choisi par l'utilisateur après comparaison de 3 maquettes ; **alerte** : une petite jauge apparaît au-dessus du héros dès 30 % ou moins.
 - ✅ Pendant un dialogue (dont l'accueil de Myst et les pensées du début), le héros ne peut plus bouger (clavier, joystick ou toucher).
 - ✅ À l'arrivée, le héros reste immobile sur le quai (train, pensées, accueil de Myst) jusqu'à la fin des explications de Myst.
+- ✅ **Manuel** sort de sa villa à 8h et marche jusqu'à la place en ~40 min de jeu (allée est, place) ; il rentre de la même façon à 19h.
+- ✅ Plus long à casser (💡) : arbre 8 coups, caillou 6, gros caillou 9, rocher 14, filon 16, cailloux de la caverne 6/9/12 (avec la pioche/hache de base ; un meilleur outil frappe plus fort).
+- ✅ **Sorties plus visibles** : sorties de la ferme élargies à 3 cases et encadrées de pierre ; **haies** sur les bords sans sortie (bas et droite de la ferme) ; à chaque sortie d'une zone extérieure, **flèches animées + nom de la destination** (Quartier, Centre-ville, Forêt, Ma ferme…).
