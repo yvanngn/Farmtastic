@@ -6,7 +6,7 @@ import { TREE_KINDS, TREE_KIND_IDS, TREE_GROW_DAYS, ROCK_DAYS, STONE_YIELD, FORE
 import { MIN_PICK, MINING_GAIN, TIER_NAMES, energyCost } from '../data/tools.js';
 import { add } from './inventory.js';
 import { useEnergy } from './player.js';
-import { gainXp, toolTier } from './skills.js';
+import { gainXp, toolTier, hasTool } from './skills.js';
 
 export const TOOL_FOR = { tree: 'axe', rock: 'pick', rock_big: 'pick', boulder: 'pick' };
 export const isStone = t => t === 'rock' || t === 'rock_big' || t === 'boulder';
@@ -18,7 +18,12 @@ export function hitObject(g, x, y) {
   const S = g.S, k = key(x, y), o = S.objs[k];
   if (!o) return false;
   const tool = TOOL_FOR[o.t];
-  if (S.sel !== tool) { g.bus.emit('sfx', 'denied'); g.bus.emit('toast', tool === 'axe' ? 'Il faut la hache 🪓' : 'Il faut la pioche ⛏️'); return false; }
+  if (S.sel !== tool) {
+    g.bus.emit('sfx', 'denied');
+    const has = hasTool(S, tool), name = tool === 'axe' ? 'la hache 🪓' : 'la pioche ⛏️';
+    g.bus.emit('toast', has ? `Il faut ${name}` : `Il te faut ${name}… les outils sont sans doute dans la grange.`);
+    return false;
+  }
   if (!isGrown(o)) {
     const left = TREE_GROW_DAYS - (o.g || 0);
     g.bus.emit('sfx', 'denied'); g.bus.emit('toast', `Ce jeune ${TREE_KINDS[treeKind(o, x, y)].n.toLowerCase()} pousse encore (${left} j) 🌱`); return false;

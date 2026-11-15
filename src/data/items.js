@@ -32,5 +32,6 @@ export const TOOLS = [
   { id: 'axe', n: 'Hache', i: '🪓' },
   { id: 'pick', n: 'Pioche', i: '⛏️' },
   { id: 'sickle', n: 'Faucille', i: '🔪' },
+  { id: 'shovel', n: 'Pelle', i: '🪏' },
   { id: 'sword', n: 'Épée', i: '🗡️' }
 ];

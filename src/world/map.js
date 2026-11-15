@@ -19,6 +19,8 @@ export const isCoop = (x, y, built = { coop: true }) => buildingAt(built, x, y) 
 // Maison de Luna, au bord du chemin, près du portail (porte en 20,31).
 export const isLunaHouse = (x, y) => inRect(x, y, 18, 29, 22, 31);
 export const isLunaLot = (x, y) => inRect(x, y, 17, 27, 24, 34);
+// Grange de la maison (x10-13, y1-4), porte en 12,4 : l'entrée des tunnels.
+export const isGrange = (x, y) => inRect(x, y, 10, 1, 13, 4);
 export const isGate = (x, y) => x === 16 && y === 35; // portail vers le village
 export const isFence = (x, y, built) => inRect(x, y, 18, 6, 33, 13) && !isPen(x, y) && !(x === 18 && y === 9) && !buildingAt(built, x, y);
 export const isPond = (x, y) => ((x - 12) ** 2) / 25 + ((y - 24) ** 2) / 9 < 1;
@@ -33,9 +35,9 @@ export function ground(x, y) {
 import { tileAt, SOLID_TILES } from './scenes.js';
 
 export function isSolid(S, x, y) {
-  if (S.scene && S.scene !== 'farm') return SOLID_TILES.includes(tileAt(S.scene, x, y));
+  if (S.scene && S.scene !== 'farm') { const t = tileAt(S.scene, x, y); if (S.scene === 'grange' && (t === 'p' || t === 'r') && S.grange && S.grange.broken.includes(x + ',' + y)) return false; return SOLID_TILES.includes(t); }
   if (x < 0 || y < 0 || x >= CFG.W || y >= CFG.H) return true;
-  return isPond(x, y) || isHouse(x, y) || isLunaHouse(x, y) || !!buildingAt(S.built, x, y) || isGate(x, y) || isFence(x, y, S.built) || isBin(x, y) || !!(S.objs && S.objs[key(x, y)]);
+  return isPond(x, y) || isHouse(x, y) || isGrange(x, y) || isLunaHouse(x, y) || !!buildingAt(S.built, x, y) || isGate(x, y) || isFence(x, y, S.built) || isBin(x, y) || !!(S.objs && S.objs[key(x, y)]);
 }
 
 // Générateur pseudo-aléatoire déterministe (même carte pour une même graine).
@@ -46,7 +48,7 @@ export function rng(seed) {
 
 export function freeForObj(x, y) {
   return !isHouse(x, y) && !isPlot(x, y) && !isPond(x, y) && !isPath(x, y) && !inRect(x, y, 17, 5, 33, 14)
-    && !isBin(x, y) && !isLunaLot(x, y) && !inRect(x, y, 4, 5, 9, 7) && x > 0 && y > 0 && x < CFG.W - 1 && y < CFG.H - 1;
+    && !isBin(x, y) && !isLunaLot(x, y) && !inRect(x, y, 9, 0, 14, 5) && !inRect(x, y, 4, 5, 9, 7) && x > 0 && y > 0 && x < CFG.W - 1 && y < CFG.H - 1;
 }
 
 const KINDS = ['oak', 'pine', 'birch'];

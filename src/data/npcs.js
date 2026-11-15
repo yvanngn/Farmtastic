@@ -52,6 +52,27 @@ export const LUNA = {
   already: "Tu m'as déjà fait un cadeau aujourd'hui !",
   night: "Il est tard… on se voit demain ?"
 };
-export const NPCS = { luna: LUNA };
+// Le chef du village (💡 apparence et répliques proposées par Claude, à valider). Il accueille le joueur.
+export const CHEF = {
+  id: 'chef', name: 'Le chef du village', color: '#e8c26a', voice: 'voiceChef', de: 'de lui',
+  look: { body: 'h', bottom: 'pant', skin: '#e2b48c', hair: 0, hairC: '#b8b4ae', shirt: '#7a4a2a', pants: '#3a3a4a' },
+  home: null, day: { x: 11.5, y: 12.6 }, welcome: { x: 8.5, y: 6.9 },
+  traits: ['Accueillant', 'Veut voir le village renaître'],
+  taste: { adore: [], aime: ['bread', 'egg'], naime: [], deteste: ['slime'] },
+  welcomeLines: [
+    "Ah, te voilà enfin ! Bienvenue au village. Je suis le chef du village.",
+    "Cette ferme est à toi, maintenant. Elle a bien besoin d'un coup de main, comme tu vois.",
+    "En descendant le chemin, tu trouveras le village : la halle du marché, le panneau d'affichage et nos commerces.",
+    "Sur le panneau, les gens affichent leurs demandes. Le village a besoin de toi pour se reconstruire.",
+    "Les outils de l'ancien propriétaire doivent traîner dans la grange, à côté de la maison.",
+    "Mais méfie-toi : cette grange cache bien plus de choses qu'elle n'en a l'air…",
+    "Ta voisine, Luna, vient d'arriver elle aussi. Va lui dire bonjour !"
+  ],
+  welcomeEnd: { t: 'Merci, chef !', r: 'Allez, au travail ! Et passe me voir sur la place quand tu veux.' },
+  story: [],
+  chat: ['Le village renaît un peu plus chaque jour.', "Tu as fouillé la grange ? On dit qu'elle s'enfonce loin sous la colline."],
+  react: { aime: 'Oh, c\'est gentil ! Merci.', neutre: 'Merci bien.', deteste: 'Hum… je vais faire semblant de ne pas avoir vu ça.' }
+};
+export const NPCS = { luna: LUNA, chef: CHEF };
 // Luna est dehors de 8 h à 19 h, chez elle le reste du temps.
 export const OUT_FROM = 480, OUT_TO = 1140;

@@ -8,6 +8,7 @@ const T = CFG.T;
 const THEME = {
   house: { floor: '#b07a48', seam: '#8a5a32', wall: '#7fa36a', wallD: '#5f8450', trim: '#6b4226', beam: '#4a2c18' },
   coop: { floor: '#d9c27a', seam: '#b49a52', wall: '#b8452f', wallD: '#93321f', trim: '#f0e6d0', beam: '#5a3a2a' },
+  grange: { floor: '#6e5236', seam: '#5a4028', wall: '#7a5a3a', wallD: '#5b3f26', trim: '#4a3220', beam: '#2e2622' },
   luna: { floor: '#c49a6a', seam: '#a07850', wall: '#d8c2e8', wallD: '#bca4d0', trim: '#7a5a8a', beam: '#4a2c3a' },
   pigsty: { floor: '#c9a66a', seam: '#a8854a', wall: '#9a6a3c', wallD: '#7a4e2a', trim: '#c99560', beam: '#4a2c18' },
   barn: { floor: '#d4b870', seam: '#b0944c', wall: '#b8452f', wallD: '#93321f', trim: '#f0e6d0', beam: '#4a2c18' }
@@ -21,12 +22,17 @@ export function buildInterior(name) {
 
   for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
     const t = L[y][x], px = x * T, py = y * T;
+    if (t === '#' && name === 'grange') { // roche
+      R(px, py, T, T, '#3a3230'); for (let k = 0; k < 5; k++) R(px + (r() * 13 | 0), py + (r() * 13 | 0), 3, 2, ['#4a403c', '#2e2826', '#544844'][k % 3]);
+      continue;
+    }
     if (t === '#') { R(px, py, T, T, th.beam); R(px, py + T - 2, T, 2, shade(th.beam, .7)); continue; }
     if (t === 'W') {
       R(px, py, T, T, th.wall);
       if (name === 'house' || name === 'luna') { for (let k = 2; k < T; k += 5) R(px + k, py, 1, 11, th.wallD); }
       else for (let k = 0; k < T; k += 4) R(px + k, py, 1, T, th.wallD);
       R(px, py + 11, T, 5, th.trim); R(px, py + 11, T, 1, shade(th.trim, 1.25));
+      if (name === 'grange') { if (x % 5 === 2) { R(px + 6, py + 2, 3, 6, '#5b3a22'); R(px + 5, py, 5, 3, '#ffb347'); R(px + 6, py - 1, 3, 2, '#ffe08a'); } continue; }
       if (x % 4 === 2) { R(px + 2, py + 1, 12, 9, '#f0e6d0'); R(px + 3, py + 2, 10, 7, '#8fc4e2'); R(px + 3, py + 2, 10, 2, '#bfe0f2'); R(px + 7, py + 2, 1, 7, '#f0e6d0'); }
       continue;
     }
@@ -35,6 +41,11 @@ export function buildInterior(name) {
       R(px, py, T, T, th.floor);
       for (let k = 0; k < T; k += 4) R(px, py + k, T, 1, th.seam);
       R(px + ((x * 5 + y * 3) % 12), py + 1, 1, 3, th.seam);
+    } else if (name === 'grange') {
+      R(px, py, T, T, th.floor);
+      for (let k = 0; k < 8; k++) R(px + (r() * 14 | 0), py + (r() * 15 | 0), 2, 1, r() < .5 ? th.seam : '#86684a');
+      if ((t === 'p' || t === 'r' || t === 'E') && t === 'E') { R(px, py, T, T, '#3a3230'); for (let k = 0; k < 9; k++) { const a = r() * 12 | 0, b = r() * 12 | 0; R(px + a, py + b, 5, 4, ['#6a605a', '#544844', '#7a706a'][k % 3]); } }
+      if (x <= 8 && y <= 5 && r() < .25) for (let k = 0; k < 4; k++) R(px + (r() * 12 | 0), py + (r() * 14 | 0), 3, 1, '#d9b84a');
     } else {
       R(px, py, T, T, th.floor);
       for (let k = 0; k < 10; k++) R(px + (r() * 14 | 0), py + (r() * 15 | 0), 2, 1, r() < .5 ? th.seam : '#efd98f');

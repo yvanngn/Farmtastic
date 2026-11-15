@@ -11,6 +11,8 @@ export function level(xp) {
 export const nextXp = xp => MINING_XP[level(xp)] ?? null; // null = niveau max
 export const miningLevel = S => level((S.skills.mining || { xp: 0 }).xp);
 export const toolTier = (S, t) => (S.tools && S.tools[t]) || 1;
+// Outils possédés : la main toujours ; les autres se trouvent (grange) ou se débloquent.
+export const hasTool = (S, t) => t === 'hand' || !!(S.tools && S.tools[t] > 0);
 
 export function gainXp(g, skill, n) {
   const s = g.S.skills[skill] || (g.S.skills[skill] = { xp: 0 });
@@ -23,6 +25,7 @@ export function gainXp(g, skill, n) {
 
 // { ok, why: 'max'|'level'|'money'|'stone', cost }
 export function canUpgrade(S, tool) {
+  if (!hasTool(S, tool)) return { ok: false, why: 'missing' };
   const tier = toolTier(S, tool);
   if (tier >= MAX_TIER) return { ok: false, why: 'max' };
   const cost = upgradeCost(tier);

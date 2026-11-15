@@ -38,17 +38,22 @@ Mots de l'utilisateur, à respecter tels quels :
 - **Cailloux de la zone de combat** (⏳) : 3 types ; le type 2 est rare, le type 3 encore plus. Chaque caillou a de **très faibles chances** de donner un minerai rare, plus souvent sur le type 2 et encore plus sur le type 3. Minerais pour l'instant : **rubis** et **émeraude**.
 - **Atelier de fabrication à la maison** (⏳), à débloquer plus tard.
 - **Franck** (⏳), nouveau voisin de Luna. Timide, il sort peu. Une des **quêtes principales** sera de l'aider à sortir. Il a vécu un **traumatisme quand il était jeune**, dont il ne veut pas parler : **on ne le saura jamais**, on laisse l'imagination au joueur, mais ça a forgé son caractère. Depuis, il laisse passer le temps, comme si rien ne l'animait. Un jour, on lui **fabriquera un objet** qui l'animera et le **changera radicalement**.
-- **Début de partie** (⏳) :
+- **Début de partie** (✅ lot 8, 15/11/2026 — voir § 4) :
   - on n'a **aucun outil** ;
   - à l'arrivée, le **chef du village** nous accueille et nous présente ce qu'on peut faire ;
   - il faut trouver la **pioche**, la **pelle** et la **hache** dans une **grange** de la maison. La grange s'avère être un **ensemble de tunnels**, où l'on découvrira petit à petit plus de choses (on verra quoi plus tard). Dedans, on a la hache par défaut.
 - **Champ de foin** (⏳) : l'espace pour planter le foin n'est pas encore préparé ; le foin se plante avec ce qu'on achète au magasin.
 
-### Contradictions et questions soulevées par ces demandes
-- **Combat actuel** : des slimes apparaissent déjà la nuit sur la ferme. Faut-il les retirer de la ferme pour qu'ils ne vivent que dans la zone de combat ?
-- **Outils** : le jeu a déjà une épée et une faucille, mais pas de pelle. Il faut créer la pelle. Est-ce que l'épée et la faucille existent au départ, ou se trouvent aussi plus tard ?
-- **« Dedans on a la hache par défaut »** : est-ce qu'on commence avec la hache en poche, ou est-ce qu'on la trouve tout de suite dans la grange (et la pioche et la pelle plus loin dans les tunnels) ?
-- **Le chef du village** : nouveau PNJ, sans nom ni description pour l'instant.
+### Décisions de l'utilisateur (15/11/2026)
+- Ordre : d'abord le début de partie (lot 8).
+- Les slimes ne vivent plus que dans la zone de combat : la ferme est tranquille la nuit (✅ fait).
+- On démarre sans rien : la hache est à l'entrée de la grange, la pioche et la pelle plus loin dans les tunnels (✅ fait).
+- La faucille se trouve aussi dans la grange ; l'épée s'obtiendra en ouvrant la zone de combat (✅ faucille ; épée ⏳ avec la zone de combat).
+
+### Questions encore ouvertes
+- **Le chef du village** : il n'a ni nom ni apparence décrits. Claude lui a donné des cheveux gris et un gilet brun (💡). Ses répliques sont listées plus bas, à valider.
+- **La pelle** existe maintenant, mais elle ne sert à rien tant que le champ de foin n'est pas fait (lot 9).
+- **Le champ labouré** devant la maison est encore prêt à planter dès le départ. Avec le lot 9, il devra être préparé.
 - **Foin** : aujourd'hui le foin s'achète tout fait (nourriture des animaux). La demande parle de le **planter** : il faudra des graines de foin au magasin et un champ à préparer (avec la pelle ?).
 - **Gros rochers de la ferme** : ils font doublon avec les 3 types de cailloux de la zone de combat.
 
@@ -74,6 +79,18 @@ Mots de l'utilisateur, à respecter tels quels :
   - 💚 **Demande d'un habitant** (vert) : un objet qu'il aime ou adore, avec +40 d'amitié.
   - 🐪 **Caravane commerciale** (or) : moins d'argent, mais des **jetons**. Ils s'échangent contre des graines de carotte (2), de maïs (4), des lapins (5), des cochons (6), des moutons (8) et les plans de forge Or et Iridium (10).
   - Une demande ne réclame jamais un objet qu'on ne peut pas encore produire.
+- **Début de partie (lot 8)** : on arrive **sans aucun outil**, seulement les mains (on peut planter et récolter à la main). Le **chef du village** attend devant la maison et fait son accueil ; on le referme avec « Merci, chef ! ». Ensuite, il se tient sur la place du village de 8 h à 19 h.
+- **La grange** (à droite de la maison) est l'entrée d'un **réseau de tunnels** sombres, éclairés par des torches. Le parcours :
+  1. la **hache** est à l'entrée ;
+  2. des **planches clouées** se cassent à la hache ;
+  3. derrière, la **faucille** et la **pioche** ;
+  4. un **éboulis** se casse à la pioche ;
+  5. derrière, la **pelle** ;
+  6. un **grand éboulement** ferme la suite des tunnels (« impossible d'aller plus loin pour l'instant »).
+
+  Un outil se ramasse en marchant dessus ou avec le bouton d'action. Sans le bon outil, un message dit d'aller voir la grange.
+- **Plus de slimes la nuit sur la ferme.** L'épée n'est plus donnée au départ.
+- Une ancienne sauvegarde garde ses outils et ne revoit pas l'accueil.
 - **Départ d'une nouvelle partie** : seules les graines de blé, les poules et le chat sont disponibles ; tout le reste vient de la caravane. Une ancienne sauvegarde garde tout débloqué.
 - **Goûts des habitants par degrés** : adore +80, aime +45, neutre +20, n'aime pas −20, déteste −40. Le goût est découvert en offrant l'objet, et s'affiche ensuite dans la fiche du menu (onglet Liens).
 - **Questions à réponses** : une discussion sur trois, Luna pose une question à 2 ou 3 réponses (touches 1-2-3). Chaque question ne se pose qu'une fois, et l'effet reste faible (−8 à +12) pour que l'amitié avance lentement.
@@ -123,6 +140,19 @@ Paliers : il faut le nombre de cœurs indiqué pour qu'elle en parle.
 22. (n'aime pas) Ah… merci. Je vais bien lui trouver une utilité.
 23. (déteste) Euh… c'est gluant. Tu peux le reprendre ?
 (La réplique 14 « Oh, pour moi ? Merci… » est remplacée par ces réactions.)
+
+### Accueil du chef du village (à valider)
+24. Ah, te voilà enfin ! Bienvenue au village. Je suis le chef du village.
+25. Cette ferme est à toi, maintenant. Elle a bien besoin d'un coup de main, comme tu vois.
+26. En descendant le chemin, tu trouveras le village : la halle du marché, le panneau d'affichage et nos commerces.
+27. Sur le panneau, les gens affichent leurs demandes. Le village a besoin de toi pour se reconstruire.
+28. Les outils de l'ancien propriétaire doivent traîner dans la grange, à côté de la maison.
+29. Mais méfie-toi : cette grange cache bien plus de choses qu'elle n'en a l'air…
+30. Ta voisine, Luna, vient d'arriver elle aussi. Va lui dire bonjour !
+31. (réponse du joueur) Merci, chef ! → « Allez, au travail ! Et passe me voir sur la place quand tu veux. »
+32. (conversation) Le village renaît un peu plus chaque jour.
+33. (conversation) Tu as fouillé la grange ? On dit qu'elle s'enfonce loin sous la colline.
+Goûts du chef (💡) : aime le pain et les œufs ; déteste la gelée.
 
 ## 5. Contradictions et points à trancher
 - ✅ Réglé au lot 4 : le poulailler n'existe plus au départ, et les animaux ne se vendent plus que chez le marchand d'animaux. Une ancienne sauvegarde garde son poulailler, et sa bergerie si elle avait des moutons.

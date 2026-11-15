@@ -15,7 +15,7 @@ import { consume } from '../systems/player.js';
 import { hearts, POINTS_PER_HEART, DEGREES, DEGREE_NAMES, tasteOf } from '../systems/social.js';
 import { ITEMS as ALL_ITEMS } from '../data/items.js';
 import { slots, usedSlots, stackSize } from '../systems/inventory.js';
-import { canUpgrade, upgradeTool, miningLevel, nextXp, toolTier } from '../systems/skills.js';
+import { canUpgrade, upgradeTool, miningLevel, nextXp, toolTier, hasTool } from '../systems/skills.js';
 
 const TABS = { sac: 'Sac', craft: 'Atelier', forge: 'Forge', social: 'Liens' };
 const TITLES = { market: '🏪 Marché', upgrades: '🧰 Magasin d\'amélioration', carpenter: '🪚 Charpentier', animals: '🐾 Marchand d\'animaux', bakery: '🥖 Boulangerie', butcher: '🥩 Boucherie', fishmonger: '🐟 Poissonnerie' };
@@ -44,7 +44,7 @@ export function createMenu(g, opts) {
       const lvl = miningLevel(S), xp = S.skills.mining.xp, nx = nextXp(xp), pct = nx ? Math.round(xp / nx * 100) : 100;
       const why = { plans: 'Plans de forge : caravane 🐪', level: 'Niveau de minage insuffisant', money: "Pas assez d'argent", stone: 'Pas assez de pierre', max: 'Palier maximum' };
       return `<div class="xp"><b>⛏️ Minage niveau ${lvl}</b><span>${xp}${nx ? ' / ' + nx : ''} XP</span><div class="bar"><i style="width:${pct}%;background:linear-gradient(90deg,#c99a3a,#ffdf8a)"></i></div><small>Cassez des pierres pour gagner de l'expérience. Les gros rochers demandent une pioche Cuivre.</small></div>`
-        + '<div class="grid">' + UPGRADABLE.map(id => {
+        + '<div class="grid">' + UPGRADABLE.filter(id => hasTool(S, id)).map(id => {
           const t = TOOLS.find(x => x.id === id), ic = iconHTML(id), tier = toolTier(S, id), r = canUpgrade(S, id), c = r.cost;
           return card(`<div class="t">${ic} <b>${t.n}</b></div><div class="tierlbl t${tier}">${TIER_NAMES[tier]}</div>`
             + (tier >= MAX_TIER ? '<div>Palier maximum ✨</div>' : `<div>→ ${TIER_NAMES[tier + 1]}</div><div>${c.money}🪙 · ${c.stone}🪨 · niv. ${c.minLvl}</div><button data-up="${id}" ${r.ok ? '' : 'disabled'}>Améliorer</button>${r.ok ? '' : `<small>${why[r.why]}</small>`}`));

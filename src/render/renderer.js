@@ -5,11 +5,16 @@ import { buildGround, drawWaterShimmer, LIGHTS } from './ground.js';
 import { drawChar, drawTree, drawRock, drawCrop, drawAnimal, drawSlime, drawSwing, treeSprite, KIND_SPRITE } from './sprites.js';
 import { buildInterior } from './interiors.js';
 import { buildTown, TOWN_LIGHTS } from './town.js';
+import { PICKUPS, isBroken } from '../systems/grange.js';
+import { LAYOUTS } from '../world/scenes.js';
+import { toolIcon } from './sprites.js';
 import { SCENES } from '../world/scenes.js';
 import { ANIMALS } from '../data/animals.js';
 import { darkness } from '../systems/weather.js';
 const T = CFG.T;
 const MAX_FX = 160;
+// Torches des tunnels (px).
+const GRANGE_LIGHTS = [[2, 1], [7, 1], [12, 1], [17, 5], [12, 7]].map(([x, y]) => ({ x: x * 16 + 8, y: y * 16 + 6, r: 70 }));
 
 export function createRenderer(cv, g) {
   const ctx = cv.getContext('2d');
@@ -87,6 +92,9 @@ export function createRenderer(cv, g) {
     }
   }
 
+  const toolImgs = {};
+  function toolImg(id) { if (!toolImgs[id]) { toolImgs[id] = new Image(); toolImgs[id].src = toolIcon(id); } return toolImgs[id]; }
+
   function label(t, x, y) {
     ctx.font = 'bold 6px Georgia'; const w = Math.ceil(ctx.measureText(t).width);
     ctx.fillStyle = 'rgba(20,14,36,.75)'; ctx.fillRect(Math.round(x - w / 2 - 3), y - 7, w + 6, 9);
@@ -134,6 +142,22 @@ export function createRenderer(cv, g) {
     }
     if (outside) for (const a of S.animals) list.push({ z: a.y, d: () => drawAnimal(ctx, a, now, ANIMALS[a.type]) });
     if (outside) for (const e of g.enemies) list.push({ z: e.y, d: () => drawSlime(ctx, e, now) });
+    if (scene === 'grange') {
+      // outils au sol (avec un éclat) et passages encore fermés
+      for (const p of PICKUPS) if (!S.grange.found.includes(p.tool)) list.push({ z: p.y + .5, d: () => {
+        const im = toolImg(p.tool), b = Math.round(Math.sin(now / 300) * 1.5);
+        ctx.fillStyle = 'rgba(0,0,0,.3)'; ctx.fillRect(p.x * T + 3, p.y * T + 12, 10, 2);
+        if (im.complete) ctx.drawImage(im, p.x * T, p.y * T - 2 + b);
+        if (((now / 200) | 0) % 6 === 0) { ctx.fillStyle = '#fff6c0'; ctx.fillRect(p.x * T + 12, p.y * T - 1 + b, 2, 2); }
+      } });
+      LAYOUTS.grange.forEach((row, y) => [...row].forEach((t, x) => {
+        if ((t === 'p' || t === 'r') && !isBroken(S, x, y)) list.push({ z: y + .9, d: () => {
+          const px = x * T, py = y * T;
+          if (t === 'p') { for (let k = 0; k < 3; k++) { ctx.fillStyle = ['#a8774a', '#8a5a32', '#b8875a'][k]; ctx.fillRect(px + 1, py + 2 + k * 5, 14, 4); ctx.fillStyle = '#3b2414'; ctx.fillRect(px + 3, py + 3 + k * 5, 1, 1); ctx.fillRect(px + 12, py + 3 + k * 5, 1, 1); } }
+          else { for (const [a, b2, w] of [[1, 6, 8], [6, 2, 8], [3, 9, 10], [9, 8, 6]]) { ctx.fillStyle = '#6a605a'; ctx.fillRect(px + a, py + b2, w, 6); ctx.fillStyle = '#8a807a'; ctx.fillRect(px + a, py + b2, w, 2); } }
+        } });
+      }));
+    }
     for (const id in g.npcs) { const n = g.npcs[id]; if ((n.scene || 'farm') !== scene) continue; list.push({ z: n.y, d: () => { drawChar(ctx, Math.round(n.x * T - 6), Math.round(n.y * T - 19), n.look, n.dir || 0, 0, now); label(n.name, n.x * T, n.y * T - 25); } }); }
     for (const id in g.others) { const o = g.others[id]; if (!o.look || (o.scene || 'farm') !== scene) continue; list.push({ z: o.y, d: () => { drawChar(ctx, Math.round(o.x * T - 6), Math.round(o.y * T - 19), o.look, o.dir, o.f, now + 777); label(o.name, o.x * T, o.y * T - 25); } }); }
     list.push({ z: S.y, d: () => {
@@ -160,8 +184,8 @@ export function createRenderer(cv, g) {
     // ---- lumière et étalonnage (espace écran) ----
     ctx.setTransform(1, 0, 0, 1, 0, 0);
     const toScreen = (wx, wy) => [(wx - camX) * scale, (wy - camY) * scale];
-    const dark = sky ? Math.min(.7, darkness(S) * 1.15) : 0;
-    const LIGHTS_HERE = outside ? LIGHTS.filter((l, i) => i !== 1 || (S.built && S.built.coop)) : scene === 'town' ? TOWN_LIGHTS : [];
+    const dark = sky ? Math.min(.7, darkness(S) * 1.15) : SC.dark ? .62 : 0;
+    const LIGHTS_HERE = scene === 'grange' ? GRANGE_LIGHTS : outside ? LIGHTS.filter((l, i) => i !== 1 || (S.built && S.built.coop)) : scene === 'town' ? TOWN_LIGHTS : [];
     if (!sky) { ctx.fillStyle = 'rgba(255,180,100,.07)'; ctx.fillRect(0, 0, cv.width, cv.height); }
     if (sky && S.minute > 1020 && S.minute < 1170) { ctx.fillStyle = `rgba(255,140,60,${.12 * Math.sin((S.minute - 1020) / 150 * Math.PI)})`; ctx.fillRect(0, 0, cv.width, cv.height); }
     if (sky && (S.weather === 'rain' || S.weather === 'storm')) { ctx.fillStyle = 'rgba(70,95,160,.14)'; ctx.fillRect(0, 0, cv.width, cv.height); }

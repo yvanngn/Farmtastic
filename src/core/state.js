@@ -16,7 +16,9 @@ export function defaultState() {
     scene: 'farm', invSlots: CFG.INV_SLOTS, stackLvl: 0, rockQueue: [],
     village: { done: [], progress: 0 }, festival: null, caravan: { tokens: 0, unlocked: [] },
     skills: { mining: { xp: 0 } },
-    tools: { axe: 1, pick: 1, sickle: 1, sword: 1 },
+    tools: {},                       // aucun outil au départ : ils sont dans la grange
+    intro: { met: false },           // accueil du chef du village
+    grange: { found: [], broken: [] },
     market: { slots: [] }
   };
 }
@@ -27,7 +29,10 @@ export function migrate(raw) {
   const s = Object.assign(defaultState(), raw);
   const d = defaultState();
   s.look = Object.assign(d.look, raw.look || {});
-  s.tools = Object.assign(d.tools, raw.tools || {});
+  // Avant le lot 8, on avait tous les outils et pas d'accueil : on garde ça pour les anciennes parties.
+  s.tools = raw.tools ? { ...raw.tools } : { axe: 1, pick: 1, sickle: 1, sword: 1 };
+  if (!raw.intro) s.intro = { met: true };
+  if (!raw.grange) s.grange = { found: Object.keys(s.tools), broken: [] };
   s.skills = Object.assign(d.skills, raw.skills || {});
   // Avant le lot 7, tout était déjà disponible : on ne retire rien aux anciennes parties.
   if (!raw.caravan) s.caravan = { tokens: 0, unlocked: ['carrot_seed', 'corn_seed', 'rabbit', 'pig', 'sheep', 'forge_or'] };

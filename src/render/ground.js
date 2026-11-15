@@ -69,6 +69,7 @@ export function buildGround(season, built = {}) {
   drawGate(R);
   drawHouse(g, R);
   drawBin(R);
+  drawGrange(R);
   drawLunaHouse(R);
   if (built.coop) drawCoop(R); else drawLot(g, R, 'coop');
   if (built.pigsty) drawPigsty(R); else drawLot(g, R, 'pigsty');
@@ -129,6 +130,20 @@ function drawCoop(R) {
   for (let i = 0; i < 8; i++) R(x - 3 + i * 3, y + 8 - i, 50 - i * 6, 1, i % 2 ? '#5a3a2a' : '#6e4a36');
   R(x + 16, y + 13, 12, 13, '#3b2414'); R(x + 16, y + 13, 12, 1, '#f0e6d0'); R(x + 21, y + 13, 1, 13, '#f0e6d0');
   R(x + 4, y + 13, 7, 6, '#f0e6d0'); R(x + 5, y + 14, 5, 4, '#7fb6d9');
+}
+
+// Grange de la maison (x10-13, y1-4) : vieille grange de planches grises, porte entrouverte sur le noir.
+function drawGrange(R) {
+  const x0 = 10 * T, x1 = 14 * T, top = 1 * T + 10, bot = 5 * T;
+  R(x0 - 2, bot, x1 - x0 + 4, 3, 'rgba(20,12,8,.3)');
+  R(x0, top, x1 - x0, bot - top, '#8a7a68'); for (let x = x0; x < x1; x += 5) R(x, top, 1, bot - top, '#6e604f');
+  R(x0, top, x1 - x0, 2, '#a8987f');
+  for (let i = 0; i < 10; i++) { const inset = i * 3; R(x0 - 4 + inset, top - i * 2 - 2, x1 - x0 + 8 - inset * 2, 2, i % 2 ? '#5a4a3e' : '#6e5c4c'); }
+  R(x0 + 3, top + 10, 6, 5, '#3b3028'); R(x0 + 4, top + 11, 4, 3, '#22201e');
+  const dx = 12 * T; R(dx - 1, top + 14, 18, bot - top - 14, '#3b3028'); R(dx + 1, top + 16, 14, bot - top - 16, '#0e0c0c');
+  R(dx + 11, top + 16, 5, bot - top - 16, '#7a6a58'); R(dx + 12, top + 18, 1, bot - top - 20, '#5a4e40');
+  R(dx - 2, bot, 20, 3, '#9a958c');
+  R(x1 - 10, top + 30, 8, 6, '#c9a330'); R(x1 - 10, top + 30, 8, 2, '#f5dd7a');
 }
 
 // Maison de Luna (x18-22, y29-31) : petite maison mauve, cartons devant, boîte aux lettres.

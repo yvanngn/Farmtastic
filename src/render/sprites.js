@@ -125,6 +125,7 @@ const TOOL_PIX = {
     c.fillStyle = '#d6dbe0'; for (const [x, y] of B) c.fillRect(x, y, 1, 1);
     c.fillStyle = '#ffffff'; c.fillRect(4, -9, 1, 2); c.fillRect(1, -11, 2, 1);
   },
+  shovel: c => { c.fillStyle = '#7a4f2e'; c.fillRect(-1, -6, 2, 14); c.fillStyle = '#5b3a22'; c.fillRect(-3, 6, 6, 2); c.fillStyle = '#9aa0a8'; c.fillRect(-3, -12, 6, 7); c.fillRect(-2, -13, 4, 1); c.fillStyle = '#d6dbe0'; c.fillRect(-2, -12, 2, 6); },
   sword: c => { c.fillStyle = '#5a3a22'; c.fillRect(-1, 2, 2, 4); c.fillStyle = '#e8c26a'; c.fillRect(-3, 1, 6, 1); c.fillStyle = '#d6dbe0'; c.fillRect(-1, -11, 2, 12); c.fillStyle = '#ffffff'; c.fillRect(-1, -11, 1, 11); },
   hand: null
 };

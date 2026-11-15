@@ -18,7 +18,8 @@ import { createBoard } from './ui/board.js';
 import { createTitle } from './ui/title.js';
 import { createDialog } from './ui/dialog.js';
 import { NPCS, OUT_FROM, OUT_TO } from './data/npcs.js';
-import { placeNPC, findNPCAt } from './systems/social.js';
+import { placeNPC, findNPCAt, welcome } from './systems/social.js';
+import { autoPickup } from './systems/grange.js';
 import { isLunaLot } from './world/map.js';
 import { isPath, isGate } from './world/map.js';
 import { createPlayerMarket } from './net/market.js';
@@ -131,6 +132,8 @@ async function begin() {
   // le chemin vers le village doit rester libre (anciennes sauvegardes)
   for (const k in g.S.objs) { const [x, y] = k.split(',').map(Number); if (isPath(x, y) || isGate(x, y) || isLunaLot(x, y)) delete g.S.objs[k]; }
   for (const id in NPCS) registerNPC(g, NPCS[id]);
+  for (const id in g.npcs) placeNPC(g.npcs[id], g.S, OUT_FROM, OUT_TO);
+  setTimeout(() => welcome(g), 600);
   started = true; custom.close(); hud.show(); renderer.initWeather(); ensureOrders(g);
   if (net.sb) { playerMarket = createPlayerMarket(net.sb, net.uid, g); await upsertProfile(net.sb, net.uid, g.S); mp = createMultiplayer({ sb: net.sb, uid: net.uid, g }); mp.join(); }
   doSave(false);
@@ -153,7 +156,8 @@ function loop(now) {
     const wf = g.player.walkFrame; if (wf !== lastFrame && (wf === 1 || wf === 3)) audio.play('step'); lastFrame = wf;
     tickTime(g, dt * 1000);
     wander(g, dt);
-    if ((g.S.scene || 'farm') === 'farm') { spawnEnemies(g, dt); updateEnemies(g, dt); }
+    updateEnemies(g, dt); // les monstres ne vivent plus sur la ferme (zone de combat à venir)
+    autoPickup(g);
     rainBoost(g, dt);
     lerpOthers(g.others, dt);
     for (const id in g.npcs) placeNPC(g.npcs[id], g.S, OUT_FROM, OUT_TO);

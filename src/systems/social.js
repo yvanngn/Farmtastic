@@ -75,7 +75,9 @@ export const hearts = r => Math.floor(Math.max(0, r.points) / POINTS_PER_HEART);
 // Position du PNJ selon l'heure (dehors le jour, chez lui le soir).
 export function placeNPC(n, S, OUT_FROM, OUT_TO) {
   const out = S.minute >= OUT_FROM && S.minute < OUT_TO;
-  n.scene = out ? 'farm' : n.home; Object.assign(n, out ? n.day : n.inside);
+  if (n.welcome && S.intro && !S.intro.met) { n.scene = 'farm'; Object.assign(n, n.welcome); } // accueil du joueur
+  else if (!n.home) { n.scene = out ? (n.dayScene || 'town') : 'none'; Object.assign(n, n.day); }
+  else { n.scene = out ? 'farm' : n.home; Object.assign(n, out ? n.day : n.inside); }
   // se tourne vers le joueur s'il est tout près
   if (S.scene === n.scene && Math.hypot(S.x - n.x, S.y - n.y) < 2.5) n.dir = Math.abs(S.x - n.x) > Math.abs(S.y - n.y) ? (S.x < n.x ? 2 : 3) : (S.y < n.y ? 1 : 0);
   else n.dir = 0;
@@ -84,6 +86,17 @@ export function findNPCAt(g, tx, ty) {
   const sc = g.S.scene || 'farm';
   for (const id in g.npcs) { const n = g.npcs[id]; if ((n.scene || 'farm') === sc && Math.hypot(n.x - (tx + .5), n.y - .3 - (ty + .5)) < 1) return n; }
   return null;
+}
+
+// Accueil : le chef présente le village ; la partie commence vraiment après « Merci, chef ! ».
+export function welcome(g) {
+  const n = g.npcs.chef, S = g.S;
+  if (!n || !S.intro || S.intro.met) return false;
+  g.bus.emit('say', { name: n.name, color: n.color, voice: n.voice, lines: n.welcomeLines, choices: [n.welcomeEnd.t], onChoose: () => {
+    S.intro.met = true;
+    g.bus.emit('say', { name: n.name, color: n.color, voice: n.voice, lines: [n.welcomeEnd.r] });
+  } });
+  return true;
 }
 
 export function socialNewDay(S) {
