@@ -5,6 +5,7 @@ export const ITEMS = {
   wheat_seed: { n: 'Graine de blé', p: 1, i: '🌱', seed: 'wheat', buy: 5 },
   corn_seed: { n: 'Graine de maïs', p: 3, i: '🌱', seed: 'corn', buy: 15 },
   carrot_seed: { n: 'Graine de carotte', p: 2, i: '🌱', seed: 'carrot', buy: 10 },
+  hay_seed: { n: 'Graine de foin', p: 1, i: '🌱', seed: 'hay', buy: 4 },
   wheat: { n: 'Blé', p: 6, i: '🌾' },
   corn: { n: 'Maïs', p: 18, i: '🌽' },
   carrot: { n: 'Carotte', p: 12, i: '🥕', eat: { e: 15 } },

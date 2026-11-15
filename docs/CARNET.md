@@ -42,7 +42,7 @@ Mots de l'utilisateur, à respecter tels quels :
   - on n'a **aucun outil** ;
   - à l'arrivée, le **chef du village** nous accueille et nous présente ce qu'on peut faire ;
   - il faut trouver la **pioche**, la **pelle** et la **hache** dans une **grange** de la maison. La grange s'avère être un **ensemble de tunnels**, où l'on découvrira petit à petit plus de choses (on verra quoi plus tard). Dedans, on a la hache par défaut.
-- **Champ de foin** (⏳) : l'espace pour planter le foin n'est pas encore préparé ; le foin se plante avec ce qu'on achète au magasin.
+- **Champ de foin** (✅ lot 9, 15/11/2026) : l'espace pour planter le foin n'est pas encore préparé ; le foin se plante avec ce qu'on achète au magasin.
 
 ### Décisions de l'utilisateur (15/11/2026)
 - Ordre : d'abord le début de partie (lot 8).
@@ -52,9 +52,7 @@ Mots de l'utilisateur, à respecter tels quels :
 
 ### Questions encore ouvertes
 - **Le chef du village** : il n'a ni nom ni apparence décrits. Claude lui a donné des cheveux gris et un gilet brun (💡). Ses répliques sont listées plus bas, à valider.
-- **La pelle** existe maintenant, mais elle ne sert à rien tant que le champ de foin n'est pas fait (lot 9).
-- **Le champ labouré** devant la maison est encore prêt à planter dès le départ. Avec le lot 9, il devra être préparé.
-- **Foin** : aujourd'hui le foin s'achète tout fait (nourriture des animaux). La demande parle de le **planter** : il faudra des graines de foin au magasin et un champ à préparer (avec la pelle ?).
+- **Foin tout fait** : on peut encore l'acheter chez le marchand d'animaux, en plus de le cultiver. Faut-il le retirer de la vente ?
 - **Gros rochers de la ferme** : ils font doublon avec les 3 types de cailloux de la zone de combat.
 
 ## 4. Ce qui existe dans le jeu
@@ -89,6 +87,8 @@ Mots de l'utilisateur, à respecter tels quels :
   6. un **grand éboulement** ferme la suite des tunnels (« impossible d'aller plus loin pour l'instant »).
 
   Un outil se ramasse en marchant dessus ou avec le bouton d'action. Sans le bon outil, un message dit d'aller voir la grange.
+- **Champ (lot 9)** : au départ, le champ devant la maison est en herbe, avec quatre piquets aux coins. Il faut **bêcher chaque case à la pelle** (1 d'énergie par case) avant de planter. Avec des graines en main devant une case non bêchée, le bouton d'action prend la pelle tout seul.
+- **Foin** : les **graines de foin** (4 🪙) se vendent à l'étal de la halle du marché. Le foin pousse en 1 min 30 réelle, donne 3 foins par case, et sert à nourrir les animaux. Une ancienne sauvegarde garde son champ entièrement bêché.
 - **Plus de slimes la nuit sur la ferme.** L'épée n'est plus donnée au départ.
 - Une ancienne sauvegarde garde ses outils et ne revoit pas l'accueil.
 - **Départ d'une nouvelle partie** : seules les graines de blé, les poules et le chat sont disponibles ; tout le reste vient de la caravane. Une ancienne sauvegarde garde tout débloqué.
@@ -170,6 +170,7 @@ Goûts du chef (💡) : aime le pain et les œufs ; déteste la gelée.
 ## 6. Idées de Claude (💡 à valider)
 - Sous-titre de l'écran titre : « ✦ une ferme à partager ✦ » (déjà affiché, à garder ou retirer).
 - **Goûts de Luna** (tirés de sa personnalité : ancienne informaticienne, rêve de ferme, budget serré, retape sa maison) : adore les graines de carotte et de blé ; aime le pain, le croissant et le bois ; n'aime pas la pierre ni le foin ; déteste la gelée. Il n'existe pas encore de fleurs ni de bijoux à offrir.
+- **Lot 9** : temps de pousse et rendement du foin, prix des graines, bêchage limité au champ devant la maison.
 - **Lot 7** : noms et objectifs des chantiers, primes, nom des fêtes, coûts en jetons de la caravane, poids de chaque famille de demandes.
 - **Luna** : son apparence (cheveux longs foncés, haut vert), sa maison mauve, ses horaires, le détail de la bouilloire, de la ville, du champ de blé et des petits boulots. Elle n'a pas encore de cadeau préféré : dis-moi ce qu'elle aime et déteste.
 - Produits et prix des trois commerces, l'étal de graines à la halle, le foin chez le marchand d'animaux.

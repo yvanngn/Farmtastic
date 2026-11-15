@@ -19,7 +19,7 @@ export function buildGround(season, built = {}) {
   const water = (x, y) => isPond(x, y);
 
   for (let y = 0; y < CFG.H; y++) for (let x = 0; x < CFG.W; x++) {
-    const t = ground(x, y), px = x * T, py = y * T;
+    const t0 = ground(x, y), t = t0 === 'soil' ? 'grass' : t0, px = x * T, py = y * T; // le champ est en herbe tant qu'il n'est pas bêché
     if (t === 'water') {
       const deep = water(x - 1, y) && water(x + 1, y) && water(x, y - 1) && water(x, y + 1);
       R(px, py, T, T, deep ? shade(WATER, .88) : WATER);
@@ -70,6 +70,7 @@ export function buildGround(season, built = {}) {
   drawHouse(g, R);
   drawBin(R);
   drawGrange(R);
+  drawFieldStakes(R);
   drawLunaHouse(R);
   if (built.coop) drawCoop(R); else drawLot(g, R, 'coop');
   if (built.pigsty) drawPigsty(R); else drawLot(g, R, 'pigsty');
@@ -130,6 +131,18 @@ function drawCoop(R) {
   for (let i = 0; i < 8; i++) R(x - 3 + i * 3, y + 8 - i, 50 - i * 6, 1, i % 2 ? '#5a3a2a' : '#6e4a36');
   R(x + 16, y + 13, 12, 13, '#3b2414'); R(x + 16, y + 13, 12, 1, '#f0e6d0'); R(x + 21, y + 13, 1, 13, '#f0e6d0');
   R(x + 4, y + 13, 7, 6, '#f0e6d0'); R(x + 5, y + 14, 5, 4, '#7fb6d9');
+}
+
+// Piquets aux quatre coins du champ (x4-13, y8-13) : on voit où bêcher.
+function drawFieldStakes(R) {
+  for (const [x, y] of [[4 * T - 3, 8 * T - 4], [14 * T, 8 * T - 4], [4 * T - 3, 14 * T - 6], [14 * T, 14 * T - 6]]) { R(x, y, 3, 10, '#8a5a32'); R(x, y, 3, 2, '#c99560'); R(x - 1, y + 2, 5, 2, '#e8dcc0'); }
+}
+// Terre bêchée, dessinée par-dessus l'herbe (seulement les cases visibles).
+export function drawSoil(c, x, y) {
+  const px = x * T, py = y * T, R = (a, b, w, h, col) => { c.fillStyle = col; c.fillRect(px + a, py + b, w, h); };
+  R(0, 0, T, T, '#7a4c2a');
+  for (let k = 2; k < T; k += 4) { R(1, k, T - 2, 1, '#5e391e'); R(1, k + 1, T - 2, 1, '#94643a'); }
+  R(0, 0, T, 1, '#5e391e'); R(0, 0, 1, T, '#5e391e');
 }
 
 // Grange de la maison (x10-13, y1-4) : vieille grange de planches grises, porte entrouverte sur le noir.

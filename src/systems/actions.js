@@ -1,11 +1,11 @@
 // Aiguillage d'une action sur une tuile, selon la scène (ferme ou intérieur).
-import { isBin, key } from '../world/map.js';
+import { isBin, key, isPlot } from '../world/map.js';
 import { doorAt, tileAt, UI_TILES } from '../world/scenes.js';
 import { sleep } from './time.js';
 import { sellAll } from './economy.js';
 import { hitObject } from './resources.js';
 import { findAnimalAt, interactAnimal, feedAll } from './animals.js';
-import { farmAction, isRipe } from './farming.js';
+import { farmAction, isRipe, isTilled } from './farming.js';
 import { ITEMS } from '../data/items.js';
 import { BUILDINGS } from '../data/buildings.js';
 import { hasTool } from './skills.js';
@@ -29,7 +29,8 @@ export function smartTool(g, tx, ty) {
   if (holdsItem) return S.sel;
   const p = S.plots[key(tx, ty)];
   if (p && isRipe(p, g.now())) return own(S, 'sickle');
-  return S.sel === 'sword' || S.sel === 'axe' || S.sel === 'pick' ? 'hand' : S.sel;
+  if (isPlot(tx, ty) && !isTilled(S, tx, ty) && hasTool(S, 'shovel') && (holdsItem && ITEMS[S.sel] && ITEMS[S.sel].seed || S.sel === 'shovel' || S.sel === 'hand')) return 'shovel';
+  return S.sel === 'sword' || S.sel === 'axe' || S.sel === 'pick' || S.sel === 'shovel' ? 'hand' : S.sel;
 }
 
 export function enterScene(g, to, spawn) {

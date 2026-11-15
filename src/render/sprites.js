@@ -297,6 +297,9 @@ export function drawCrop(c, x, y, p, now) {
   } else if (p.crop === 'corn') {
     R(7, -6 + b, 2, 18, STEM); R(3, 2, 4, 2, LEAF); R(9, -1, 4, 2, LEAF); R(4, 7, 3, 1, LEAF_L);
     if (ripe) { R(9, -5 + b, 3, 6, '#f2d13b'); R(9, -5 + b, 1, 6, '#c9a320'); R(12, -4 + b, 1, 5, LEAF); }
+  } else if (p.crop === 'hay') {
+    const col = ripe ? '#c9b04a' : '#7fae4a', top = ripe ? '#e6d27a' : '#a6cc66';
+    for (const [sx, h] of [[2, 9], [4, 11], [6, 8], [8, 12], [10, 9], [12, 10]]) { R(sx, 13 - h + b, 1, h, col); R(sx, 13 - h + b, 1, 2, top); }
   } else {
     R(4, 2 + b, 2, 7, LEAF); R(7, 0 + b, 2, 9, LEAF_L); R(10, 2 + b, 2, 7, LEAF); R(6, 4 + b, 4, 3, LEAF);
     if (ripe) { R(5, 9, 6, 3, '#ef7b2a'); R(5, 9, 6, 1, '#f9a35b'); }

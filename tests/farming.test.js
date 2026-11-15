@@ -44,3 +44,34 @@ test('la pluie accélère la pousse', () => {
   rainBoost(g, 4);
   assert.equal(S.plots['5,9'].t0, t0 - 1000);
 });
+
+// ---- Lot 9 : champ à bêcher, foin à planter ----
+import { till, isTilled } from '../src/systems/farming.js';
+import { defaultState, migrate } from '../src/core/state.js';
+import { SHOPS } from '../src/data/shops.js';
+
+test('le champ n’est pas prêt au départ : il faut le bêcher à la pelle', () => {
+  assert.deepEqual(defaultState().tilled, {});
+  const { g, S, toasts } = makeGame({ state: { tilled: {}, inv: { hay_seed: 2 }, sel: 'hay_seed' } });
+  assert.equal(plant(g, 5, 9, 'hay_seed'), false);
+  assert.match(toasts().at(-1), /bêcher/);
+  S.sel = 'shovel';
+  assert.equal(farmAction(g, 5, 9), true);
+  assert.equal(isTilled(S, 5, 9), true);
+  assert.equal(till(g, 20, 20), false, 'hors du champ');
+  assert.equal(plant(g, 5, 9, 'hay_seed'), true);
+});
+
+test('foin : graines à l’étal, récolte de foin pour les animaux', () => {
+  assert.ok(SHOPS.stall.sells.includes('hay_seed'));
+  const { g, S, clock } = makeGame({ state: { tilled: { '5,9': 1 }, inv: { hay_seed: 1 } } });
+  plant(g, 5, 9, 'hay_seed'); clock.t += 91_000;
+  assert.equal(harvest(g, 5, 9), true);
+  assert.equal(S.inv.hay, 3);
+});
+
+test('ancienne sauvegarde : le champ reste bêché', () => {
+  const s = migrate({ name: 'x' });
+  assert.equal(s.tilled['4,8'], 1);
+  assert.equal(s.tilled['13,13'], 1);
+});
