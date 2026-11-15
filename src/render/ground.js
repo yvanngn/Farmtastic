@@ -9,7 +9,7 @@ const T = CFG.T;
 export const GRASS = ['#6bb64a', '#58a23c', '#a8a347', '#e4ecef'];
 export const WATER = '#3a7cc2';
 // Fenêtres de la maison et du poulailler (px monde) : éclairées la nuit.
-export const LIGHTS = [{ x: 51, y: 60, r: 46 }, { x: 384, y: 116, r: 26 }];
+export const LIGHTS = [{ x: 51, y: 60, r: 46 }, { x: 384, y: 116, r: 26 }, { x: 303, y: 484, r: 30 }];
 
 export function buildGround(season, built = {}) {
   const c = document.createElement('canvas'); c.width = CFG.W * T; c.height = CFG.H * T;
@@ -69,6 +69,7 @@ export function buildGround(season, built = {}) {
   drawGate(R);
   drawHouse(g, R);
   drawBin(R);
+  drawLunaHouse(R);
   if (built.coop) drawCoop(R); else drawLot(g, R, 'coop');
   if (built.pigsty) drawPigsty(R); else drawLot(g, R, 'pigsty');
   if (built.barn) drawBarn(R); else drawLot(g, R, 'barn');
@@ -128,6 +129,25 @@ function drawCoop(R) {
   for (let i = 0; i < 8; i++) R(x - 3 + i * 3, y + 8 - i, 50 - i * 6, 1, i % 2 ? '#5a3a2a' : '#6e4a36');
   R(x + 16, y + 13, 12, 13, '#3b2414'); R(x + 16, y + 13, 12, 1, '#f0e6d0'); R(x + 21, y + 13, 1, 13, '#f0e6d0');
   R(x + 4, y + 13, 7, 6, '#f0e6d0'); R(x + 5, y + 14, 5, 4, '#7fb6d9');
+}
+
+// Maison de Luna (x18-22, y29-31) : petite maison mauve, cartons devant, boîte aux lettres.
+function drawLunaHouse(R) {
+  const x0 = 18 * T, x1 = 23 * T, top = 29 * T + 6, bot = 32 * T;
+  R(x0 - 2, bot, x1 - x0 + 4, 3, 'rgba(20,12,8,.3)');
+  R(x0, top, x1 - x0, bot - top, '#e8d8c0'); for (let y = top + 4; y < bot; y += 5) R(x0, y, x1 - x0, 1, '#cdb898');
+  R(x0, top, 2, bot - top, '#d4c2a4'); R(x1 - 2, top, 2, bot - top, '#b8a482'); R(x0, bot - 3, x1 - x0, 3, '#9a8466');
+  for (let i = 0, y = top - 26; y < top; i++, y += 4) {
+    const inset = Math.max(0, 12 - i * 2), lx = x0 - 6 + inset, w = x1 - x0 + 12 - inset * 2;
+    R(lx, y, w, 4, '#7a5a9a'); R(lx, y, w, 1, '#9a7aba'); for (let sx = lx + (i % 2 ? 3 : 0); sx < lx + w; sx += 6) R(sx, y + 1, 1, 3, '#5a3a7a');
+  }
+  R(x0 - 7, top - 2, x1 - x0 + 14, 3, '#4a2c5a');
+  R(x0 + 6, top + 6, 14, 12, '#f4ead8'); R(x0 + 8, top + 8, 10, 8, '#ffd98a'); R(x0 + 12, top + 8, 1, 8, '#f4ead8'); R(x0 + 8, top + 11, 10, 1, '#f4ead8');
+  R(x0 + 5, top + 18, 16, 3, '#8a5a32'); for (const [fx, col] of [[7, '#c9a0ff'], [11, '#ffffff'], [15, '#c9a0ff']]) R(x0 + fx, top + 16, 2, 2, col);
+  const dx = 20 * T; R(dx, top + 8, 16, bot - top - 8, '#4a2c5a'); R(dx + 2, top + 10, 12, bot - top - 10, '#7a5a9a'); R(dx + 11, top + 22, 2, 2, '#f2cf73');
+  R(dx - 2, bot, 20, 3, '#9a958c'); R(dx - 2, bot, 20, 1, '#c2bdb4');
+  R(x1 - 12, top + 26, 9, 8, '#b8875a'); R(x1 - 12, top + 26, 9, 2, '#d4a878'); R(x1 - 8, top + 26, 1, 8, '#e8dcc0');
+  R(x1 + 4, bot - 10, 2, 12, '#5b3a22'); R(x1 + 1, bot - 15, 8, 6, '#c9a0ff'); R(x1 + 1, bot - 15, 8, 1, '#e0c8ff'); R(x1 + 7, bot - 18, 1, 4, '#d8443a');
 }
 
 // Emplacement vide : piquets, cordeau et petit panneau « charpentier ».

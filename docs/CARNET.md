@@ -14,7 +14,7 @@ Légende : ✅ fait · 🔨 en cours · ⏳ à faire · 💡 idée de Claude (à
 | Qui | Ce qu'on sait (dit par l'utilisateur) | État |
 |---|---|---|
 | Le joueur | Fermier personnalisable (homme/femme, peau, coiffure, couleurs, pantalon/jupe). | ✅ |
-| **Luna** | Jeune femme célibataire, arrivée récemment. Travaillait dans l'informatique ; l'IA a remplacé son poste. Veut monter sa ferme mais doit d'abord gagner de l'argent ; pour l'instant elle essaie d'en gagner un peu. A sa maison. | ⏳ lot 6 |
+| **Luna** | Jeune femme célibataire, arrivée récemment. Travaillait dans l'informatique ; l'IA a remplacé son poste. Veut monter sa ferme mais doit d'abord gagner de l'argent ; pour l'instant elle essaie d'en gagner un peu. A sa maison. | ✅ lot 6 (répliques à valider) |
 | Charpentier | Vend poulailler, porcherie, etc. | ⏳ lot 4 |
 | Marchand d'animaux | Vend les animaux. | ⏳ lot 4 |
 | Boulanger, boucher, poissonnier | Commerces pour cuisiner de bons plats plus tard. | ⏳ lot 5 |
@@ -29,7 +29,7 @@ Règle des dialogues : répliques débloquées par paliers d'amitié ; Claude li
 | 3 | Arbres (zone de bois à l'est, 3 jours, nombre max, 3 types → bois) ; pierres (mêmes règles, 2 types, les grosses = 2 pierres) | ✅ 15/11/2026 |
 | 4 | Tout se débloque avec l'argent : pas de poulailler au départ, charpentier, marchand d'animaux | ✅ 15/11/2026 |
 | 5 | Boulanger, boucher, poissonnier | ✅ 15/11/2026 |
-| 6 | Luna et sa maison, dialogues qui distillent sa vie | ⏳ |
+| 6 | Luna et sa maison, dialogues qui distillent sa vie | ✅ 15/11/2026 (répliques à valider) |
 | 7 | Demandes à **code couleur** mélangeant 4 idées : reconstruction du village (jauge commune), fête de saison, demandes des habitants (amitié), caravane commerciale (graines, animaux, outils) | ⏳ |
 
 ## 4. Ce qui existe dans le jeu
@@ -45,6 +45,9 @@ Règle des dialogues : répliques débloquées par paliers d'amitié ; Claude li
 - **Cochon** : produit une truffe (160 🪙) tous les 2 jours s'il est nourri au foin.
 - **Village agrandi vers le sud**, avec trois commerces : **boulangerie** (pain, croissant, farine), **boucherie** (bœuf, jambon, saucisse), **poissonnerie** (poisson, crevettes, saumon). Le pain et le croissant se mangent ; le reste servira à la cuisine.
 - **Plus de « Boutique » dans le menu** : les graines s'achètent à l'**étal de la halle du marché**, le foin chez le **marchand d'animaux**. Chaque commerce a un bouton ×5.
+- **Luna** : sa petite maison mauve est au bord du chemin, près du portail du village. On y trouve des cartons de déménagement, un lit, une plante et une table. Elle est dehors devant chez elle de 8 h à 19 h, et chez elle le soir. On lui parle avec le bouton d'action, et on lui offre l'objet qu'on tient en main (un cadeau par jour).
+- **Dialogues** : une bulle en bas de l'écran, avec le nom en couleur, un ▸ qui clignote, et un bouton « Passer ». Sur téléphone, la caméra remonte pour que la bulle ne cache personne. Chaque PNJ a une petite voix.
+- **Amitié** : parler rapporte 20 points par jour, un cadeau 20 (80 s'il est aimé), et 250 points font 1 cœur. Luna dévoile au plus **une réplique d'histoire par jour**, débloquée selon ses cœurs ; une fois tout dit, elle fait la conversation.
 - **Bâtiments** : maison (lit), poulailler (mangeoire). **Village** : halle du marché (marché entre joueurs), panneau d'affichage (6 demandes, renouvelées toutes les 2 h réelles), magasin d'amélioration, fontaine.
 - **Animaux** : poule, lapin, mouton, chat à caresser.
 - **Monde** : temps, saisons, météo, nuit éclairée, particules, combat (slimes la nuit), carte zoomable.
@@ -52,11 +55,30 @@ Règle des dialogues : répliques débloquées par paliers d'amitié ; Claude li
 - **Son** : musiques par ambiance, bruitages, réglages séparés.
 - **Technique** : sauvegarde auto 30 s + manuelle, multijoueur Supabase prêt mais pas branché (jeu solo, sauvegarde locale).
 
+## 4 bis. Répliques de Luna (à valider par l'utilisateur)
+Paliers : il faut le nombre de cœurs indiqué pour qu'elle en parle.
+1. (0 ♥) Oh, bonjour ! Je m'appelle Luna. Je viens d'emménager dans la petite maison, là.
+2. (0 ♥) Tout est encore dans les cartons. Je ne sais même plus où j'ai rangé la bouilloire.
+3. (0 ♥) C'est toujours aussi calme, par ici ? Ça me change de la ville.
+4. (1 ♥) Avant d'arriver, je travaillais dans l'informatique. Toute la journée devant des écrans.
+5. (1 ♥) Je n'avais jamais vu un vrai champ de blé de près. C'est beau, en fait.
+6. (2 ♥) Mon poste a été remplacé par une IA. Du jour au lendemain.
+7. (2 ♥) Le pire, c'est qu'elle fait mon ancien travail mieux que moi. Ça pique un peu.
+8. (3 ♥) Alors j'ai décidé de tout recommencer ici. Mon rêve, ce serait d'avoir ma propre ferme.
+9. (3 ♥) Des poules, un potager… quelque chose de vrai, que je fais de mes mains.
+10. (4 ♥) Mais pour l'instant, je n'ai presque rien de côté. Il faut d'abord que je gagne un peu d'argent.
+11. (4 ♥) Je prends tous les petits boulots que je trouve. Un jour, j'aurai ma ferme. Promis.
+12. (conversation) Bonne journée ! Ne travaille pas trop, hein.
+13. (conversation) Tu sens cette odeur d'herbe ? Je ne m'en lasse pas.
+14. (cadeau) Oh, pour moi ? Merci, c'est vraiment gentil.
+15. (deuxième cadeau du jour) Tu m'as déjà fait un cadeau aujourd'hui !
+16. (soir, non utilisée pour l'instant) Il est tard… on se voit demain ?
+
 ## 5. Contradictions et points à trancher
 - ✅ Réglé au lot 4 : le poulailler n'existe plus au départ, et les animaux ne se vendent plus que chez le marchand d'animaux. Une ancienne sauvegarde garde son poulailler, et sa bergerie si elle avait des moutons.
 - ✅ Réglé au lot 5 : la porcherie et la bergerie ont leur intérieur, et la Boutique du menu est supprimée.
 - **Bug corrigé (lot 5)** : la halle du marché plantait à l'ouverture (variable manquante) depuis le début. Elle affiche maintenant l'étal de graines, puis le marché entre joueurs (ou « hors ligne »).
-- **Les commerces ne rachètent rien** : on vend toujours tout dans le bac près de la maison. Faut-il que le boulanger rachète le blé ou les œufs, par exemple ?
+- **Vente** : les commerces ne rachètent rien ; on vend tout au bac près de la maison. L'utilisateur y réfléchira plus tard (15/11/2026).
 - **Anciennes sauvegardes** : avec les piles de 10, un ancien sac (piles jusqu'à 99) peut dépasser le nombre de cases. Rien n'est perdu, mais on ne peut plus rien ramasser tant qu'on n'a pas vendu ou acheté une amélioration.
 - **Nom de la page** : l'artefact claude.ai s'appelle encore « Moteur Ferme » dans la liste, alors que le jeu s'appelle Farm'tastic.
 
@@ -67,6 +89,7 @@ Règle des dialogues : répliques débloquées par paliers d'amitié ; Claude li
 
 ## 6. Idées de Claude (💡 à valider)
 - Sous-titre de l'écran titre : « ✦ une ferme à partager ✦ » (déjà affiché, à garder ou retirer).
+- **Luna** : son apparence (cheveux longs foncés, haut vert), sa maison mauve, ses horaires, le détail de la bouilloire, de la ville, du champ de blé et des petits boulots. Elle n'a pas encore de cadeau préféré : dis-moi ce qu'elle aime et déteste.
 - Produits et prix des trois commerces, l'étal de graines à la halle, le foin chez le marchand d'animaux.
 - Cochon et truffe (pour que la porcherie serve à quelque chose), les prix et le nombre de places des bâtiments, leur position au nord de l'enclos, la bergerie pour les moutons.
 - Noms des essences (chêne, sapin, bouleau) et leurs looks : choisis par Claude, l'utilisateur avait seulement demandé « 3 types ».

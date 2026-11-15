@@ -8,6 +8,8 @@ import { findAnimalAt, interactAnimal, feedAll } from './animals.js';
 import { farmAction, isRipe } from './farming.js';
 import { ITEMS } from '../data/items.js';
 import { BUILDINGS } from '../data/buildings.js';
+import { findNPCAt, talk, gift } from './social.js';
+import { add } from './inventory.js';
 import { TOOL_FOR } from './resources.js';
 
 const TOOL_IDS = ['hand', 'axe', 'pick', 'sickle', 'sword'];
@@ -15,6 +17,7 @@ const TOOL_IDS = ['hand', 'axe', 'pick', 'sickle', 'sword'];
 export function smartTool(g, tx, ty) {
   const S = g.S;
   if ((S.scene || 'farm') !== 'farm') return S.sel;
+  if (findNPCAt(g, tx, ty)) return TOOL_IDS.includes(S.sel) ? 'hand' : S.sel;
   const holdsItem = !TOOL_IDS.includes(S.sel);
   if (g.enemies.some(e => Math.hypot(e.x - S.x, e.y - S.y) < 1.8)) return 'sword';
   const o = S.objs[key(tx, ty)];
@@ -35,6 +38,12 @@ export function enterScene(g, to, spawn) {
 
 export function act(g, tx, ty) {
   const S = g.S, sc = S.scene || 'farm';
+  // un habitant : objet en main = cadeau, sinon discussion
+  const npc = findNPCAt(g, tx, ty);
+  if (npc) {
+    if (!TOOL_IDS.includes(S.sel) && S.inv[S.sel] > 0) { gift(g, npc.id, S.sel, add); return 'gift'; }
+    talk(g, npc.id); return 'talk';
+  }
   const d = doorAt(sc, tx, ty);
   if (d && !(sc === 'farm' && BUILDINGS[d.to] && !(S.built && S.built[d.to]))) { enterScene(g, d.to, d.spawn); return 'door'; }
   if (sc === 'town') { const ui = UI_TILES[tileAt(sc, tx, ty)]; if (ui) { g.bus.emit('sfx', 'ui'); g.bus.emit('open', ui); return ui; } return 'none'; }

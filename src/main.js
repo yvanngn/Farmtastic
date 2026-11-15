@@ -16,6 +16,10 @@ import { createWheel } from './ui/wheel.js';
 import { createMapView } from './ui/mapView.js';
 import { createBoard } from './ui/board.js';
 import { createTitle } from './ui/title.js';
+import { createDialog } from './ui/dialog.js';
+import { NPCS, OUT_FROM, OUT_TO } from './data/npcs.js';
+import { placeNPC, findNPCAt } from './systems/social.js';
+import { isLunaLot } from './world/map.js';
 import { isPath, isGate } from './world/map.js';
 import { createPlayerMarket } from './net/market.js';
 import { facingTile } from './systems/movement.js';
@@ -45,6 +49,7 @@ const settingsPanel = createSettingsPanel(audio);
 const wheel = createWheel(g, audio);
 const mapView = createMapView(g, renderer, audio);
 const board = createBoard(g, audio);
+const dialog = createDialog(g, audio);
 let playerMarket = null;
 
 // Branchements bus → UI
@@ -87,13 +92,14 @@ const title = createTitle({
   onNew() { title.close(); custom.open(false, !!saved); },
   onSettings() { settingsPanel.open(); }
 });
-const input = createInput(cv, g, renderer, { isActive: () => started && !custom.isOpen() && !title.isOpen(), onMenu: () => menu.open() });
+const input = createInput(cv, g, renderer, { isActive: () => started && !custom.isOpen() && !title.isOpen() && !dialog.isOpen, onMenu: () => menu.open() });
 
 // Bouton d'action : agit sur la tuile en face (ou frappe l'ennemi le plus proche avec l'épée).
 function doAction() {
-  if (!started) return;
+  if (!started || dialog.isOpen) return;
   const S = g.S;
   const ft = facingTile(S);
+  if (findNPCAt(g, ft.tx, ft.ty)) { act(g, ft.tx, ft.ty); return; } // parler / offrir avant de manger
   S.sel = smartTool(g, ft.tx, ft.ty);
   if (S.sel === 'sword' && (S.scene || 'farm') === 'farm') {
     const en = g.enemies.reduce((b, e) => { const d = Math.hypot(e.x - S.x, e.y - S.y); return d < 1.8 && (!b || d < b.d) ? { e, d } : b; }, null);
@@ -106,7 +112,7 @@ function doAction() {
 const controls = createControls(g, input, { onAct: doAction, onTools: () => wheel.open('tools'), onItems: () => wheel.open('items') });
 const hud = createHud(g, controls);
 addEventListener('keydown', e => {
-  if (!started || custom.isOpen() || title.isOpen() || e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') return;
+  if (!started || custom.isOpen() || title.isOpen() || dialog.isOpen || e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') return;
   const k = e.key.toLowerCase();
   if (k === ' ') { e.preventDefault(); doAction(); }
   else if (k === '1' || k === 'tab') { e.preventDefault(); wheel.open('tools'); }
@@ -123,7 +129,8 @@ $('#bMap').onclick = () => { audio.play('ui'); mapView.open(); };
 
 async function begin() {
   // le chemin vers le village doit rester libre (anciennes sauvegardes)
-  for (const k in g.S.objs) { const [x, y] = k.split(',').map(Number); if (isPath(x, y) || isGate(x, y)) delete g.S.objs[k]; }
+  for (const k in g.S.objs) { const [x, y] = k.split(',').map(Number); if (isPath(x, y) || isGate(x, y) || isLunaLot(x, y)) delete g.S.objs[k]; }
+  for (const id in NPCS) registerNPC(g, NPCS[id]);
   started = true; custom.close(); hud.show(); renderer.initWeather(); ensureOrders(g);
   if (net.sb) { playerMarket = createPlayerMarket(net.sb, net.uid, g); await upsertProfile(net.sb, net.uid, g.S); mp = createMultiplayer({ sb: net.sb, uid: net.uid, g }); mp.join(); }
   doSave(false);
@@ -149,6 +156,7 @@ function loop(now) {
     if ((g.S.scene || 'farm') === 'farm') { spawnEnemies(g, dt); updateEnemies(g, dt); }
     rainBoost(g, dt);
     lerpOthers(g.others, dt);
+    for (const id in g.npcs) placeNPC(g.npcs[id], g.S, OUT_FROM, OUT_TO);
     mp && mp.tick(now);
     for (const k in g.S.objs) { const o = g.S.objs[k]; if (o.shake > 0) o.shake -= dt; }
     for (let i = g.fx.length - 1; i >= 0; i--) { const f = g.fx[i]; f.life -= dt; f.y -= dt * 0.75; if (f.life <= 0) g.fx.splice(i, 1); }

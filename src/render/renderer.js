@@ -114,7 +114,7 @@ export function createRenderer(cv, g) {
     if (outside) cache = farmGround(); // reconstruit si un bâtiment vient d'être construit
     const vw = cv.width / scale, vh = cv.height / scale, MW = SC.W * T, MH = SC.H * T;
     cam.x = MW <= vw ? (MW - vw) / 2 : Math.max(0, Math.min(MW - vw, S.x * T - vw / 2));
-    cam.y = MH <= vh ? (MH - vh) / 2 : Math.max(0, Math.min(MH - vh, S.y * T - vh / 2));
+    cam.y = MH <= vh ? (MH - vh) / 2 : Math.max(0, Math.min(MH - vh + (g.talking ? vh * .3 : 0), S.y * T - vh / 2 + (g.talking ? vh * .22 : 0))); // la bulle ne cache pas les personnages
     const camX = Math.round(cam.x * scale) / scale, camY = Math.round(cam.y * scale) / scale;
     ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.fillStyle = '#16121f'; ctx.fillRect(0, 0, cv.width, cv.height);
     ctx.setTransform(scale, 0, 0, scale, -camX * scale, -camY * scale);
@@ -134,7 +134,7 @@ export function createRenderer(cv, g) {
     }
     if (outside) for (const a of S.animals) list.push({ z: a.y, d: () => drawAnimal(ctx, a, now, ANIMALS[a.type]) });
     if (outside) for (const e of g.enemies) list.push({ z: e.y, d: () => drawSlime(ctx, e, now) });
-    if (outside) for (const id in g.npcs) { const n = g.npcs[id]; list.push({ z: n.y, d: () => { drawChar(ctx, Math.round(n.x * T - 6), Math.round(n.y * T - 19), n.look, n.dir || 0, 0, now); label(n.name, n.x * T, n.y * T - 25); } }); }
+    for (const id in g.npcs) { const n = g.npcs[id]; if ((n.scene || 'farm') !== scene) continue; list.push({ z: n.y, d: () => { drawChar(ctx, Math.round(n.x * T - 6), Math.round(n.y * T - 19), n.look, n.dir || 0, 0, now); label(n.name, n.x * T, n.y * T - 25); } }); }
     for (const id in g.others) { const o = g.others[id]; if (!o.look || (o.scene || 'farm') !== scene) continue; list.push({ z: o.y, d: () => { drawChar(ctx, Math.round(o.x * T - 6), Math.round(o.y * T - 19), o.look, o.dir, o.f, now + 777); label(o.name, o.x * T, o.y * T - 25); } }); }
     list.push({ z: S.y, d: () => {
       if (swing && S.dir === 1) drawSwing(ctx, S, swing.tool, swing.p);
@@ -161,7 +161,7 @@ export function createRenderer(cv, g) {
     ctx.setTransform(1, 0, 0, 1, 0, 0);
     const toScreen = (wx, wy) => [(wx - camX) * scale, (wy - camY) * scale];
     const dark = sky ? Math.min(.7, darkness(S) * 1.15) : 0;
-    const LIGHTS_HERE = outside ? LIGHTS.filter((l, i) => i === 0 || (S.built && S.built.coop)) : scene === 'town' ? TOWN_LIGHTS : [];
+    const LIGHTS_HERE = outside ? LIGHTS.filter((l, i) => i !== 1 || (S.built && S.built.coop)) : scene === 'town' ? TOWN_LIGHTS : [];
     if (!sky) { ctx.fillStyle = 'rgba(255,180,100,.07)'; ctx.fillRect(0, 0, cv.width, cv.height); }
     if (sky && S.minute > 1020 && S.minute < 1170) { ctx.fillStyle = `rgba(255,140,60,${.12 * Math.sin((S.minute - 1020) / 150 * Math.PI)})`; ctx.fillRect(0, 0, cv.width, cv.height); }
     if (sky && (S.weather === 'rain' || S.weather === 'storm')) { ctx.fillStyle = 'rgba(70,95,160,.14)'; ctx.fillRect(0, 0, cv.width, cv.height); }

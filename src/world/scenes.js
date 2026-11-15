@@ -24,6 +24,16 @@ export const LAYOUTS = {
     '#........#',
     '####D#####'
   ],
+  // X cartons de déménagement
+  luna: [
+    '#########',
+    '#WWWWWWW#',
+    '#XX...PB#',
+    '#X.....B#',
+    '#..TT...#',
+    '#.......#',
+    '####D####'
+  ],
   // G boue, Y foin
   pigsty: [
     '##########',
@@ -69,7 +79,7 @@ function buildTown() {
   return m.map(r => r.join(''));
 }
 LAYOUTS.town = buildTown();
-export const SOLID_TILES = '#WDBKTPCHNYMQUJAOVZFLf';
+export const SOLID_TILES = '#WDBKTPCHNYXMQUJAOVZFLf';
 // Tuiles qui ouvrent une interface.
 export const UI_TILES = { M: 'market', Q: 'board', U: 'upgrades', J: 'carpenter', A: 'animals', O: 'bakery', V: 'butcher', Z: 'fishmonger' };
 
@@ -79,11 +89,13 @@ export const SCENES = {
     { x: 24, y: 7, to: 'coop', spawn: { x: 4.5, y: 5.4 } },
     { x: 20, y: 7, to: 'pigsty', spawn: { x: 4.5, y: 5.4 } },
     { x: 28, y: 7, to: 'barn', spawn: { x: 5.5, y: 6.4 } },
+    { x: 20, y: 31, to: 'luna', spawn: { x: 4.5, y: 5.4 } },
     { x: 16, y: 35, to: 'town', spawn: { x: 12.5, y: 1.8 } }
   ] },
   town: { W: 24, H: 22, outdoor: true, doors: [{ x: 12, y: 0, to: 'farm', spawn: { x: 16.5, y: 34.4 } }] },
   house: { W: 12, H: 9, doors: [{ x: 5, y: 8, to: 'farm', spawn: { x: 5.5, y: 5.9 } }] },
   coop: { W: 10, H: 7, doors: [{ x: 4, y: 6, to: 'farm', spawn: { x: 24.5, y: 8.9 } }] },
+  luna: { W: 9, H: 7, doors: [{ x: 4, y: 6, to: 'farm', spawn: { x: 20.5, y: 32.6 } }] },
   pigsty: { W: 10, H: 7, doors: [{ x: 4, y: 6, to: 'farm', spawn: { x: 20.5, y: 8.9 } }] },
   barn: { W: 12, H: 8, doors: [{ x: 5, y: 7, to: 'farm', spawn: { x: 28.5, y: 8.9 } }] }
 };
