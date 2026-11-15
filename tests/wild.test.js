@@ -101,3 +101,15 @@ test('mode test : portail ouvert dès le début et épée posée devant', async 
     assert.equal(S.scene, 'wild');
   } finally { CFG.ACCES_TEST = false; }
 });
+
+test('mort dans la mine : retour à la ferme, -10 %, et le clignotement s’arrête', async () => {
+  const { updateWild: up } = await import('../src/systems/wild.js');
+  const { g, S } = makeGame({ state: { scene: 'wild', x: 5, y: 4, hp: 5, money: 1000 } });
+  g.enemies.length = 0; g.wildRoom = 0;
+  g.enemies.push({ type: 'slime_v', x: 5, y: 4.3, hp: 60, cd: 0, hit: 0, t: 0 });
+  up(g, 0.016);
+  assert.equal(S.scene, 'farm'); assert.equal(S.money, 900); assert.ok(S.hp > 0);
+  g.player.iframe = 0.8;            // touché juste avant de tomber
+  for (let i = 0; i < 120; i++) up(g, 1 / 60);
+  assert.equal(g.player.iframe, 0, 'il ne clignote plus');
+});

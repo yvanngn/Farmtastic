@@ -97,11 +97,11 @@ function tryMove(S, e, nx, ny) {
 // Boucle de la zone : changement de salle, monstres, tirs, invincibilité du joueur.
 export function updateWild(g, dt) {
   const S = g.S, P = g.player;
+  P.iframe = Math.max(0, (P.iframe || 0) - dt);   // le clignotement s'arrête partout (même ramené à la ferme)
   if (S.scene !== 'wild') { if (g.wildRoom != null) { g.wildRoom = null; g.enemies.length = 0; if (g.shots) g.shots.length = 0; } return; }
   ensureRocks(g);
   const room = roomOf(S.x, S.y);
   if (room !== g.wildRoom) { g.wildRoom = room; spawnRoom(g, room); }
-  P.iframe = Math.max(0, (P.iframe || 0) - dt);
   const hurt = n => { if (P.iframe > 0) return; P.iframe = 0.8; damage(g, n); };
   for (const e of [...g.enemies]) {
     const M = MOBS[e.type]; e.cd -= dt; e.hit -= dt; e.t += dt;

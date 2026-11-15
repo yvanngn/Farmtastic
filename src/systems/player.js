@@ -22,6 +22,7 @@ export function knockout(g) {
   S.money = Math.round(S.money * 0.9);
   S.x = SPAWN.x; S.y = SPAWN.y; S.scene = 'farm';
   g.enemies.length = 0; if (g.shots) g.shots.length = 0;
+  if (g.player) g.player.iframe = 0;   // pas de clignotement après le K.O.
   g.bus.emit('toast', "K.O. ! Ramené à la maison (-10% d'argent)");
 }
 
