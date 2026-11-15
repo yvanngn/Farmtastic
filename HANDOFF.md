@@ -51,5 +51,13 @@ Document à donner à une nouvelle conversation pour reprendre le jeu sans rien 
    - **demandes des habitants** (liens d'amitié),
    - **caravane commerciale** qui débloque graines, animaux, outils.
 
+## À faire ensuite (demandes du 15/11/2026, détail dans docs/CARNET.md § 3 bis)
+8. Début de partie : aucun outil, accueil par le chef du village, grange-tunnels de la maison (hache, puis pioche et pelle).
+9. Champ de foin à préparer + graines de foin au magasin.
+10. Zone de combat façon Zelda Game Boy (slimes bleu/vert, cochon qui tire), fermée au début ; cailloux 3 types + rubis/émeraude.
+11. Franck, voisin timide de Luna, et sa quête principale (le faire sortir ; objet fabriqué qui le change).
+12. Atelier de fabrication à la maison (à débloquer).
+Plus tard : bouclier, suite des tunnels.
+
 ## Pour démarrer la nouvelle conversation
 Joindre ce fichier ou écrire : « Reprends Farm'tastic depuis le dépôt yvanngn/Farmtastic, lis HANDOFF.md et attaque le lot suivant. »

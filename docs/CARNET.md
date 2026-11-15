@@ -32,6 +32,26 @@ Règle des dialogues : répliques débloquées par paliers d'amitié ; Claude li
 | 6 | Luna et sa maison, dialogues qui distillent sa vie | ✅ 15/11/2026 (répliques à valider) |
 | 7 | Demandes à **code couleur** mélangeant 4 idées : reconstruction du village (jauge commune), fête de saison, demandes des habitants (amitié), caravane commerciale (graines, animaux, outils) | ✅ 15/11/2026 |
 
+## 3 bis. Nouvelles demandes du 15/11/2026 (8 h 20) — pas encore commencées
+Mots de l'utilisateur, à respecter tels quels :
+- **Zone de combat à explorer** (⏳) : un endroit séparé pour les combats, façon **Zelda sur Game Boy**. Mobs : **slime bleu, slime vert, cochon qui tire**. **Bouclier** envisagé plus tard. L'accès n'est **pas ouvert au début**.
+- **Cailloux de la zone de combat** (⏳) : 3 types ; le type 2 est rare, le type 3 encore plus. Chaque caillou a de **très faibles chances** de donner un minerai rare, plus souvent sur le type 2 et encore plus sur le type 3. Minerais pour l'instant : **rubis** et **émeraude**.
+- **Atelier de fabrication à la maison** (⏳), à débloquer plus tard.
+- **Franck** (⏳), nouveau voisin de Luna. Timide, il sort peu. Une des **quêtes principales** sera de l'aider à sortir. Il a vécu un **traumatisme quand il était jeune**, dont il ne veut pas parler : **on ne le saura jamais**, on laisse l'imagination au joueur, mais ça a forgé son caractère. Depuis, il laisse passer le temps, comme si rien ne l'animait. Un jour, on lui **fabriquera un objet** qui l'animera et le **changera radicalement**.
+- **Début de partie** (⏳) :
+  - on n'a **aucun outil** ;
+  - à l'arrivée, le **chef du village** nous accueille et nous présente ce qu'on peut faire ;
+  - il faut trouver la **pioche**, la **pelle** et la **hache** dans une **grange** de la maison. La grange s'avère être un **ensemble de tunnels**, où l'on découvrira petit à petit plus de choses (on verra quoi plus tard). Dedans, on a la hache par défaut.
+- **Champ de foin** (⏳) : l'espace pour planter le foin n'est pas encore préparé ; le foin se plante avec ce qu'on achète au magasin.
+
+### Contradictions et questions soulevées par ces demandes
+- **Combat actuel** : des slimes apparaissent déjà la nuit sur la ferme. Faut-il les retirer de la ferme pour qu'ils ne vivent que dans la zone de combat ?
+- **Outils** : le jeu a déjà une épée et une faucille, mais pas de pelle. Il faut créer la pelle. Est-ce que l'épée et la faucille existent au départ, ou se trouvent aussi plus tard ?
+- **« Dedans on a la hache par défaut »** : est-ce qu'on commence avec la hache en poche, ou est-ce qu'on la trouve tout de suite dans la grange (et la pioche et la pelle plus loin dans les tunnels) ?
+- **Le chef du village** : nouveau PNJ, sans nom ni description pour l'instant.
+- **Foin** : aujourd'hui le foin s'achète tout fait (nourriture des animaux). La demande parle de le **planter** : il faudra des graines de foin au magasin et un champ à préparer (avec la pelle ?).
+- **Gros rochers de la ferme** : ils font doublon avec les 3 types de cailloux de la zone de combat.
+
 ## 4. Ce qui existe dans le jeu
 - **Écran titre** : décor de ferme animé (aube, grange, silo, moulin, champ de blé, oiseaux, pollen), logo « Farm'tastic » en Lilita One doré qui flotte, « Touchez l'écran pour commencer », cascade d'étoiles, menu Continuer / Nouvelle partie / Comment jouer / Réglages, musique de titre.
 - **Personnage** : personnalisation complète, marche de profil animée.
