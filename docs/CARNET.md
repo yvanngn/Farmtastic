@@ -271,3 +271,4 @@ Ordre convenu : 1 mort/clignotement ✅ · 2 tente ✅ · 3 recettes (feu), baie
 - ✅ **Plan de la région illustré** : parchemin, prairie, chemins de terre, petites fermes (champ en sillons, cabane, grange), gare et rails, maisons colorées du quartier (celle de Myst sombre, en bas à gauche), toits et fontaine du centre-ville, sapins de la forêt, montagne enneigée de la caverne (cadenas tant qu'elle est fermée), étiquettes en rubans, rose des vents ; ta ferme brille en doré.
 - ✅ **Énergie** : affichée en **arc autour du bouton ✋** (vert → orange → rouge, tremblement), choisi par l'utilisateur après comparaison de 3 maquettes ; **alerte** : une petite jauge apparaît au-dessus du héros dès 30 % ou moins.
 - ✅ Pendant un dialogue (dont l'accueil de Myst et les pensées du début), le héros ne peut plus bouger (clavier, joystick ou toucher).
+- ✅ À l'arrivée, le héros reste immobile sur le quai (train, pensées, accueil de Myst) jusqu'à la fin des explications de Myst.
