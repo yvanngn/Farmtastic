@@ -165,7 +165,7 @@ test('Myst attend sur le quai, vient parler après les pensées du héros (plan,
   for (let i = 0; i < 3000 && S.intro.myst === 'leaving'; i++) placeNPC(n, S, OUT_FROM, OUT_TO);
   assert.equal(S.intro.myst, 'done'); assert.equal(n.scene, 'none');
   S.minute = 1200; placeNPC(n, S, OUT_FROM, OUT_TO); assert.equal(n.scene, 'quartier', 'il sort le soir, devant chez lui au fond du quartier');
-  assert.ok(LAY.quartier[3].slice(31, 37) === 'XXXXXX' && LAY.quartier[3][29] === 'T', 'sa maison est à l’écart, derrière une rangée d’arbres');
+  assert.ok(LAY.quartier[24].slice(3, 9) === 'XXXXXX' && LAY.quartier[20][4] === 'T', 'sa maison est tout en bas à gauche, à l’écart derrière une rangée d’arbres');
   assert.equal(MYST.look.tall && MYST.look.coat, true, 'grand, long manteau');
 });
 test('gare à l’ouest : quai, chemin vers la ferme et le village ; la villa du maire au sud de la ville', () => {
@@ -193,7 +193,7 @@ test('quartier au sud de la ferme : Luna et Franck y habitent', () => {
   registerNPC(g, LUNA); placeNPC(g.npcs.luna, S, OUT_FROM, OUT_TO);
   assert.equal(g.npcs.luna.scene, 'quartier', 'Luna sort dans le quartier');
   S.social.luna = { ...(S.social.luna || {}), points: 1250 };
-  S.x = 6.5; S.y = 7.6; assert.equal(act(g, 6, 6), 'door'); assert.equal(S.scene, 'luna');
+  S.x = 8.5; S.y = 6.6; assert.equal(act(g, 8, 5), 'door'); assert.equal(S.scene, 'luna');
   assert.equal(SCENES.franck.doors[0].to, 'quartier');
   assert.equal(SCENES.farm.doors.some(d => d.to === 'luna' || d.to === 'franck'), false, 'plus de maisons d’habitants sur la ferme');
 });

@@ -2,6 +2,7 @@
 import { EXAMINE } from '../data/examine.js';
 import { tileAt } from '../world/scenes.js';
 import { isRepaired } from './repair.js';
+import { QUARTIER } from '../world/scenes.js';
 import { isMystHouse, isStation, isHouse, isGrange, isFence, isPond, isLunaHouse, isFranckHouse, buildingAt } from '../world/map.js';
 
 export function examineText(S, tx, ty) {
@@ -22,7 +23,13 @@ export function examineText(S, tx, ty) {
     return null;
   }
   const t = tileAt(sc, tx, ty);
-  if (sc === 'quartier') return t === 'X' ? (tx >= 31 ? E.myst : tx >= 18 && tx <= 21 ? E.clinic : tx >= 24 && tx <= 27 ? E.hailey : tx <= 8 ? E.luna : S.social && S.social.franck && S.social.franck.points >= 750 ? E.franckOpen : E.franck) : t === 'T' ? K.treeTown : null;
+  if (sc === 'quartier') {
+    if (t === 'T') return K.treeTown;
+    if (t !== 'X') return null;
+    const Q = QUARTIER, inH = h => tx >= h.x && tx < h.x + h.w && ty >= h.y && ty < h.y + (h.porch ? 4 : 3);
+    if (inH(Q.myst)) return E.myst; if (inH(Q.clinique)) return E.clinic; if (inH(Q.hailey)) return E.hailey; if (inH(Q.luna)) return E.luna;
+    return S.social && S.social.franck && S.social.franck.points >= 750 ? E.franckOpen : E.franck;
+  }
   if (sc === 'town') return t === 'W' ? K.villa : t === 'T' ? K.treeTown : t === 'L' ? (S.village && S.village.done.includes('lampadaires') ? K.Lon : K.L) : K[t] || null;
   if (sc === 'wild') return t === 'T' ? K.treeWild : t === '#' ? K.rockWild : null;
   if (sc === 'grange') return t === '#' ? K.rockGrange : t === 'W' ? K.wallGrange : null;

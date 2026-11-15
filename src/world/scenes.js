@@ -129,23 +129,36 @@ function buildTown() {
 }
 LAYOUTS.town = buildTown();
 // Quartier : g herbe, . pavés, X maison (Luna x4-8, Franck x11-15, y4-6), T arbre, D sortie vers la ferme, b banc, f jardinière.
+// Quartier résidentiel (agrandi le 15/11) : une maison sur la 1re ligne (Luna), la clinique près de l'entrée,
+// deux maisons plus bas (Franck, Hailey), et tout en bas à gauche, à l'écart derrière des arbres, la vieille maison de Myst.
+// Chaque maison : x, y = coin haut-gauche, w = largeur (3 rangées), door = colonne de la porte (rangée du bas).
+export const QUARTIER = {
+  W: 40, H: 31,
+  luna: { x: 6, y: 3, w: 5, door: 8 },
+  clinique: { x: 27, y: 3, w: 4, door: 28 },
+  franck: { x: 8, y: 12, w: 5, door: 10 },
+  hailey: { x: 25, y: 12, w: 4, door: 26 },
+  myst: { x: 3, y: 23, w: 6, door: 5, porch: true },   // 3 rangées + un porche (rangée 4)
+  lot: { x: 32, y: 12 }
+};
 LAYOUTS.quartier = (() => {
-  const W = 38, H = 16, m = Array.from({ length: H }, (_, y) => Array.from({ length: W }, (_, x) => (x === 0 || x === W - 1 || y === H - 1 ? 'T' : 'g')));
-  for (let x = 1; x < W - 1; x++) { m[8][x] = '.'; m[9][x] = '.'; }   // la rue
-  for (let y = 0; y < 8; y++) m[y][22] = '.';                          // l'allée qui monte vers la ferme
-  m[0][22] = 'D'; for (const x of [6, 13]) m[7][x] = '.';              // devant les portes
-  for (let y = 4; y <= 6; y++) for (let x = 4; x <= 8; x++) m[y][x] = 'X';
-  for (let y = 4; y <= 6; y++) for (let x = 11; x <= 15; x++) m[y][x] = 'X';
-  for (let y = 4; y <= 6; y++) for (let x = 18; x <= 21; x++) m[y][x] = 'X';   // clinique
-  m[7][19] = '.';
-  for (let y = 4; y <= 6; y++) for (let x = 24; x <= 27; x++) m[y][x] = 'X';   // maison de Hailey
-  m[7][25] = '.';
-  for (const x of [2, 10, 18, 26, 34]) m[11][x] = 'T';
-  // Myst, à l'écart : une rangée d'arbres, puis sa vieille maison au fond (x31-36, y2-4, porche y5, porte x33)
-  for (let y = 1; y <= 6; y++) m[y][29] = 'T';
-  for (let y = 2; y <= 5; y++) for (let x = 31; x <= 36; x++) m[y][x] = (y === 5 && x === 33) ? '.' : 'X';
-  for (let y = 6; y <= 7; y++) m[y][33] = '.';
-  for (let x = 0; x < W; x++) if (m[0][x] === 'g' && ![4, 5, 6, 7, 8, 11, 12, 13, 14, 15, 22].includes(x)) m[0][x] = 'T';
+  const Q = QUARTIER, W = Q.W, H = Q.H, m = Array.from({ length: H }, (_, y) => Array.from({ length: W }, (_, x) => (x === 0 || x === W - 1 || y === H - 1 || y === 0 ? 'T' : 'g')));
+  for (const y of [8, 9, 17, 18]) for (let x = 1; x < W - 1; x++) m[y][x] = '.';   // deux rues
+  for (let y = 0; y < 8; y++) m[y][22] = '.'; m[0][22] = 'D';                       // l'allée qui monte vers la ferme
+  for (let y = 10; y < 17; y++) m[y][18] = '.';                                       // ruelle entre les deux rues
+  for (const id of ['luna', 'clinique', 'franck', 'hailey', 'myst']) {
+    const h = Q[id], rows = h.porch ? 4 : 3;
+    for (let y = h.y; y < h.y + rows; y++) for (let x = h.x; x < h.x + h.w; x++) m[y][x] = 'X';
+    const fy = h.y + rows; m[fy][h.door] = '.';                                       // perron devant la porte
+    if (h.porch) m[h.y + 3][h.door] = 'X';
+  }
+  m[QUARTIER.luna.y + 4][QUARTIER.luna.door] = '.'; m[QUARTIER.clinique.y + 4][QUARTIER.clinique.door] = '.';
+  m[QUARTIER.franck.y + 4][QUARTIER.franck.door] = '.'; m[QUARTIER.hailey.y + 4][QUARTIER.hailey.door] = '.';
+  // chemin de Myst : de sa porte (en bas), il longe le bas puis remonte jusqu'à la 2e rue
+  const my = Q.myst; for (let x = my.door; x <= 14; x++) m[my.y + 5][x] = '.'; for (let y = 19; y <= my.y + 5; y++) m[y][14] = '.';
+  for (let x = 1; x <= 12; x++) if (m[20][x] === 'g') m[20][x] = 'T';                 // rangée d'arbres : il vit à l'écart
+  for (let y = 21; y < H - 1; y++) for (const x of [11, 12]) if (m[y][x] === 'g') m[y][x] = 'T';
+  for (const [x, y] of [[3, 11], [15, 11], [31, 6], [36, 11], [36, 20], [24, 22], [30, 25], [20, 26]]) if (m[y][x] === 'g') m[y][x] = 'T';
   return m.map(r => r.join(''));
 })();
 // Caverne sombre, étage 1 : 5 × 3 salles de 10 × 8 séparées par des parois (T), passages de 2 cases,
@@ -210,12 +223,12 @@ export const SCENES = {
   foret: { W: 30, H: 18, outdoor: true, doors: [{ x: 0, y: 9, to: 'town', spawn: { x: 22.2, y: 10.6 } }, { x: 29, y: 9, to: 'wild', spawn: { x: 1.6, y: 4.5 } }] },
   wild: { W: 50, H: 24, dark: true, cave: true, rooms: { w: 10, h: 8 }, doors: [{ x: 0, y: 4, to: 'foret', spawn: { x: 28.2, y: 9.6 } }] },
   grange: { W: 22, H: 11, dark: true, doors: [{ x: 5, y: 6, to: 'farm', spawn: { x: 12.5, y: 5.6 } }] },
-  franck: { W: 9, H: 7, doors: [{ x: 4, y: 6, to: 'quartier', spawn: { x: 13.5, y: 7.8 } }] },
-  clinique: { W: 9, H: 7, doors: [{ x: 4, y: 6, to: 'quartier', spawn: { x: 19.5, y: 7.8 } }] },
-  hailey: { W: 9, H: 7, doors: [{ x: 4, y: 6, to: 'quartier', spawn: { x: 25.5, y: 7.8 } }] },
-  luna: { W: 9, H: 7, doors: [{ x: 4, y: 6, to: 'quartier', spawn: { x: 6.5, y: 7.8 } }] },
+  franck: { W: 9, H: 7, doors: [{ x: 4, y: 6, to: 'quartier', spawn: { x: 10.5, y: 15.8 } }] },
+  clinique: { W: 9, H: 7, doors: [{ x: 4, y: 6, to: 'quartier', spawn: { x: 28.5, y: 6.8 } }] },
+  hailey: { W: 9, H: 7, doors: [{ x: 4, y: 6, to: 'quartier', spawn: { x: 26.5, y: 15.8 } }] },
+  luna: { W: 9, H: 7, doors: [{ x: 4, y: 6, to: 'quartier', spawn: { x: 8.5, y: 6.8 } }] },
   // Quartier résidentiel, au sud de la ferme : les maisons des habitants.
-  quartier: { W: 38, H: 16, outdoor: true, doors: [{ x: 22, y: 0, to: 'farm', spawn: { x: 16.5, y: 34.4 } }, { x: 6, y: 6, to: 'luna', spawn: { x: 4.5, y: 5.4 } }, { x: 13, y: 6, to: 'franck', spawn: { x: 4.5, y: 5.4 } }, { x: 19, y: 6, to: 'clinique', spawn: { x: 4.5, y: 5.4 } }, { x: 25, y: 6, to: 'hailey', spawn: { x: 4.5, y: 5.4 } }] },
+  quartier: { W: 40, H: 31, outdoor: true, doors: [{ x: 22, y: 0, to: 'farm', spawn: { x: 16.5, y: 34.4 } }, { x: 8, y: 5, to: 'luna', spawn: { x: 4.5, y: 5.4 } }, { x: 10, y: 14, to: 'franck', spawn: { x: 4.5, y: 5.4 } }, { x: 28, y: 5, to: 'clinique', spawn: { x: 4.5, y: 5.4 } }, { x: 26, y: 14, to: 'hailey', spawn: { x: 4.5, y: 5.4 } }] },
   pigsty: { W: 10, H: 7, doors: [{ x: 4, y: 6, to: 'farm', spawn: { x: 20.5, y: 8.9 } }] },
   barn: { W: 12, H: 8, doors: [{ x: 5, y: 7, to: 'farm', spawn: { x: 28.5, y: 8.9 } }] }
 };

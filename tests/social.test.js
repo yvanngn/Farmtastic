@@ -105,8 +105,8 @@ test('Luna : dehors le jour devant sa maison (quartier), chez elle le soir ; sa 
   assert.equal(g.npcs.luna.scene, 'quartier');
   S.minute = 1200; placeNPC(g.npcs.luna, S, OUT_FROM, OUT_TO);
   assert.equal(g.npcs.luna.scene, 'luna');
-  assert.equal(isSolid(S, 5, 5), true);
-  S.minute = 600; S.social.luna.points = 1250; assert.equal(act(g, 6, 6), 'door');
+  assert.equal(isSolid(S, 7, 4), true);
+  S.minute = 600; S.social.luna.points = 1250; assert.equal(act(g, 8, 5), 'door');
   assert.equal(S.scene, 'luna');
 });
 
@@ -139,8 +139,8 @@ test('Franck ne parle jamais de son traumatisme ; la quête avance avec la confi
 
 test('maison de Franck à côté de celle de Luna, on y entre par sa porte', () => {
   const { g, S } = makeGame({ state: { minute: 600, scene: 'quartier' } });
-  assert.equal(isSolid(S, 12, 5), true);
-  S.social.franck = { points: 1250 }; assert.equal(act(g, 13, 6), 'door');
+  assert.equal(isSolid(S, 9, 13), true);
+  S.social.franck = { points: 1250 }; assert.equal(act(g, 10, 14), 'door');
   assert.equal(S.scene, 'franck');
 });
 
@@ -172,8 +172,8 @@ test('maisons des habitants : on frappe tant qu’on n’a pas 5 cœurs ; s’il
   const { g, S } = makeGame({ state: { minute: 600, scene: 'quartier' } });
   reg(g, FRANCK); placeNPC(g.npcs.franck, S, OUT_FROM, OUT_TO);
   const said = []; g.bus.on('say', d => said.push(d));
-  assert.equal(act(g, 13, 6), 'knock'); assert.equal(S.scene, 'quartier', 'la porte reste fermée');
+  assert.equal(act(g, 10, 14), 'knock'); assert.equal(S.scene, 'quartier', 'la porte reste fermée');
   assert.equal(said.length, 1, 'Franck parle à la porte');
   S.social.franck.points = 5 * 250; g.knockT = -1e9;
-  assert.equal(act(g, 13, 6), 'door'); assert.equal(S.scene, 'franck');
+  assert.equal(act(g, 10, 14), 'door'); assert.equal(S.scene, 'franck');
 });

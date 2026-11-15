@@ -1,4 +1,5 @@
 import { getZoom } from '../ui/settingsPanel.js';
+import { QUARTIER } from '../world/scenes.js';
 // Caverne : la lumière du jour entre par la sortie ; quelques cristaux luisent.
 const CAVE_LIGHTS = [{ x: 8, y: 72, r: 60 }, { x: 25 * 16, y: 12 * 16, r: 18 }, { x: 44 * 16, y: 20 * 16, r: 18 }];
 import { toolTier } from '../systems/skills.js';
@@ -231,8 +232,8 @@ export function createRenderer(cv, g) {
       for (const s2 of g.shots || []) list.push({ z: s2.y, d: () => { ctx.fillStyle = '#3a2020'; ctx.fillRect(Math.round(s2.x * T) - 2, Math.round(s2.y * T) - 2, 4, 4); ctx.fillStyle = '#e0a060'; ctx.fillRect(Math.round(s2.x * T) - 1, Math.round(s2.y * T) - 1, 2, 2); } });
     }
     if (scene === 'quartier') { // volets de Franck : fermés tant qu'il n'a pas 3 cœurs
-      const r = S.social && S.social.franck, open = r && r.points >= 750, wx = 11 * T + 6, wy = 4 * T + 12;
-      list.push({ z: 6.95, d: () => {
+      const r = S.social && S.social.franck, open = r && r.points >= 750, wx = (QUARTIER.franck.x - 25 + 25) * T + 6, wy = QUARTIER.franck.y * T + 12;
+      list.push({ z: QUARTIER.franck.y + 2.95, d: () => {
         if (open) { ctx.fillStyle = '#ffd98a'; ctx.fillRect(wx + 2, wy + 2, 10, 8); ctx.fillStyle = '#3e5a7a'; ctx.fillRect(wx - 5, wy, 5, 12); ctx.fillRect(wx + 14, wy, 5, 12); }
         else { ctx.fillStyle = '#3e5a7a'; ctx.fillRect(wx, wy, 14, 12); ctx.fillStyle = '#2a4058'; for (let k = 2; k < 12; k += 3) ctx.fillRect(wx, wy + k, 14, 1); ctx.fillRect(wx + 7, wy, 1, 12); }
       } });

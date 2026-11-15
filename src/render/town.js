@@ -1,7 +1,7 @@
 // Centre du village pré-rendu : place pavée, halle du marché, panneau d'affichage,
 // fontaine, lampadaires, bancs, jardinières et arbres. Reconstruit à chaque saison.
 import { CFG } from '../config.js';
-import { LAYOUTS } from '../world/scenes.js';
+import { LAYOUTS, QUARTIER } from '../world/scenes.js';
 import { rng } from '../world/map.js';
 import { shade, disc } from './pixel.js';
 import { GRASS, drawLunaHouse, drawFranckHouse, drawMystHouse } from './ground.js';
@@ -170,14 +170,20 @@ export function buildQuartier(season) {
     if (r() < .06) { const col = ['#ffffff', '#f5e050', '#f07ab0'][r() * 3 | 0]; R(px + 7, py + 7, 3, 1, col); R(px + 8, py + 6, 1, 3, col); }
   }
   // haies et boîtes aux lettres devant chaque maison, bordure de trottoir
-  R(T, 8 * T - 1, (W - 2) * T, 2, '#8f887f'); R(T, 10 * T - 1, (W - 2) * T, 2, '#8f887f');
+  for (const yy of [8, 17]) { R(T, yy * T - 1, (W - 2) * T, 2, '#8f887f'); R(T, (yy + 2) * T - 1, (W - 2) * T, 2, '#8f887f'); }
   const shift = (dx, dy) => (x, y, w, h, col) => R(x + dx, y + dy, w, h, col);
-  drawLunaHouse(shift(-14 * T, -25 * T));
-  drawFranckHouse(shift(-14 * T, -25 * T));
-  drawMystHouse(shift(-9 * T, 1 * T));   // la maison de Myst, au fond, derrière les arbres
+  const Q = QUARTIER;
+  drawLunaHouse(shift((Q.luna.x - 18) * T, (Q.luna.y - 29) * T));
+  drawFranckHouse(shift((Q.franck.x - 25) * T, (Q.franck.y - 29) * T));
+  drawMystHouse(shift((Q.myst.x - 40) * T, (Q.myst.y - 1) * T));   // la maison de Myst, tout en bas à gauche, derrière les arbres
+  // pancartes : qui habite là (à côté du perron)
+  for (const [id, name] of [['luna', 'LUNA'], ['franck', 'FRANCK'], ['hailey', 'HAILEY'], ['myst', 'MYST']]) {
+    const h = Q[id], rows = h.porch ? 4 : 3, sx = (h.door + 1) * T + 10, sy = (h.y + rows) * T + 2;
+    R(sx - 1, sy + 4, 2, 10, '#5b3a22'); signBoard(R, sx, sy - 4, name);
+  }
   // terrains libres pour de futurs habitants (piquets + panneau)
   { // clinique (x18-21, y4-6) : murs blancs, croix verte, auvent turquoise, porte vitrée (x19)
-    const x0 = 18 * T, y0 = 4 * T, w = 4 * T;
+    const x0 = QUARTIER.clinique.x * T, y0 = QUARTIER.clinique.y * T, w = 4 * T;
     R(x0 + 1, y0 - 6, w - 2, 3 * T + 6, '#f4f6f2'); for (let k = 0; k < 3 * T; k += 6) R(x0 + 1, y0 - 6 + k, w - 2, 1, '#e2e6e0');
     for (let i = 0; i < 5; i++) R(x0 - 3 + i, y0 - 14 + i * 2, w + 6 - i * 2, 2, i % 2 ? '#4a8a84' : '#5aa8a0');
     R(x0 - 3, y0 - 5, w + 6, 2, '#2e5a56');
@@ -188,7 +194,7 @@ export function buildQuartier(season) {
     signBoard(R, x0 + w / 2, y0 - 26, 'CLINIQUE');
   }
   { // maison de Hailey (x24-27, y4-6) : petite maison rose pâle, toit turquoise, jardinière, porte x25
-    const x0 = 24 * T, y0 = 4 * T, w = 4 * T;
+    const x0 = QUARTIER.hailey.x * T, y0 = QUARTIER.hailey.y * T, w = 4 * T;
     R(x0 + 2, y0 - 4, w - 4, 3 * T + 4, '#f2dce0'); for (let k = 0; k < 3 * T; k += 5) R(x0 + 2, y0 - 4 + k, w - 4, 1, '#e4c8ce');
     for (let i = 0; i < 9; i++) R(x0 - 3 + (8 - i) * 2, y0 - 22 + i * 2, w + 6 - (8 - i) * 4, 2, i % 2 ? '#4a8a84' : '#5aa8a0');
     R(x0 - 4, y0 - 5, w + 8, 3, '#2e5a56');
@@ -196,9 +202,10 @@ export function buildQuartier(season) {
     for (const wx of [x0 + 6, x0 + w - 18]) { R(wx, y0 + 8, 12, 11, '#6a4a3e'); R(wx + 1, y0 + 9, 10, 9, '#bfe3f5'); R(wx + 5, y0 + 9, 1, 9, '#6a4a3e'); R(wx - 1, y0 + 19, 14, 3, '#8a5a32'); R(wx, y0 + 17, 3, 2, '#f07ab0'); R(wx + 5, y0 + 17, 3, 2, '#f6d24a'); R(wx + 9, y0 + 17, 3, 2, '#f07ab0'); }
     R(x0 + T, y0 + 3 * T - 1, 16, 3, '#c2bdb4');
   }
+  { const x0 = QUARTIER.lot.x * T, y0 = QUARTIER.lot.y * T; R(x0, y0, 4 * T, 3 * T, 'rgba(120,84,48,.18)'); for (const px of [x0, x0 + 4 * T - 2]) R(px, y0, 2, 8, '#8a5a32'); R(x0 + 2 * T - 1, y0 + T, 2, 12, '#5b3a22'); R(x0 + 2 * T - 9, y0 + T - 6, 18, 9, '#3f2615'); R(x0 + 2 * T - 8, y0 + T - 5, 16, 7, '#e8c26a'); }
   for (const x0 of []) { R(x0, 4 * T, 4 * T, 3 * T, 'rgba(120,84,48,.18)'); for (const px of [x0, x0 + 4 * T - 2]) R(px, 4 * T, 2, 8, '#8a5a32'); R(x0 + 2 * T - 1, 5 * T, 2, 12, '#5b3a22'); R(x0 + 2 * T - 9, 5 * T - 6, 18, 9, '#3f2615'); R(x0 + 2 * T - 8, 5 * T - 5, 16, 7, '#e8c26a'); }
   // bancs et lampadaires le long de la rue
-  for (const x of [3 * T, 20 * T]) { R(x, 10 * T + 6, 22, 3, '#8a5a32'); R(x, 10 * T + 6, 22, 1, '#c99560'); R(x + 1, 10 * T + 9, 2, 3, '#5b3a22'); R(x + 19, 10 * T + 9, 2, 3, '#5b3a22'); }
+  for (const [x, yb] of [[3 * T, 10], [33 * T, 10], [20 * T, 19], [28 * T, 19]]) { const by = yb * T; R(x, by + 6, 22, 3, '#8a5a32'); R(x, by + 6, 22, 1, '#c99560'); R(x + 1, by + 9, 2, 3, '#5b3a22'); R(x + 19, by + 9, 2, 3, '#5b3a22'); } for (const x of []) { R(x, 10 * T + 6, 22, 3, '#8a5a32'); R(x, 10 * T + 6, 22, 1, '#c99560'); R(x + 1, 10 * T + 9, 2, 3, '#5b3a22'); R(x + 19, 10 * T + 9, 2, 3, '#5b3a22'); }
   for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) if (L[y][x] === 'T') g.drawImage(treeSprite(season, (x + y) % 4), x * T - 9, y * T - 28);
   return c;
 }
