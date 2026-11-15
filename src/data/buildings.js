@@ -6,3 +6,6 @@ export const BUILDINGS = {
   barn: { n: 'Bergerie', un: 'une bergerie', plein: 'Bergerie complète', i: '🐑', x0: 27, x1: 30, cost: { money: 8000, wood: 80, stone: 30 }, cap: 6, for: 'moutons', door: true }
 };
 export const BUILD_Y0 = 6, BUILD_Y1 = 7;
+
+// Établi de la maison : cassé au début, le charpentier le répare (💡 coût proposé par Claude).
+export const WORKBENCH = { n: "Réparer l'établi", i: '🛠️', cost: { money: 800, wood: 20, stone: 5 } };

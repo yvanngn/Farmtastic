@@ -37,7 +37,7 @@ Règle des dialogues : répliques débloquées par paliers d'amitié ; Claude li
 Mots de l'utilisateur, à respecter tels quels :
 - **Zone de combat à explorer** (✅ lot 10, 15/11/2026 ; bouclier ⏳) : un endroit séparé pour les combats, façon **Zelda sur Game Boy**. Mobs : **slime bleu, slime vert, cochon qui tire**. **Bouclier** envisagé plus tard. L'accès n'est **pas ouvert au début**.
 - **Cailloux de la zone de combat** (✅ lot 10) : 3 types ; le type 2 est rare, le type 3 encore plus. Chaque caillou a de **très faibles chances** de donner un minerai rare, plus souvent sur le type 2 et encore plus sur le type 3. Minerais pour l'instant : **rubis** et **émeraude**.
-- **Atelier de fabrication à la maison** (⏳), à débloquer plus tard.
+- **Atelier de fabrication à la maison** (✅ lot 12, 15/11/2026), à débloquer plus tard.
 - **Franck** (✅ lot 11, 15/11/2026 ; objet final ⏳), nouveau voisin de Luna. Timide, il sort peu. Une des **quêtes principales** sera de l'aider à sortir. Il a vécu un **traumatisme quand il était jeune**, dont il ne veut pas parler : **on ne le saura jamais**, on laisse l'imagination au joueur, mais ça a forgé son caractère. Depuis, il laisse passer le temps, comme si rien ne l'animait. Un jour, on lui **fabriquera un objet** qui l'animera et le **changera radicalement**.
 - **Début de partie** (✅ lot 8, 15/11/2026 — voir § 4) :
   - on n'a **aucun outil** ;
@@ -101,6 +101,7 @@ Mots de l'utilisateur, à respecter tels quels :
   3. les volets (3 cœurs) ;
   4. il se confie (4 cœurs) ;
   5. lui fabriquer l'objet qui l'animera (⏳ objet à définir par l'utilisateur).
+- **Établi de la maison (lot 12)** : il est dans un coin de la maison, mais **cassé au départ** (« Un vieil établi tout branlant… le charpentier pourrait le réparer »). Le **charpentier** le répare pour 800 🪙, 20 🪵 et 5 🪨. Ensuite, on y fabrique (clôture, foin, potion…). L'onglet « Atelier » a disparu du menu : on ne fabrique plus qu'à la maison. C'est là qu'on fabriquera l'objet de Franck. Une ancienne sauvegarde garde son établi réparé.
 - **Plus de slimes la nuit sur la ferme.** L'épée n'est plus donnée au départ.
 - Une ancienne sauvegarde garde ses outils et ne revoit pas l'accueil.
 - **Départ d'une nouvelle partie** : seules les graines de blé, les poules et le chat sont disponibles ; tout le reste vient de la caravane. Une ancienne sauvegarde garde tout débloqué.
@@ -201,6 +202,7 @@ Goûts de Franck (💡) : adore le croissant ; aime le pain, les œufs et le boi
 ## 6. Idées de Claude (💡 à valider)
 - Sous-titre de l'écran titre : « ✦ une ferme à partager ✦ » (déjà affiché, à garder ou retirer).
 - **Goûts de Luna** (tirés de sa personnalité : ancienne informaticienne, rêve de ferme, budget serré, retape sa maison) : adore les graines de carotte et de blé ; aime le pain, le croissant et le bois ; n'aime pas la pierre ni le foin ; déteste la gelée. Il n'existe pas encore de fleurs ni de bijoux à offrir.
+- **Lot 12** : réparation de l'établi par le charpentier, et son prix.
 - **Lot 10** : le nom « Terres sauvages », l'ouverture par le premier chantier, les points de vie, dégâts et vitesses des monstres, le cochon au lance-pierre qui laisse de l'argent, les pourcentages de minerai, le nombre de salles.
 - **Lot 9** : temps de pousse et rendement du foin, prix des graines, bêchage limité au champ devant la maison.
 - **Lot 7** : noms et objectifs des chantiers, primes, nom des fêtes, coûts en jetons de la caravane, poids de chaque famille de demandes.

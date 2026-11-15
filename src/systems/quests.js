@@ -9,7 +9,7 @@ export const QUESTS = {
       { id: 'confiance', t: 'Gagner sa confiance (2 cœurs) : il sortira un peu le soir', done: S => hearts(S.social.franck || { points: 0 }) >= 2 },
       { id: 'volets', t: 'Qu\'il ouvre ses volets (3 cœurs)', done: S => hearts(S.social.franck || { points: 0 }) >= 3 },
       { id: 'confie', t: 'Qu\'il se confie un peu (4 cœurs)', done: S => hearts(S.social.franck || { points: 0 }) >= 4 },
-      { id: 'objet', t: "Lui fabriquer l'objet qui l'animera (atelier à débloquer)", done: S => !!S.quests?.franck?.objet, locked: true }
+      { id: 'objet', t: "Lui fabriquer l'objet qui l'animera, à l'établi de la maison (objet à venir)", done: S => !!S.quests?.franck?.objet, locked: true }
     ]
   }
 };

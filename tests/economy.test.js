@@ -131,3 +131,23 @@ test('bâtiments : prix doublés et un intérieur avec mangeoire pour chacun', (
   act(g, 4, 6); assert.equal(S.scene, 'farm');
   act(g, 28, 7); assert.equal(S.scene, 'barn');
 });
+
+// ---- Lot 12 : établi de la maison ----
+import { repairBench, canRepairBench } from '../src/systems/economy.js';
+
+test('établi : cassé au départ, réparé par le charpentier, puis on fabrique à la maison', () => {
+  assert.equal(defaultState().workbench, false);
+  const { g, S, toasts } = makeGame({ state: { workbench: false, money: 1000, inv: { wood: 22, stone: 5 }, scene: 'house' } });
+  const i = RECIPES.findIndex(r => r.out === 'fence');
+  assert.equal(craft(g, i), false, 'pas d’établi');
+  assert.equal(act(g, 9, 7), 'broken');
+  assert.match(toasts().at(-1), /charpentier/);
+  assert.equal(repairBench(g), true);
+  assert.deepEqual([S.money, S.inv.wood, S.inv.stone], [200, 2, undefined]);
+  assert.equal(canRepairBench(S).why, 'built');
+  const opened = []; g.bus.on('open', w => opened.push(w));
+  assert.equal(act(g, 9, 7), 'workshop');
+  assert.deepEqual(opened, ['workshop']);
+  assert.equal(craft(g, i), true);
+  assert.equal(migrate({ name: 'x' }).workbench, true, 'ancienne partie : établi déjà là');
+});

@@ -15,7 +15,7 @@ const THEME = {
   barn: { floor: '#d4b870', seam: '#b0944c', wall: '#b8452f', wallD: '#93321f', trim: '#f0e6d0', beam: '#4a2c18' }
 };
 
-export function buildInterior(name) {
+export function buildInterior(name, S = {}) {
   const L = LAYOUTS[name], { W, H } = SCENES[name], th = THEME[name];
   const c = document.createElement('canvas'); c.width = W * T; c.height = H * T;
   const g = c.getContext('2d'), r = rng(7);
@@ -66,6 +66,13 @@ export function buildInterior(name) {
     P: ([x, y, w, h]) => { R(x + 4, y + 9, 8, 7, '#b0603a'); R(x + 4, y + 9, 8, 2, '#c97a4f'); disc(g, x + 8, y + 5, 5, '#3e8a34'); disc(g, x + 6, y + 4, 2, '#6bb33f'); },
     C: ([x, y, w, h]) => { R(x + 1, y + 4, w - 2, h - 5, '#8a5a32'); R(x + 1, y + 4, w - 2, 4, '#b07a48'); R(x + 1, y + 8, w - 2, 1, '#e8c26a'); R(x + 7, y + 7, 2, 3, '#e8c26a'); },
     H: ([x, y, w, h]) => { R(x, y + 4, w, h - 6, '#6b4226'); R(x + 1, y + 5, w - 2, 5, '#e3c45e'); for (let k = x + 2; k < x + w - 2; k += 3) R(k, y + 4, 1, 2, '#f2d77a'); R(x, y + h - 3, w, 1, '#4a2c18'); },
+    E: ([x, y, w, h]) => { // établi : cassé (planche tombée) tant qu'il n'est pas réparé
+      const ok = S.workbench;
+      R(x + 1, y + 4, w - 2, 4, ok ? '#a8774a' : '#8a6a4a'); R(x + 1, y + 4, w - 2, 1, ok ? '#c99560' : '#9a7a5a');
+      R(x + 3, y + 8, 2, h - 9, '#5b3a22'); R(x + w - 5, y + 8, 2, ok ? h - 9 : h - 13, '#5b3a22');
+      if (ok) { R(x + 6, y + 1, 6, 3, '#9aa0a8'); R(x + 14, y + 2, 2, 2, '#e8c26a'); R(x + w - 10, y, 3, 4, '#7a4f2e'); }
+      else { R(x + w - 12, y + h - 4, 10, 2, '#7a5a3a'); R(x + 8, y + 6, 3, 1, '#3a2a20'); }
+    },
     A: ([x, y, w, h]) => { R(x + 4, y + 2, w - 8, h - 6, '#5a6a7a'); R(x + 2, y + 6, 4, h - 8, '#4a5866'); R(x + w - 6, y + 6, 4, h - 8, '#4a5866'); R(x + 6, y + 8, w - 12, 6, '#6e7e8e'); R(x + 5, y + h - 4, 2, 4, '#3a2a20'); R(x + w - 7, y + h - 4, 2, 4, '#3a2a20'); },
     X: () => { for (const [cx, cy, s2] of [[1, 2, 13], [2, 2, 11], [1, 3, 12]]) { const x = cx * T + 1, y = cy * T + 2; R(x, y, s2, s2 - 2, '#b8875a'); R(x, y, s2, 3, '#d4a878'); R(x + s2 / 2 - 1, y, 2, s2 - 2, '#e8dcc0'); R(x, y + s2 - 3, s2, 1, '#8a5a32'); } },
     G: ([x, y, w, h]) => { R(x + 2, y + 2, w - 4, h - 4, '#6e4a2e'); R(x + 4, y + 4, w - 8, h - 8, '#7d5636'); for (const [a, b] of [[6, 6], [w - 14, 9], [12, h - 10]]) { R(x + a, y + b, 6, 2, '#8f6642'); R(x + a + 1, y + b, 3, 1, '#a07650'); } },

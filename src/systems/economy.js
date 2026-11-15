@@ -2,7 +2,7 @@
 import { ITEMS } from '../data/items.js';
 import { ANIMALS } from '../data/animals.js';
 import { RECIPES } from '../data/recipes.js';
-import { BUILDINGS } from '../data/buildings.js';
+import { BUILDINGS, WORKBENCH } from '../data/buildings.js';
 import { isUnlocked } from './market.js';
 import { add, has, slots, canAdd, stackSize, STACKS } from './inventory.js';
 import { CFG } from '../config.js';
@@ -74,6 +74,25 @@ export function build(g, id) {
   return true;
 }
 export const homeCount = (S, home) => S.animals.filter(a => ANIMALS[a.type] && ANIMALS[a.type].home === home).length;
+// Établi : le charpentier le répare, puis on fabrique à la maison.
+export function canRepairBench(S) {
+  if (S.workbench) return { ok: false, why: 'built' };
+  const c = WORKBENCH.cost;
+  if (S.money < c.money) return { ok: false, why: 'money' };
+  if (!has(S, 'wood', c.wood)) return { ok: false, why: 'wood' };
+  if (!has(S, 'stone', c.stone)) return { ok: false, why: 'stone' };
+  return { ok: true };
+}
+export function repairBench(g) {
+  const S = g.S;
+  if (!canRepairBench(S).ok) { g.bus.emit('sfx', 'denied'); return false; }
+  const c = WORKBENCH.cost;
+  S.money -= c.money; add(g, 'wood', -c.wood); add(g, 'stone', -c.stone);
+  S.workbench = true;
+  g.bus.emit('sfx', 'craft'); g.bus.emit('toast', "L'établi de la maison est réparé ! 🛠️");
+  return true;
+}
+
 // Marchand d'animaux : il faut le bon bâtiment, avec de la place.
 export function canBuyAnimal(S, type) {
   const def = ANIMALS[type];
@@ -101,7 +120,7 @@ export const canCraft = (S, r) => Object.entries(r.in).every(([k, n]) => has(S, 
 
 export function craft(g, index) {
   const r = RECIPES[index];
-  if (!r || !canCraft(g.S, r)) return false;
+  if (!g.S.workbench || !r || !canCraft(g.S, r)) return false; // on fabrique seulement à l'établi réparé
   for (const [k, n] of Object.entries(r.in)) add(g, k, -n);
   add(g, r.out, r.q);
   g.bus.emit('sfx', 'craft');

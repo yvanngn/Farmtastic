@@ -11,6 +11,8 @@ import { BUILDINGS } from '../data/buildings.js';
 import { SHOPS } from '../data/shops.js';
 import { QUESTS, questProgress } from '../systems/quests.js';
 import { isUnlocked } from '../systems/market.js';
+import { canRepairBench, repairBench } from '../systems/economy.js';
+import { WORKBENCH } from '../data/buildings.js';
 import { build, canBuild, canBuyAnimal, homeCount, buy, buyAnimal, buyBag, bagCost, buyStack, stackCost, STACKS, canCraft, craft } from '../systems/economy.js';
 import { consume } from '../systems/player.js';
 import { hearts, POINTS_PER_HEART, DEGREES, DEGREE_NAMES, tasteOf } from '../systems/social.js';
@@ -18,8 +20,8 @@ import { ITEMS as ALL_ITEMS } from '../data/items.js';
 import { slots, usedSlots, stackSize } from '../systems/inventory.js';
 import { canUpgrade, upgradeTool, miningLevel, nextXp, toolTier, hasTool } from '../systems/skills.js';
 
-const TABS = { sac: 'Sac', quests: 'Quêtes', craft: 'Atelier', forge: 'Forge', social: 'Liens' };
-const TITLES = { market: '🏪 Marché', upgrades: '🧰 Magasin d\'amélioration', carpenter: '🪚 Charpentier', animals: '🐾 Marchand d\'animaux', bakery: '🥖 Boulangerie', butcher: '🥩 Boucherie', fishmonger: '🐟 Poissonnerie' };
+const TABS = { sac: 'Sac', quests: 'Quêtes', forge: 'Forge', social: 'Liens' };
+const TITLES = { market: '🏪 Marché', upgrades: '🧰 Magasin d\'amélioration', carpenter: '🪚 Charpentier', workshop: '🛠️ Établi', animals: '🐾 Marchand d\'animaux', bakery: '🥖 Boulangerie', butcher: '🥩 Boucherie', fishmonger: '🐟 Poissonnerie' };
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 const it = id => ITEMS[id] || { n: id, i: '❔', p: 0 };
 
@@ -38,6 +40,7 @@ export function createMenu(g, opts) {
       const ids = Object.keys(S.inv);
       return `<p class="info">${usedSlots(S)}/${slots(S)} cases utilisées · ${stackSize(S)} objets max par case</p>` + (ids.length ? '<div class="grid">' + ids.map(id => card(`<div class="t">${it(id).i} <b>${it(id).n}</b></div><div>×${S.inv[id]} · ${Math.ceil(S.inv[id] / stackSize(S))} case(s) · ${it(id).p}🪙/u</div>${it(id).eat ? `<button data-use="${id}">Utiliser</button>` : ''}`)).join('') + '</div>' : 'Sac vide.');
     },
+    workshop(S) { return '<p class="info">Ton établi, à la maison. D\'autres plans viendront plus tard.</p>' + views.craft(S); },
     craft(S) {
       return '<div class="grid">' + RECIPES.map((r, i) => card(`<div class="t">${it(r.out).i} <b>${it(r.out).n}</b> ×${r.q}</div><div>${Object.entries(r.in).map(([k, n]) => `${it(k).i}${n} <small>(${S.inv[k] || 0})</small>`).join(' ')}</div><button data-craft="${i}" ${canCraft(S, r) ? '' : 'disabled'}>Fabriquer</button>`)).join('') + '</div>';
     },
@@ -58,7 +61,11 @@ export function createMenu(g, opts) {
         return card(`<div class="t">${b.i} <b>${b.n}</b></div><div>Pour les ${b.for} · ${b.cap} places</div>`
           + (S.built && S.built[id] ? '<div>Construit ✔</div>'
             : `<div>${c.money} 🪙 · ${c.wood} 🪵 <small>(${S.inv.wood || 0})</small> · ${c.stone} 🪨 <small>(${S.inv.stone || 0})</small></div><button data-build="${id}" ${r.ok ? '' : 'disabled'}>Construire</button>${r.ok ? '' : `<small>${why[r.why] || ''}</small>`}`));
-      }).join('') + '</div>';
+      }).join('') + (() => {
+        const r = canRepairBench(S), c = WORKBENCH.cost;
+        return card(`<div class="t">${WORKBENCH.i} <b>${WORKBENCH.n}</b></div><div>L'établi de ta maison, pour fabriquer des objets</div>`
+          + (S.workbench ? '<div>Réparé ✔</div>' : `<div>${c.money} 🪙 · ${c.wood} 🪵 · ${c.stone} 🪨</div><button data-bench="1" ${r.ok ? '' : 'disabled'}>Réparer</button>${r.ok ? '' : `<small>${why[r.why] || ''}</small>`}`));
+      })() + '</div>';
     },
     animals(S) {
       return shopGrid(S, 'feed') + '<h3>🐾 Animaux</h3><div class="grid">' + Object.entries(ANIMALS).filter(([id]) => isUnlocked(S, id)).map(([id, a]) => {
@@ -136,7 +143,7 @@ export function createMenu(g, opts) {
 
   const handlers = {
     use: id => consume(g, id), craft: i => craft(g, +i), buy: id => buy(g, id), buy5: id => buy(g, id, 5), animal: id => buyAnimal(g, id),
-    bag: () => buyBag(g), build: id => build(g, id), stack: () => buyStack(g), up: id => upgradeTool(g, id)
+    bag: () => buyBag(g), bench: () => repairBench(g), build: id => build(g, id), stack: () => buyStack(g), up: id => upgradeTool(g, id)
   };
   function render() {
     $('#tabs').innerHTML = Object.entries(TABS).map(([k, v]) => `<button data-t="${k}" class="${k === tab ? 'on' : ''}">${v}</button>`).join('');

@@ -19,6 +19,7 @@ export function defaultState() {
     tools: {},                       // aucun outil au départ : ils sont dans la grange
     intro: { met: false },
     tilled: {},
+    workbench: false,                // établi de la maison, à faire réparer par le charpentier
     wildOpen: false, wild: null,     // Terres sauvages (zone de combat), fermées au début                      // cases du champ bêchées (à la pelle)           // accueil du chef du village
     grange: { found: [], broken: [] },
     market: { slots: [] }
@@ -34,6 +35,7 @@ export function migrate(raw) {
   // Avant le lot 8, on avait tous les outils et pas d'accueil : on garde ça pour les anciennes parties.
   s.tools = raw.tools ? { ...raw.tools } : { axe: 1, pick: 1, sickle: 1, sword: 1 };
   if (!raw.intro) s.intro = { met: true };
+  if (raw.workbench === undefined) s.workbench = true; // avant le lot 12, on fabriquait déjà
   // Avant le lot 9, tout le champ était déjà prêt.
   if (!raw.tilled) { s.tilled = {}; for (let y = 8; y <= 13; y++) for (let x = 4; x <= 13; x++) s.tilled[x + ',' + y] = 1; }
   if (!raw.grange) s.grange = { found: Object.keys(s.tools), broken: [] };

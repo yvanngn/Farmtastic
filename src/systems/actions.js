@@ -57,7 +57,11 @@ export function act(g, tx, ty) {
   if (sc === 'grange') { const r = grangeAction(g, tx, ty); if (r !== 'none') return r; }
   if (sc === 'wild') return S.wild && S.wild.rocks[key(tx, ty)] ? (hitZRock(g, tx, ty) ? 'hit' : 'none') : 'none';
   if (sc === 'town') { const ui = UI_TILES[tileAt(sc, tx, ty)]; if (ui) { g.bus.emit('sfx', 'ui'); g.bus.emit('open', ui); return ui; } return 'none'; }
-  if (sc === 'house') return tileAt(sc, tx, ty) === 'B' ? (sleep(g) ? 'sleep' : 'none') : 'none';
+  if (sc === 'house') {
+    const t = tileAt(sc, tx, ty);
+    if (t === 'E') { if (S.workbench) { g.bus.emit('sfx', 'ui'); g.bus.emit('open', 'workshop'); return 'workshop'; } g.bus.emit('sfx', 'denied'); g.bus.emit('toast', 'Un vieil établi tout branlant… Le charpentier du village pourrait le réparer.'); return 'broken'; }
+    return t === 'B' ? (sleep(g) ? 'sleep' : 'none') : 'none';
+  }
   if (BUILDINGS[sc]) return tileAt(sc, tx, ty) === 'H' ? (feedAll(g, sc) ? 'feedAll' : 'none') : 'none';
   if (isBin(tx, ty)) { sellAll(g); return 'sell'; }
   if (S.objs[key(tx, ty)]) return hitObject(g, tx, ty) ? 'hit' : 'none';

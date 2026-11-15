@@ -115,8 +115,9 @@ export function createRenderer(cv, g) {
   function render(now) {
     const S = g.S;
     const scene = S.scene || 'farm', outside = scene === 'farm', sky = outside || !!SCENES[scene].outdoor, SC = SCENES[scene];
+    if (scene === 'house' && cacheScene === 'house' && cache !== interiors['house' + !!S.workbench]) cacheScene = ''; // établi réparé
     if (cacheSeason !== S.season || cacheScene !== scene) {
-      cache = outside ? farmGround() : scene === 'wild' ? (interiors['wild' + S.season] ||= buildWild(S.season)) : scene === 'town' ? (interiors['town' + S.season] ||= buildTown(S.season)) : (interiors[scene] ||= buildInterior(scene));
+      cache = outside ? farmGround() : scene === 'wild' ? (interiors['wild' + S.season] ||= buildWild(S.season)) : scene === 'town' ? (interiors['town' + S.season] ||= buildTown(S.season)) : (scene === 'house' ? (interiors['house' + !!S.workbench] ||= buildInterior(scene, S)) : (interiors[scene] ||= buildInterior(scene, S)));
       if (cacheSeason !== S.season) initWeather();
       cacheSeason = S.season; cacheScene = scene;
     }
