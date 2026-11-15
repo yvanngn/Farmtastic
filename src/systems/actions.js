@@ -10,6 +10,7 @@ import { ITEMS } from '../data/items.js';
 import { BUILDINGS } from '../data/buildings.js';
 import { hasTool } from './skills.js';
 import { grangeAction } from './grange.js';
+import { examineText } from './examine.js';
 import { hitZRock, isOpen } from './wild.js';
 import { findNPCAt, talk, gift } from './social.js';
 import { add } from './inventory.js';
@@ -43,7 +44,16 @@ export function enterScene(g, to, spawn) {
   g.bus.emit('scene', to);
 }
 
+// Action + commentaire du héros quand on interagit avec un élément du décor qu'on ne peut pas prendre.
 export function act(g, tx, ty) {
+  const r = act0(g, tx, ty);
+  if (r === 'none' || r === false) {
+    const t = examineText(g.S, tx, ty);
+    if (t) { g.bus.emit('say', { name: g.S.name, color: '#ffdf8a', lines: [t] }); return 'look'; }
+  }
+  return r;
+}
+function act0(g, tx, ty) {
   const S = g.S, sc = S.scene || 'farm';
   // un habitant : objet en main = cadeau, sinon discussion
   const npc = findNPCAt(g, tx, ty);

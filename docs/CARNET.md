@@ -107,6 +107,11 @@ Mots de l'utilisateur, à respecter tels quels :
 - **Manuel** est le nom du chef du village. Ses répliques d'histoire glissent des indices discrets (« surtout le jour », « séminaire », « bronzage », « frais de représentation ») 💡 en vue de la future enquête.
 - **Objets au sol** (15/11) : ce qui ne rentre pas dans le sac tombe au sol, au lieu d'être perdu. On le ramasse en passant dessus. Si le sac est plein, une bulle propose d'**échanger une case du sac** contre l'objet au sol (« Poser 🪨 Pierre (×10) »), ou de le laisser.
 - **Relecture des dialogues** : `docs/DIALOGUES.md` liste toutes les répliques, avec 🆕 sur celles pas encore validées ; dès 100 🆕, le fichier part en relecture chez l'utilisateur.
+- **Confort de jeu** (15/11, demandes de l'utilisateur) :
+  - la **vie** n'est plus dans le cadre du haut. Elle s'affiche en **cœurs**, en haut au centre (5 cœurs, avec des demi-cœurs), **seulement en mode combat** : dans les Terres sauvages ou quand un monstre est là ;
+  - le **temps passe plus lentement** : 1 minute de jeu = 1 seconde, donc une journée dure environ 20 minutes (avant, 14) ;
+  - **on entre directement** dans un lieu en marchant vers sa porte, sans appuyer sur le bouton (sauf si c'est fermé : un message le dit) ;
+  - **textes de décor** : quand on interagit avec un élément qu'on ne peut pas prendre (maison, grange, clôture, mare, maisons des voisins, portail, bâtiments, meubles, fontaine, lampadaires, bancs, arbres, rochers…), le héros fait un petit commentaire. Ces textes sont à valider dans `docs/DIALOGUES.md`.
 - **Plein écran et orientation** (15/11, choix 1 de l'utilisateur) : dans le menu ⚙, une rubrique « 📱 Écran » propose Auto, Portrait ou Paysage (mémorisé sur l'appareil) et un bouton « ⛶ Plein écran », qui verrouille l'orientation choisie sur Android. Si c'est impossible, un message explique pourquoi.
 - **Plus de slimes la nuit sur la ferme.** L'épée n'est plus donnée au départ.
 - Une ancienne sauvegarde garde ses outils et ne revoit pas l'accueil.

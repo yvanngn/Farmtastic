@@ -257,3 +257,10 @@ img.pix { width: 1.15em; height: 1.15em; image-rendering: pixelated; vertical-al
 .etapes .avenir { color: var(--doux); opacity: .7 }
 .ecran { padding: 12px 0 4px; display: grid; gap: 4px }
 .ecran small { color: var(--doux) }
+/* Vie en cœurs, en haut au centre, seulement en combat */
+#hearts { position: fixed; top: calc(var(--sa-t) + var(--pad)); left: 50%; transform: translateX(-50%); display: flex; gap: 4px; z-index: 30; padding: 6px 10px; border-radius: 12px; background: rgba(18,13,32,.7); border: 1px solid var(--bord) }
+#hearts[hidden] { display: none }
+#hearts i { width: clamp(18px, 5vmin, 26px); aspect-ratio: 1; clip-path: polygon(50% 92%, 6% 46%, 6% 22%, 24% 8%, 50% 26%, 76% 8%, 94% 22%, 94% 46%); background: #3a2a3e }
+#hearts i.plein { background: linear-gradient(180deg, #ff8a8a, #e5534b 60%, #a8302b) }
+#hearts i.demi { background: linear-gradient(90deg, #e5534b 50%, #3a2a3e 50%) }
+@media (max-width: 600px) and (orientation: portrait) { #hearts { top: calc(var(--sa-t) + var(--pad) + 118px) } }

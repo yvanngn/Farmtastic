@@ -20,7 +20,10 @@ export function createHud(g, controls) {
       const where = { house: ' · 🏠', coop: ' · 🐔', pigsty: ' · 🐷', barn: ' · 🐑', luna: ' · 🏡', franck: ' · 🏚️', grange: ' · 🕳️', wild: ' · ⚔️', town: ' · 🏘️' }[S.scene] || '';
       $('#hTime').textContent = `${SEASONS[S.season]} j${S.day} · ${fmtTime(S.minute)} · ${WEATHER_LABELS[S.weather].split(' ')[0]}${where}`;
       $('#hEn').style.width = (S.energy / S.maxE * 100) + '%';
-      $('#hHp').style.width = (S.hp / S.maxHp * 100) + '%';
+      // vie : cœurs en haut, seulement en mode combat (Terres sauvages ou monstres proches)
+      const fight = S.scene === 'wild' || g.enemies.length > 0, hb = $('#hearts');
+      hb.hidden = !fight;
+      if (fight) { const n = Math.ceil(S.maxHp / 20), v = Math.max(0, S.hp) / 20; hb.innerHTML = Array.from({ length: n }, (_, i) => `<i class="${v >= i + 1 ? 'plein' : v > i + .4 ? 'demi' : 'vide'}"></i>`).join(''); }
       controls && controls.setAction(iconHTML(S.sel));
     },
     savedAt(res) {

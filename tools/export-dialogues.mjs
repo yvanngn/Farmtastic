@@ -4,6 +4,7 @@
 //         node tools/export-dialogues.mjs --valider  → marque toutes les répliques actuelles comme validées
 import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { NPCS } from '../src/data/npcs.js';
+import { EXAMINE } from '../src/data/examine.js';
 
 const VALID = new URL('./dialogues_valides.txt', import.meta.url), OUT = new URL('../docs/DIALOGUES.md', import.meta.url);
 const valid = new Set(existsSync(VALID) ? readFileSync(VALID, 'utf8').split('\n').filter(Boolean) : []);
@@ -19,6 +20,8 @@ for (const n of Object.values(NPCS)) {
   for (const [k, t] of Object.entries(n.react || {})) add(`cadeau : ${k}`, t);
   for (const k of ['already', 'night', 'thanks']) if (n[k]) add(k === 'already' ? 'cadeau : déjà offert' : k, n[k]);
 }
+for (const [k, t] of Object.entries(EXAMINE.farm)) all.push({ npc: 'Décor (le héros commente)', where: k, t });
+for (const [k, t] of Object.entries(EXAMINE.tiles)) all.push({ npc: 'Décor (le héros commente)', where: k, t });
 if (process.argv.includes('--valider')) {
   writeFileSync(VALID, [...new Set(all.map(l => l.t))].join('\n') + '\n');
   console.log(`${all.length} répliques marquées comme validées.`);

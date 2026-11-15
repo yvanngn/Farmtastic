@@ -58,3 +58,25 @@ test('menu titre : Continuer seulement avec une sauvegarde', async () => {
   assert.deepEqual(titleMenu(true).map(i => i.id), ['continue', 'new', 'howto', 'settings']);
   assert.equal(titleMenu(true).find(i => i.main).id, 'continue');
 });
+
+// ---- Décor : le héros commente ce qu'on ne peut pas prendre ----
+import { act as act2 } from '../src/systems/actions.js';
+import { EXAMINE } from '../src/data/examine.js';
+import { CFG } from '../src/config.js';
+
+test('interagir avec le décor : un petit texte du héros', () => {
+  const { g, S } = makeGame();
+  const said = []; g.bus.on('say', d => said.push(d.lines[0]));
+  assert.equal(act2(g, 3, 2), 'look');
+  assert.equal(said.at(-1), EXAMINE.farm.house);
+  assert.equal(act2(g, 12, 24), 'look', 'la mare');
+  S.scene = 'town'; act2(g, 12, 9);
+  assert.equal(said.at(-1), EXAMINE.tiles.F);
+  S.scene = 'house'; act2(g, 4, 4);
+  assert.equal(said.at(-1), EXAMINE.tiles.T);
+  assert.notEqual(act2(g, 10, 3), 'look', 'le lit sert à dormir');
+});
+
+test('le temps passe plus lentement : 1 minute de jeu = 1 seconde', () => {
+  assert.equal(CFG.MS_PER_MIN, 1000);
+});

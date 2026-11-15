@@ -20,6 +20,7 @@ import { createDialog } from './ui/dialog.js';
 import { NPCS, OUT_FROM, OUT_TO } from './data/npcs.js';
 import { placeNPC, findNPCAt, welcome } from './systems/social.js';
 import { autoPickup } from './systems/grange.js';
+import { doorAt } from './world/scenes.js';
 import { pickDrops, dropsAt, swapDrop, stackSize } from './systems/inventory.js';
 import { updateWild } from './systems/wild.js';
 import { isLunaLot } from './world/map.js';
@@ -160,6 +161,10 @@ function loop(now) {
     wander(g, dt);
     updateWild(g, dt); // les monstres ne vivent que dans les Terres sauvages
     autoPickup(g);
+    // on entre directement en marchant vers une porte (si c'est possible)
+    { const S = g.S, k = input.keys, moving = k.up || k.down || k.left || k.right || k.ax || k.ay, ft = facingTile(S);
+      g.doorCd = Math.max(0, (g.doorCd || 0) - dt);
+      if (moving && !dialog.isOpen && g.doorCd <= 0 && doorAt(S.scene || 'farm', ft.tx, ft.ty) && Math.hypot(ft.tx + .5 - S.x, ft.ty + .5 - S.y) < 1.25) { g.doorCd = 1; act(g, ft.tx, ft.ty); } }
     // objets au sol : ramassés en passant ; sac plein → proposer un échange (une fois par case)
     { const S = g.S, tx = Math.floor(S.x), ty = Math.floor(S.y - .2), here = tx + ',' + ty;
       if (dropsAt(S, tx, ty).length && g.dropAsked !== here && !dialog.isOpen) {
