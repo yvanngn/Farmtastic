@@ -96,3 +96,9 @@ test('enseignes : police pixel nette, accents compris, largeur prévisible', asy
   const all = []; pixText((x, y) => all.push(x), 'CENTRE-VILLE →', 0, 0, '#000');
   assert.ok(Math.max(...all) - Math.min(...all) <= pixTextWidth('CENTRE-VILLE →'));
 });
+
+test('jauges : orange sous 50 %, rouge vif sous 20 %', async () => {
+  const { gaugeLevel, SHAKE_FROM, LOW_RED } = await import('../src/ui/hud.js');
+  assert.equal(gaugeLevel(.8), 'ok'); assert.equal(gaugeLevel(.4), 'orange'); assert.equal(gaugeLevel(.1), 'rouge');
+  assert.ok(SHAKE_FROM > LOW_RED, 'elle tremble avant de passer au rouge');
+});

@@ -11,6 +11,15 @@ export function selIcon(S) {
   return t ? t.i : ITEMS[S.sel] ? ITEMS[S.sel].i : '✋';
 }
 
+// Jauge qui vire au orange puis au rouge vif, et tremble juste avant le rouge (et dans le rouge) pour alerter.
+export const gaugeLevel = r => r <= LOW_RED ? 'rouge' : r <= LOW_ORANGE ? 'orange' : 'ok';
+export const LOW_ORANGE = .5, LOW_RED = .2, SHAKE_FROM = .3;
+function gauge(id, r) {
+  const el = $('#' + id), bar = el.parentElement, lvl = gaugeLevel(r);
+  el.style.width = Math.max(0, Math.min(1, r)) * 100 + '%';
+  bar.classList.toggle('orange', lvl === 'orange'); bar.classList.toggle('rouge', lvl === 'rouge');
+  bar.classList.toggle('tremble', r <= SHAKE_FROM);
+}
 export function createHud(g, controls) {
   return {
     show() { ['#hud', '#topbtns', '#controls'].forEach(s => { $(s).style.display = ''; }); },
@@ -19,7 +28,8 @@ export function createHud(g, controls) {
       $('#hName').textContent = S.name; $('#hMoney').textContent = S.money;
       const where = { house: ' · 🏠', coop: ' · 🐔', pigsty: ' · 🐷', barn: ' · 🐑', luna: ' · 🏡', franck: ' · 🏚️', grange: ' · 🕳️', wild: ' · 🕳️ Caverne (étage 1)', foret: ' · 🌲', town: ' · 🏙️', quartier: ' · 🏘️' }[S.scene] || '';
       $('#hTime').textContent = `${SEASONS[S.season]} j${S.day}, an ${S.year || 1} · ${fmtTime(S.minute)} · ${WEATHER_LABELS[S.weather].split(' ')[0]}${where}`;
-      $('#hEn').style.width = (S.energy / S.maxE * 100) + '%';
+      gauge('hEn', S.energy / S.maxE);
+      const hpR = Math.max(0, S.hp) / S.maxHp; $('#hHpRow').hidden = hpR >= 1; if (hpR < 1) gauge('hHp', hpR);
       // vie : cœurs en haut, seulement en mode combat (Caverne sombre ou monstres proches)
       const fight = S.scene === 'wild' || g.enemies.length > 0, hb = $('#hearts');
       hb.hidden = !fight;

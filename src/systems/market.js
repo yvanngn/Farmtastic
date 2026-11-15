@@ -1,3 +1,4 @@
+import { CFG } from '../config.js';
 // Panneau d'affichage du village : 6 emplacements de demandes, mieux payées que le bac.
 // Quatre familles à code couleur : chantier (jauge du village), fête de saison, habitant (amitié), caravane (jetons → déblocages).
 // Une demande livrée ou jetée laisse son emplacement vide 2 h (temps réel, comme Hay Day).
@@ -103,6 +104,7 @@ export function ensureOrders(g) {
   // anciennes demandes sans famille : elles deviennent des demandes de caravane
   S.market.slots.forEach(s => { if (s.order && !s.order.kind) Object.assign(s.order, { kind: 'caravane', tokens: 1 }); });
   while (S.market.slots.length < ORDER_SLOTS) S.market.slots.push({ order: null, next: 0 });
+  if (!CFG.BOARD_OPEN) return S.market.slots.filter(s => s.order);   // panneau vide pour l'instant
   S.market.slots.forEach((s, i) => { if (!s.order && s.next <= now) s.order = newOrder(g, i); });
   return S.market.slots;
 }

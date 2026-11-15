@@ -1,3 +1,4 @@
+import { CFG } from '../config.js';
 // Panneau d'affichage du village : demandes à code couleur (chantier, fête, habitant, caravane),
 // jauges du village et de la fête, jetons et déblocages de la caravane.
 import { $ } from './dom.js';
@@ -19,6 +20,7 @@ export function createBoard(g, audio) {
       <div class="jauge" style="--k:${KINDS.fete.color}"><b>🎉 ${FESTIVALS[S.season]}</b>${bar(F.pts, FESTIVAL_GOAL, KINDS.fete.color)}<small>${F.done ? 'Tout est prêt ✔' : `${F.pts}/${FESTIVAL_GOAL} objets avant la fin de la saison`}</small></div>
       <div class="jauge" style="--k:${KINDS.caravane.color}"><b>🐪 Caravane : ${S.caravan.tokens} jeton(s)</b><small>À échanger plus bas contre des graines, des animaux et des outils.</small></div>
     </div>`;
+    if (!CFG.BOARD_OPEN && !slots.length) { body.innerHTML = '<p class="info">📌 Le panneau est vide pour l’instant. Repasse plus tard !</p>'; return; }
     const cards = '<div class="grid affiches">' + slots.map(s => {
       const o = s.order;
       if (!o) return `<div class="card affiche vide"><div class="t">📌 Emplacement libre</div><small>Nouvelle demande dans</small><b class="delai">${fmtDelay(timeLeft(g, s))}</b></div>`;

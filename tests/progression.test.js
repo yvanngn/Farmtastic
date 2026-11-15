@@ -52,8 +52,9 @@ test('agrandir le sac', () => {
 
 test('niveaux de minage', () => {
   assert.equal(level(0), 1);
-  assert.equal(level(30), 2);
-  assert.equal(level(5000), 10);
+  assert.equal(level(30), 1, 'progression ralentie');
+  assert.equal(level(100), 2);
+  assert.equal(level(7000), 10);
 });
 
 test('casser des pierres donne de l’XP et fait monter de niveau', () => {
@@ -61,7 +62,7 @@ test('casser des pierres donne de l’XP et fait monter de niveau', () => {
   S.sel = 'pick'; S.objs['30,20'] = { t: 'rock', hp: 2 };
   hitObject(g, 30, 20); hitObject(g, 30, 20);
   assert.equal(S.skills.mining.xp, 2 + 2 + 5);
-  gainXp(g, 'mining', 25);
+  gainXp(g, 'mining', 91);
   assert.equal(miningLevel(S), 2);
   assert.ok(sounds().includes('levelup'));
 });
@@ -78,13 +79,13 @@ test('gros rocher : pioche Cuivre requise', () => {
 });
 
 test('forge : niveau, argent et pierre requis', () => {
-  const { g, S } = makeGame({ state: { money: 1000, inv: { stone: 20 } } });
+  const { g, S } = makeGame({ state: { money: 2800, inv: { stone: 65 } } });
   assert.equal(canUpgrade(S, 'pick').why, 'level');
-  S.skills.mining.xp = 30;
+  S.skills.mining.xp = 100;
   assert.equal(upgradeTool(g, 'pick'), true);
   assert.equal(S.tools.pick, 2);
-  assert.equal(S.money, 750);
-  assert.equal(S.inv.stone, 5);
+  assert.equal(S.money, 2200, 'plus cher : 600 🪙');
+  assert.equal(S.inv.stone, 35, '30 pierres');
 });
 
 test('un outil amélioré coûte moins d’énergie et frappe plus fort', () => {

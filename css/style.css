@@ -308,3 +308,12 @@ img.pix { width: 1.15em; height: 1.15em; image-rendering: pixelated; vertical-al
 .gp-row > button:first-child { flex: 1; text-align: left; padding: 12px 14px; font-size: clamp(14px, 3.8vmin, 17px) }
 .gp-del { flex: 0 0 auto; min-width: 52px; padding: 0 10px; font-size: 18px }
 .gp-del.arme { background: #a8302b; color: #fff; font-size: 13px; font-weight: 800 }
+
+/* Jauges d'énergie et de vie : orange, rouge vif, tremblement près du rouge */
+#hHp { background: linear-gradient(90deg, #b8202a, #e8404a, #ff8a8a) }
+.bar.orange > i { background: linear-gradient(90deg, #c86a10, #f0a020, #ffd060) }
+.bar.rouge > i { background: linear-gradient(90deg, #b00010, #ff2a2a, #ff7a6a); box-shadow: 0 0 8px #ff2a2a }
+.bar.tremble { animation: tremble .35s ease-in-out infinite }
+.bar.rouge.tremble { animation-duration: .2s }
+@keyframes tremble { 0%, 100% { transform: translateX(0) } 25% { transform: translateX(-2px) rotate(-.6deg) } 75% { transform: translateX(2px) rotate(.6deg) } }
+@media (prefers-reduced-motion: reduce) { .bar.tremble { animation: none } }
