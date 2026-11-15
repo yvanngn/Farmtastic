@@ -17,6 +17,7 @@ Légende : ✅ fait · 🔨 en cours · ⏳ à faire · 💡 idée de Claude (à
 | **Luna** | Jeune femme célibataire, arrivée récemment. Travaillait dans l'informatique ; l'IA a remplacé son poste. Veut monter sa ferme mais doit d'abord gagner de l'argent ; pour l'instant elle essaie d'en gagner un peu. A sa maison. | ✅ lot 6 (répliques à valider) |
 | Charpentier | Vend poulailler, porcherie, etc. | ⏳ lot 4 |
 | **Franck** | Voisin de Luna, timide, sort peu. Un traumatisme d'enfance dont il ne parle pas (on ne le saura jamais) a forgé son caractère. Il laisse passer le temps ; un objet fabriqué par le joueur l'animera et le changera radicalement. | ✅ lot 11 (répliques à valider, objet à définir) |
+| **Manuel** (chef du village) | Raconte qu'il a été élu à l'unanimité et qu'il aime ses villageois. **En secret**, il fait payer cher les impôts et profite de l'argent pour passer du bon temps et partir en vacances ; les gens croient qu'il travaille dur pour eux. **Quête future** : enquêter sur lui après avoir appris quelque chose de louche. | ✅ accueil, histoire et sujets (répliques à valider) ; enquête ⏳ |
 | Marchand d'animaux | Vend les animaux. | ⏳ lot 4 |
 | Boulanger, boucher, poissonnier | Commerces pour cuisiner de bons plats plus tard. | ⏳ lot 5 |
 
@@ -102,6 +103,10 @@ Mots de l'utilisateur, à respecter tels quels :
   4. il se confie (4 cœurs) ;
   5. lui fabriquer l'objet qui l'animera (⏳ objet à définir par l'utilisateur).
 - **Établi de la maison (lot 12)** : il est dans un coin de la maison, mais **cassé au départ** (« Un vieil établi tout branlant… le charpentier pourrait le réparer »). Le **charpentier** le répare pour 800 🪙, 20 🪵 et 5 🪨. Ensuite, on y fabrique (clôture, foin, potion…). L'onglet « Atelier » a disparu du menu : on ne fabrique plus qu'à la maison. C'est là qu'on fabriquera l'objet de Franck. Une ancienne sauvegarde garde son établi réparé.
+- **Discussions façon Witch'rok** (15/11) : quand on parle à un habitant, sa réplique du jour reste affichée en tête, puis on choisit un **sujet** ou « Rien. ». Les sujets se débloquent avec l'amitié. Les questions à réponses (amitié) restent une discussion sur trois.
+- **Manuel** est le nom du chef du village. Ses répliques d'histoire glissent des indices discrets (« surtout le jour », « séminaire », « bronzage », « frais de représentation ») 💡 en vue de la future enquête.
+- **Objets au sol** (15/11) : ce qui ne rentre pas dans le sac tombe au sol, au lieu d'être perdu. On le ramasse en passant dessus. Si le sac est plein, une bulle propose d'**échanger une case du sac** contre l'objet au sol (« Poser 🪨 Pierre (×10) »), ou de le laisser.
+- **Relecture des dialogues** : `docs/DIALOGUES.md` liste toutes les répliques, avec 🆕 sur celles pas encore validées ; dès 100 🆕, le fichier part en relecture chez l'utilisateur.
 - **Plus de slimes la nuit sur la ferme.** L'épée n'est plus donnée au départ.
 - Une ancienne sauvegarde garde ses outils et ne revoit pas l'accueil.
 - **Départ d'une nouvelle partie** : seules les graines de blé, les poules et le chat sont disponibles ; tout le reste vient de la caravane. Une ancienne sauvegarde garde tout débloqué.
@@ -198,6 +203,9 @@ Goûts de Franck (💡) : adore le croissant ; aime le pain, les œufs et le boi
 - **Pierres « mêmes règles » que les arbres** : mon interprétation, c'est qu'une pierre met 3 jours à réapparaître (elle est prévue, puis sort de terre au bout de 3 jours), au lieu de grandir à vue comme un arbre. À valider.
 - **Moins de pierres qu'avant** : une pierre donnait 2 à 4 pierres, maintenant 1 ou 2. La forge demande 15, 30, 45 puis 60 pierres par amélioration : la progression sera plus lente. À équilibrer si c'est trop long.
 - **Anciennes sauvegardes** : le bois peut contenir plus de 70 arbres (ancienne génération plus dense). Rien ne repousse tant qu'on n'est pas repassé sous la limite.
+
+- **Orientation du téléphone** : une page web ne peut pas faire pivoter un iPhone. Sur Android, c'est possible seulement en plein écran. Le jeu s'adapte déjà au portrait comme au paysage. → l'utilisateur dira s'il veut un bouton « plein écran » qui verrouille l'orientation (Android).
+- **Quête de l'enquête sur Manuel** : à écrire. Qu'apprend-on de louche, et par qui ?
 
 ## 6. Idées de Claude (💡 à valider)
 - Sous-titre de l'écran titre : « ✦ une ferme à partager ✦ » (déjà affiché, à garder ou retirer).

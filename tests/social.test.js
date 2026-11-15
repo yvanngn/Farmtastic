@@ -59,7 +59,7 @@ test('Luna : sa vie se dévoile une réplique par jour, et seulement avec assez 
 
 test('Luna : une question une discussion sur trois ; la réponse change un peu l’amitié, une seule fois', () => {
   const { g, S, said } = withLuna();
-  const asks = []; g.bus.on('say', d => d.choices && asks.push(d));
+  const asks = []; g.bus.on('say', d => d.choices && LUNA.questions.some(q => q.q === d.lines[0]) && asks.push(d));
   talk(g, 'luna'); socialNewDay(S); talk(g, 'luna'); socialNewDay(S); talk(g, 'luna');
   assert.equal(asks.length, 1);
   assert.equal(asks[0].lines[0], LUNA.questions[0].q);
@@ -142,4 +142,27 @@ test('maison de Franck à côté de celle de Luna, on y entre par sa porte', () 
   assert.equal(isSolid(S, 26, 30), true);
   assert.equal(act(g, 27, 31), 'door');
   assert.equal(S.scene, 'franck');
+});
+
+// ---- Dialogues à choix (comme Witch'rok) et Manuel ----
+import { CHEF } from '../src/data/npcs.js';
+
+test('parler : la réplique du jour en tête, puis les sujets et « Rien. »', () => {
+  const { g, S } = withLuna();
+  S.social.luna.asked = LUNA.questions.map(q => q.id);
+  const all = []; g.bus.on('say', d => all.push(d));
+  talk(g, 'luna');
+  assert.equal(all[0].choices.at(-1), 'Rien.');
+  assert.equal(all[0].choices[0], LUNA.topics[0].t);
+  assert.equal(all[0].choices.length, 2, 'le sujet sur l’argent attend 3 cœurs');
+  all[0].onChoose(0);
+  assert.deepEqual(all.at(-1).lines, LUNA.topics[0].lines);
+  const n = all.length; all[0].onChoose(1); assert.equal(all.length, n, '« Rien. » ferme la discussion');
+});
+
+test('Manuel, le chef du village : élu à l’unanimité, il aime ses villageois', () => {
+  assert.equal(CHEF.name, 'Manuel');
+  assert.match(CHEF.welcomeLines[0], /Manuel/);
+  assert.ok(CHEF.story.some(l => /unanimité/.test(l.t)));
+  assert.ok(CHEF.story.some(l => /villageois/.test(l.t)));
 });

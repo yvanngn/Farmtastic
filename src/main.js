@@ -20,6 +20,7 @@ import { createDialog } from './ui/dialog.js';
 import { NPCS, OUT_FROM, OUT_TO } from './data/npcs.js';
 import { placeNPC, findNPCAt, welcome } from './systems/social.js';
 import { autoPickup } from './systems/grange.js';
+import { pickDrops, dropsAt, swapDrop, stackSize } from './systems/inventory.js';
 import { updateWild } from './systems/wild.js';
 import { isLunaLot } from './world/map.js';
 import { isPath, isGate } from './world/map.js';
@@ -159,6 +160,18 @@ function loop(now) {
     wander(g, dt);
     updateWild(g, dt); // les monstres ne vivent que dans les Terres sauvages
     autoPickup(g);
+    // objets au sol : ramassés en passant ; sac plein → proposer un échange (une fois par case)
+    { const S = g.S, tx = Math.floor(S.x), ty = Math.floor(S.y - .2), here = tx + ',' + ty;
+      if (dropsAt(S, tx, ty).length && g.dropAsked !== here && !dialog.isOpen) {
+        const left = pickDrops(g, tx, ty);
+        if (left.length) {
+          g.dropAsked = here; const d = left[0], st = stackSize(S), ids = Object.keys(S.inv).filter(k => k !== d.id && ITEMS[k]);
+          g.bus.emit('say', { name: 'Sac plein 🎒', color: '#e8c26a', lines: [`Il y a ${d.n} × ${ITEMS[d.id] ? ITEMS[d.id].i + ' ' + ITEMS[d.id].n : d.id} au sol. Échanger contre une case du sac ?`],
+            choices: [...ids.map(k => `Poser ${ITEMS[k].i} ${ITEMS[k].n} (×${((S.inv[k] - 1) % st) + 1})`), 'Laisser au sol'],
+            onChoose: i => { if (ids[i]) swapDrop(g, d, ids[i]); } });
+        }
+      } else if (!dropsAt(S, tx, ty).length && g.dropAsked === here) g.dropAsked = null;
+      if (g.dropAsked && g.dropAsked !== here) g.dropAsked = null; }
     rainBoost(g, dt);
     lerpOthers(g.others, dt);
     for (const id in g.npcs) { const n = g.npcs[id]; placeNPC(n, g.S, OUT_FROM, OUT_TO); if (n.justOut) { n.justOut = false; toast(`${n.name} est sorti s'asseoir devant chez lui !`); } }

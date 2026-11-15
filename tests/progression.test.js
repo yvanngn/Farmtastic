@@ -98,3 +98,27 @@ test('un outil amélioré coûte moins d’énergie et frappe plus fort', () => 
   attack(g, e);
   assert.equal(e.hp, 32);
 });
+
+// ---- Objets au sol et échange quand le sac est plein ----
+import { pickDrops, swapDrop, dropsAt } from '../src/systems/inventory.js';
+
+test('sac plein : le surplus tombe au sol au lieu d’être perdu', () => {
+  const { g, S } = makeGame({ state: { inv: { stone: 10 }, invSlots: 1, x: 5.5, y: 6.8 } });
+  assert.equal(add(g, 'wood', 3), 0);
+  assert.deepEqual(dropsAt(S, 5, 6).map(d => [d.id, d.n]), [['wood', 3]]);
+  add(g, 'stone', -4);
+  assert.equal(pickDrops(g, 5, 6).length, 1, 'toujours plein (une case de pierre)');
+  add(g, 'stone', -6);
+  assert.equal(pickDrops(g, 5, 6).length, 0);
+  assert.equal(S.inv.wood, 3);
+});
+
+test('échanger une case du sac avec l’objet au sol', () => {
+  const { g, S } = makeGame({ state: { inv: { stone: 10 }, invSlots: 1, x: 5.5, y: 6.8 } });
+  add(g, 'ruby', 1);
+  const d = dropsAt(S, 5, 6)[0];
+  assert.equal(swapDrop(g, d, 'stone'), true);
+  assert.equal(S.inv.ruby, 1);
+  assert.equal(S.inv.stone, undefined);
+  assert.deepEqual(dropsAt(S, 5, 6).map(x => [x.id, x.n]), [['stone', 10]]);
+});

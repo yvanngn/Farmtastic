@@ -10,16 +10,16 @@ export function createDialog(g, audio) {
     if (!queue.length) { box.classList.remove('on'); cur = null; g.talking = false; return; }
     g.talking = true;
     cur = queue.shift();
-    nameEl.textContent = cur.name; nameEl.style.color = cur.color || 'var(--or-vif)';
+    nameEl.textContent = cur.name + (cur.title ? ` · ${cur.title}` : ''); nameEl.style.color = cur.color || 'var(--or-vif)';
     textEl.textContent = cur.line;
     choicesEl.innerHTML = cur.choices ? cur.choices.map((c, i) => `<button data-c="${i}">${c}</button>`).join('') : '';
     $('#dlgNext').style.display = cur.choices ? 'none' : '';
     box.classList.remove('on'); void box.offsetWidth; box.classList.add('on');
     if (cur.voice) audio.play(cur.voice);
   }
-  g.bus.on('say', ({ name, color, voice, lines, choices, onChoose }) => {
+  g.bus.on('say', ({ name, title, color, voice, lines, choices, onChoose }) => {
     const wasOpen = !!cur;
-    lines.forEach((line, k) => queue.push({ name, color, voice, line, ...(k === lines.length - 1 && choices ? { choices, onChoose } : {}) }));
+    lines.forEach((line, k) => queue.push({ name, title, color, voice, line, ...(k === lines.length - 1 && choices ? { choices, onChoose } : {}) }));
     if (!wasOpen) show();
   });
   const next = () => { audio.play('ui'); show(); };

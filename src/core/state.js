@@ -19,6 +19,7 @@ export function defaultState() {
     tools: {},                       // aucun outil au départ : ils sont dans la grange
     intro: { met: false },
     tilled: {},
+    drops: [],                       // objets posés au sol (sac plein)
     workbench: false,                // établi de la maison, à faire réparer par le charpentier
     wildOpen: false, wild: null,     // Terres sauvages (zone de combat), fermées au début                      // cases du champ bêchées (à la pelle)           // accueil du chef du village
     grange: { found: [], broken: [] },

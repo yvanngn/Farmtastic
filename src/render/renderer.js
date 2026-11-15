@@ -11,6 +11,7 @@ import { LAYOUTS } from '../world/scenes.js';
 import { toolIcon } from './sprites.js';
 import { SCENES } from '../world/scenes.js';
 import { ANIMALS } from '../data/animals.js';
+import { ITEMS } from '../data/items.js';
 import { darkness } from '../systems/weather.js';
 const T = CFG.T;
 const MAX_FX = 160;
@@ -161,6 +162,12 @@ export function createRenderer(cv, g) {
         else { ctx.fillStyle = '#3e5a7a'; ctx.fillRect(wx, wy, 14, 12); ctx.fillStyle = '#2a4058'; for (let k = 2; k < 12; k += 3) ctx.fillRect(wx, wy + k, 14, 1); ctx.fillRect(wx + 7, wy, 1, 12); }
       } });
     }
+    for (const d of S.drops || []) if (d.scene === scene) list.push({ z: d.y + .4, d: () => {
+      const b = Math.round(Math.sin(now / 250 + d.x) * 1.5), it = ITEMS[d.id];
+      ctx.fillStyle = 'rgba(0,0,0,.25)'; ctx.fillRect(d.x * T + 3, d.y * T + 12, 10, 2);
+      ctx.font = '10px serif'; ctx.textAlign = 'center'; ctx.fillText(it ? it.i : '❔', d.x * T + 8, d.y * T + 10 + b); ctx.textAlign = 'start';
+      if (d.n > 1) { ctx.font = 'bold 6px Georgia'; ctx.fillStyle = '#fff6e0'; ctx.fillText(d.n, d.x * T + 11, d.y * T + 15); }
+    } });
     if (scene === 'grange') {
       // outils au sol (avec un éclat) et passages encore fermés
       for (const p of PICKUPS) if (!S.grange.found.includes(p.tool)) list.push({ z: p.y + .5, d: () => {

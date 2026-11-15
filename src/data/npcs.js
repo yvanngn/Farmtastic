@@ -48,19 +48,25 @@ export const LUNA = {
     { h: 4, t: "Mais pour l'instant, je n'ai presque rien de côté. Il faut d'abord que je gagne un peu d'argent." },
     { h: 4, t: "Je prends tous les petits boulots que je trouve. Un jour, j'aurai ma ferme. Promis." }
   ],
+  topics: [
+    { t: "Comment se passe l'installation ?", lines: ["Doucement. J'ai déballé trois cartons… sur vingt.", 'Mais la maison commence à ressembler à quelque chose.'] },
+    { t: "Tu t'en sors, pour l'argent ?", h: 3, lines: ['Pas vraiment. Je compte chaque pièce.', "Mais j'y arriverai. Il le faut."] }
+  ],
   chat: ["Bonne journée ! Ne travaille pas trop, hein.", "Tu sens cette odeur d'herbe ? Je ne m'en lasse pas."],
   already: "Tu m'as déjà fait un cadeau aujourd'hui !",
   night: "Il est tard… on se voit demain ?"
 };
-// Le chef du village (💡 apparence et répliques proposées par Claude, à valider). Il accueille le joueur.
+// Manuel, le chef du village (décrit par l'utilisateur) : il raconte qu'il a été élu à l'unanimité et qu'il aime
+// ses villageois. En secret, il fait payer cher les impôts et en profite pour passer du bon temps et partir
+// en vacances ; les gens croient qu'il travaille dur pour eux. Une enquête sur lui viendra plus tard.
 export const CHEF = {
-  id: 'chef', name: 'Le chef du village', color: '#e8c26a', voice: 'voiceChef', de: 'de lui',
+  id: 'chef', name: 'Manuel', title: 'chef du village', color: '#e8c26a', voice: 'voiceChef', de: 'de lui',
   look: { body: 'h', bottom: 'pant', skin: '#e2b48c', hair: 0, hairC: '#b8b4ae', shirt: '#7a4a2a', pants: '#3a3a4a' },
   home: null, day: { x: 11.5, y: 12.6 }, welcome: { x: 8.5, y: 6.9 },
-  traits: ['Accueillant', 'Veut voir le village renaître'],
+  traits: ['Chef élu à l\'unanimité', 'Dit aimer ses villageois', 'En secret : impôts élevés, bon temps et vacances'],
   taste: { adore: [], aime: ['bread', 'egg'], naime: [], deteste: ['slime'] },
   welcomeLines: [
-    "Ah, te voilà enfin ! Bienvenue au village. Je suis le chef du village.",
+    "Ah, te voilà enfin ! Bienvenue au village. Je suis Manuel, le chef du village.",
     "Cette ferme est à toi, maintenant. Elle a bien besoin d'un coup de main, comme tu vois.",
     "En descendant le chemin, tu trouveras le village : la halle du marché, le panneau d'affichage et nos commerces.",
     "Sur le panneau, les gens affichent leurs demandes. Le village a besoin de toi pour se reconstruire.",
@@ -69,7 +75,19 @@ export const CHEF = {
     "Ta voisine, Luna, vient d'arriver elle aussi. Va lui dire bonjour !"
   ],
   welcomeEnd: { t: 'Merci, chef !', r: 'Allez, au travail ! Et passe me voir sur la place quand tu veux.' },
-  story: [],
+  story: [
+    { h: 0, t: "Ce village, c'est toute ma vie. J'aime chacun de mes villageois, sincèrement." },
+    { h: 0, t: "J'ai été élu à l'unanimité, tu sais. Pas une seule voix contre !" },
+    { h: 1, t: 'Je travaille jour et nuit pour eux. Enfin… surtout le jour.' },
+    { h: 1, t: 'Les impôts ? Indispensables pour reconstruire le village, voyons.' },
+    { h: 2, t: 'Je serai absent quelques jours. Un séminaire. Très fatigant, les séminaires.' },
+    { h: 2, t: "Ce bronzage ? C'est… à force de travailler dehors, sur la place." }
+  ],
+  topics: [
+    { t: 'Parlez-moi du village.', lines: ['Un village magnifique, avec des gens formidables. Il a juste besoin de quelques réparations.', 'Grâce aux demandes du panneau, on avance un peu chaque jour !'] },
+    { t: 'Comment êtes-vous devenu chef ?', lines: ["Élu à l'unanimité ! Les gens m'ont fait confiance tout de suite.", "Et depuis, je me donne corps et âme pour eux. Corps et âme !"] },
+    { t: 'Et les impôts, ça sert à quoi ?', h: 1, lines: ['À tout ! Les routes, les lampadaires, la fontaine…', '… Et quelques frais de représentation. Rien de bien important.'] }
+  ],
   chat: ['Le village renaît un peu plus chaque jour.', "Tu as fouillé la grange ? On dit qu'elle s'enfonce loin sous la colline."],
   react: { aime: 'Oh, c\'est gentil ! Merci.', neutre: 'Merci bien.', deteste: 'Hum… je vais faire semblant de ne pas avoir vu ça.' }
 };
@@ -104,6 +122,10 @@ export const FRANCK = {
     { h: 3, t: "Luna m'a fait signe, hier. J'ai… fait signe aussi." },
     { h: 4, t: "Avant, j'aimais bien fabriquer des choses, je crois. Je ne sais plus trop quoi." },
     { h: 4, t: "Si un jour tu trouves quelque chose qui… je ne sais pas. Qui me donnerait envie." }
+  ],
+  topics: [
+    { t: 'Tu veux sortir un peu ?', lines: ['… Pas aujourd\'hui.'] },
+    { t: 'Tu connais Luna, ta voisine ?', h: 1, lines: ['Un peu. Elle dit bonjour. Elle a l\'air… gentille.'] }
   ],
   chat: ['…', "Il fait beau ? Je n'ai pas regardé."],
   questions: [

@@ -36,13 +36,16 @@ export function talk(g, id) {
   const r = g.S.social[id], n = g.npcs[id];
   if (!r || !n) return false;
   r.seen ||= []; r.asked ||= []; r.talks ||= 0;
-  const say = (lines, extra) => g.bus.emit('say', { name: n.name, color: n.color, voice: n.voice, lines, ...extra });
+  const say = (lines, extra) => g.bus.emit('say', { name: n.name, title: n.title, color: n.color, voice: n.voice, lines, ...extra });
   // une question de temps en temps (1 discussion sur 3), une seule fois chacune
   const q = !r.talked && r.talks % 3 === 2 && (n.questions || []).find(x => !r.asked.includes(x.id) && x.h <= hearts(r));
   const line = q ? q.q : nextLine(g, id);
   if (!r.talked) { r.points += 20; r.talked = true; r.talks++; }
   if (q) { say([q.q], { choices: q.a.map(a => a.t), onChoose: i => answer(g, id, q.id, i) }); return q.q; }
-  say([line]);
+  // Comme dans Witch'rok : la réplique reste en tête, puis on choisit un sujet ou « Rien. »
+  const topics = (n.topics || []).filter(tp => (tp.h || 0) <= hearts(r));
+  if (topics.length) say([line], { choices: [...topics.map(tp => tp.t), 'Rien.'], onChoose: i => { if (topics[i]) say(topics[i].lines); } });
+  else say([line]);
   return line;
 }
 
