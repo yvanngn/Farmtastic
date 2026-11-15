@@ -165,10 +165,81 @@ export function treeSprite(season, v) {
     return outline(s, '#1e2a17');
   });
 }
+// Sapin : étages de branches en triangle, reste vert l'hiver (neige sur les branches).
+const PINE_PAL = [['#1f4a34', '#2f6b47', '#4f9461'], ['#1c4530', '#2b6342', '#468a58'], ['#1f4a34', '#2f6b47', '#5a9461'], ['#1f4234', '#2c5c45', '#eef5f7']];
+export function pineSprite(season, v) {
+  return cache('p' + season + v, () => {
+    const s = canvas(34, 46), c = s.getContext('2d'), p = PINE_PAL[season], r = rng(v * 53 + 11);
+    c.fillStyle = '#5b3a22'; c.fillRect(15, 34, 4, 10); c.fillStyle = '#7a4f2e'; c.fillRect(15, 34, 1, 10);
+    for (let k = 0; k < 4; k++) {
+      const top = 2 + k * 8, h = 13, half = 6 + k * 3;
+      for (let y = 0; y < h; y++) {
+        const w = Math.round(1 + (y / h) * half);
+        c.fillStyle = p[0]; c.fillRect(17 - w, top + y, w * 2, 1);
+        c.fillStyle = p[1]; c.fillRect(17 - w, top + y, w, 1);
+        if (y === h - 1 || y === h - 2) { c.fillStyle = p[2]; c.fillRect(17 - w + 1, top + y, Math.max(1, w - 2), 1); }
+      }
+    }
+    for (let i = 0; i < 30; i++) { const x = 4 + r() * 26 | 0, y = 4 + r() * 34 | 0; if (c.getImageData(x, y, 1, 1).data[3]) { c.fillStyle = r() < .5 ? p[0] : p[2]; c.fillRect(x, y, 1, 1); } }
+    return outline(s, '#13281c');
+  });
+}
+// Bouleau : tronc blanc tacheté de noir, feuillage léger et clair.
+const BIRCH_PAL = [['#4f8a35', '#79b54a', '#b4dc6e'], ['#47802f', '#6fa843', '#a2d062'], ['#b8761a', '#e6ad2c', '#ffe07a'], [null, null, null]];
+export function birchSprite(season, v) {
+  return cache('b' + season + v, () => {
+    const s = canvas(34, 46), c = s.getContext('2d'), p = BIRCH_PAL[season], r = rng(v * 31 + 7);
+    c.fillStyle = '#e9e4d6'; c.fillRect(15, 18, 4, 26); c.fillStyle = '#c9c2b0'; c.fillRect(18, 18, 1, 26);
+    c.fillStyle = '#2d2a26'; for (const [a, b] of [[15, 22], [17, 27], [16, 32], [15, 37], [17, 41]]) c.fillRect(a, b, 2, 1);
+    c.fillStyle = '#e9e4d6'; c.fillRect(19, 24, 5, 1); c.fillRect(11, 28, 4, 1);
+    if (p[0]) {
+      const cx = 17 + (v % 3) - 1;
+      for (const [x, y, rad] of [[cx, 14, 10], [cx - 7, 19, 7], [cx + 7, 18, 7], [cx + 1, 6, 7]]) disc(c, x, y, rad, p[0]);
+      for (const [x, y, rad] of [[cx - 1, 12, 8], [cx - 7, 17, 5], [cx + 6, 16, 5], [cx, 5, 5]]) disc(c, x, y, rad, p[1]);
+      for (let i = 0; i < 34; i++) { const x = 6 + r() * 22 | 0, y = 1 + r() * 24 | 0; if (c.getImageData(x, y, 1, 1).data[3]) { c.fillStyle = p[2]; c.fillRect(x, y, 1, 1); } }
+    } else {
+      c.strokeStyle = '#8a8478'; c.lineWidth = 1; c.beginPath();
+      for (const [a, b, d, e] of [[17, 18, 9, 6], [17, 20, 26, 8], [17, 14, 14, 2], [17, 16, 22, 3], [12, 11, 7, 7]]) { c.moveTo(a, b); c.lineTo(d, e); }
+      c.stroke(); c.fillStyle = '#eef5f7'; for (const [x, y] of [[9, 6], [25, 8], [14, 2], [21, 3]]) c.fillRect(x - 1, y, 3, 1);
+    }
+    return outline(s, '#1e2a17');
+  });
+}
+export const KIND_SPRITE = { oak: treeSprite, pine: pineSprite, birch: birchSprite };
+const KIND_IDS = ['oak', 'pine', 'birch'];
+// Jeune arbre : pousse (jour 0), arbuste (jour 1), petit arbre (jour 2), puis adulte.
+function saplingSprite(kind, stage, season) {
+  return cache('s' + kind + stage + season, () => {
+    const s = canvas(20, 26), c = s.getContext('2d');
+    const leaf = kind === 'pine' ? PINE_PAL[season][1] : kind === 'birch' ? (BIRCH_PAL[season][1] || '#8a8478') : (TREE_PAL[season][1]);
+    const light = kind === 'pine' ? PINE_PAL[season][2] : kind === 'birch' ? (BIRCH_PAL[season][2] || '#eef5f7') : TREE_PAL[season][2];
+    const trunk = kind === 'birch' ? '#e9e4d6' : '#6b4429';
+    if (stage === 0) {
+      c.fillStyle = '#4a3020'; c.fillRect(7, 23, 6, 2);
+      c.fillStyle = leaf; c.fillRect(9, 18, 2, 6); c.fillRect(6, 17, 3, 2); c.fillRect(11, 16, 3, 2);
+      c.fillStyle = light; c.fillRect(6, 17, 1, 1); c.fillRect(13, 16, 1, 1);
+    } else if (stage === 1) {
+      c.fillStyle = trunk; c.fillRect(9, 15, 2, 10);
+      if (kind === 'pine') for (let y = 0; y < 12; y++) { const w = 1 + (y / 2 | 0); c.fillStyle = leaf; c.fillRect(10 - w, 5 + y, w * 2, 1); }
+      else { disc(c, 10, 11, 5, leaf); disc(c, 9, 10, 3, light); }
+    } else {
+      c.fillStyle = trunk; c.fillRect(9, 12, 3, 13);
+      if (kind === 'pine') for (let y = 0; y < 18; y++) { const w = 1 + (y / 2 | 0) % 6 + (y / 6 | 0); c.fillStyle = y % 6 > 3 ? light : leaf; c.fillRect(10 - w, 1 + y, w * 2, 1); }
+      else { disc(c, 10, 8, 7, leaf); disc(c, 6, 11, 4, leaf); disc(c, 14, 11, 4, leaf); disc(c, 9, 7, 4, light); }
+    }
+    return outline(s, '#1e2a17');
+  });
+}
 export function drawTree(c, x, y, o, season, t = 0) {
   const px = x * T, py = y * T, sh = o.shake > 0 ? Math.round(Math.sin(o.shake * 40) * 1.5) : 0;
+  const kind = o.k || KIND_IDS[(x * 7 + y * 3) % 3], g = o.g ?? 3;
+  if (g < 3) {
+    groundShadow(c, px + 8, py + 14, 3 + g * 2, 1 + (g > 0), .25);
+    c.drawImage(saplingSprite(kind, g, season), px - 2 + sh, py - 10);
+    return;
+  }
   groundShadow(c, px + 8, py + 14, 9, 3, .3);
-  c.drawImage(treeSprite(season, (x * 7 + y * 3) % 4), px - 9 + sh, py - 28);
+  c.drawImage(KIND_SPRITE[kind](season, (x * 7 + y * 3) % 4), px - 9 + sh, py - (kind === 'oak' ? 28 : 30));
 }
 
 /* ---------------- Rochers ---------------- */
@@ -179,6 +250,15 @@ function boulderSprite() {
     c.fillStyle = '#3c3843'; c.fillRect(13, 7, 1, 5); c.fillRect(14, 12, 3, 1); c.fillRect(7, 14, 4, 1);
     c.fillStyle = '#c98a4a'; c.fillRect(6, 11, 2, 1); c.fillRect(16, 9, 1, 2);
     return outline(s, '#25222b');
+  });
+}
+function bigRockSprite(v) {
+  return cache('rb' + v, () => {
+    const s = canvas(22, 18), c = s.getContext('2d');
+    disc(c, 11, 11, 7, '#524e5a'); disc(c, 10, 10, 6, '#7b7784'); disc(c, 15, 12, 4, '#6a6672'); disc(c, 7, 7, 3, '#aba6b2');
+    c.fillStyle = '#423e48'; c.fillRect(12, 6, 1, 4); c.fillRect(13, 10, 3, 1); c.fillRect(6, 13, 3, 1);
+    if (v) { c.fillStyle = '#6f9a45'; c.fillRect(3, 15, 4, 1); c.fillRect(17, 15, 3, 1); c.fillRect(4, 14, 1, 1); }
+    return outline(s, '#27232c');
   });
 }
 function rockSprite(v) {
@@ -198,6 +278,7 @@ export function drawRock(c, x, y, o) {
     return;
   }
   const px = x * T + (o.shake > 0 ? Math.round(Math.sin(o.shake * 40)) : 0), py = y * T;
+  if (o.t === 'rock_big') { groundShadow(c, px + 8, py + 14, 8, 2, .28); c.drawImage(bigRockSprite((x + y) % 2), px - 3, py - 2); return; }
   groundShadow(c, px + 8, py + 13, 7, 2, .25);
   c.drawImage(rockSprite((x + y) % 2), px - 1, py);
 }

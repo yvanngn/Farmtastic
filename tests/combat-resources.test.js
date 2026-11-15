@@ -54,3 +54,55 @@ test('manger restaure, sans dépasser le maximum', () => {
   assert.equal(S.energy, 100);
   assert.equal(S.hp, 55);
 });
+
+// ---- Lot 3 : bois de l'est ----
+import { regrow, forestCount, treeKind } from '../src/systems/resources.js';
+import { FOREST, TREE_GROW_DAYS, ROCK_DAYS } from '../src/data/forest.js';
+import { genObjects } from '../src/world/map.js';
+
+test('bois de l’est : de nouvelles pousses n’apparaissent que dans la zone, sans dépasser le maximum', () => {
+  let i = 0; const { g, S } = makeGame({ rnd: () => ((i = (i * 9301 + 49297) % 233280) / 233280) });
+  for (let d = 0; d < 60; d++) regrow(g);
+  const c = forestCount(S);
+  assert.ok(c.trees <= FOREST.MAX_TREES && c.trees > 30, 'arbres : ' + c.trees);
+  assert.ok(c.rocks <= FOREST.MAX_ROCKS && c.rocks > 10, 'pierres : ' + c.rocks);
+  for (const k in S.objs) assert.ok(+k.split(',')[0] >= FOREST.x0, 'rien ne repousse hors du bois : ' + k);
+  const kinds = new Set(Object.entries(S.objs).filter(([, o]) => o.t === 'tree').map(([k, o]) => o.k));
+  assert.deepEqual([...kinds].sort(), ['birch', 'oak', 'pine'], '3 essences');
+});
+
+test('un arbre met 3 jours à pousser avant de donner du bois', () => {
+  const { g, S, toasts } = makeGame({ state: { sel: 'axe', inv: {} } });
+  S.objs['40,10'] = { t: 'tree', k: 'pine', g: 0, hp: 3 };
+  S.x = 40.5; S.y = 11.5;
+  assert.equal(hitObject(g, 40, 10), false);
+  assert.match(toasts().at(-1), /sapin pousse encore \(3 j\)/);
+  for (let d = 0; d < TREE_GROW_DAYS; d++) regrow(g);
+  assert.equal(S.objs['40,10'].g, 3);
+  hitObject(g, 40, 10); hitObject(g, 40, 10); hitObject(g, 40, 10);
+  assert.ok(S.inv.wood >= 3, 'le sapin donne du bois');
+});
+
+test('pierres : la petite donne 1 pierre, la plus grosse 2', () => {
+  const { g, S } = makeGame({ state: { sel: 'pick', inv: {}, tools: { axe: 1, pick: 3, sickle: 1, sword: 1 } } });
+  S.objs['40,10'] = { t: 'rock', hp: 2 }; S.objs['41,10'] = { t: 'rock_big', hp: 3 };
+  hitObject(g, 40, 10);
+  assert.equal(S.inv.stone, 1);
+  hitObject(g, 41, 10);
+  assert.equal(S.inv.stone, 3);
+});
+
+test('une pierre prévue sort de terre au bout de 3 jours', () => {
+  const { g, S } = makeGame();
+  S.objs = {}; S.rockQueue = [{ k: '44,20', d: ROCK_DAYS, big: true }];
+  regrow(g); regrow(g);
+  assert.equal(S.objs['44,20'], undefined);
+  regrow(g);
+  assert.equal(S.objs['44,20'].t, 'rock_big');
+});
+
+test('carte de départ : le bois respecte ses limites ; anciens arbres = adultes', () => {
+  const S = { objs: genObjects() }, c = forestCount(S);
+  assert.ok(c.trees <= FOREST.MAX_TREES && c.rocks <= FOREST.MAX_ROCKS, JSON.stringify(c));
+  assert.ok(['oak', 'pine', 'birch'].includes(treeKind({ t: 'tree' }, 3, 4)));
+});

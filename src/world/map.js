@@ -39,14 +39,24 @@ export function freeForObj(x, y) {
     && !isBin(x, y) && !inRect(x, y, 4, 5, 9, 7) && x > 0 && y > 0 && x < CFG.W - 1 && y < CFG.H - 1;
 }
 
+const KINDS = ['oak', 'pine', 'birch'];
+export const newTree = (kind, grow = 3) => ({ t: 'tree', k: kind, g: grow, hp: 3 });
+export const newRock = big => (big ? { t: 'rock_big', hp: 3 } : { t: 'rock', hp: 2 });
+
+// Carte de départ : le bois de l'est est bien garni (sans dépasser ses limites), un peu de fouillis sur la ferme.
 export function genObjects(seed = 12345) {
   const r = rng(seed), o = {};
   for (let y = 0; y < CFG.H; y++) for (let x = 0; x < CFG.W; x++) {
     if (!freeForObj(x, y)) continue;
-    const v = r();
-    if (isForest(x)) { if (v < 0.3) o[key(x, y)] = { t: 'tree', hp: 3 }; else if (v < 0.36) o[key(x, y)] = { t: 'rock', hp: 2 }; else if (v < 0.39) o[key(x, y)] = { t: 'boulder', hp: 6 }; }
-    else if (v < 0.04) o[key(x, y)] = { t: 'tree', hp: 3 };
-    else if (v < 0.08) o[key(x, y)] = { t: 'rock', hp: 2 };
+    const v = r(), kind = KINDS[r() * 3 | 0];
+    if (isForest(x)) {
+      if (v < 0.14) o[key(x, y)] = newTree(kind);
+      else if (v < 0.18) o[key(x, y)] = newRock(false);
+      else if (v < 0.21) o[key(x, y)] = newRock(true);
+      else if (v < 0.23) o[key(x, y)] = { t: 'boulder', hp: 6 };
+    }
+    else if (v < 0.04) o[key(x, y)] = newTree(kind);
+    else if (v < 0.08) o[key(x, y)] = newRock(v > 0.07);
   }
   return o;
 }

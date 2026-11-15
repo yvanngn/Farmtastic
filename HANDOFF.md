@@ -6,7 +6,7 @@ Document à donner à une nouvelle conversation pour reprendre le jeu sans rien 
 - **Code** : dépôt GitHub `yvanngn/Farmtastic` (branche `main`). README.md et CLAUDE.md font foi.
 - **Version jouable** : page claude.ai « Moteur Ferme » (publiée depuis `play.html` + `css/` + `src/`). Republier toujours sur la même page.
 - **Base de données** : `supabase_schema.sql` (profils, sauvegardes, mondes, objets partagés, PNJ, liens sociaux, marché entre joueurs). Supabase n'est pas encore branché (`src/config.js` vide → jeu solo, sauvegarde locale).
-- **Tests** : `npm test` (node:test, 73 tests au vert). Un fichier par système dans `tests/`.
+- **Tests** : `npm test` (node:test, 78 tests au vert). Un fichier par système dans `tests/`.
 
 ## Mémoire du projet
 - **`docs/CARNET.md`** : histoire, personnages, lots, ce qui existe, contradictions, idées non validées. Le lire en premier, le mettre à jour à la fin de chaque séance (skill `carnet-de-projet`).
@@ -39,7 +39,7 @@ Document à donner à une nouvelle conversation pour reprendre le jeu sans rien 
 ## À faire, dans l'ordre (demandes de l'utilisateur)
 1. ✅ **Titre et menu de jeu** stylés comme Witch'rok (titre lumineux qui flotte, menu), avec une **police « jeu de ferme »**.
 2. ✅ **Inventaire** : piles de **10 objets max par case**, augmentables via des améliorations dans un **magasin d'amélioration**.
-3. **Ressources** :
+3. ✅ **Ressources** :
    - Arbres : poussent **aléatoirement dans la zone de bois à l'est** de la ferme, mettent **3 jours** à pousser, **nombre max** dans la zone, **3 types d'arbres** qui donnent tous du bois.
    - Pierres : mêmes règles, **2 types** ; les plus grosses rapportent **2 pierres**.
 4. **Tout débloquer petit à petit avec de l'argent** : le **poulailler n'existe pas au départ**. Un **charpentier** vend poulailler, porcherie, etc. Un **marchand d'animaux**.

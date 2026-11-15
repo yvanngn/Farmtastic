@@ -2,7 +2,7 @@
 // étalonnage météo, particules, vignettage. Responsive (devicePixelRatio, échelle entière).
 import { CFG } from '../config.js';
 import { buildGround, drawWaterShimmer, LIGHTS } from './ground.js';
-import { drawChar, drawTree, drawRock, drawCrop, drawAnimal, drawSlime, drawSwing, treeSprite } from './sprites.js';
+import { drawChar, drawTree, drawRock, drawCrop, drawAnimal, drawSlime, drawSwing, treeSprite, KIND_SPRITE } from './sprites.js';
 import { buildInterior } from './interiors.js';
 import { buildTown, TOWN_LIGHTS } from './town.js';
 import { SCENES } from '../world/scenes.js';
@@ -23,14 +23,14 @@ export function createRenderer(cv, g) {
   const SEASON_LEAF = ['#4a8f36', '#3b7f31', '#e08a2a', '#eef5f7'];
   // Animation de l'outil (coup) et effets d'impact : copeaux, éclats, chute d'arbre.
   g.bus.on('swing', tool => { swing = { tool, p: 0 }; });
-  g.bus.on('objHit', ({ x, y, t, broken }) => {
+  g.bus.on('objHit', ({ x, y, t, broken, k }) => {
     const cx = x * T + 8, cy = y * T + (t === 'tree' ? 6 : 9), stone = t !== 'tree';
     const n = broken ? 14 : 5, cols = stone ? ['#9a958c', '#c2bdb4', '#6a6670'] : ['#c9955a', '#8a5a32', SEASON_LEAF[g.S.season]];
     for (let i = 0; i < n && worldFx.length < MAX_FX; i++) {
       const a = Math.random() * Math.PI * 2, v = 20 + Math.random() * (broken ? 45 : 25);
       worldFx.push({ k: 'chip', x: cx, y: cy, vx: Math.cos(a) * v, vy: -Math.abs(Math.sin(a)) * v - 15, col: cols[i % cols.length], life: .5 + Math.random() * .3, floor: cy + 6 });
     }
-    if (broken && t === 'tree') worldFx.push({ k: 'fall', x, y, season: g.S.season, v: (x * 7 + y * 3) % 4, dir: g.S.x < x + .5 ? 1 : -1, life: 1, t: 0 });
+    if (broken && t === 'tree') worldFx.push({ k: 'fall', kind: k || ['oak', 'pine', 'birch'][(x * 7 + y * 3) % 3], x, y, season: g.S.season, v: (x * 7 + y * 3) % 4, dir: g.S.x < x + .5 ? 1 : -1, life: 1, t: 0 });
     if (broken && stone) for (let i = 0; i < 6; i++) worldFx.push({ k: 'dust', x: cx + (Math.random() * 12 - 6), y: cy + Math.random() * 4, life: .7 });
   });
 
@@ -144,7 +144,7 @@ export function createRenderer(cv, g) {
       // l'arbre bascule autour du pied du tronc, de plus en plus vite, puis s'efface
       const ang = Math.min(1.45, f.t * f.t * 2.6) * f.dir, px = f.x * T + 8, py = f.y * T + 14;
       ctx.save(); ctx.globalAlpha = Math.min(1, f.life * 3); ctx.translate(px, py); ctx.rotate(Math.round(ang / (Math.PI / 16)) * (Math.PI / 16));
-      ctx.drawImage(treeSprite(f.season, f.v), -17, -42); ctx.restore();
+      ctx.drawImage((KIND_SPRITE[f.kind] || treeSprite)(f.season, f.v), -17, -42); ctx.restore();
       ctx.fillStyle = '#5b3a22'; ctx.fillRect(f.x * T + 5, f.y * T + 10, 6, 4); ctx.fillStyle = '#c9955a'; ctx.fillRect(f.x * T + 6, f.y * T + 10, 4, 1);
     } });
     for (const f of worldFx) if (f.k === 'chip') list.push({ z: f.floor / T, d: () => { ctx.globalAlpha = Math.min(1, f.life * 3); ctx.fillStyle = f.col; ctx.fillRect(Math.round(f.x), Math.round(f.y), 2, 2); ctx.globalAlpha = 1; } });
