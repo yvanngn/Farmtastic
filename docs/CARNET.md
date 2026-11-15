@@ -290,3 +290,4 @@ Ordre convenu : 1 mort/clignotement ✅ · 2 tente ✅ · 3 recettes (feu), baie
 - ✅ **Maison de Hailey** dans le quartier (x24-27, rose, toit turquoise) ; le soir elle rentre chez elle.
 - ✅ **Maisons des habitants** : on n'y entre qu'à partir de **5 cœurs sur 10** (la moitié). Avant, on frappe : si l'habitant est là, il vient parler à la porte.
 - 💡/📝 **Franck est un peu amoureux de Luna** (idée validée par l'utilisateur, à exploiter plus tard : il lui fait signe, il la trouve « gentille »…).
+- ✅ Dialogue : la caméra ne se décale plus quand une réplique s'affiche (ordinateur et téléphone vérifiés).

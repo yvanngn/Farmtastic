@@ -196,10 +196,10 @@ export function createRenderer(cv, g) {
     if (outside) cache = farmGround(); // reconstruit si un bâtiment vient d'être construit
     const vw = cv.width / scale, vh = cv.height / scale, MW = SC.W * T, MH = SC.H * T;
     cam.x = MW <= vw ? (MW - vw) / 2 : Math.max(0, Math.min(MW - vw, S.x * T - vw / 2));
-    cam.y = MH <= vh ? (MH - vh) / 2 : Math.max(0, Math.min(MH - vh + (g.talking ? vh * .3 : 0), S.y * T - vh / 2 + (g.talking ? vh * .22 : 0))); // la bulle ne cache pas les personnages
+    cam.y = MH <= vh ? (MH - vh) / 2 : Math.max(0, Math.min(MH - vh, S.y * T - vh / 2)); // la caméra ne bouge plus quand un dialogue s'ouvre
     if (SC.rooms) { // salles façon Game Boy : la caméra reste centrée sur la salle du joueur
       const rw = SC.rooms.w * T, rh = SC.rooms.h * T;
-      cam.x = Math.floor(S.x * T / rw) * rw - (vw - rw) / 2; cam.y = Math.floor(S.y * T / rh) * rh - (vh - rh) / 2 + (g.talking ? vh * .22 : 0);
+      cam.x = Math.floor(S.x * T / rw) * rw - (vw - rw) / 2; cam.y = Math.floor(S.y * T / rh) * rh - (vh - rh) / 2;
     }
     const camX = Math.round(cam.x * scale) / scale, camY = Math.round(cam.y * scale) / scale;
     ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.fillStyle = '#16121f'; ctx.fillRect(0, 0, cv.width, cv.height);
