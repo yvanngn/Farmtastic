@@ -1,3 +1,5 @@
+import { toolTier } from '../systems/skills.js';
+import { MIN_PICK } from '../data/tools.js';
 // Rendu : caméra, culling, tri en profondeur, eau animée, lumière dynamique,
 // étalonnage météo, particules, vignettage. Responsive (devicePixelRatio, échelle entière).
 import { CFG } from '../config.js';
@@ -209,10 +211,10 @@ export function createRenderer(cv, g) {
     if (outside) for (const k in S.plots) { const [x, y] = k.split(',').map(Number); if (x >= x0 && x <= x1 && y >= y0 && y <= y1) drawCrop(ctx, x, y, S.plots[k], wall); }
     for (const f of worldFx) if (f.k === 'dust') { ctx.fillStyle = `rgba(214,196,160,${f.life})`; ctx.fillRect(Math.round(f.x), Math.round(f.y), 2, 2); }
 
-    const list = [];
+    const list = [], pickTier = toolTier(S, 'pick');
     if (outside) for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) {
       const o = S.objs[x + ',' + y];
-      if (o) list.push({ z: y + .9, d: () => o.t === 'tree' ? drawTree(ctx, x, y, o, S.season, now) : drawRock(ctx, x, y, o) });
+      if (o) list.push({ z: y + .9, d: () => o.t === 'tree' ? drawTree(ctx, x, y, o, S.season, now) : drawRock(ctx, x, y, o, (MIN_PICK[o.t] || 1) > pickTier) });
     }
     if (outside) for (const a of S.animals) list.push({ z: a.y, d: () => drawAnimal(ctx, a, now, ANIMALS[a.type]) });
     if (outside) for (const e of g.enemies) list.push({ z: e.y, d: () => drawSlime(ctx, e, now) });

@@ -6,9 +6,9 @@ export const VEINS = {
   iron: { n: 'Filon de fer', ore: 'iron_ore', w: 16, c: '#6a5048' },
   gold: { n: "Filon d'or", ore: 'gold_ore', w: 6, c: '#f2c832' }
 };
-export const VEIN_HP = 8;          // coups de pioche (pioche de base) ; un caillou en demande 2
+export const VEIN_HP = 12;         // coups de pioche (pioche de base) ; un caillou en demande 4
 export const VEIN_ORE = [2, 4];    // minerais par filon
-export const ROCK_HP = 2;
+export const ROCK_HP = 4;
 // Par lieu : fleurs du jour, cailloux et filons au maximum, nouveaux par jour.
 export const NATURE = {
   farm: { flowers: 6, rocks: 4, rocksDay: 2, veins: 1, veinP: 0.35 },

@@ -146,7 +146,12 @@ export function drawSwing(c, S, tool, p) {
   const arcs = { 0: [-.3, 2.9], 1: [.2, -.3], 2: [.4, -1.8], 3: [-.4, 1.8] };
   const [a0, a1] = arcs[S.dir], a = a0 + (a1 - a0) * Math.max(0, e);
   const step = Math.round(a / (Math.PI / 8)) * (Math.PI / 8); // angles quantifiés : rendu pixel net
-  c.save(); c.translate(Math.round(S.x * T - 6 + hx), Math.round(S.y * T - 19 + hy)); c.rotate(step);
+  // le bras suit l'outil : levé pendant l'élan, abaissé pendant le coup
+  const ox = Math.round(S.x * T - 6), oy = Math.round(S.y * T - 19), sh = [[6, 11], [6, 10], [4, 11], [8, 11]][S.dir];
+  const dx = Math.sin(step), dy = -Math.cos(step), L = S.look || {};
+  const hxp = Math.round(ox + sh[0] + dx * 5), hyp = Math.round(oy + sh[1] + dy * 5);
+  for (let k = 0; k <= 5; k++) { c.fillStyle = k < 4 ? (L.shirt || '#d04a3a') : (L.skin || '#f6d2b0'); c.fillRect(Math.round(ox + sh[0] + dx * k) - 1, Math.round(oy + sh[1] + dy * k) - 1, 2, 2); }
+  c.save(); c.translate(hxp, hyp); c.rotate(step);
   draw(c); c.restore();
 }
 
@@ -280,17 +285,19 @@ function rockSprite(v) {
     return outline(s, '#2a2630');
   });
 }
-export function drawRock(c, x, y, o) {
-  if (o.t === 'boulder') {
-    const px = x * T + (o.shake > 0 ? Math.round(Math.sin(o.shake * 40)) : 0), py = y * T;
-    groundShadow(c, px + 8, py + 14, 10, 3, .3);
-    c.drawImage(boulderSprite(), px - 4, py - 5);
-    return;
-  }
-  const px = x * T + (o.shake > 0 ? Math.round(Math.sin(o.shake * 40)) : 0), py = y * T;
-  if (o.t === 'rock_big') { groundShadow(c, px + 8, py + 14, 8, 2, .28); c.drawImage(bigRockSprite((x + y) % 2), px - 3, py - 2); return; }
+// Pierre trop dure pour la pioche actuelle : même dessin, bien plus foncé (avec des reflets violets).
+const DARK = new WeakMap();
+function darkOf(spr) {
+  let d = DARK.get(spr);
+  if (!d) { d = canvas(spr.width, spr.height); const x = d.getContext('2d'); x.drawImage(spr, 0, 0); x.globalCompositeOperation = 'source-atop'; x.fillStyle = 'rgba(28,20,40,.62)'; x.fillRect(0, 0, d.width, d.height); x.fillStyle = 'rgba(150,120,220,.5)'; for (let i = 3; i < d.width - 3; i += 5) x.fillRect(i, 3 + (i % 3), 1, 1); DARK.set(spr, d); }
+  return d;
+}
+export function drawRock(c, x, y, o, hard = false) {
+  const px = x * T + (o.shake > 0 ? Math.round(Math.sin(o.shake * 40)) : 0), py = y * T, sk = s => hard ? darkOf(s) : s;
+  if (o.t === 'boulder') { groundShadow(c, px + 8, py + 14, 10, 3, .3); c.drawImage(sk(boulderSprite()), px - 4, py - 5); return; }
+  if (o.t === 'rock_big') { groundShadow(c, px + 8, py + 14, 8, 2, .28); c.drawImage(sk(bigRockSprite((x + y) % 2)), px - 3, py - 2); return; }
   groundShadow(c, px + 8, py + 13, 7, 2, .25);
-  c.drawImage(rockSprite((x + y) % 2), px - 1, py);
+  c.drawImage(sk(rockSprite((x + y) % 2)), px - 1, py);
 }
 
 /* ---------------- Cultures ---------------- */

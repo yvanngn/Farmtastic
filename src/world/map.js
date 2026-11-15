@@ -69,8 +69,9 @@ export function freeForObj(x, y) {
 }
 
 const KINDS = ['oak', 'pine', 'birch'];
-export const newTree = (kind, grow = 3) => ({ t: 'tree', k: kind, g: grow, hp: 3 });
-export const newRock = big => (big ? { t: 'rock_big', hp: 3 } : { t: 'rock', hp: 2 });
+export const TREE_HP = 5, ROCK_HPS = { rock: 4, rock_big: 6, boulder: 10 };   // coups (pioche/hache de base) 💡
+export const newTree = (kind, grow = 3) => ({ t: 'tree', k: kind, g: grow, hp: TREE_HP });
+export const newRock = big => (big ? { t: 'rock_big', hp: ROCK_HPS.rock_big } : { t: 'rock', hp: ROCK_HPS.rock });
 
 // Carte de départ : le bois de l'est est bien garni (sans dépasser ses limites), un peu de fouillis sur la ferme.
 export function genObjects(seed = 12345) {
@@ -82,7 +83,7 @@ export function genObjects(seed = 12345) {
     if (isForest(x)) {
       if (v < 0.14) { if (trees++ < 70) o[key(x, y)] = newTree(kind); }
       else if (v < 0.21) { if (rocks++ < 30) o[key(x, y)] = newRock(v >= 0.18); }
-      else if (v < 0.23) o[key(x, y)] = { t: 'boulder', hp: 6 };
+      else if (v < 0.23) o[key(x, y)] = { t: 'boulder', hp: ROCK_HPS.boulder };
     }
     else if (v < 0.04) o[key(x, y)] = newTree(kind);
     else if (v < 0.08) o[key(x, y)] = newRock(v > 0.07);

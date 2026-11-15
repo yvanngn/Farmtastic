@@ -106,3 +106,11 @@ test('carte de départ : le bois respecte ses limites ; anciens arbres = adultes
   assert.ok(c.trees <= FOREST.MAX_TREES && c.rocks <= FOREST.MAX_ROCKS, JSON.stringify(c));
   assert.ok(['oak', 'pine', 'birch'].includes(treeKind({ t: 'tree' }, 3, 4)));
 });
+
+test('plus de coups pour le bois et les cailloux ; les pierres trop dures sont repérables', async () => {
+  const { newTree, newRock, TREE_HP, ROCK_HPS } = await import('../src/world/map.js');
+  const { MIN_PICK } = await import('../src/data/tools.js');
+  assert.equal(newTree('oak').hp, 5); assert.equal(newRock(false).hp, 4); assert.equal(newRock(true).hp, 6);
+  assert.ok(ROCK_HPS.boulder > ROCK_HPS.rock_big && TREE_HP > 3);
+  assert.ok(MIN_PICK.boulder > 1, 'le gros rocher demande une meilleure pioche (dessiné plus foncé)');
+});
