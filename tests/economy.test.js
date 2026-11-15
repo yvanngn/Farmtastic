@@ -53,7 +53,7 @@ import { isSolid } from '../src/world/map.js';
 test('nouvelle partie : pas de poulailler ni d’animaux', () => {
   const S = defaultState();
   assert.deepEqual(S.animals, []);
-  assert.deepEqual(S.built, { coop: false, pigsty: false, barn: false });
+  assert.deepEqual(S.built, { coop: false, pigsty: false, kennel: false, barn: false });
 });
 
 test('marchand d’animaux : il faut le bâtiment, puis de la place', () => {
@@ -123,7 +123,7 @@ test('graines à l’étal du marché, foin chez le marchand d’animaux', () =>
 test('bâtiments : prix doublés et un intérieur avec mangeoire pour chacun', () => {
   const { g, S } = makeGame({ state: { inv: { hay: 3 }, animals: [
     { id: 'p', type: 'pig', x: 20, y: 9, love: 0 }, { id: 's', type: 'sheep', x: 28, y: 9, love: 0 }, { id: 'c', type: 'chicken', x: 24, y: 9, love: 0 }] } });
-  assert.deepEqual(Object.values(BUILDINGS).map(b => b.cost.money), [3000, 5000, 8000]);
+  assert.deepEqual(Object.values(BUILDINGS).map(b => b.cost.money), [3000, 5000, 2000, 8000]);
   assert.equal(act(g, 20, 7), 'door');
   assert.equal(S.scene, 'pigsty');
   assert.equal(act(g, 2, 2), 'feedAll');

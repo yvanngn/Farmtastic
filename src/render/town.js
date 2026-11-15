@@ -68,7 +68,7 @@ export function buildTown(season) {
   R(ux + 2, uy - 4, uw - 4, 3 * T + 2, '#8a5a32');
   for (let k = 0; k < 3 * T; k += 4) R(ux + 2, uy - 4 + k, uw - 4, 1, '#74482a');
   R(ux + uw - 12, uy - 4, 10, 3 * T + 2, '#6e4426');
-  for (let i = 0; i < 9; i++) R(ux - 3 + i * 2, uy - 24 + i * 2, uw + 6 - i * 4, 2, i % 2 ? '#4f5a74' : '#5f6b88');
+  for (let i = 0; i < 9; i++) R(ux - 3 + (8 - i) * 2, uy - 24 + i * 2, uw + 6 - (8 - i) * 4, 2, i % 2 ? '#4f5a74' : '#5f6b88'); // toit : pointe en haut
   R(ux - 4, uy - 6, uw + 8, 3, '#3b4258');
   R(ux + 24, uy + 14, 16, 26, '#4a2c18'); R(ux + 26, uy + 16, 12, 24, '#6e4426'); R(ux + 35, uy + 28, 2, 2, '#e8c26a');
   R(ux + 6, uy + 8, 14, 12, '#3b2414'); R(ux + 7, uy + 9, 12, 10, '#ffd98a'); R(ux + 12, uy + 9, 1, 10, '#3b2414'); R(ux + 7, uy + 13, 12, 1, '#3b2414');
@@ -85,7 +85,7 @@ export function buildTown(season) {
     R(ux + 2, uy - 4, uw - 4, 3 * T + 2, '#9a6a3c');
     for (let k = 0; k < 3 * T; k += 4) R(ux + 2, uy - 4 + k, uw - 4, 1, '#7e5430');
     R(ux + uw - 10, uy - 4, 8, 3 * T + 2, '#7a4e2a');
-    for (let i = 0; i < 9; i++) R(ux - 3 + i * 2, uy - 24 + i * 2, uw + 6 - i * 4, 2, i % 2 ? roofA : roofB);
+    for (let i = 0; i < 9; i++) R(ux - 3 + (8 - i) * 2, uy - 24 + i * 2, uw + 6 - (8 - i) * 4, 2, i % 2 ? roofA : roofB); // pointe en haut
     R(ux - 4, uy - 6, uw + 8, 3, '#3b2414');
     const dx = ux + uw / 2 - 8; R(dx, uy + 14, 16, 26, '#4a2c18'); R(dx + 2, uy + 16, 12, 24, '#6e4426'); R(dx + 11, uy + 28, 2, 2, '#e8c26a');
     R(ux + 5, uy + 8, 12, 12, '#3b2414'); R(ux + 6, uy + 9, 10, 10, '#ffd98a'); R(ux + 10, uy + 9, 1, 10, '#3b2414');

@@ -78,7 +78,18 @@ export const hearts = r => Math.floor(Math.max(0, r.points) / POINTS_PER_HEART);
 // Position du PNJ selon l'heure (dehors le jour, chez lui le soir).
 export function placeNPC(n, S, OUT_FROM, OUT_TO) {
   const out = S.minute >= OUT_FROM && S.minute < OUT_TO;
-  if (n.welcome && S.intro && !S.intro.met) { n.scene = 'farm'; Object.assign(n, n.welcome); } // accueil du joueur
+  if (n.welcome && S.intro && !S.intro.met) { n.scene = 'farm'; Object.assign(n, n.welcome); n.walking = false; return; } // accueil du joueur
+  if (n.leaving) { // après l'accueil, il redescend le chemin vers le village
+    if (!Number.isFinite(n.x) || !Number.isFinite(n.y)) Object.assign(n, n.welcome || { x: 16.5, y: 6 });
+    const tx = 16.5, ty = n.y < 5.6 ? 5.6 : 35.4, path = n.x > 16.6 || n.x < 16.4 ? { x: 16.5, y: 5.6 } : { x: tx, y: ty };
+    const dx = path.x - n.x, dy = path.y - n.y, d = Math.hypot(dx, dy) || 1, st = 0.05;
+    n.walking = true; n.dir = Math.abs(dx) > Math.abs(dy) ? (dx < 0 ? 2 : 3) : (dy < 0 ? 1 : 0);
+    if (d <= st) { n.x = path.x; n.y = path.y; if (path.y > 35) { n.leaving = false; n.walking = false; } } else { n.x += dx / d * st; n.y += dy / d * st; }
+    if (n.leaving) { n.scene = 'farm'; return; }
+  }
+  n.walking = false;
+  const walk = (n.walks || []).find(w => S.day % (w.every || 1) === 0 && S.minute >= w.from && S.minute < w.to);
+  if (walk && (!n.shy || hearts(S.social[n.id] || { points: 0 }) >= n.shy.minHearts)) { n.scene = walk.scene; Object.assign(n, walk.at); n.dir = 0; return; } // promenade en forêt
   else if (!n.home) { n.scene = out ? (n.dayScene || 'town') : 'none'; Object.assign(n, n.day); }
   else if (n.shy) { // sort seulement en fin de journée, une fois qu'il a assez confiance
     const r = S.social[n.id], goes = r && hearts(r) >= n.shy.minHearts && S.minute >= n.shy.from && S.minute < n.shy.to;
@@ -100,7 +111,9 @@ export function findNPCAt(g, tx, ty) {
 export function welcome(g) {
   const n = g.npcs.chef, S = g.S;
   if (!n || !S.intro || S.intro.met) return false;
-  g.bus.emit('say', { name: n.name, color: n.color, voice: n.voice, lines: n.welcomeLines, choices: [n.welcomeEnd.t], onChoose: () => {
+  // Quelle que soit la façon de fermer l'accueil (réponse, « Passer »), le maire repart ensuite faire sa vie.
+  const done = () => { if (!S.intro.met) S.intro.met = true; n.leaving = true; };
+  g.bus.emit('say', { name: n.name, color: n.color, voice: n.voice, lines: n.welcomeLines, choices: [n.welcomeEnd.t], onEnd: done, onChoose: () => {
     S.intro.met = true;
     g.bus.emit('say', { name: n.name, color: n.color, voice: n.voice, lines: [n.welcomeEnd.r] });
   } });

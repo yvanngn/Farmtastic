@@ -17,7 +17,7 @@ export function createHud(g, controls) {
     update() {
       const S = g.S;
       $('#hName').textContent = S.name; $('#hMoney').textContent = S.money;
-      const where = { house: ' · 🏠', coop: ' · 🐔', pigsty: ' · 🐷', barn: ' · 🐑', luna: ' · 🏡', franck: ' · 🏚️', grange: ' · 🕳️', wild: ' · ⚔️', town: ' · 🏘️' }[S.scene] || '';
+      const where = { house: ' · 🏠', coop: ' · 🐔', pigsty: ' · 🐷', barn: ' · 🐑', luna: ' · 🏡', franck: ' · 🏚️', grange: ' · 🕳️', wild: ' · ⚔️', foret: ' · 🌲', town: ' · 🏘️' }[S.scene] || '';
       $('#hTime').textContent = `${SEASONS[S.season]} j${S.day} · ${fmtTime(S.minute)} · ${WEATHER_LABELS[S.weather].split(' ')[0]}${where}`;
       $('#hEn').style.width = (S.energy / S.maxE * 100) + '%';
       // vie : cœurs en haut, seulement en mode combat (Terres sauvages ou monstres proches)

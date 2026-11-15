@@ -16,7 +16,7 @@ export function applyPresence(others, state, selfId, now) {
     if (id === selfId) continue;
     const m = state[id][0];
     const o = others[id] || (others[id] = { x: 6, y: 7, tx: 6, ty: 7, dir: 0, f: 0 });
-    o.look = m.look; o.name = m.name; o.ts = now;
+    o.look = m.look; o.name = m.name; o.farmLot = m.farmLot ?? null; o.ts = now;
   }
   for (const id in others) if (!state[id]) delete others[id];
 }
@@ -43,7 +43,7 @@ export function createMultiplayer({ sb, uid, g, world = CFG.WORLD }) {
       ch.on('presence', { event: 'sync' }, () => applyPresence(g.others, ch.presenceState(), uid, Date.now()));
       ch.subscribe(s => { if (s === 'SUBSCRIBED') this.track(); });
     },
-    track() { if (ch) ch.track({ name: g.S.name, look: g.S.look }); },
+    track() { if (ch) ch.track({ name: g.S.name, look: g.S.look, farmLot: g.S.farmLot || 0 }); }, // chaque joueur annonce son emplacement de ferme
     tick(now) {
       if (!ch || now - last < CFG.NET_MS) return;
       last = now;

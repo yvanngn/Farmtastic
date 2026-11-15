@@ -6,5 +6,6 @@ export const ANIMALS = {
   rabbit: { n: 'Lapin', prod: 'rabbit_wool', every: 2, food: 'hay', buy: 800, i: '🐰', sound: 'squeak', home: 'coop' },
   pig: { n: 'Cochon', prod: 'truffle', every: 2, food: 'hay', buy: 1200, i: '🐷', sound: 'oink', home: 'pigsty' },
   sheep: { n: 'Mouton', prod: 'wool', every: 3, food: 'hay', buy: 1500, i: '🐑', sound: 'baa', home: 'barn' },
+  dog: { n: 'Chien', prod: null, every: 0, food: null, buy: 600, i: '🐕', sound: 'woof', roam: true, home: 'kennel' },
   cat: { n: 'Chat', prod: null, every: 0, food: null, buy: 300, i: '🐱', sound: 'meow', roam: true, home: null }
 };

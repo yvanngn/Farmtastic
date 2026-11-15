@@ -28,7 +28,7 @@ test('actions : bac = vente, maison = sommeil', () => {
   const { g, S } = makeGame({ state: { inv: { wheat: 1 }, money: 0 } });
   assert.equal(act(g, 8, 4), 'sell');
   assert.equal(S.money, 6);
-  assert.equal(act(g, 3, 3), 'none', 'trop tôt pour dormir');
+  const d = S.day; assert.notEqual(act(g, 3, 3), 'sleep', 'trop tôt pour dormir'); assert.equal(S.day, d);
 });
 
 test('multijoueur : position, présence, départ', () => {

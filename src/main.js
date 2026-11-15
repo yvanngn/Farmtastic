@@ -23,6 +23,7 @@ import { autoPickup } from './systems/grange.js';
 import { doorAt } from './world/scenes.js';
 import { pickDrops, dropsAt, swapDrop, stackSize } from './systems/inventory.js';
 import { updateWild } from './systems/wild.js';
+import { ensureShrooms, pickShroom } from './systems/foret.js';
 import { isLunaLot } from './world/map.js';
 import { isPath, isGate } from './world/map.js';
 import { createPlayerMarket } from './net/market.js';
@@ -161,6 +162,7 @@ function loop(now) {
     wander(g, dt);
     updateWild(g, dt); // les monstres ne vivent que dans les Terres sauvages
     autoPickup(g);
+    if (g.S.scene === 'foret') { ensureShrooms(g); pickShroom(g, Math.floor(g.S.x), Math.floor(g.S.y - .2)); }
     // on entre directement en marchant vers une porte (si c'est possible)
     { const S = g.S, k = input.keys, moving = k.up || k.down || k.left || k.right || k.ax || k.ay, ft = facingTile(S);
       g.doorCd = Math.max(0, (g.doorCd || 0) - dt);

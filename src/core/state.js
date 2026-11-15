@@ -11,7 +11,7 @@ export function defaultState() {
     x: 6.5, y: 6.8, dir: 0,
     plots: {}, objs: null,
     animals: [],
-    built: { coop: false, pigsty: false, barn: false },
+    built: { coop: false, pigsty: false, kennel: false, barn: false },
     social: {}, savedAt: 0,
     scene: 'farm', invSlots: CFG.INV_SLOTS, stackLvl: 0, rockQueue: [],
     village: { done: [], progress: 0 }, festival: null, caravan: { tokens: 0, unlocked: [] },
@@ -19,6 +19,7 @@ export function defaultState() {
     tools: {},                       // aucun outil au départ : ils sont dans la grange
     intro: { met: false },
     tilled: {},
+    farmLot: 0,                      // emplacement de ferme de ce joueur (multijoueur : un par joueur)
     drops: [],                       // objets posés au sol (sac plein)
     workbench: false,                // établi de la maison, à faire réparer par le charpentier
     wildOpen: false, wild: null,     // Terres sauvages (zone de combat), fermées au début                      // cases du champ bêchées (à la pelle)           // accueil du chef du village

@@ -12,6 +12,7 @@ import { hasTool } from './skills.js';
 import { grangeAction } from './grange.js';
 import { examineText } from './examine.js';
 import { hitZRock, isOpen } from './wild.js';
+import { pickShroom } from './foret.js';
 import { findNPCAt, talk, gift } from './social.js';
 import { add } from './inventory.js';
 import { TOOL_FOR } from './resources.js';
@@ -65,6 +66,7 @@ function act0(g, tx, ty) {
   if (d && d.to === 'wild' && !isOpen(S)) { g.bus.emit('sfx', 'denied'); g.bus.emit('toast', 'Le vieux portail est fermé à clé. Le chef du village saura peut-être…'); return 'locked'; }
   if (d && !(sc === 'farm' && BUILDINGS[d.to] && !(S.built && S.built[d.to]))) { enterScene(g, d.to, d.spawn); return 'door'; }
   if (sc === 'grange') { const r = grangeAction(g, tx, ty); if (r !== 'none') return r; }
+  if (sc === 'foret') return pickShroom(g, tx, ty) ? 'pick' : 'none';
   if (sc === 'wild') return S.wild && S.wild.rocks[key(tx, ty)] ? (hitZRock(g, tx, ty) ? 'hit' : 'none') : 'none';
   if (sc === 'town') { const ui = UI_TILES[tileAt(sc, tx, ty)]; if (ui) { g.bus.emit('sfx', 'ui'); g.bus.emit('open', ui); return ui; } return 'none'; }
   if (sc === 'house') {

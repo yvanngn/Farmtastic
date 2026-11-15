@@ -30,6 +30,18 @@ export const ITEMS = {
   potion: { n: 'Potion', p: 30, i: '🧪', eat: { h: 40 }, keep: true }
 };
 
+// Champignons de saison (forêt) : une espèce courante et une rare par saison, en 3 tailles.
+// Le gros est rare et vaut bien plus ; l'espèce rare est chère. (💡 espèces et prix proposés par Claude)
+export const MUSHROOMS = [
+  [{ id: 'mousseron', n: 'Mousseron', p: 15, c: '#e8dcc0' }, { id: 'morille', n: 'Morille', p: 80, c: '#8a6a4a', rare: true }],
+  [{ id: 'girolle', n: 'Girolle', p: 20, c: '#f2b33a' }, { id: 'oronge', n: 'Oronge', p: 90, c: '#e8602a', rare: true }],
+  [{ id: 'cepe', n: 'Cèpe', p: 30, c: '#8a5a32' }, { id: 'truffe_blanche', n: 'Truffe blanche', p: 150, c: '#e8e0c8', rare: true }],
+  [{ id: 'pied_mouton', n: 'Pied-de-mouton', p: 18, c: '#f0d8b0' }, { id: 'trompette', n: 'Trompette-de-la-mort', p: 70, c: '#3a3036', rare: true }]
+];
+export const SIZES = { s: { n: 'petit', k: 1 }, m: { n: 'moyen', k: 1.6 }, l: { n: 'gros', k: 3 } };
+for (const season of MUSHROOMS) for (const m of season) for (const [sz, S] of Object.entries(SIZES))
+  ITEMS[`${m.id}_${sz}`] = { n: `${m.n} (${S.n})`, p: Math.round(m.p * S.k), i: '🍄', mush: m.id };
+
 export const TOOLS = [
   { id: 'hand', n: 'Main', i: '✋' },
   { id: 'axe', n: 'Hache', i: '🪓' },

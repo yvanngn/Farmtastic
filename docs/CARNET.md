@@ -230,3 +230,12 @@ Goûts de Franck (💡) : adore le croissant ; aime le pain, les œufs et le boi
 
 ## 7. Abandonné
 - Piles de 99 objets dès le départ (remplacées par 10 par case, lot 2).
+
+## Séance du 15/11/2026 (midi)
+- ✅ Toits de la ville remis à l'endroit.
+- ✅ Le maire repart vers le village après l'accueil, même si on passe le dialogue.
+- ✅ Chiens (💡 600 🪙) et chenil (💡 2000 🪙, 30 bois, 10 pierres, 3 chiens) ; caresse +15.
+- ✅ Forêt à l'ouest de la ferme : champignons de saison au pied des arbres, 3 tailles (petit / moyen / gros, gros = rare), une espèce rare et chère par saison (💡 mousseron/morille, girolle/oronge, cèpe/truffe blanche, pied-de-mouton/trompette).
+- ✅ Promenades en forêt (💡) : Luna 16h–17h tous les 2 jours, Manuel 13h–14h tous les 3 jours, Franck 6h30–7h30 tous les 2 jours dès 2 cœurs.
+- ✅ 4 emplacements de ferme (Nord = la tienne, Est, Sud, Ouest) visibles sur la carte « 🧭 Région », même en solo ; en multijoueur chacun annonce le sien.
+- ⏳ Choisir son emplacement en multijoueur (pour l'instant tout le monde a le Nord).

@@ -20,10 +20,10 @@ export function interactAnimal(g, a) {
     g.bus.emit('pop', { t: 'Miam !', x: a.x, y: a.y, c: '#ff0' }); return 'feed';
   }
   if (!a.petted) {
-    a.petted = true; a.love = Math.min(100, a.love + (a.type === 'cat' ? 15 : 10)); a.heart = 1;
+    a.petted = true; a.love = Math.min(100, a.love + (a.type === 'cat' || a.type === 'dog' ? 15 : 10)); a.heart = 1;
     g.bus.emit('sfx', def.sound || 'cluck'); return 'pet';
   }
-  const hint = def.food && !a.fed ? ' · pas encore nourri (foin)' : a.type === 'cat' ? ' · ronronne 💤' : '';
+  const hint = def.food && !a.fed ? ' · pas encore nourri (foin)' : a.type === 'cat' ? ' · ronronne 💤' : a.type === 'dog' ? ' · remue la queue 🐾' : '';
   g.bus.emit('toast', `${def.n} — affection ${a.love}/100${hint}`);
   return 'info';
 }

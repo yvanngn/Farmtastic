@@ -6,7 +6,8 @@ import { drawChar, drawTree, drawRock, drawCrop, drawAnimal, drawSlime, drawSwin
 import { buildInterior } from './interiors.js';
 import { buildTown, TOWN_LIGHTS } from './town.js';
 import { PICKUPS, isBroken } from '../systems/grange.js';
-import { buildWild, drawMob, drawZRock } from './wild.js';
+import { buildWild, drawMob, drawZRock, drawShroom } from './wild.js';
+import { MUSHROOMS } from '../data/items.js';
 import { LAYOUTS } from '../world/scenes.js';
 import { toolIcon } from './sprites.js';
 import { SCENES } from '../world/scenes.js';
@@ -118,7 +119,7 @@ export function createRenderer(cv, g) {
     const scene = S.scene || 'farm', outside = scene === 'farm', sky = outside || !!SCENES[scene].outdoor, SC = SCENES[scene];
     if (scene === 'house' && cacheScene === 'house' && cache !== interiors['house' + !!S.workbench]) cacheScene = ''; // établi réparé
     if (cacheSeason !== S.season || cacheScene !== scene) {
-      cache = outside ? farmGround() : scene === 'wild' ? (interiors['wild' + S.season] ||= buildWild(S.season)) : scene === 'town' ? (interiors['town' + S.season] ||= buildTown(S.season)) : (scene === 'house' ? (interiors['house' + !!S.workbench] ||= buildInterior(scene, S)) : (interiors[scene] ||= buildInterior(scene, S)));
+      cache = outside ? farmGround() : scene === 'wild' ? (interiors['wild' + S.season] ||= buildWild(S.season)) : scene === 'foret' ? (interiors['foret' + S.season] ||= buildWild(S.season, 'foret')) : scene === 'town' ? (interiors['town' + S.season] ||= buildTown(S.season)) : (scene === 'house' ? (interiors['house' + !!S.workbench] ||= buildInterior(scene, S)) : (interiors[scene] ||= buildInterior(scene, S)));
       if (cacheSeason !== S.season) initWeather();
       cacheSeason = S.season; cacheScene = scene;
     }
@@ -150,6 +151,10 @@ export function createRenderer(cv, g) {
     }
     if (outside) for (const a of S.animals) list.push({ z: a.y, d: () => drawAnimal(ctx, a, now, ANIMALS[a.type]) });
     if (outside) for (const e of g.enemies) list.push({ z: e.y, d: () => drawSlime(ctx, e, now) });
+    if (scene === 'foret') {
+      const cols = {}; for (const ss of MUSHROOMS) for (const m of ss) cols[m.id] = m.c;
+      for (const k in (S.foret && S.foret.shrooms) || {}) { const [x, y] = k.split(',').map(Number), m = S.foret.shrooms[k]; list.push({ z: y + .6, d: () => drawShroom(ctx, x, y, m, cols[m.sp]) }); }
+    }
     if (scene === 'wild') {
       for (const e of g.enemies) list.push({ z: e.y, d: () => drawMob(ctx, e, now) });
       for (const k in (S.wild && S.wild.rocks) || {}) { const [x, y] = k.split(',').map(Number), o = S.wild.rocks[k]; list.push({ z: y + .9, d: () => drawZRock(ctx, x, y, o) }); }
@@ -184,7 +189,7 @@ export function createRenderer(cv, g) {
         } });
       }));
     }
-    for (const id in g.npcs) { const n = g.npcs[id]; if ((n.scene || 'farm') !== scene) continue; list.push({ z: n.y, d: () => { drawChar(ctx, Math.round(n.x * T - 6), Math.round(n.y * T - 19), n.look, n.dir || 0, 0, now); label(n.name, n.x * T, n.y * T - (n.look.tall ? 28 : 25)); } }); }
+    for (const id in g.npcs) { const n = g.npcs[id]; if ((n.scene || 'farm') !== scene) continue; list.push({ z: n.y, d: () => { drawChar(ctx, Math.round(n.x * T - 6), Math.round(n.y * T - 19), n.look, n.dir || 0, n.walking ? ((now / 150 | 0) % 4) : 0, now); label(n.name, n.x * T, n.y * T - (n.look.tall ? 28 : 25)); } }); }
     for (const id in g.others) { const o = g.others[id]; if (!o.look || (o.scene || 'farm') !== scene) continue; list.push({ z: o.y, d: () => { drawChar(ctx, Math.round(o.x * T - 6), Math.round(o.y * T - 19), o.look, o.dir, o.f, now + 777); label(o.name, o.x * T, o.y * T - 25); } }); }
     list.push({ z: S.y, d: () => {
       if (swing && S.dir === 1) drawSwing(ctx, S, swing.tool, swing.p);

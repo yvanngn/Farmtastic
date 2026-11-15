@@ -72,11 +72,13 @@ export function buildGround(season, built = {}) {
   drawGrange(R);
   drawFieldStakes(R);
   drawWildGate(R);
+  drawForestArch(R);
   drawLunaHouse(R);
   drawFranckHouse(R);
   if (built.coop) drawCoop(R); else drawLot(g, R, 'coop');
   if (built.pigsty) drawPigsty(R); else drawLot(g, R, 'pigsty');
   if (built.barn) drawBarn(R); else drawLot(g, R, 'barn');
+  if (built.kennel) drawKennel(R); else drawLot(g, R, 'kennel');
   return c;
 }
 
@@ -133,6 +135,15 @@ function drawCoop(R) {
   for (let i = 0; i < 8; i++) R(x - 3 + i * 3, y + 8 - i, 50 - i * 6, 1, i % 2 ? '#5a3a2a' : '#6e4a36');
   R(x + 16, y + 13, 12, 13, '#3b2414'); R(x + 16, y + 13, 12, 1, '#f0e6d0'); R(x + 21, y + 13, 1, 13, '#f0e6d0');
   R(x + 4, y + 13, 7, 6, '#f0e6d0'); R(x + 5, y + 14, 5, 4, '#7fb6d9');
+}
+
+// Entrée de la forêt (x0, y19-21) : arche de branches et petit panneau.
+function drawForestArch(R) {
+  const x = 0, y = 19 * T;
+  R(x, y - 6, 6, 3 * T + 6, '#5b3a22'); R(x, y - 8, 14, 5, '#3e7a34'); R(x, y + 3 * T - 2, 14, 4, '#3e7a34');
+  R(x + 2, y + T - 4, 22, 9, '#3f2615'); R(x + 3, y + T - 3, 20, 7, '#e8c26a');
+  R(x + 6, y + T - 1, 12, 1, '#5b3a22'); R(x + 6, y + T + 1, 9, 1, '#5b3a22');
+  R(x + 22, y + T + 5, 2, 10, '#5b3a22');
 }
 
 // Vieux portail de pierre, tout à l'est (x47, y16-20) : l'entrée des Terres sauvages.
@@ -227,6 +238,16 @@ function drawPigsty(R) {
   R(x + 18, y + 15, 14, 11, '#3b2414'); R(x + 18, y + 15, 14, 1, '#c99560');
   R(x + 4, y + 14, 8, 6, '#3b2414'); R(x + 5, y + 15, 6, 4, '#ffd98a');
   R(x + 6, y + 28, w - 12, 6, '#6e4a2e'); R(x + 9, y + 29, 8, 2, '#8a5e3a'); R(x + 24, y + 30, 6, 2, '#8a5e3a');
+}
+
+// Chenil (x31-32) : niche en bois au toit rouge, gamelle devant.
+function drawKennel(R) {
+  const x = 31 * T, y = 100, w = 2 * T;
+  R(x, y + 26, w, 3, 'rgba(20,12,8,.3)');
+  R(x + 2, y + 10, w - 4, 16, '#a8774a'); for (let i = 0; i < w; i += 4) R(x + 2 + i, y + 10, 1, 16, '#8a5a32');
+  for (let i = 0; i < 8; i++) R(x + 8 - i, y + 2 + i, w - 16 + i * 2, 1, i % 2 ? '#a83a2a' : '#c8452f');
+  R(x + 10, y + 15, 12, 11, '#2a1d18'); R(x + 12, y + 12, 8, 3, '#2a1d18');
+  R(x + 2, y + 28, 7, 3, '#7a8aa0'); R(x + 3, y + 28, 5, 1, '#c99560');
 }
 
 // Bergerie (x27-30) : grange rouge à double pente, grande porte en croix.

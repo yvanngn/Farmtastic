@@ -8,8 +8,8 @@ import { GRASS } from './ground.js';
 import { treeSprite, pineSprite } from './sprites.js';
 const T = CFG.T;
 
-export function buildWild(season) {
-  const L = LAYOUTS.wild, H = L.length, W = L[0].length;
+export function buildWild(season, name = 'wild') {
+  const L = LAYOUTS[name], H = L.length, W = L[0].length;
   const c = document.createElement('canvas'); c.width = W * T; c.height = H * T;
   const g = c.getContext('2d'), r = rng(77 + season);
   const R = (x, y, w, h, col) => { g.fillStyle = col; g.fillRect(x, y, w, h); };
@@ -25,7 +25,7 @@ export function buildWild(season) {
     const px = x * T + 8, py = y * T + 9; disc(g, px, py + 1, 8, '#3c3843'); disc(g, px - 1, py, 7, '#6a6672'); disc(g, px - 3, py - 3, 3, '#9a96a2');
   }
   for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) if (L[y][x] === 'T') {
-    const v = (x * 7 + y * 3) % 4, im = (x + y) % 3 === 0 ? pineSprite(season, v) : treeSprite(season, v);
+    const v = (x * 7 + y * 3) % 4, im = (x + y) % 3 === 0 || (name === 'foret' && (x * y) % 5 === 1) ? pineSprite(season, v) : treeSprite(season, v);
     g.drawImage(im, x * T - 9, y * T - 26);
   }
   return c;
@@ -55,4 +55,13 @@ export function drawZRock(c, x, y, o) {
   const base = o.t === 'zrock3' ? ['#3d5a7a', '#5a86b0', '#a8d8ff'] : o.t === 'zrock2' ? ['#5a4a5e', '#7e6a82', '#c9a0d8'] : ['#57535e', '#827e8a', '#b4afba'];
   disc(c, px, py, 6, base[0]); disc(c, px - 1, py - 1, 5, base[1]); disc(c, px - 3, py - 3, 2, base[2]);
   if (o.t !== 'zrock1') { c.fillStyle = o.t === 'zrock3' ? '#e0f6ff' : '#e05a8a'; c.fillRect(px + 1, py - 2, 2, 2); c.fillRect(px - 2, py + 1, 1, 1); }
+}
+
+// Champignon au pied d'un arbre : chapeau coloré selon l'espèce, plus grand selon la taille.
+export function drawShroom(c, x, y, m, color) {
+  const k = m.size === 'l' ? 1.7 : m.size === 'm' ? 1.3 : 1, px = x * T + 8, py = y * T + 12;
+  c.fillStyle = 'rgba(0,0,0,.25)'; c.fillRect(px - 4 * k, py + 1, 8 * k, 2);
+  c.fillStyle = '#f4ead8'; c.fillRect(px - 1 * k, py - 4 * k, 2 * k, 5 * k);
+  c.fillStyle = color; c.beginPath(); c.ellipse(px, py - 4 * k, 4.5 * k, 3 * k, 0, Math.PI, 0); c.fill();
+  c.fillStyle = 'rgba(255,255,255,.55)'; c.fillRect(px - 2 * k, py - 6 * k, 1.5 * k, 1.2 * k);
 }

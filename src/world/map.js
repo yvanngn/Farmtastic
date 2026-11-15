@@ -38,9 +38,10 @@ import { tileAt, SOLID_TILES } from './scenes.js';
 
 export function isSolid(S, x, y) {
   if (S.scene === 'wild' && S.wild && S.wild.rocks && S.wild.rocks[x + ',' + y]) return true;
+  if (S.scene === 'foret' && S.foret && S.foret.shrooms && S.foret.shrooms[x + ',' + y]) return false;
   if (S.scene && S.scene !== 'farm') { const t = tileAt(S.scene, x, y); if (S.scene === 'grange' && (t === 'p' || t === 'r') && S.grange && S.grange.broken.includes(x + ',' + y)) return false; return SOLID_TILES.includes(t); }
   if (x < 0 || y < 0 || x >= CFG.W || y >= CFG.H) return true;
-  return isPond(x, y) || isHouse(x, y) || isGrange(x, y) || isFranckHouse(x, y) || (x === 47 && y >= 16 && y <= 20) || isLunaHouse(x, y) || !!buildingAt(S.built, x, y) || isGate(x, y) || isFence(x, y, S.built) || isBin(x, y) || !!(S.objs && S.objs[key(x, y)]);
+  return isPond(x, y) || isHouse(x, y) || isGrange(x, y) || (x === 0 && y >= 19 && y <= 21) || isFranckHouse(x, y) || (x === 47 && y >= 16 && y <= 20) || isLunaHouse(x, y) || !!buildingAt(S.built, x, y) || isGate(x, y) || isFence(x, y, S.built) || isBin(x, y) || !!(S.objs && S.objs[key(x, y)]);
 }
 
 // Générateur pseudo-aléatoire déterministe (même carte pour une même graine).
@@ -51,7 +52,7 @@ export function rng(seed) {
 
 export function freeForObj(x, y) {
   return !isHouse(x, y) && !isPlot(x, y) && !isPond(x, y) && !isPath(x, y) && !inRect(x, y, 17, 5, 33, 14)
-    && !isBin(x, y) && !isLunaLot(x, y) && !inRect(x, y, 9, 0, 14, 5) && !inRect(x, y, 44, 16, 47, 20) && !inRect(x, y, 4, 5, 9, 7) && x > 0 && y > 0 && x < CFG.W - 1 && y < CFG.H - 1;
+    && !isBin(x, y) && !isLunaLot(x, y) && !inRect(x, y, 9, 0, 14, 5) && !inRect(x, y, 44, 16, 47, 20) && !inRect(x, y, 0, 18, 3, 22) && !inRect(x, y, 4, 5, 9, 7) && x > 0 && y > 0 && x < CFG.W - 1 && y < CFG.H - 1;
 }
 
 const KINDS = ['oak', 'pine', 'birch'];

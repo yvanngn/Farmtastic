@@ -5,9 +5,9 @@ import { $ } from './dom.js';
 
 export function createDialog(g, audio) {
   const box = $('#dlg'), nameEl = $('#dlgName'), textEl = $('#dlgText'), choicesEl = $('#dlgChoices');
-  let queue = [], cur = null;
+  let queue = [], cur = null, ends = [];
   function show() {
-    if (!queue.length) { box.classList.remove('on'); cur = null; g.talking = false; return; }
+    if (!queue.length) { box.classList.remove('on'); cur = null; g.talking = false; const e = ends; ends = []; e.forEach(f => f()); return; }
     g.talking = true;
     cur = queue.shift();
     nameEl.textContent = cur.name + (cur.title ? ` · ${cur.title}` : ''); nameEl.style.color = cur.color || 'var(--or-vif)';
@@ -17,8 +17,9 @@ export function createDialog(g, audio) {
     box.classList.remove('on'); void box.offsetWidth; box.classList.add('on');
     if (cur.voice) audio.play(cur.voice);
   }
-  g.bus.on('say', ({ name, title, color, voice, lines, choices, onChoose }) => {
+  g.bus.on('say', ({ name, title, color, voice, lines, choices, onChoose, onEnd }) => {
     const wasOpen = !!cur;
+    if (onEnd) ends.push(onEnd); // appelé quand la discussion se ferme (fin, « Passer » ou Échap)
     lines.forEach((line, k) => queue.push({ name, title, color, voice, line, ...(k === lines.length - 1 && choices ? { choices, onChoose } : {}) }));
     if (!wasOpen) show();
   });

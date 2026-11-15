@@ -158,6 +158,7 @@ export function createAudio(g, storage) {
     buy: t => { blip(t, 'square', 784, 0.07, 0.1); blip(t + 0.07, 'square', 1047, 0.2, 0.1); },
     craft: t => { for (let k = 0; k < 3; k++) burst(t + k * 0.09, 0.05, 'bandpass', 2200, 0.35, 4); blip(t + 0.3, 'sine', hz(31), 0.6, 0.15); },
     feed: t => { for (let k = 0; k < 3; k++) burst(t + k * 0.1, 0.06, 'bandpass', 1500, 0.25, 3); },
+    woof: t => { blip(t, 'sawtooth', 300, 0.09, 0.12, 180); burst(t, 0.08, 'bandpass', 600, 0.25, 2); blip(t + 0.14, 'sawtooth', 320, 0.08, 0.1, 190); },
     cluck: t => { blip(t, 'square', 720, 0.06, 0.08, 520); blip(t + 0.09, 'square', 820, 0.08, 0.08, 560); },
     collect: t => { blip(t, 'sine', hz(31), 0.4, 0.18); blip(t + 0.08, 'sine', hz(36), 0.5, 0.15); },
     hit: t => { burst(t, 0.12, 'highpass', 1200, 0.3); blip(t, 'sine', 220, 0.15, 0.4, 70); },

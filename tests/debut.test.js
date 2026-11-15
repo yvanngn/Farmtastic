@@ -68,3 +68,74 @@ test('ancienne sauvegarde : outils gardés, pas d’accueil', () => {
   assert.equal(s.intro.met, true);
   assert.equal(migrate({ name: 'y' }).tools.sword, 1);
 });
+
+// ---- 15/11 midi : maire, chiens, forêt, emplacements de ferme ----
+import { ensureShrooms, pickShroom } from '../src/systems/foret.js';
+import { MUSHROOMS, ITEMS } from '../src/data/items.js';
+import { LUNA, FRANCK } from '../src/data/npcs.js';
+import { buyAnimal, build, canBuyAnimal } from '../src/systems/economy.js';
+import { FARM_LOTS } from '../src/data/buildings.js';
+import { applyPresence } from '../src/net/multiplayer.js';
+import { LAYOUTS } from '../src/world/scenes.js';
+
+test('après l’accueil (même passé avec « Passer »), le maire redescend vers le village', () => {
+  const { g, S } = start({ minute: 600 });
+  registerNPC(g, CHEF); const n = g.npcs.chef;
+  const said = []; g.bus.on('say', d => said.push(d));
+  assert.equal(welcome(g), true); said.at(-1).onEnd();   // fermé sans répondre
+  assert.equal(S.intro.met, true);
+  for (let i = 0; i < 2000 && n.leaving; i++) placeNPC(n, S, OUT_FROM, OUT_TO);
+  assert.equal(n.leaving, false, 'il est arrivé au portail du village');
+  placeNPC(n, S, OUT_FROM, OUT_TO);
+  assert.equal(n.scene, 'town');
+});
+
+test('chiens : il faut un chenil, puis ils vivent en liberté', () => {
+  const { g, S } = makeGame({ state: { money: 1e5, inv: { wood: 99, stone: 99 }, animals: [], built: { coop: false, pigsty: false, kennel: false, barn: false } } });
+  assert.equal(canBuyAnimal(S, 'dog').why, 'home');
+  assert.equal(build(g, 'kennel'), true);
+  assert.equal(buyAnimal(g, 'dog'), true);
+  assert.equal(S.animals[0].type, 'dog');
+});
+
+test('forêt : champignons de saison au pied des arbres, gros et rares plus chers', () => {
+  let k = 11; const { g, S } = makeGame({ rnd: () => ((k = (k * 9301 + 49297) % 233280) / 233280), state: { scene: 'foret', season: 2, inv: {} } });
+  const all = {};
+  for (let d = 1; d <= 30; d++) { S.day = d; Object.assign(all, Object.fromEntries(Object.entries(ensureShrooms(g)).map(([kk, m]) => [d + ':' + kk, m]))); }
+  const ms = Object.values(all), autumn = MUSHROOMS[2].map(m => m.id);
+  assert.ok(ms.every(m => autumn.includes(m.sp)), 'seulement les espèces d’automne');
+  const count = sz => ms.filter(m => m.size === sz).length;
+  assert.ok(count('s') > count('m') && count('m') > count('l') && count('l') > 0, 'gros = rare');
+  assert.ok(ms.filter(m => m.sp === 'truffe_blanche').length < ms.filter(m => m.sp === 'cepe').length, 'espèce rare = rare');
+  assert.ok(ITEMS.cepe_l.p > ITEMS.cepe_s.p && ITEMS.truffe_blanche_s.p > ITEMS.cepe_l.p);
+  const L = LAYOUTS.foret;
+  for (const kk of Object.keys(S.foret.shrooms)) { const [x, y] = kk.split(',').map(Number); assert.ok([[1, 0], [-1, 0], [0, 1], [0, -1]].some(([a, b]) => L[y + b][x + a] === 'T'), 'au pied d’un arbre'); }
+  const [x, y] = Object.keys(S.foret.shrooms)[0].split(',').map(Number);
+  assert.ok(pickShroom(g, x, y));
+  assert.equal(Object.values(S.inv).reduce((a, b) => a + b, 0), 1);
+});
+
+test('forêt : des habitants s’y promènent à certaines heures', () => {
+  const { g, S } = start({ minute: 970, day: 2 });
+  registerNPC(g, LUNA); registerNPC(g, FRANCK);
+  placeNPC(g.npcs.luna, S, OUT_FROM, OUT_TO);
+  assert.equal(g.npcs.luna.scene, 'foret');
+  S.day = 3; placeNPC(g.npcs.luna, S, OUT_FROM, OUT_TO);
+  assert.equal(g.npcs.luna.scene, 'farm', 'pas tous les jours');
+  S.minute = 400; S.day = 2; placeNPC(g.npcs.franck, S, OUT_FROM, OUT_TO);
+  assert.equal(g.npcs.franck.scene, 'franck', 'Franck, trop timide au début');
+  for (const n of [LUNA, FRANCK, CHEF]) for (const w of n.walks) assert.equal(LAYOUTS.foret[Math.floor(w.at.y)][Math.floor(w.at.x)], '.');
+});
+
+test('une ferme de départ par joueur : 4 emplacements, chacun annonce le sien', () => {
+  assert.equal(FARM_LOTS.length, 4);
+  assert.equal(defaultState().farmLot, 0);
+  const others = {}; applyPresence(others, { a: [{ name: 'Léa', look: {}, farmLot: 2 }] }, 'moi', 0);
+  assert.equal(others.a.farmLot, 2);
+});
+
+test('l’entrée de la forêt est à l’ouest de la ferme', () => {
+  const { g, S } = start();
+  assert.equal(act(g, 0, 20), 'door');
+  assert.equal(S.scene, 'foret');
+});

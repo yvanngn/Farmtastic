@@ -120,6 +120,21 @@ function buildWild() {
   return m.map(r => r.join(''));
 }
 LAYOUTS.wild = buildWild();
+// Forêt à côté de la ferme (ouest) : grands arbres (T), clairières, sortie D vers la ferme.
+function buildForest() {
+  const W = 30, H = 18;
+  const m = Array.from({ length: H }, (_, y) => Array.from({ length: W }, (_, x) => (x === 0 || y === 0 || x === W - 1 || y === H - 1 ? 'T' : '.')));
+  // bosquets : positions fixes pour une forêt dense mais praticable
+  const groves = [[3, 3], [7, 2], [12, 4], [17, 2], [22, 4], [25, 7], [4, 8], [9, 10], [14, 8], [19, 11], [24, 13], [5, 14], [11, 14], [16, 15], [21, 15], [27, 12], [2, 11], [8, 6], [13, 12], [20, 7]];
+  for (const [x, y] of groves) { m[y][x] = 'T'; if (x + 1 < W - 1 && (x + y) % 3) m[y][x + 1] = 'T'; if (y + 1 < H - 1 && (x * y) % 4 === 0) m[y + 1][x] = 'T'; }
+  const keep = [[9, 7], [18, 13], [5, 12]]; // lieux de promenade des habitants
+  for (let y = 1; y < H - 1; y++) for (let x = 1; x < W - 1; x++)
+    if ((x * 13 + y * 7) % 9 === 0 && y !== 9 && !keep.some(([a, b]) => Math.abs(a - x) + Math.abs(b - y) < 2)) m[y][x] = 'T';
+  for (let x = 24; x < W - 1; x++) m[9][x] = '.';
+  m[9][W - 1] = 'D';
+  return m.map(r => r.join(''));
+}
+LAYOUTS.foret = buildForest();
 export const SOLID_TILES = '#WDBKTPCHNYXMQUJAOVZFLfprE';  // A = fauteuil (Franck) / marchand d'animaux (village)
 // Tuiles qui ouvrent une interface.
 export const UI_TILES = { M: 'market', Q: 'board', U: 'upgrades', J: 'carpenter', A: 'animals', O: 'bakery', V: 'butcher', Z: 'fishmonger' };
@@ -133,12 +148,14 @@ export const SCENES = {
     { x: 12, y: 4, to: 'grange', spawn: { x: 5.5, y: 5.2 } },
     { x: 27, y: 31, to: 'franck', spawn: { x: 4.5, y: 5.4 } },
     { x: 20, y: 31, to: 'luna', spawn: { x: 4.5, y: 5.4 } },
+    { x: 0, y: 20, to: 'foret', spawn: { x: 28.2, y: 9.6 } },
     { x: 47, y: 18, to: 'wild', spawn: { x: 1.6, y: 4.5 } },
     { x: 16, y: 35, to: 'town', spawn: { x: 12.5, y: 1.8 } }
   ] },
   town: { W: 24, H: 22, outdoor: true, doors: [{ x: 12, y: 0, to: 'farm', spawn: { x: 16.5, y: 34.4 } }] },
   house: { W: 12, H: 9, doors: [{ x: 5, y: 8, to: 'farm', spawn: { x: 5.5, y: 5.9 } }] },
   coop: { W: 10, H: 7, doors: [{ x: 4, y: 6, to: 'farm', spawn: { x: 24.5, y: 8.9 } }] },
+  foret: { W: 30, H: 18, outdoor: true, doors: [{ x: 29, y: 9, to: 'farm', spawn: { x: 1.6, y: 20.6 } }] },
   wild: { W: 30, H: 16, outdoor: true, rooms: { w: 10, h: 8 }, doors: [{ x: 0, y: 4, to: 'farm', spawn: { x: 46.4, y: 18.5 } }] },
   grange: { W: 22, H: 11, dark: true, doors: [{ x: 5, y: 6, to: 'farm', spawn: { x: 12.5, y: 5.6 } }] },
   franck: { W: 9, H: 7, doors: [{ x: 4, y: 6, to: 'farm', spawn: { x: 27.5, y: 32.6 } }] },
