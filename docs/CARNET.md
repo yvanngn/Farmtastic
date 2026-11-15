@@ -256,3 +256,8 @@ Goûts de Franck (💡) : adore le croissant ; aime le pain, les œufs et le boi
 - ✅ **Myst** (PNJ, décrit par l'utilisateur) : grand, mince, long manteau noir ; vieille maison sombre façon motel Bates, au nord-est, un peu à l'écart (💡 emplacement). Parle peu, écoute tout ; mis de côté par le village, content qu'on bouscule les choses. Arrive quand la cabane est réparée, dit qu'on peut rester (le lieu passe pour hanté), puis repart. Sort le soir (💡 19h-23h devant chez lui).
 - ✅ Manuel ne vient plus accueillir le joueur. Sa **villa** est au sud de la place du village.
 - ⏳ Que se passe-t-il quand on entre dans la maison de Myst (fermée pour l'instant) ?
+
+## Séance du 15/11/2026 (soir) — découpage demandé
+Ordre convenu : 1 mort/clignotement ✅ · 2 tente ✅ · 3 recettes (feu), baies · 4 ressources plus dures, cailloux foncés, bras animés · 5 quartier résidentiel au sud + centre-ville à droite, zoom réglable · 6 caverne sombre (remplace les Terres sauvages), bien plus grande, étages et sorties, slimes redessinés.
+- ✅ Bug : après un K.O. dans la mine, le héros clignotait sans fin à la ferme (le compteur d'invulnérabilité ne baissait que dans la mine). Corrigé + test.
+- ✅ Départ avec un **sac à dos** et une **tente**. La tente se pose sur l'herbe à côté de la cabane ; la toucher → Dormir (50 % d'énergie, sans amende) / Replier / Rien. La maison réparée n'a **pas encore de lit** (à construire, avec les recettes au lot 3). 💡 tente revendable 60 🪙.

@@ -23,6 +23,8 @@ export const ITEMS = {
   shrimp: { n: 'Crevettes', p: 55, i: '🦐', buy: 110 },
   salmon: { n: 'Saumon', p: 90, i: '🍣', buy: 180 },
   truffle: { n: 'Truffe', p: 160, i: '🍄' },
+  backpack: { n: 'Sac à dos', p: 0, i: '🎒', keep: true },            // apporté du voyage
+  tent: { n: 'Tente', p: 60, i: '⛺', keep: true, tent: true },        // à poser à côté de la cabane (💡 revente 60)
   ruby: { n: 'Rubis', p: 250, i: '♦️' },
   emerald: { n: 'Émeraude', p: 300, i: '💚' },
   slime: { n: 'Gelée', p: 5, i: '🟢' },

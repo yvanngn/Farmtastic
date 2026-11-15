@@ -163,7 +163,7 @@ export function createRenderer(cv, g) {
   function render(now) {
     const S = g.S;
     const scene = S.scene || 'farm', outside = scene === 'farm', sky = outside || !!SCENES[scene].outdoor, SC = SCENES[scene];
-    if (scene === 'house' && cacheScene === 'house' && cache !== interiors['house' + !!S.workbench]) cacheScene = ''; // établi réparé
+    if (scene === 'house' && cacheScene === 'house' && cache !== interiors['house' + !!S.workbench + (S.bed !== false)]) cacheScene = ''; // établi réparé
     if (cacheSeason !== S.season || cacheScene !== scene) {
       cache = outside ? farmGround() : scene === 'wild' ? (interiors['wild' + S.season] ||= buildWild(S.season)) : scene === 'foret' ? (interiors['foret' + S.season] ||= buildWild(S.season, 'foret')) : scene === 'town' ? (interiors['town' + S.season] ||= buildTown(S.season)) : (scene === 'house' ? (interiors['house' + !!S.workbench] ||= buildInterior(scene, S)) : (interiors[scene] ||= buildInterior(scene, S)));
       if (cacheSeason !== S.season) initWeather();
@@ -236,6 +236,14 @@ export function createRenderer(cv, g) {
       ctx.fillStyle = 'rgba(0,0,0,.25)'; ctx.fillRect(x + 3, y + 12, 10, 2);
       ctx.fillStyle = 'rgba(255,240,170,' + (.25 + .2 * Math.sin(now / 300)) + ')'; ctx.fillRect(x + 1, y + 1 + b, 14, 12);
       ctx.save(); ctx.translate(x + 8, y + 11 + b); ctx.rotate(-.5); drawToolPix(ctx, t.tool); ctx.restore();
+    } });
+    if (scene === 'farm' && S.tent) list.push({ z: S.tent.y + .9, d: () => { // tente du début
+      const x = S.tent.x * T, y = S.tent.y * T;
+      ctx.fillStyle = 'rgba(0,0,0,.28)'; ctx.fillRect(x - 3, y + 13, 22, 3);
+      for (let i = 0; i < 12; i++) { ctx.fillStyle = i < 2 ? '#3f7a8a' : '#4f96a8'; ctx.fillRect(x + 8 - i - 1, y + 2 + i, (i + 1) * 2, 1); }
+      ctx.fillStyle = '#2e6070'; for (let i = 0; i < 12; i++) ctx.fillRect(x + 8 + i, y + 2 + i, 1, 1);
+      ctx.fillStyle = '#1c2a30'; for (let i = 0; i < 7; i++) ctx.fillRect(x + 8 - (i >> 1), y + 7 + i, (i >> 1) * 2 + 1, 1);
+      ctx.fillStyle = '#e8c26a'; ctx.fillRect(x + 7, y, 2, 3); ctx.fillStyle = '#7a4f2e'; ctx.fillRect(x - 3, y + 13, 2, 2); ctx.fillRect(x + 17, y + 13, 2, 2);
     } });
     if (scene === 'farm' && g.trainT && now - g.trainT < 9000) list.push({ z: 9998, d: () => drawTrain(ctx, (now - g.trainT) / 1000) });
     if (scene === 'farm' && testSwordHere(S)) list.push({ z: TEST_SWORD.y + .4, d: () => {

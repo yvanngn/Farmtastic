@@ -14,6 +14,7 @@ import { examineText } from './examine.js';
 import { hitZRock, isOpen, pickTestSword } from './wild.js';
 import { pickShroom } from './foret.js';
 import { repairAt, contribute, pickFieldTool } from './repair.js';
+import { pitchTent, tentAt, useTent } from './camp.js';
 import { pickFlower, hitNature, natureAt, digTreasure } from './nature.js';
 import { findNPCAt, talk, gift } from './social.js';
 import { add } from './inventory.js';
@@ -66,6 +67,8 @@ function act0(g, tx, ty) {
   }
   if (pickTestSword(g, tx, ty)) return 'pick';
   if (pickFieldTool(g, tx, ty)) return 'pick';
+  if (tentAt(S, tx, ty)) return useTent(g) && 'tent';
+  if (S.sel === 'tent' && sc === 'farm' && !npc) return pitchTent(g, tx, ty) ? 'pitch' : 'missing';
   { const rp = repairAt(S, tx, ty); if (rp) return contribute(g, rp) ? 'repair' : 'missing'; }
   if (digTreasure(g, tx, ty)) return 'treasure';
   if (pickFlower(g, tx, ty)) return 'pick';
@@ -80,6 +83,7 @@ function act0(g, tx, ty) {
   if (sc === 'house') {
     const t = tileAt(sc, tx, ty);
     if (t === 'E') { if (S.workbench) { g.bus.emit('sfx', 'ui'); g.bus.emit('open', 'workshop'); return 'workshop'; } g.bus.emit('sfx', 'denied'); g.bus.emit('toast', 'Un vieil établi tout branlant… Le charpentier du village pourrait le réparer.'); return 'broken'; }
+    if (t === 'B' && S.bed === false) { g.bus.emit('sfx', 'denied'); g.bus.emit('toast', 'Il n’y a pas encore de lit ici… En attendant, la tente fera l’affaire.'); return 'nobed'; }
     return t === 'B' ? (sleep(g) ? 'sleep' : 'none') : 'none';
   }
   if (BUILDINGS[sc]) return tileAt(sc, tx, ty) === 'H' ? (feedAll(g, sc) ? 'feedAll' : 'none') : 'none';

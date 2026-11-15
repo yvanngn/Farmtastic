@@ -7,7 +7,8 @@ export function defaultState() {
     look: { body: 'h', bottom: 'pant', skin: '#f6d2b0', hair: 0, hairC: '#7a4a22', shirt: '#d04a3a', pants: '#3a4a8a' },
     money: 500, energy: 100, maxE: 100, hp: 100, maxHp: 100,
     day: 1, season: 0, year: 1, minute: CFG.DAY_START, weather: 'sun',
-    inv: { wheat_seed: 10, hay: 5 }, sel: 'hand',
+    inv: { wheat_seed: 10, hay: 5, backpack: 1, tent: 1 }, sel: 'hand',
+    tent: null, bed: false,          // tente posée {x,y} ; lit de la maison à construire
     x: 2.0, y: 20.6, dir: 3,         // on descend du train, sur le quai de la gare
     plots: {}, objs: null,
     animals: [],
@@ -39,6 +40,7 @@ export function migrate(raw) {
   s.tools = raw.tools ? { ...raw.tools } : { axe: 1, pick: 1, sickle: 1, sword: 1 };
   if (!raw.intro) s.intro = { met: true };
   // Avant la cabane à rafistoler : tout était déjà debout, Myst déjà passé.
+  if (raw.bed === undefined) s.bed = true;   // anciennes parties : le lit existait déjà
   if (!raw.repair) { s.repair = { house: { wood: 100, stone: 50 }, grange: { wood: 150, stone: 80 } }; s.intro = { ...s.intro, myst: 'done', arrived: true }; }
   s.intro = { met: true, myst: 'done', arrived: true, ...s.intro };
   if (s.objs) for (const k of Object.keys(s.objs)) { const [x, y] = k.split(',').map(Number); if ((y === 5 && x <= 43) || (x >= 39 && x <= 46 && y <= 6) || (y === 20 && x <= 15) || (x <= 3 && y >= 8 && y <= 24)) delete s.objs[k]; }
