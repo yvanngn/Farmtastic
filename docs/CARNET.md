@@ -53,7 +53,7 @@ Mots de l'utilisateur, à respecter tels quels :
 
 ### Questions encore ouvertes
 - **Le chef du village** : il n'a ni nom ni apparence décrits. Claude lui a donné des cheveux gris et un gilet brun (💡). Ses répliques sont listées plus bas, à valider.
-- **Foin tout fait** : on peut encore l'acheter chez le marchand d'animaux, en plus de le cultiver. Faut-il le retirer de la vente ?
+- **Foin tout fait** : décision de l'utilisateur (15/11) : on le garde en vente, mais cher (40 🪙), pour qu'on préfère le cultiver (4 🪙 de graines → 3 foins).
 - **Gros rochers de la ferme** : ils font doublon avec les 3 types de cailloux de la zone de combat.
 
 ## 4. Ce qui existe dans le jeu
@@ -183,7 +183,7 @@ Goûts du chef (💡) : aime le pain et les œufs ; déteste la gelée.
 46. Question (0 ♥) « Tu… tu restes longtemps ? » : a. Juste le temps de dire bonjour. (+12) → « D'accord. C'est… gentil. » · b. Toute la journée, si tu veux ! (−5) → « Ah. Euh… » · c. Je repasserai demain. (+8) → « … D'accord. »
 47. Question (1 ♥) « Tu sors beaucoup, toi ? » : a. Tous les jours, il y a tant à voir ! (+5) → « Ça doit être fatigant. » · b. Un peu. Tu pourrais venir avec moi, un jour. (+12) → « … Peut-être. Un jour. » · c. Pas plus que nécessaire. (+8) → « Je comprends. »
 48. Réactions aux cadeaux : adore « … Un croissant ? Pour moi ? … Merci. Vraiment. » · aime « … Merci. C'est gentil. » · neutre « Oh. … Merci. » · n'aime pas « … Je vais le poser là. » · déteste « Ça sent… fort. Tu peux le garder ? » · déjà offert « … Tu m'as déjà apporté quelque chose aujourd'hui. »
-Goûts de Franck (💡) : adore le croissant ; aime le pain, les œufs et le bois ; n'aime pas la gelée ; déteste la truffe. Apparence (💡) : cheveux bruns en épis, sweat gris.
+Goûts de Franck (💡) : adore le croissant ; aime le pain, les œufs et le bois ; n'aime pas la gelée ; déteste la truffe. Apparence : **grand, cheveux mi-longs, l'air triste** (décrit par l'utilisateur le 15/11) ; cheveux bruns et sweat gris (💡).
 **À décider par l'utilisateur** : quel objet on lui fabriquera, et comment il le change.
 
 ## 5. Contradictions et points à trancher

@@ -78,7 +78,8 @@ export const CHEF = {
 // Apparence, goûts, répliques et questions : 💡 propositions de Claude, à valider.
 export const FRANCK = {
   id: 'franck', name: 'Franck', de: 'de lui', color: '#8ab4d8', voice: 'voiceFranck',
-  look: { body: 'h', bottom: 'pant', skin: '#e8c4a4', hair: 2, hairC: '#5a4636', shirt: '#7d8794', pants: '#3a3f4a' },
+  // décrit par l'utilisateur : grand, cheveux mi-longs, l'air triste
+  look: { body: 'h', bottom: 'pant', skin: '#e8c4a4', hair: 1, hairC: '#5a4636', shirt: '#7d8794', pants: '#3a3f4a', tall: true, sad: true },
   home: 'franck', inside: { x: 5.5, y: 2.7 }, day: { x: 27.5, y: 33.3 },
   shy: { minHearts: 2, from: 1020, to: 1140 },   // à partir de 2 cœurs, il s'assoit devant chez lui en fin de journée
   traits: ['Timide', 'Sort peu', 'Laisse passer le temps', 'Aimait peut-être fabriquer des choses'],

@@ -10,7 +10,7 @@ export const ITEMS = {
   corn: { n: 'Maïs', p: 18, i: '🌽' },
   carrot: { n: 'Carotte', p: 12, i: '🥕', eat: { e: 15 } },
   egg: { n: 'Œuf', p: 25, i: '🥚', eat: { e: 20, h: 5 } },
-  hay: { n: 'Foin', p: 1, i: '🟨', buy: 10, keep: true },
+  hay: { n: 'Foin', p: 1, i: '🟨', buy: 40, keep: true },   // cher exprès : mieux vaut le cultiver (graines 4 🪙 → 3 foins)
   wool: { n: 'Laine', p: 120, i: '🧶' },
   rabbit_wool: { n: 'Laine de lapin', p: 90, i: '🤍' },
   bread: { n: 'Pain', p: 20, i: '🍞', buy: 40, eat: { e: 25 } },

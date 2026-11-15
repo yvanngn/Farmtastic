@@ -60,7 +60,10 @@ function rawChar(c, L, d, f, blink) {
   if (d === 0) {
     if (blink) { up(3, 6, 2, 1, EYE); up(7, 6, 2, 1, EYE); }
     else { up(4, 5, 1, 2, EYE); up(7, 5, 1, 2, EYE); up(4, 5, 1, 1, '#fff8'); if (fem) { up(3, 4, 1, 1, EYE); up(8, 4, 1, 1, EYE); } }
-    up(5, 7, 2, 1, fem ? LIPS : shade(S, .7)); up(3, 7, 1, 1, '#ff6a6a66'); up(8, 7, 1, 1, '#ff6a6a66');
+    if (L.sad) { // air triste : sourcils tombants, bouche vers le bas, pas de joues roses
+      up(3, 4, 2, 1, Hd); up(7, 4, 2, 1, Hd); up(4, 3, 1, 1, Hd); up(7, 3, 1, 1, Hd);
+      up(5, 7, 2, 1, shade(S, .65)); up(4, 8, 1, 1, shade(S, .7)); up(7, 8, 1, 1, shade(S, .7));
+    } else { up(5, 7, 2, 1, fem ? LIPS : shade(S, .7)); up(3, 7, 1, 1, '#ff6a6a66'); up(8, 7, 1, 1, '#ff6a6a66'); }
   }
   if (st === 3) {
     up(2, 1, 8, 2, H); up(4, -1, 4, 2, H); up(5, -1, 2, 1, Hl);
@@ -86,7 +89,7 @@ function rawChar(c, L, d, f, blink) {
 }
 
 function charSprite(L, d, f, blink) {
-  const k = 'c' + L.body + L.bottom + L.skin + L.hair + L.hairC + L.shirt + L.pants + d + f + blink;
+  const k = 'c' + L.body + L.bottom + L.skin + L.hair + L.hairC + L.shirt + L.pants + (L.sad ? 's' : '') + d + f + blink;
   return cache(k, () => {
     const s = canvas(16, 23), c = s.getContext('2d');
     if (d === 2) { c.translate(16, 0); c.scale(-1, 1); }
@@ -98,8 +101,11 @@ function charSprite(L, d, f, blink) {
 // ox, oy : coin haut-gauche du personnage 12×20. t : horloge pour le clignement.
 export function drawChar(c, ox, oy, L, d, f, t = 0) {
   groundShadow(c, ox + 6, oy + 20, 5, 2);
-  const blink = (t % 4200) < 130;
-  c.drawImage(charSprite(L, d, f || 0, blink), ox - 2, oy - 2);
+  const blink = (t % 4200) < 130, spr = charSprite(L, d, f || 0, blink);
+  if (L.tall) { // grand : le buste est allongé de 3 pixels
+    c.drawImage(spr, 0, 0, spr.width, 14, ox - 2, oy - 5, spr.width, 14);
+    c.drawImage(spr, 0, 11, spr.width, spr.height - 11, ox - 2, oy + 9, spr.width, spr.height - 11);
+  } else c.drawImage(spr, ox - 2, oy - 2);
 }
 
 /* ---------------- Icônes pixel des outils (roues, bouton d'action) ---------------- */
