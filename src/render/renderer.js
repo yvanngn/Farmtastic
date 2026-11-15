@@ -3,6 +3,8 @@
 import { CFG } from '../config.js';
 import { TEST_SWORD, testSwordHere } from '../systems/wild.js';
 import { rainbowVisible } from '../systems/nature.js';
+import { isRepaired, fieldToolAt } from '../systems/repair.js';
+import { FIELD_TOOLS } from '../data/repairs.js';
 import { VEINS } from '../data/nature.js';
 import { FLOWERS } from '../data/items.js';
 const FLOWER_COL = Object.fromEntries(FLOWERS.flat().map(f => [f.id, f.c]));
@@ -40,7 +42,20 @@ import { PICKUPS, isBroken } from '../systems/grange.js';
 import { buildWild, drawMob, drawZRock, drawShroom } from './wild.js';
 import { MUSHROOMS } from '../data/items.js';
 import { LAYOUTS } from '../world/scenes.js';
-import { toolIcon } from './sprites.js';
+import { toolIcon, drawToolPix } from './sprites.js';
+// Train de l'arrivée (voie x0) : à quai 3 s, puis repart vers le sud en accélérant.
+function drawTrain(c, t) {
+  const T2 = 16, y0 = 16.5 * T2 + (t > 3 ? (t - 3) * (t - 3) * 40 : 0);
+  const car = (y, col, loco) => {
+    c.fillStyle = 'rgba(0,0,0,.3)'; c.fillRect(2, y + 2, 14, 46);
+    c.fillStyle = col; c.fillRect(1, y, 14, 46); c.fillStyle = 'rgba(255,255,255,.18)'; c.fillRect(1, y, 3, 46);
+    c.fillStyle = '#2a2a30'; c.fillRect(1, y, 14, 3); c.fillRect(1, y + 43, 14, 3);
+    if (loco) { c.fillStyle = '#e8c26a'; c.fillRect(4, y + 44, 8, 2); c.fillStyle = '#fff6c0'; c.fillRect(6, y + 46, 4, 2); }
+    else for (let k = 8; k < 40; k += 10) { c.fillStyle = '#bfe3f5'; c.fillRect(13, y + k, 2, 6); }
+  };
+  car(y0, '#2f6a4a', false); car(y0 + 48, '#2f6a4a', false); car(y0 + 96, '#a8302b', true);
+  if (t > 2.6) { c.fillStyle = 'rgba(230,230,230,' + Math.max(0, .6 - (t - 2.6) * .15) + ')'; for (let k = 0; k < 4; k++) c.fillRect(4 + k * 3, y0 + 140 - k * 9 - (t - 2.6) * 8, 6, 6); }
+}
 import { SCENES } from '../world/scenes.js';
 import { ANIMALS } from '../data/animals.js';
 import { ITEMS } from '../data/items.js';
@@ -55,7 +70,7 @@ export function createRenderer(cv, g) {
   let scale = 3, dpr = 1, cache = null, cacheSeason = -1, cacheScene = '';
   const interiors = {};
   let farm = null, farmSeason = -1;
-  function farmGround() { const b = g.S.built || {}, key = g.S.season + JSON.stringify(b); if (farmSeason !== key) { farm = buildGround(g.S.season, b); farmSeason = key; } return farm; }
+  function farmGround() { const b = g.S.built || {}, fx = { house: isRepaired(g.S, 'house'), grange: isRepaired(g.S, 'grange') }, key = g.S.season + JSON.stringify(b) + fx.house + fx.grange; if (farmSeason !== key) { farm = buildGround(g.S.season, b, fx); farmSeason = key; } return farm; }
   let vignette = null, light = null, lastStep = 0;
   const cam = { x: 0, y: 0 }, screenFx = [], worldFx = [];
   let swing = null;
@@ -216,6 +231,13 @@ export function createRenderer(cv, g) {
         list.push({ z: 9999, d: () => drawRainbow(ctx, R.x * T + 8, R.y * T + 10, S.minute, R) });
       }
     }
+    if (scene === 'farm') for (const t of FIELD_TOOLS) if (fieldToolAt(S, t.x, t.y)) list.push({ z: t.y + .4, d: () => { // outil posé par terre
+      const b = Math.round(Math.sin(now / 250 + t.x) * 1.5), x = t.x * T, y = t.y * T;
+      ctx.fillStyle = 'rgba(0,0,0,.25)'; ctx.fillRect(x + 3, y + 12, 10, 2);
+      ctx.fillStyle = 'rgba(255,240,170,' + (.25 + .2 * Math.sin(now / 300)) + ')'; ctx.fillRect(x + 1, y + 1 + b, 14, 12);
+      ctx.save(); ctx.translate(x + 8, y + 11 + b); ctx.rotate(-.5); drawToolPix(ctx, t.tool); ctx.restore();
+    } });
+    if (scene === 'farm' && g.trainT && now - g.trainT < 9000) list.push({ z: 9998, d: () => drawTrain(ctx, (now - g.trainT) / 1000) });
     if (scene === 'farm' && testSwordHere(S)) list.push({ z: TEST_SWORD.y + .4, d: () => {
       const b = Math.round(Math.sin(now / 250) * 1.5), x = TEST_SWORD.x * T, y = TEST_SWORD.y * T;
       ctx.fillStyle = 'rgba(0,0,0,.25)'; ctx.fillRect(x + 3, y + 12, 10, 2);

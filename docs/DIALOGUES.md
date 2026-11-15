@@ -123,35 +123,65 @@
 111. *(cadeau : deteste)* Ça sent… fort. Tu peux le garder ? 🆕
 112. *(cadeau : déjà offert)* … Tu m'as déjà apporté quelque chose aujourd'hui. 🆕
 
+## Myst
+
+113. *(arrivée (cabane réparée))* … Tiens. Quelqu'un a réparé la cabane. 🆕
+114. *(arrivée (cabane réparée))* Personne n'habite ici depuis longtemps. Au village, ils disent que l'endroit est hanté. 🆕
+115. *(arrivée (cabane réparée))* Tu peux rester, si tu veux. Moi, ça ne me dérange pas. 🆕
+116. *(arrivée (cabane réparée))* Je m'appelle Myst. J'habite la vieille maison, un peu plus loin à l'est. 🆕
+117. *(arrivée (cabane réparée))* Ça leur fera du bien, qu'on bouscule un peu les choses. 🆕
+118. *(histoire 0 ♥)* … Bonsoir. 🆕
+119. *(histoire 0 ♥)* Je parle peu. Mais j'écoute. 🆕
+120. *(histoire 1 ♥)* Au village, on ne m'a jamais beaucoup aimé. Trop silencieux, sans doute. 🆕
+121. *(histoire 2 ♥)* Le soir, tout le monde se tait. C'est là que j'entends le mieux. 🆕
+122. *(sujet (joueur))* Et le village ? 🆕
+123. *(sujet)* Ils parlent beaucoup. Ils écoutent peu. 🆕
+124. *(conversation)* … 🆕
+125. *(conversation)* Hm. 🆕
+
+## Le héros (arrivée en train)
+
+126. *(intro)* Après mon licenciement, j'ai voulu donner un sens à ma vie. 🆕
+127. *(intro)* J'ai toujours rêvé de construire ma maison. Alors, quand j'ai vu cette annonce… 🆕
+128. *(intro)* « Cabane à retaper : qui la remet en état peut y habiter. » 🆕
+129. *(intro)* Paraît que peu de gens sont venus, à cause d'une rumeur. Tant mieux pour moi ! 🆕
+130. *(intro)* Le chemin part vers ma ferme, au nord, et descend vers le village, au sud. 🆕
+
 ## Décor (le héros commente)
 
-113. *(house)* Ma maison. Le toit aurait besoin d'un petit coup de neuf. 🆕
-114. *(grange)* La vieille grange. On dirait qu'elle s'enfonce sous la colline… 🆕
-115. *(fence)* Une clôture en bois. Solide, et pas un clou qui dépasse. 🆕
-116. *(water)* L'eau est claire. Je crois voir des têtards. 🆕
-117. *(luna)* La maison de Luna. Il y a encore des cartons derrière la fenêtre. 🆕
-118. *(franck)* Chez Franck. Les volets sont fermés, comme toujours. 🆕
-119. *(franckOpen)* Chez Franck. Les volets sont ouverts, pour une fois ! 🆕
-120. *(gate)* Un vieux portail de pierre, couvert de mousse. 🆕
-121. *(coop)* Le poulailler. On entend glousser là-dedans. 🆕
-122. *(pigsty)* La porcherie. Ça sent… la porcherie. 🆕
-123. *(barn)* La bergerie. Toute rouge, comme dans les livres. 🆕
-124. *(K)* Le plan de travail. Il ne manque plus qu'un bon repas. 🆕
-125. *(T)* Une table en bois, avec une tasse oubliée dessus. 🆕
-126. *(P)* Une plante verte. Elle a l'air de bien se porter. 🆕
-127. *(C)* Un coffre. Vide, pour l'instant. 🆕
-128. *(N)* Un nid douillet, plein de paille. 🆕
-129. *(Y)* Une botte de foin. Ça gratte rien qu'à la regarder. 🆕
-130. *(X)* Des cartons de déménagement. « Fragile », écrit à la main. 🆕
-131. *(A)* Un vieux fauteuil, creusé juste là où l'on s'assoit. 🆕
-132. *(B)* Un lit fait au carré. 🆕
-133. *(F)* La fontaine du village. L'eau chante doucement. 🆕
-134. *(L)* Un lampadaire en fer forgé. 🆕
-135. *(Lon)* Un lampadaire. Il brille de nouveau, grâce à moi ! 🆕
-136. *(b)* Un banc. On y verrait bien Manuel faire la sieste. 🆕
-137. *(f)* Des fleurs bien entretenues. Quelqu'un en prend soin. 🆕
-138. *(treeTown)* Un grand arbre qui fait de l'ombre à la place. 🆕
-139. *(treeWild)* Des arbres serrés. Impossible de passer par là. 🆕
-140. *(rockWild)* Un rocher énorme. Même la pioche ne lui ferait rien. 🆕
-141. *(rockGrange)* De la roche dure. Les tunnels ont été creusés à la main ? 🆕
-142. *(wallGrange)* Des planches vermoulues, couvertes de toiles d'araignée. 🆕
+131. *(house)* Ma maison. Le toit aurait besoin d'un petit coup de neuf. 🆕
+132. *(grange)* La vieille grange. On dirait qu'elle s'enfonce sous la colline… 🆕
+133. *(fence)* Une clôture en bois. Solide, et pas un clou qui dépasse. 🆕
+134. *(water)* L'eau est claire. Je crois voir des têtards. 🆕
+135. *(luna)* La maison de Luna. Il y a encore des cartons derrière la fenêtre. 🆕
+136. *(franck)* Chez Franck. Les volets sont fermés, comme toujours. 🆕
+137. *(franckOpen)* Chez Franck. Les volets sont ouverts, pour une fois ! 🆕
+138. *(gate)* Un vieux portail de pierre, couvert de mousse. 🆕
+139. *(coop)* Le poulailler. On entend glousser là-dedans. 🆕
+140. *(pigsty)* La porcherie. Ça sent… la porcherie. 🆕
+141. *(barn)* La bergerie. Toute rouge, comme dans les livres. 🆕
+142. *(houseRuin)* Ma cabane… enfin, ce qu'il en reste. Avec du bois et des pierres, je peux la rafistoler. 🆕
+143. *(grangeRuin)* La grange tient à peine debout. Impossible d'entrer pour l'instant. 🆕
+144. *(myst)* Une vieille maison sombre, un peu à l'écart. Les rideaux sont tirés. 🆕
+145. *(station)* La petite gare. Le train ne repassera pas avant un moment. 🆕
+146. *(rails)* La voie ferrée. Elle file vers le sud. 🆕
+147. *(villa)* La villa de Manuel, le chef du village. Rien que ça. 🆕
+148. *(K)* Le plan de travail. Il ne manque plus qu'un bon repas. 🆕
+149. *(T)* Une table en bois, avec une tasse oubliée dessus. 🆕
+150. *(P)* Une plante verte. Elle a l'air de bien se porter. 🆕
+151. *(C)* Un coffre. Vide, pour l'instant. 🆕
+152. *(N)* Un nid douillet, plein de paille. 🆕
+153. *(Y)* Une botte de foin. Ça gratte rien qu'à la regarder. 🆕
+154. *(X)* Des cartons de déménagement. « Fragile », écrit à la main. 🆕
+155. *(A)* Un vieux fauteuil, creusé juste là où l'on s'assoit. 🆕
+156. *(B)* Un lit fait au carré. 🆕
+157. *(F)* La fontaine du village. L'eau chante doucement. 🆕
+158. *(L)* Un lampadaire en fer forgé. 🆕
+159. *(Lon)* Un lampadaire. Il brille de nouveau, grâce à moi ! 🆕
+160. *(b)* Un banc. On y verrait bien Manuel faire la sieste. 🆕
+161. *(f)* Des fleurs bien entretenues. Quelqu'un en prend soin. 🆕
+162. *(treeTown)* Un grand arbre qui fait de l'ombre à la place. 🆕
+163. *(treeWild)* Des arbres serrés. Impossible de passer par là. 🆕
+164. *(rockWild)* Un rocher énorme. Même la pioche ne lui ferait rien. 🆕
+165. *(rockGrange)* De la roche dure. Les tunnels ont été creusés à la main ? 🆕
+166. *(wallGrange)* Des planches vermoulues, couvertes de toiles d'araignée. 🆕

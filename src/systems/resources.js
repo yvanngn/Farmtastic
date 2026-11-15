@@ -21,7 +21,7 @@ export function hitObject(g, x, y) {
   if (S.sel !== tool) {
     g.bus.emit('sfx', 'denied');
     const has = hasTool(S, tool), name = tool === 'axe' ? 'la hache 🪓' : 'la pioche ⛏️';
-    g.bus.emit('toast', has ? `Il faut ${name}` : `Il te faut ${name}… les outils sont sans doute dans la grange.`);
+    g.bus.emit('toast', has ? `Il faut ${name}` : tool === 'axe' ? 'Il te faut la hache 🪓… elle doit traîner parmi les arbres, au sud de la ferme.' : 'Il te faut la pioche ⛏️… regarde du côté de la grange.');
     return false;
   }
   if (!isGrown(o)) {

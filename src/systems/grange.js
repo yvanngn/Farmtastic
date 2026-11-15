@@ -1,13 +1,11 @@
 // La grange de la maison : un ensemble de tunnels. On y trouve les outils de départ
-// (hache à l'entrée, puis faucille et pioche derrière des planches, pelle derrière un éboulis).
+// (faucille derrière des planches, pelle derrière un éboulis ; la hache et la pioche sont dehors, voir data/repairs.js).
 // Un grand éboulement ferme la suite des tunnels (à découvrir plus tard).
 import { tileAt } from '../world/scenes.js';
 import { hasTool } from './skills.js';
 
 export const PICKUPS = [
-  { x: 3, y: 3, tool: 'axe', n: 'la hache', i: '🪓' },
   { x: 12, y: 3, tool: 'sickle', n: 'la faucille', i: '🔪' },
-  { x: 13, y: 4, tool: 'pick', n: 'la pioche', i: '⛏️' },
   { x: 18, y: 9, tool: 'shovel', n: 'la pelle', i: '🪏' }
 ];
 // p = planches (hache), r = éboulis (pioche)

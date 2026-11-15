@@ -11,7 +11,7 @@ export const WATER = '#3a7cc2';
 // Fenêtres de la maison et du poulailler (px monde) : éclairées la nuit.
 export const LIGHTS = [{ x: 51, y: 60, r: 46 }, { x: 384, y: 116, r: 26 }, { x: 303, y: 484, r: 30 }];
 
-export function buildGround(season, built = {}) {
+export function buildGround(season, built = {}, fixed = { house: true, grange: true }) {
   const c = document.createElement('canvas'); c.width = CFG.W * T; c.height = CFG.H * T;
   const g = c.getContext('2d'), r = rng(99 + season);
   const R = (x, y, w, h, col) => { g.fillStyle = col; g.fillRect(x, y, w, h); };
@@ -67,9 +67,11 @@ export function buildGround(season, built = {}) {
   }
 
   drawGate(R);
-  drawHouse(g, R);
+  drawHouse(g, R); if (!fixed.house) drawRuins(R, 2 * T + 4, 6 * T + 12, 10, 80, 'house');
   drawBin(R);
-  drawGrange(R);
+  drawGrange(R); if (!fixed.grange) drawRuins(R, 10 * T, 14 * T, 1 * T + 10 - 18, 5 * T, 'grange');
+  drawStation(R);
+  drawMystHouse(R);
   drawFieldStakes(R);
   drawWildGate(R);
   drawForestArch(R);
@@ -138,8 +140,68 @@ function drawCoop(R) {
 }
 
 // Entrée de la forêt (x0, y19-21) : arche de branches et petit panneau.
+// Bâtiment délabré : trous dans le toit, planches clouées, porte arrachée, débris au sol.
+function drawRuins(R, x0, x1, top, bot, kind) {
+  const w = x1 - x0, hole = '#14100e';
+  // toit percé et affaissé
+  R(x0 + w * .18, top + 6, w * .2, 9, hole); R(x0 + w * .2, top + 6, w * .16, 2, '#4a2a1a');
+  R(x0 + w * .55, top + 2, w * .14, 12, hole); R(x0 + w * .5, top + 13, w * .26, 2, '#5a3a22');
+  for (let i = 0; i < 4; i++) R(x0 + w * .2 + i * 4, top + 8 + (i % 2) * 2, 2, 6, '#7a4f2e');   // chevrons à nu
+  // murs : planches arrachées, mousse
+  R(x0 + 4, bot - 26, 10, 6, hole); R(x0 + w - 16, bot - 20, 8, 9, hole);
+  for (let i = 0; i < 6; i++) R(x0 + 2 + i * (w / 6), bot - 4, 4, 2, '#4e7a34');
+  // ouvertures condamnées : planches en croix
+  const dx = kind === 'house' ? 76 : 12 * T - 1, dw = kind === 'house' ? 16 : 18, dy = bot - 24;
+  R(dx, dy, dw, 24, '#0e0c0c');
+  for (let i = 0; i < 3; i++) R(dx - 2, dy + 4 + i * 7, dw + 4, 3, i % 2 ? '#8a6a48' : '#9c7a52');
+  if (kind === 'house') { R(43, 51, 17, 14, '#2a2420'); R(41, 54, 21, 3, '#9c7a52'); R(41, 60, 21, 3, '#8a6a48'); }
+  // débris devant
+  R(x0 + 6, bot + 3, 12, 2, '#7a4f2e'); R(x0 + 10, bot + 6, 3, 3, '#8f887f'); R(x1 - 20, bot + 4, 10, 2, '#6a4426'); R(x1 - 8, bot + 7, 4, 2, '#9a958c');
+}
+
+// Gare de l'ouest : voie ferrée (x0, dès y13 jusqu'en bas), petit bâtiment (x1-3, y14-16), quai (x1-2, y17-23).
+function drawStation(R) {
+  for (let y = 13 * T; y < CFG.H * T; y += 4) R(1, y, 14, 2, '#6a4a30');                 // traverses
+  R(3, 13 * T, 2, (CFG.H - 13) * T, '#8c8f96'); R(11, 13 * T, 2, (CFG.H - 13) * T, '#8c8f96');
+  R(3, 13 * T, 1, (CFG.H - 13) * T, '#c2c6cc'); R(11, 13 * T, 1, (CFG.H - 13) * T, '#c2c6cc');
+  R(1, 13 * T - 2, 14, 6, '#a8302b'); R(1, 13 * T - 2, 14, 2, '#d8443a');                // butoir
+  const qx = 1 * T, qy = 17 * T;                                                          // quai
+  R(qx, qy, 2 * T, 7 * T, '#a9a29a'); R(qx, qy, 2, 7 * T, '#f2d13b');
+  for (let y = qy; y < qy + 7 * T; y += 8) R(qx + 2, y, 2 * T - 2, 1, '#8f887f');
+  for (let x = qx + 8; x < qx + 2 * T; x += 8) R(x, qy, 1, 7 * T, '#8f887f');
+  const bx = 1 * T, by = 14 * T, bw = 3 * T, bh = 3 * T;                                  // bâtiment
+  R(bx, by + 10, bw, bh - 10, '#b5654a'); for (let y = by + 14; y < by + bh; y += 4) R(bx, y, bw, 1, '#94503a');
+  R(bx - 3, by, bw + 6, 12, '#3e5a7a'); R(bx - 3, by, bw + 6, 2, '#5a7ea4'); R(bx - 3, by + 11, bw + 6, 2, '#2a4058');
+  R(bx + 6, by + 22, 10, 10, '#f0e6d0'); R(bx + 7, by + 23, 8, 8, '#7fb6d9');
+  R(bx + 26, by + 22, 12, bh - 22, '#4a2414'); R(bx + 27, by + 23, 10, bh - 23, '#7a4426');
+  R(bx + 8, by + 14, 30, 6, '#f4ead2'); R(bx + 10, by + 16, 26, 1, '#3e5a7a'); R(bx + 10, by + 18, 18, 1, '#3e5a7a');   // panneau « GARE »
+  R(qx + 4, qy + 5 * T, 22, 4, '#7a4f2e'); R(qx + 5, qy + 5 * T + 4, 2, 4, '#5b3a22'); R(qx + 23, qy + 5 * T + 4, 2, 4, '#5b3a22');   // banc
+}
+
+// Maison de Myst (x40-45, y1-3, porche y4) : vieille maison sombre à deux étages, toit mansardé, fenêtres hautes.
+function drawMystHouse(R) {
+  const x0 = 40 * T, x1 = 46 * T, top = 1 * T - 4, bot = 4 * T + 6;
+  R(x0 - 2, bot, x1 - x0 + 4, 4, 'rgba(10,8,12,.35)');
+  R(x0 + 4, top + 16, x1 - x0 - 8, bot - top - 16, '#5e5a62');                          // façade
+  for (let y = top + 20; y < bot; y += 4) R(x0 + 4, y, x1 - x0 - 8, 1, '#4a4650');
+  R(x0, top + 2, x1 - x0, 16, '#2e2a34'); R(x0, top + 2, x1 - x0, 2, '#46404e');           // toit mansardé
+  for (let i = 0; i < 4; i++) R(x0 + 2 + i * 2, top - 6 + i * 2, x1 - x0 - 4 - i * 4, 2, '#24212a');
+  R(x0 + 30, top - 14, 34, 10, '#2e2a34'); R(x0 + 36, top - 20, 22, 6, '#24212a');         // tourelle centrale
+  R(x0 + 44, top - 12, 6, 7, '#d8c070'); R(x0 + 46, top - 12, 1, 7, '#3a3440');            // une lucarne éclairée
+  for (const wx of [x0 + 10, x0 + 30, x0 + 58, x0 + 76]) {                                // fenêtres hautes de l'étage
+    R(wx - 1, top + 22, 10, 16, '#d8d2c4'); R(wx, top + 23, 8, 14, '#2a2834'); R(wx + 3, top + 23, 1, 14, '#d8d2c4');
+  }
+  for (const wx of [x0 + 10, x0 + 76]) { R(wx - 1, top + 44, 10, 14, '#d8d2c4'); R(wx, top + 45, 8, 12, '#3a3646'); }
+  R(x0 + 4, top + 40, x1 - x0 - 8, 3, '#3a3640');                                          // corniche
+  R(x0 + 4, bot - 10, x1 - x0 - 8, 3, '#7d7680');                                          // porche
+  for (const px of [x0 + 6, x0 + 28, x0 + 62, x0 + 84]) R(px, bot - 22, 3, 14, '#d8d2c4');
+  R(x0 + 4, bot - 24, x1 - x0 - 8, 3, '#3a3640');
+  R(42 * T + 3, bot - 26, 10, 19, '#1c1418'); R(42 * T + 4, bot - 25, 8, 17, '#3a2420'); R(42 * T + 10, bot - 17, 1, 2, '#c9a330');   // porte
+  R(42 * T, bot - 8, 16, 3, '#8f887f'); R(42 * T, bot - 5, 16, 3, '#77716a');               // marches
+}
+
 function drawForestArch(R) {
-  const x = 0, y = 19 * T;
+  const x = 0, y = 9 * T;
   R(x, y - 6, 6, 3 * T + 6, '#5b3a22'); R(x, y - 8, 14, 5, '#3e7a34'); R(x, y + 3 * T - 2, 14, 4, '#3e7a34');
   R(x + 2, y + T - 4, 22, 9, '#3f2615'); R(x + 3, y + T - 3, 20, 7, '#e8c26a');
   R(x + 6, y + T - 1, 12, 1, '#5b3a22'); R(x + 6, y + T + 1, 9, 1, '#5b3a22');

@@ -246,3 +246,13 @@ Goûts de Franck (💡) : adore le croissant ; aime le pain, les œufs et le boi
 - ✅ Fleurs sauvages à cueillir (ferme, forêt, Terres sauvages ; pas en ville), 3 espèces par saison dont une rare (💡 pâquerette/violette/muguet, coquelicot/bleuet/lavande, bruyère/souci/colchique, perce-neige/hellébore/edelweiss). Elles fanent chaque soir, de nouvelles poussent. ⏳ Serviront aux potions et à l'alchimie (fleurs + minerais).
 - ✅ Cailloux partout sauf en ville ; filons de cuivre, étain, fer, or (du plus courant au plus rare : 50/28/16/6). Un filon = 8 coups de pioche quel que soit le minerai (un caillou : 2), donne 2 à 4 minerais (💡 prix 15/25/40/100 🪙).
 - ✅ Arc-en-ciel : certains jours de pluie (💡 35 %), entre 13h et 16h pendant 3 h, au-dessus de la ferme ; un coffre au pied (💡 150 à 400 🪙 + 2 minerais plutôt rares + 1 fleur rare).
+
+## Séance du 15/11/2026 (fin d'après-midi) — nouveau début
+- ✅ Histoire : après un licenciement, le héros cherche un sens à sa vie ; il a toujours rêvé de construire sa maison. Une annonce : qui retape la cabane peut y habiter. Peu de gens sont venus, à cause d'une rumeur (le lieu serait hanté).
+- ✅ Arrivée en train à la **gare, à l'ouest de la ferme** (quai x1-2, voie ferrée x0). Un chemin mène à la ferme (nord) et au village (sud). La forêt passe au nord-ouest (entrée x0, y9-11).
+- ✅ **Cabane délabrée** : 100 bois + 50 pierres. Devant, une fenêtre montre les jauges ; rester appuyé sur la cabane dépose ce qu'on a sur soi ; coche verte quand une jauge est pleine. On ne peut pas y entrer (ni y dormir) avant.
+- ✅ **Grange délabrée**, fermée : même système (💡 150 bois + 80 pierres). Dedans : faucille et pelle.
+- ✅ **Pioche** posée contre la grange, **hache** cachée dans un petit bois au sud de la ferme.
+- ✅ **Myst** (PNJ, décrit par l'utilisateur) : grand, mince, long manteau noir ; vieille maison sombre façon motel Bates, au nord-est, un peu à l'écart (💡 emplacement). Parle peu, écoute tout ; mis de côté par le village, content qu'on bouscule les choses. Arrive quand la cabane est réparée, dit qu'on peut rester (le lieu passe pour hanté), puis repart. Sort le soir (💡 19h-23h devant chez lui).
+- ✅ Manuel ne vient plus accueillir le joueur. Sa **villa** est au sud de la place du village.
+- ⏳ Que se passe-t-il quand on entre dans la maison de Myst (fermée pour l'instant) ?

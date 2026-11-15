@@ -63,7 +63,7 @@ export const LUNA = {
 export const CHEF = {
   id: 'chef', name: 'Manuel', title: 'chef du village', color: '#e8c26a', voice: 'voiceChef', de: 'de lui',
   look: { body: 'h', bottom: 'pant', skin: '#e2b48c', hair: 0, hairC: '#b8b4ae', shirt: '#7a4a2a', pants: '#3a3a4a' },
-  home: null, day: { x: 11.5, y: 12.6 }, welcome: { x: 8.5, y: 6.9 },
+  home: null, day: { x: 11.5, y: 12.6 },   // il habite sa villa, au sud de la place
   walks: [{ scene: 'foret', from: 780, to: 840, every: 3, at: { x: 18.5, y: 13.5 } }],  // promenade digestive, un jour sur trois, 13 h – 14 h (💡)
   traits: ['Chef élu à l\'unanimité', 'Dit aimer ses villageois', 'En secret : impôts élevés, bon temps et vacances'],
   taste: { adore: [], aime: ['bread', 'egg'], naime: [], deteste: ['slime'] },
@@ -142,6 +142,42 @@ export const FRANCK = {
       { t: 'Pas plus que nécessaire.', pts: 8, r: 'Je comprends.' }] }
   ]
 };
-export const NPCS = { luna: LUNA, chef: CHEF, franck: FRANCK };
+// Myst (décrit par l'utilisateur) : grand et mince, long manteau noir. Vit un peu à l'écart dans une vieille maison
+// sombre (genre motel Bates). Sort le soir, parle peu mais écoute tout. Le village l'a toujours mis de côté
+// (trop antisocial) : il est content qu'on arrive bousculer un peu les choses.
+export const MYST = {
+  id: 'myst', name: 'Myst', de: 'de lui', color: '#a99ad0', voice: 'voiceFranck',
+  look: { body: 'h', bottom: 'pant', skin: '#e2cfc0', hair: 0, hairC: '#1c181c', shirt: '#1d1b22', pants: '#141218', tall: true, coat: true },
+  home: null, mystic: true,
+  door: { x: 42.5, y: 5.6 }, cabin: { x: 7.5, y: 5.6 },
+  night: { from: 1140, to: 1380, at: { x: 41.5, y: 6.4 } },   // sort le soir devant chez lui (💡 19h-23h)
+  traits: ['Grand et mince', 'Long manteau noir', 'Sort le soir', 'Parle peu, écoute tout', 'Mis de côté par le village'],
+  taste: { adore: [], aime: ['colchique', 'lavande'], naime: ['slime'], deteste: [] },   // 💡 fleurs calmes du soir
+  arrival: [
+    "… Tiens. Quelqu'un a réparé la cabane.",
+    "Personne n'habite ici depuis longtemps. Au village, ils disent que l'endroit est hanté.",
+    "Tu peux rester, si tu veux. Moi, ça ne me dérange pas.",
+    "Je m'appelle Myst. J'habite la vieille maison, un peu plus loin à l'est.",
+    "Ça leur fera du bien, qu'on bouscule un peu les choses."
+  ],
+  story: [
+    { h: 0, t: '… Bonsoir.' },
+    { h: 0, t: "Je parle peu. Mais j'écoute." },
+    { h: 1, t: "Au village, on ne m'a jamais beaucoup aimé. Trop silencieux, sans doute." },
+    { h: 2, t: "Le soir, tout le monde se tait. C'est là que j'entends le mieux." }
+  ],
+  topics: [{ t: 'Et le village ?', lines: ['Ils parlent beaucoup. Ils écoutent peu.'] }],
+  chat: ['…', 'Hm.'],
+  questions: []
+};
+// Arrivée en train (pensées du héros, 🆕) : après un licenciement, il cherche un sens à sa vie.
+export const INTRO_LINES = [
+  "Après mon licenciement, j'ai voulu donner un sens à ma vie.",
+  "J'ai toujours rêvé de construire ma maison. Alors, quand j'ai vu cette annonce…",
+  "« Cabane à retaper : qui la remet en état peut y habiter. »",
+  "Paraît que peu de gens sont venus, à cause d'une rumeur. Tant mieux pour moi !",
+  "Le chemin part vers ma ferme, au nord, et descend vers le village, au sud."
+];
+export const NPCS = { luna: LUNA, chef: CHEF, franck: FRANCK, myst: MYST };
 // Luna est dehors de 8 h à 19 h, chez elle le reste du temps.
 export const OUT_FROM = 480, OUT_TO = 1140;

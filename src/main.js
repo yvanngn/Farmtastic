@@ -17,8 +17,10 @@ import { createMapView } from './ui/mapView.js';
 import { createBoard } from './ui/board.js';
 import { createTitle } from './ui/title.js';
 import { createDialog } from './ui/dialog.js';
-import { NPCS, OUT_FROM, OUT_TO } from './data/npcs.js';
-import { placeNPC, findNPCAt, welcome } from './systems/social.js';
+import { NPCS, OUT_FROM, OUT_TO, INTRO_LINES } from './data/npcs.js';
+import { placeNPC, findNPCAt, mystTick } from './systems/social.js';
+import { pickFieldTool } from './systems/repair.js';
+import { createRepairPanel } from './ui/repairPanel.js';
 import { autoPickup } from './systems/grange.js';
 import { pickTestSword } from './systems/wild.js';
 import { ensureNature, rainbowTick, pickFlower, digTreasure } from './systems/nature.js';
@@ -99,6 +101,7 @@ const title = createTitle({
   onNew() { title.close(); custom.open(false, !!saved); },
   onSettings() { settingsPanel.open(); }
 });
+const repairPanel = createRepairPanel(g);
 const input = createInput(cv, g, renderer, { isActive: () => started && !custom.isOpen() && !title.isOpen() && !dialog.isOpen, onMenu: () => menu.open() });
 
 // Bouton d'action : agit sur la tuile en face (ou frappe l'ennemi le plus proche avec l'épée).
@@ -139,7 +142,10 @@ async function begin() {
   for (const k in g.S.objs) { const [x, y] = k.split(',').map(Number); if (isPath(x, y) || isGate(x, y) || isLunaLot(x, y)) delete g.S.objs[k]; }
   for (const id in NPCS) registerNPC(g, NPCS[id]);
   for (const id in g.npcs) placeNPC(g.npcs[id], g.S, OUT_FROM, OUT_TO);
-  setTimeout(() => welcome(g), 600);
+  if (!g.S.intro.arrived) { // arrivée en train : le train repart pendant que le héros repense à l'annonce
+    g.trainT = performance.now();
+    setTimeout(() => g.bus.emit('say', { name: g.S.name, color: '#ffdf8a', lines: INTRO_LINES, onEnd: () => { g.S.intro.arrived = true; toast('🏚️ Ta cabane est au nord, au bout du chemin.'); } }), 2600);
+  }
   started = true; custom.close(); hud.show(); renderer.initWeather(); ensureOrders(g);
   if (net.sb) { playerMarket = createPlayerMarket(net.sb, net.uid, g); await upsertProfile(net.sb, net.uid, g.S); mp = createMultiplayer({ sb: net.sb, uid: net.uid, g }); mp.join(); }
   doSave(false);
@@ -164,7 +170,7 @@ function loop(now) {
     wander(g, dt);
     updateWild(g, dt); // les monstres ne vivent que dans les Terres sauvages
     autoPickup(g);
-    pickTestSword(g, Math.floor(g.S.x), Math.floor(g.S.y - .2));
+    pickTestSword(g, Math.floor(g.S.x), Math.floor(g.S.y - .2)); pickFieldTool(g, Math.floor(g.S.x), Math.floor(g.S.y - .2)); mystTick(g);
     ensureNature(g, g.S.scene || 'farm'); rainbowTick(g);
     pickFlower(g, Math.floor(g.S.x), Math.floor(g.S.y - .2)); digTreasure(g, Math.floor(g.S.x), Math.floor(g.S.y - .2));
     if (g.S.scene === 'foret') { ensureShrooms(g); pickShroom(g, Math.floor(g.S.x), Math.floor(g.S.y - .2)); }
@@ -192,7 +198,7 @@ function loop(now) {
     for (let i = g.fx.length - 1; i >= 0; i--) { const f = g.fx[i]; f.life -= dt; f.y -= dt * 0.75; if (f.life <= 0) g.fx.splice(i, 1); }
     renderer.updateParticles(dt);
     renderer.render(now);
-    if ((hudT += dt) > 0.25) { hudT = 0; hud.update(); }
+    if ((hudT += dt) > 0.25) { hudT = 0; hud.update(); repairPanel.update(started && !dialog.isOpen); }
   }
   if (custom.isOpen()) custom.draw(now);
   if (title.isOpen()) title.draw(now);

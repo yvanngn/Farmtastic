@@ -13,6 +13,7 @@ import { grangeAction } from './grange.js';
 import { examineText } from './examine.js';
 import { hitZRock, isOpen, pickTestSword } from './wild.js';
 import { pickShroom } from './foret.js';
+import { repairAt, contribute, pickFieldTool } from './repair.js';
 import { pickFlower, hitNature, natureAt, digTreasure } from './nature.js';
 import { findNPCAt, talk, gift } from './social.js';
 import { add } from './inventory.js';
@@ -64,6 +65,8 @@ function act0(g, tx, ty) {
     talk(g, npc.id); return 'talk';
   }
   if (pickTestSword(g, tx, ty)) return 'pick';
+  if (pickFieldTool(g, tx, ty)) return 'pick';
+  { const rp = repairAt(S, tx, ty); if (rp) return contribute(g, rp) ? 'repair' : 'missing'; }
   if (digTreasure(g, tx, ty)) return 'treasure';
   if (pickFlower(g, tx, ty)) return 'pick';
   { const N = natureAt(S, sc); if (N && N.rocks[key(tx, ty)]) return hitNature(g, tx, ty) ? 'hit' : 'none'; }

@@ -8,7 +8,7 @@ export function defaultState() {
     money: 500, energy: 100, maxE: 100, hp: 100, maxHp: 100,
     day: 1, season: 0, year: 1, minute: CFG.DAY_START, weather: 'sun',
     inv: { wheat_seed: 10, hay: 5 }, sel: 'hand',
-    x: 6.5, y: 6.8, dir: 0,
+    x: 2.0, y: 20.6, dir: 3,         // on descend du train, sur le quai de la gare
     plots: {}, objs: null,
     animals: [],
     built: { coop: false, pigsty: false, kennel: false, barn: false },
@@ -17,7 +17,8 @@ export function defaultState() {
     village: { done: [], progress: 0 }, festival: null, caravan: { tokens: 0, unlocked: [] },
     skills: { mining: { xp: 0 } },
     tools: {},                       // aucun outil au départ : ils sont dans la grange
-    intro: { met: false },
+    intro: { met: true, myst: false, arrived: false },   // arrivée en train, puis Myst une fois la cabane réparée
+    repair: { house: { wood: 0, stone: 0 }, grange: { wood: 0, stone: 0 } },   // cabane et grange délabrées au début
     tilled: {},
     farmLot: 0,                      // emplacement de ferme de ce joueur (multijoueur : un par joueur)
     drops: [],                       // objets posés au sol (sac plein)
@@ -37,6 +38,10 @@ export function migrate(raw) {
   // Avant le lot 8, on avait tous les outils et pas d'accueil : on garde ça pour les anciennes parties.
   s.tools = raw.tools ? { ...raw.tools } : { axe: 1, pick: 1, sickle: 1, sword: 1 };
   if (!raw.intro) s.intro = { met: true };
+  // Avant la cabane à rafistoler : tout était déjà debout, Myst déjà passé.
+  if (!raw.repair) { s.repair = { house: { wood: 100, stone: 50 }, grange: { wood: 150, stone: 80 } }; s.intro = { ...s.intro, myst: 'done', arrived: true }; }
+  s.intro = { met: true, myst: 'done', arrived: true, ...s.intro };
+  if (s.objs) for (const k of Object.keys(s.objs)) { const [x, y] = k.split(',').map(Number); if ((y === 5 && x <= 43) || (x >= 39 && x <= 46 && y <= 6) || (y === 20 && x <= 15) || (x <= 3 && y >= 8 && y <= 24)) delete s.objs[k]; }
   if (raw.workbench === undefined) s.workbench = true; // avant le lot 12, on fabriquait déjà
   // Avant le lot 9, tout le champ était déjà prêt.
   if (!raw.tilled) { s.tilled = {}; for (let y = 8; y <= 13; y++) for (let x = 4; x <= 13; x++) s.tilled[x + ',' + y] = 1; }

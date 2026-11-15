@@ -12,9 +12,15 @@ export const EXAMINE = {
     gate: "Un vieux portail de pierre, couvert de mousse.",
     coop: 'Le poulailler. On entend glousser là-dedans.',
     pigsty: 'La porcherie. Ça sent… la porcherie.',
-    barn: 'La bergerie. Toute rouge, comme dans les livres.'
+    barn: 'La bergerie. Toute rouge, comme dans les livres.',
+    houseRuin: "Ma cabane… enfin, ce qu'il en reste. Avec du bois et des pierres, je peux la rafistoler.",
+    grangeRuin: "La grange tient à peine debout. Impossible d'entrer pour l'instant.",
+    myst: "Une vieille maison sombre, un peu à l'écart. Les rideaux sont tirés.",
+    station: 'La petite gare. Le train ne repassera pas avant un moment.',
+    rails: 'La voie ferrée. Elle file vers le sud.'
   },
   tiles: {
+    villa: 'La villa de Manuel, le chef du village. Rien que ça.',
     K: 'Le plan de travail. Il ne manque plus qu\'un bon repas.',
     T: 'Une table en bois, avec une tasse oubliée dessus.',
     P: "Une plante verte. Elle a l'air de bien se porter.",

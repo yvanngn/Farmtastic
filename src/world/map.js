@@ -26,8 +26,14 @@ export const isGrange = (x, y) => inRect(x, y, 10, 1, 13, 4);
 export const isGate = (x, y) => x === 16 && y === 35; // portail vers le village
 export const isFence = (x, y, built) => inRect(x, y, 18, 6, 33, 13) && !isPen(x, y) && !(x === 18 && y === 9) && !buildingAt(built, x, y);
 export const isPond = (x, y) => ((x - 12) ** 2) / 25 + ((y - 24) ** 2) / 9 < 1;
-export const isPath = (x, y) => (y === 5 && x >= 2 && x <= 33) || (x === 16 && y >= 5 && y <= 35) || (y === 9 && x === 17);
+export const isPath = (x, y) => (y === 5 && x >= 2 && x <= 43) || (y === 20 && x >= 3 && x <= 15) || (x === 42 && y === 4) || (x === 16 && y >= 5 && y <= 35) || (y === 9 && x === 17);
 export const isForest = (x) => x >= 34;
+// Gare (à l'ouest) : petit bâtiment x1-3 y14-16, quai x1-2 y17-23, voie ferrée x0 dès y13.
+export const isStation = (x, y) => inRect(x, y, 1, 14, 3, 16);
+export const isPlatform = (x, y) => inRect(x, y, 1, 17, 2, 23);
+// Maison de Myst (au nord-est, un peu à l'écart) : x40-45, y1-3, porche y4.
+export const isMystHouse = (x, y) => inRect(x, y, 40, 1, 45, 3) || (y === 4 && x >= 40 && x <= 45 && x !== 42);
+const AXE_SPOT = (x, y) => inRect(x, y, 5, 30, 7, 32);
 export const key = (x, y) => x + ',' + y;
 
 export function ground(x, y) {
@@ -35,6 +41,7 @@ export function ground(x, y) {
 }
 
 import { tileAt, SOLID_TILES } from './scenes.js';
+import { AXE_GROVE } from '../data/repairs.js';
 
 export function isSolid(S, x, y) {
   const N = S.nature && S.nature[S.scene || 'farm'];
@@ -43,7 +50,7 @@ export function isSolid(S, x, y) {
   if (S.scene === 'foret' && S.foret && S.foret.shrooms && S.foret.shrooms[x + ',' + y]) return false;
   if (S.scene && S.scene !== 'farm') { const t = tileAt(S.scene, x, y); if (S.scene === 'grange' && (t === 'p' || t === 'r') && S.grange && S.grange.broken.includes(x + ',' + y)) return false; return SOLID_TILES.includes(t); }
   if (x < 0 || y < 0 || x >= CFG.W || y >= CFG.H) return true;
-  return isPond(x, y) || isHouse(x, y) || isGrange(x, y) || (x === 0 && y >= 19 && y <= 21) || isFranckHouse(x, y) || (x === 47 && y >= 16 && y <= 20) || isLunaHouse(x, y) || !!buildingAt(S.built, x, y) || isGate(x, y) || isFence(x, y, S.built) || isBin(x, y) || !!(S.objs && S.objs[key(x, y)]);
+  return isPond(x, y) || isHouse(x, y) || isGrange(x, y) || (x === 0 && ((y >= 9 && y <= 11) || y >= 13)) || isStation(x, y) || isMystHouse(x, y) || isFranckHouse(x, y) || (x === 47 && y >= 16 && y <= 20) || isLunaHouse(x, y) || !!buildingAt(S.built, x, y) || isGate(x, y) || isFence(x, y, S.built) || isBin(x, y) || !!(S.objs && S.objs[key(x, y)]);
 }
 
 // Générateur pseudo-aléatoire déterministe (même carte pour une même graine).
@@ -54,7 +61,7 @@ export function rng(seed) {
 
 export function freeForObj(x, y) {
   return !isHouse(x, y) && !isPlot(x, y) && !isPond(x, y) && !isPath(x, y) && !inRect(x, y, 17, 5, 33, 14)
-    && !isBin(x, y) && !isLunaLot(x, y) && !inRect(x, y, 9, 0, 14, 5) && !inRect(x, y, 44, 16, 47, 20) && !inRect(x, y, 0, 18, 3, 22) && !inRect(x, y, 4, 5, 9, 7) && x > 0 && y > 0 && x < CFG.W - 1 && y < CFG.H - 1;
+    && !isBin(x, y) && !isLunaLot(x, y) && !inRect(x, y, 9, 0, 14, 5) && !inRect(x, y, 44, 16, 47, 20) && !inRect(x, y, 0, 8, 3, 24) && !inRect(x, y, 4, 5, 9, 7) && !inRect(x, y, 39, 0, 46, 6) && !AXE_SPOT(x, y) && x > 0 && y > 0 && x < CFG.W - 1 && y < CFG.H - 1;
 }
 
 const KINDS = ['oak', 'pine', 'birch'];
@@ -76,5 +83,6 @@ export function genObjects(seed = 12345) {
     else if (v < 0.04) o[key(x, y)] = newTree(kind);
     else if (v < 0.08) o[key(x, y)] = newRock(v > 0.07);
   }
+  for (const [x, y] of AXE_GROVE) o[key(x, y)] = newTree(KINDS[(x + y) % 3]);   // petit bois du sud : la hache est cachée au milieu
   return o;
 }

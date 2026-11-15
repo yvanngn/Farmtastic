@@ -8,60 +8,51 @@ import { hasTool, canUpgrade } from '../src/systems/skills.js';
 import { autoPickup, PICKUPS } from '../src/systems/grange.js';
 import { registerNPC, placeNPC, welcome } from '../src/systems/social.js';
 import { CHEF, OUT_FROM, OUT_TO } from '../src/data/npcs.js';
-import { isSolid } from '../src/world/map.js';
+import { isSolid, ground } from '../src/world/map.js';
 
 const start = (extra = {}) => makeGame({ state: { tools: {}, intro: { met: false }, grange: { found: [], broken: [] }, ...extra } });
 
-test('nouvelle partie : aucun outil, accueil à faire, grange intacte', () => {
+test('nouvelle partie : aucun outil, arrivée en train, cabane et grange délabrées', () => {
   const S = defaultState();
   assert.deepEqual(S.tools, {});
-  assert.equal(S.intro.met, false);
+  assert.equal(S.intro.arrived, false);
+  assert.ok(isPlatform(Math.floor(S.x), Math.floor(S.y)), 'sur le quai de la gare');
+  assert.equal(isRepaired(S, 'house'), false);
+  assert.equal(isRepaired(S, 'grange'), false);
   assert.equal(hasTool(S, 'hand'), true);
   assert.equal(hasTool(S, 'axe'), false);
 });
-
 test('sans hache : on ne coupe pas, le message parle de la grange', () => {
   const { g, S, toasts } = start({ sel: 'hand' });
   S.objs['30,20'] = { t: 'tree', k: 'oak', g: 3, hp: 3 };
   assert.equal(smartTool(g, 30, 20), 'hand');
   S.x = 30.5; S.y = 21.5; S.dir = 1;
   act(g, 30, 20);
-  assert.match(toasts().at(-1), /grange/);
+  assert.match(toasts().at(-1), /hache/);
   assert.equal(canUpgrade(S, 'axe').why, 'missing');
 });
 
-test('grange : la hache à l’entrée, les planches, la faucille et la pioche, l’éboulis, la pelle', () => {
-  const { g, S } = start();
+test('dehors : la pioche contre la grange, la hache parmi les arbres du sud', () => {
+  const { g, S } = start({ tools: {} });
+  for (const t of FIELD_TOOLS) { assert.equal(act(g, t.x, t.y), 'pick'); assert.equal(S.tools[t.tool], 1); }
+  assert.equal(fieldToolAt(S, 14, 3), null, 'une seule fois');
+  const trees = AXE_GROVE.filter(([x, y]) => genObjects()[x + ',' + y]?.t === 'tree').length;
+  assert.equal(trees, AXE_GROVE.length, 'la hache est cachée parmi des arbres');
+});
+
+test('grange (une fois réparée) : les planches, la faucille, l’éboulis, la pelle', () => {
+  const { g, S } = start({ tools: { axe: 1, pick: 1 } });
   assert.equal(act(g, 12, 4), 'door');
   assert.equal(S.scene, 'grange');
-  assert.equal(act(g, 9, 2), 'blocked', 'planches sans hache');
-  S.x = 3.5; S.y = 3.6; assert.equal(autoPickup(g), 'axe');
   assert.equal(isSolid(S, 9, 2), true);
   assert.equal(act(g, 9, 2), 'break');
   assert.equal(isSolid(S, 9, 2), false, 'le passage est ouvert');
   assert.equal(act(g, 12, 3), 'sickle');
-  assert.equal(act(g, 13, 4), 'pick');
   assert.equal(act(g, 13, 7), 'break', 'éboulis à la pioche');
   assert.equal(act(g, 18, 9), 'shovel');
   assert.deepEqual(S.grange.found.sort(), PICKUPS.map(p => p.tool).sort());
   assert.equal(act(g, 20, 8), 'collapse', 'la suite des tunnels reste fermée');
-  assert.equal(hasTool(S, 'sword'), false, 'pas d’épée dans la grange');
 });
-
-test('le chef accueille le joueur près de la maison, puis va sur la place du village', () => {
-  const { g, S } = start({ minute: 600 });
-  registerNPC(g, CHEF); placeNPC(g.npcs.chef, S, OUT_FROM, OUT_TO);
-  assert.equal(g.npcs.chef.scene, 'farm');
-  const said = []; g.bus.on('say', d => said.push(d));
-  assert.equal(welcome(g), true);
-  assert.equal(said[0].lines.length, CHEF.welcomeLines.length);
-  said[0].onChoose(0);
-  assert.equal(S.intro.met, true);
-  placeNPC(g.npcs.chef, S, OUT_FROM, OUT_TO);
-  assert.equal(g.npcs.chef.scene, 'town');
-  assert.equal(welcome(g), false, 'une seule fois');
-});
-
 test('ancienne sauvegarde : outils gardés, pas d’accueil', () => {
   const s = migrate({ name: 'x', tools: { axe: 2, pick: 1, sickle: 1, sword: 1 } });
   assert.equal(s.tools.axe, 2);
@@ -77,18 +68,6 @@ import { buyAnimal, build, canBuyAnimal } from '../src/systems/economy.js';
 import { FARM_LOTS } from '../src/data/buildings.js';
 import { applyPresence } from '../src/net/multiplayer.js';
 import { LAYOUTS } from '../src/world/scenes.js';
-
-test('après l’accueil (même passé avec « Passer »), le maire redescend vers le village', () => {
-  const { g, S } = start({ minute: 600 });
-  registerNPC(g, CHEF); const n = g.npcs.chef;
-  const said = []; g.bus.on('say', d => said.push(d));
-  assert.equal(welcome(g), true); said.at(-1).onEnd();   // fermé sans répondre
-  assert.equal(S.intro.met, true);
-  for (let i = 0; i < 2000 && n.leaving; i++) placeNPC(n, S, OUT_FROM, OUT_TO);
-  assert.equal(n.leaving, false, 'il est arrivé au portail du village');
-  placeNPC(n, S, OUT_FROM, OUT_TO);
-  assert.equal(n.scene, 'town');
-});
 
 test('chiens : il faut un chenil, puis ils vivent en liberté', () => {
   const { g, S } = makeGame({ state: { money: 1e5, inv: { wood: 99, stone: 99 }, animals: [], built: { coop: false, pigsty: false, kennel: false, barn: false } } });
@@ -134,8 +113,74 @@ test('une ferme de départ par joueur : 4 emplacements, chacun annonce le sien',
   assert.equal(others.a.farmLot, 2);
 });
 
-test('l’entrée de la forêt est à l’ouest de la ferme', () => {
+test('l’entrée de la forêt est au nord-ouest de la ferme, au-dessus de la gare', () => {
   const { g, S } = start();
-  assert.equal(act(g, 0, 20), 'door');
+  assert.equal(act(g, 0, 10), 'door');
   assert.equal(S.scene, 'foret');
+});
+
+// ---- 15/11 soir : cabane délabrée, Myst, gare, villa du maire ----
+import { REPAIRS, FIELD_TOOLS, AXE_GROVE, REPAIR_STEP } from '../src/data/repairs.js';
+import { isRepaired, contribute, repairNear, fieldToolAt } from '../src/systems/repair.js';
+import { isPlatform, isStation, genObjects } from '../src/world/map.js';
+import { MYST } from '../src/data/npcs.js';
+import { mystTick } from '../src/systems/social.js';
+import { LAYOUTS as LAY } from '../src/world/scenes.js';
+
+const ruined0 = () => ({ repair: { house: { wood: 0, stone: 0 }, grange: { wood: 0, stone: 0 } }, intro: { met: true, myst: false, arrived: true } });
+
+test('cabane délabrée : on ne peut pas entrer, on dépose bois et pierres jusqu’à remplir les jauges', () => {
+  const { g, S, toasts } = start({ ...ruined0(), inv: { wood: 30, stone: 3 } });
+  S.x = 5.5; S.y = 6.6;
+  assert.equal(repairNear(S), 'house', 'la fenêtre des besoins s’affiche devant');
+  assert.equal(act(g, 5, 4), 'repair', 'la porte ne s’ouvre pas : on dépose');
+  assert.equal(S.scene, 'farm');
+  assert.deepEqual(S.repair.house, { wood: REPAIR_STEP, stone: 3 });
+  assert.equal(S.inv.wood, 30 - REPAIR_STEP);
+  while (S.inv.wood) act(g, 3, 2);
+  assert.equal(act(g, 3, 2), 'missing'); assert.match(toasts().at(-1), /manque/);
+  S.inv.wood = 200; S.inv.stone = 200;
+  while (!isRepaired(S, 'house')) assert.equal(act(g, 3, 2), 'repair');
+  assert.deepEqual(S.repair.house, REPAIRS.house.need, 'jamais plus que nécessaire');
+  assert.equal(S.inv.wood, 200 - (100 - 30));
+  assert.equal(S.intro.myst, 'come', 'Myst arrive');
+  assert.equal(act(g, 5, 4), 'door', 'on peut entrer');
+});
+
+test('grange délabrée : fermée jusqu’à sa réparation', () => {
+  const { g, S } = start({ ...ruined0(), inv: {} });
+  assert.equal(act(g, 12, 4), 'missing');
+  assert.equal(S.scene, 'farm');
+  S.repair.grange = { ...REPAIRS.grange.need };
+  assert.equal(act(g, 12, 4), 'door');
+});
+
+test('Myst vient voir la cabane réparée, parle, repart, puis ne sort que le soir', () => {
+  const { g, S } = start({ ...ruined0(), minute: 600 });
+  registerNPC(g, MYST); const n = g.npcs.myst;
+  placeNPC(n, S, OUT_FROM, OUT_TO); assert.equal(n.scene, 'none', 'pas avant la réparation');
+  S.intro.myst = 'come';
+  for (let i = 0; i < 2000 && S.intro.myst === 'come'; i++) placeNPC(n, S, OUT_FROM, OUT_TO);
+  assert.equal(S.intro.myst, 'talk'); assert.ok(Math.hypot(n.x - 7.5, n.y - 5.6) < .1, 'devant la cabane');
+  const said = []; g.bus.on('say', d => said.push(d));
+  assert.equal(mystTick(g), true); assert.equal(mystTick(g), false, 'une seule fois');
+  assert.ok(said[0].lines.some(l => /hanté/.test(l)));
+  said[0].onEnd();
+  for (let i = 0; i < 2000 && S.intro.myst === 'leaving'; i++) placeNPC(n, S, OUT_FROM, OUT_TO);
+  assert.equal(S.intro.myst, 'done'); assert.equal(n.scene, 'none');
+  S.minute = 1200; placeNPC(n, S, OUT_FROM, OUT_TO); assert.equal(n.scene, 'farm', 'il sort le soir');
+  assert.equal(MYST.look.tall && MYST.look.coat, true, 'grand, long manteau');
+});
+
+test('gare à l’ouest : quai, chemin vers la ferme et le village ; la villa du maire au sud de la ville', () => {
+  assert.ok(isStation(2, 15) && isPlatform(1, 20));
+  assert.equal(isSolid({ scene: 'farm' }, 0, 20), true, 'la voie ferrée');
+  for (let x = 3; x <= 16; x++) assert.equal(ground(x, 20), 'path');
+  assert.ok(LAY.town.slice(21).some(r => r.includes('W')), 'villa au sud de la place');
+});
+
+test('vieilles sauvegardes : cabane et grange déjà debout', () => {
+  const s = migrate({ name: 'x', tools: { axe: 1 }, intro: { met: true } });
+  assert.equal(isRepaired(s, 'house'), true); assert.equal(isRepaired(s, 'grange'), true);
+  assert.equal(s.intro.myst, 'done');
 });

@@ -29,6 +29,7 @@ function rawChar(c, L, d, f, blink) {
       r(4 - off, 18, 4, 1, shade(SHOE, .8)); r(5 + off, 18, 4, 1, SHOE);
     }
     up(3, 9, 6, 5, Sh); up(3, 9, 1, 5, Shd); up(8, 9, 1, 4, Shl); if (!skirt) up(3, 13, 6, 1, Pd);
+    if (L.coat) { up(3, 9, 6, 9, Sh); up(3, 9, 1, 9, Shd); up(8, 9, 1, 8, Shl); up(5, 13, 1, 5, Shd); }  // long manteau
     const ax = 5 - off; up(ax, 10, 2, 4, Shd); up(ax, 14, 2, 1, S);
     up(3, 2, 7, 7, S); up(3, 8, 7, 1, Sd); up(10, 5, 1, 1, S); up(5, 5, 1, 2, Sd);
     up(8, blink ? 6 : 5, 1, blink ? 1 : 2, EYE); up(8, 7, 2, 1, fem ? LIPS : shade(S, .7));
@@ -54,6 +55,7 @@ function rawChar(c, L, d, f, blink) {
   const tw = fem ? 1 : 0; // taille plus fine
   up(2 + tw, 9, 8 - tw * 2, 5, Sh); up(2, 9, 8, 2, Sh); up(2, 9, 1, 2, Shl); up(2 + tw, 11, 1, 3, Shl); up(9 - tw, 9, 1, 5, Shd);
   if (!skirt) up(2, 13, 8, 1, Pd);
+  if (L.coat) { up(2, 9, 8, 9, Sh); up(2, 9, 1, 9, Shl); up(9, 9, 1, 9, Shd); if (d === 0) { up(5, 10, 2, 8, Shd); up(5, 9, 2, 1, S); } }  // long manteau, fermé
   if (d === 0) { up(5, 9, 2, 1, S); if (fem) up(4, 9, 4, 1, S); }
   up(1, 10 + l2, 1, 4, Shd); up(10, 10 + l1, 1, 4, Shd); up(1, 14 + l2, 1, 1, S); up(10, 14 + l1, 1, 1, S);
   up(2, 2, 8, 7, S); up(9, 3, 1, 5, Sd); up(2, 8, 8, 1, Sd);
@@ -89,7 +91,7 @@ function rawChar(c, L, d, f, blink) {
 }
 
 function charSprite(L, d, f, blink) {
-  const k = 'c' + L.body + L.bottom + L.skin + L.hair + L.hairC + L.shirt + L.pants + (L.sad ? 's' : '') + d + f + blink;
+  const k = 'c' + L.body + L.bottom + L.skin + L.hair + L.hairC + L.shirt + L.pants + (L.sad ? 's' : '') + (L.coat ? 'k' : '') + d + f + blink;
   return cache(k, () => {
     const s = canvas(16, 23), c = s.getContext('2d');
     if (d === 2) { c.translate(16, 0); c.scale(-1, 1); }
@@ -120,6 +122,7 @@ export function toolIcon(id) {
 }
 
 /* ---------------- Outils tenus en main (animation de coup) ---------------- */
+export function drawToolPix(c, id) { const f = TOOL_PIX[id]; if (f) f(c); }
 const TOOL_PIX = {
   axe: c => { c.fillStyle = '#7a4f2e'; c.fillRect(-1, -1, 2, 9); c.fillStyle = '#9aa0a8'; c.fillRect(-1, -10, 5, 4); c.fillStyle = '#d6dbe0'; c.fillRect(3, -10, 1, 4); c.fillStyle = '#7a4f2e'; c.fillRect(-1, -7, 2, 6); },
   pick: c => { c.fillStyle = '#7a4f2e'; c.fillRect(-1, -8, 2, 16); c.fillStyle = '#9aa0a8'; c.fillRect(-5, -10, 10, 2); c.fillRect(-6, -9, 2, 2); c.fillRect(4, -9, 2, 2); c.fillStyle = '#d6dbe0'; c.fillRect(-4, -10, 8, 1); },

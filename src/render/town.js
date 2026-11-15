@@ -21,7 +21,7 @@ export function buildTown(season) {
   // sol : herbe en bordure, pavés sur la place
   for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
     const px = x * T, py = y * T, ch = L[y][x];
-    if (ch === 'g' || ch === 'T' || (ch === 'D')) {
+    if (ch === 'g' || ch === 'T' || ch === 'D' || ch === 'W') {
       for (let by = 0; by < T; by += 4) for (let bx = 0; bx < T; bx += 4) R(px + bx, py + by, 4, 4, [B, B, shade(B, .93), shade(B, 1.06)][r() * 4 | 0]);
       if (ch === 'D') { R(px, py, T, T, '#c9a66a'); R(px + 3, py + 4, 5, 3, '#dcc394'); }
       continue;
@@ -137,5 +137,17 @@ export function buildTown(season) {
     if (ch === 'L') { R(px + 7, py - 10, 2, 25, '#2b2730'); R(px + 5, py + 13, 6, 2, '#2b2730'); R(px + 4, py - 16, 8, 7, '#2b2730'); R(px + 5, py - 15, 6, 5, '#ffd98a'); R(px + 3, py - 17, 10, 2, '#3a3540'); }
   }
   for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) if (L[y][x] === 'T') g.drawImage(treeSprite(season, (x + y) % 4), x * T - 9, y * T - 28);
+  // villa de Manuel, le maire (x9-14, y22-25) : grande maison blanche, toit de tuiles, colonnes, haie taillée
+  { const x0 = 9 * T, x1 = 15 * T, top = 22 * T, bot = 26 * T;
+    R(x0 - 6, top - 4, x1 - x0 + 12, bot - top + 8, '#3e7a34'); R(x0 - 4, top - 2, x1 - x0 + 8, bot - top + 4, '#5a9a46');   // haie
+    R(x0, top + 22, x1 - x0, bot - top - 22, '#f4efe4'); for (let y = top + 26; y < bot; y += 6) R(x0, y, x1 - x0, 1, '#ddd6c8');
+    for (let i = 0; i < 8; i++) { const ins = Math.max(0, 12 - i * 2); R(x0 - 4 + ins, top + i * 3, x1 - x0 + 8 - ins * 2, 3, i % 2 ? '#b8432f' : '#c8553e'); }
+    R(x0 - 5, top + 22, x1 - x0 + 10, 3, '#6b2a1e');
+    for (const wx of [x0 + 8, x0 + 26, x1 - 34, x1 - 16]) { R(wx, top + 32, 10, 14, '#c8c0b0'); R(wx + 1, top + 33, 8, 12, '#7fb6d9'); R(wx + 1, top + 33, 8, 3, '#a9d3ec'); R(wx - 2, top + 32, 2, 14, '#3e5a7a'); R(wx + 10, top + 32, 2, 14, '#3e5a7a'); }
+    const dx = 12 * T - 9; R(dx - 6, top + 26, 30, 4, '#e8e2d4');
+    for (const cx of [dx - 5, dx + 20]) { R(cx, top + 30, 3, bot - top - 32, '#ffffff'); R(cx + 2, top + 30, 1, bot - top - 32, '#d8d2c4'); }
+    R(dx, top + 40, 18, bot - top - 40, '#5a2e18'); R(dx + 1, top + 41, 8, bot - top - 42, '#7a4426'); R(dx + 9, top + 41, 8, bot - top - 42, '#7a4426'); R(dx + 7, top + 52, 2, 2, '#f2cf73'); R(dx + 10, top + 52, 2, 2, '#f2cf73');
+    R(dx - 4, bot - 2, 26, 3, '#c2bdb4');
+    for (const fx of [x0 + 4, x1 - 8]) { R(fx, bot - 8, 6, 6, '#8a5a32'); R(fx + 1, bot - 11, 4, 4, '#f07ab0'); } }
   return c;
 }

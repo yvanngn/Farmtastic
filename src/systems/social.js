@@ -77,6 +77,7 @@ export const hearts = r => Math.floor(Math.max(0, r.points) / POINTS_PER_HEART);
 
 // Position du PNJ selon l'heure (dehors le jour, chez lui le soir).
 export function placeNPC(n, S, OUT_FROM, OUT_TO) {
+  if (n.mystic) return placeMyst(n, S);
   const out = S.minute >= OUT_FROM && S.minute < OUT_TO;
   if (n.welcome && S.intro && !S.intro.met) { n.scene = 'farm'; Object.assign(n, n.welcome); n.walking = false; return; } // accueil du joueur
   if (n.leaving) { // après l'accueil, il redescend le chemin vers le village
@@ -101,6 +102,39 @@ export function placeNPC(n, S, OUT_FROM, OUT_TO) {
   if (S.scene === n.scene && Math.hypot(S.x - n.x, S.y - n.y) < 2.5) n.dir = Math.abs(S.x - n.x) > Math.abs(S.y - n.y) ? (S.x < n.x ? 2 : 3) : (S.y < n.y ? 1 : 0);
   else n.dir = 0;
 }
+// Marche en ligne droite vers un point ; renvoie true une fois arrivé.
+function walkTo(n, t, st = 0.06) {
+  const dx = t.x - n.x, dy = t.y - n.y, d = Math.hypot(dx, dy);
+  n.dir = Math.abs(dx) > Math.abs(dy) ? (dx < 0 ? 2 : 3) : (dy < 0 ? 1 : 0);
+  if (d <= st) { n.x = t.x; n.y = t.y; n.walking = false; return true; }
+  n.walking = true; n.x += dx / d * st; n.y += dy / d * st; return false;
+}
+const faceP = (n, S) => { if (S.scene === n.scene && Math.hypot(S.x - n.x, S.y - n.y) < 3) n.dir = Math.abs(S.x - n.x) > Math.abs(S.y - n.y) ? (S.x < n.x ? 2 : 3) : (S.y < n.y ? 1 : 0); else n.dir = 0; };
+// Myst : vient voir la cabane une fois réparée, repart chez lui, puis ne sort que le soir.
+export function placeMyst(n, S) {
+  const st = S.intro && S.intro.myst;
+  if (st === 'come' || st === 'talk' || st === 'leaving') {
+    if (n.scene !== 'farm' || !Number.isFinite(n.x)) { n.scene = 'farm'; Object.assign(n, n.door); }
+    if (st === 'come') { if (walkTo(n, n.y > 5.7 || n.y < 5.5 ? { x: n.x, y: 5.6 } : n.cabin)) if (n.x === n.cabin.x && n.y === n.cabin.y) S.intro.myst = 'talk'; }
+    else if (st === 'talk') { n.walking = false; faceP(n, S); }
+    else if (walkTo(n, Math.abs(n.y - 5.6) > .05 ? { x: n.x, y: 5.6 } : n.door)) { S.intro.myst = 'done'; n.scene = 'none'; }
+    return;
+  }
+  n.walking = false;
+  const out = st === 'done' && S.minute >= n.night.from && S.minute < n.night.to;
+  n.scene = out ? 'farm' : 'none'; Object.assign(n, n.night.at);
+  faceP(n, S);
+}
+// Arrivée de Myst devant la cabane : il parle une fois, puis repart.
+export function mystTick(g) {
+  const S = g.S, n = g.npcs.myst;
+  if (!n || !S.intro || S.intro.myst !== 'talk' || g.mystSaid || (S.scene || 'farm') !== 'farm') return false;
+  g.mystSaid = true;
+  const r = S.social.myst; if (r) r.metAt = S.day;
+  g.bus.emit('say', { name: n.name, color: n.color, voice: n.voice, lines: n.arrival, onEnd: () => { S.intro.myst = 'leaving'; } });
+  return true;
+}
+
 export function findNPCAt(g, tx, ty) {
   const sc = g.S.scene || 'farm';
   for (const id in g.npcs) { const n = g.npcs[id]; if ((n.scene || 'farm') === sc && Math.hypot(n.x - (tx + .5), n.y - .3 - (ty + .5)) < 1) return n; }
