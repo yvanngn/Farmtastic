@@ -256,3 +256,4 @@ Ordre convenu : 1 mort/clignotement ✅ · 2 tente ✅ · 3 recettes (feu), baie
 - ✅ **Couteau** nécessaire pour cueillir les champignons ; sans lui le héros dit qu'il préfère ne pas les ramasser à la main, « même si c'est sûrement une idée reçue ». ⏳ Où trouver le couteau : à décider.
 - ⏳ Visiter la ferme d'un autre joueur (synchroniser ses objets) : plus tard.
 - ✅ **Effacer une partie solo** : « Mes parties » (dès une partie) → 🗑️ puis « Effacer ? » (deux appuis). Efface la sauvegarde de l'appareil et, en ligne, la partie (fonction SQL `ferme_delete_game`, ajoutée à `supabase_ferme.sql`). Les parties solo affichent le nom du personnage.
+- ✅ Coups d'outil : de profil, le bras « au repos » disparaît pendant le coup (seul le bras animé reste) ; de face et de dos, l'outil monte au-dessus de la tête puis s'abat vers l'avant, vu en raccourci (plus de vue de profil). Myst parle aussi de la vieille pioche abandonnée du côté de la grange.

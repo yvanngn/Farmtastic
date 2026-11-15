@@ -10,7 +10,7 @@ const SHOE = '#4a2e1e', EYE = '#2a1d18';
 
 /* ---------------- Personnage (16×23, contour inclus) ---------------- */
 // L.body : 'h' | 'f' ; L.bottom : 'pant' | 'skirt' ; L.hair : 0 court, 1 long, 2 épis, 3 chignon, 4 queue, 5 couettes.
-function rawChar(c, L, d, f, blink) {
+function rawChar(c, L, d, f, blink, noArm = false) {   // noArm : le bras qui tient l'outil est dessiné à part (coup d'outil)
   const r = (x, y, w, h, col) => { c.fillStyle = col; c.fillRect(2 + x, 2 + y, w, h); };
   const S = hex6(L.skin), Sd = shade(S, .82), Sh = hex6(L.shirt), Shd = shade(Sh, .76), Shl = shade(Sh, 1.18);
   const P = hex6(L.pants), Pd = shade(P, .72), H = hex6(L.hairC), Hl = shade(H, 1.35), Hd = shade(H, .72);
@@ -30,7 +30,7 @@ function rawChar(c, L, d, f, blink) {
     }
     up(3, 9, 6, 5, Sh); up(3, 9, 1, 5, Shd); up(8, 9, 1, 4, Shl); if (!skirt) up(3, 13, 6, 1, Pd);
     if (L.coat) { up(3, 9, 6, 9, Sh); up(3, 9, 1, 9, Shd); up(8, 9, 1, 8, Shl); up(5, 13, 1, 5, Shd); }  // long manteau
-    const ax = 5 - off; up(ax, 10, 2, 4, Shd); up(ax, 14, 2, 1, S);
+    const ax = 5 - off; if (!noArm) { up(ax, 10, 2, 4, Shd); up(ax, 14, 2, 1, S); }
     up(3, 2, 7, 7, S); up(3, 8, 7, 1, Sd); up(10, 5, 1, 1, S); up(5, 5, 1, 2, Sd);
     up(8, blink ? 6 : 5, 1, blink ? 1 : 2, EYE); up(8, 7, 2, 1, fem ? LIPS : shade(S, .7));
     if (fem && !blink) up(9, 4, 1, 1, EYE);
@@ -57,7 +57,7 @@ function rawChar(c, L, d, f, blink) {
   if (!skirt) up(2, 13, 8, 1, Pd);
   if (L.coat) { up(2, 9, 8, 9, Sh); up(2, 9, 1, 9, Shl); up(9, 9, 1, 9, Shd); if (d === 0) { up(5, 10, 2, 8, Shd); up(5, 9, 2, 1, S); } }  // long manteau, fermé
   if (d === 0) { up(5, 9, 2, 1, S); if (fem) up(4, 9, 4, 1, S); }
-  up(1, 10 + l2, 1, 4, Shd); up(10, 10 + l1, 1, 4, Shd); up(1, 14 + l2, 1, 1, S); up(10, 14 + l1, 1, 1, S);
+  up(1, 10 + l2, 1, 4, Shd); up(1, 14 + l2, 1, 1, S); if (!noArm) { up(10, 10 + l1, 1, 4, Shd); up(10, 14 + l1, 1, 1, S); }
   up(2, 2, 8, 7, S); up(9, 3, 1, 5, Sd); up(2, 8, 8, 1, Sd);
   if (d === 0) {
     if (blink) { up(3, 6, 2, 1, EYE); up(7, 6, 2, 1, EYE); }
@@ -90,20 +90,20 @@ function rawChar(c, L, d, f, blink) {
   else { up(2, 3, 1, 2, H); up(9, 3, 1, 2, H); }
 }
 
-function charSprite(L, d, f, blink) {
-  const k = 'c' + L.body + L.bottom + L.skin + L.hair + L.hairC + L.shirt + L.pants + (L.sad ? 's' : '') + (L.coat ? 'k' : '') + d + f + blink;
+function charSprite(L, d, f, blink, noArm = false) {
+  const k = (noArm ? 'n' : 'c') + L.body + L.bottom + L.skin + L.hair + L.hairC + L.shirt + L.pants + (L.sad ? 's' : '') + (L.coat ? 'k' : '') + d + f + blink;
   return cache(k, () => {
     const s = canvas(16, 23), c = s.getContext('2d');
     if (d === 2) { c.translate(16, 0); c.scale(-1, 1); }
-    rawChar(c, L, d === 2 ? 3 : d, f, blink);
+    rawChar(c, L, d === 2 ? 3 : d, f, blink, noArm);
     return outline(s);
   });
 }
 
 // ox, oy : coin haut-gauche du personnage 12×20. t : horloge pour le clignement.
-export function drawChar(c, ox, oy, L, d, f, t = 0) {
+export function drawChar(c, ox, oy, L, d, f, t = 0, noArm = false) {
   groundShadow(c, ox + 6, oy + 20, 5, 2);
-  const blink = (t % 4200) < 130, spr = charSprite(L, d, f || 0, blink);
+  const blink = (t % 4200) < 130, spr = charSprite(L, d, f || 0, blink, noArm);
   if (L.tall) { // grand : le buste est allongé de 3 pixels
     c.drawImage(spr, 0, 0, spr.width, 14, ox - 2, oy - 5, spr.width, 14);
     c.drawImage(spr, 0, 11, spr.width, spr.height - 11, ox - 2, oy + 9, spr.width, spr.height - 11);
@@ -146,9 +146,24 @@ export function drawSwing(c, S, tool, p) {
   const arcs = { 0: [-.3, 2.9], 1: [.2, -.3], 2: [.4, -1.8], 3: [-.4, 1.8] };
   const [a0, a1] = arcs[S.dir], a = a0 + (a1 - a0) * Math.max(0, e);
   const step = Math.round(a / (Math.PI / 8)) * (Math.PI / 8); // angles quantifiés : rendu pixel net
-  // le bras suit l'outil : levé pendant l'élan, abaissé pendant le coup
-  const ox = Math.round(S.x * T - 6), oy = Math.round(S.y * T - 19), sh = [[6, 11], [6, 10], [4, 11], [8, 11]][S.dir];
-  const dx = Math.sin(step), dy = -Math.cos(step), L = S.look || {};
+  const ox = Math.round(S.x * T - 6), oy = Math.round(S.y * T - 19), L = S.look || {};
+  const armPix = (pts, hand) => {   // bras : contour sombre, manche, puis avant-bras et main
+    c.fillStyle = '#241a14'; for (const [x, y] of pts) c.fillRect(x - 2, y - 2, 4, 4);
+    c.fillStyle = shade(L.shirt || '#d04a3a', .78); pts.slice(0, -2).forEach(([x, y]) => c.fillRect(x - 1, y - 1, 2, 2));
+    c.fillStyle = L.skin || '#f6d2b0'; pts.slice(-3).forEach(([x, y]) => c.fillRect(x - 1, y - 1, 2, 2)); c.fillRect(hand[0] - 1, hand[1] - 1, 3, 3);
+  };
+  if (S.dir < 2) { // de face / de dos : l'outil monte au-dessus de la tête puis s'abat vers l'avant (vu en raccourci)
+    const th = -0.5 + (S.dir === 0 ? 3.1 : 2.4) * Math.max(0, e), f = Math.round(Math.cos(th) * 4) / 4;
+    const sx = ox + 9, sy = oy + 11, hy = Math.round(sy - 7 * f);
+    const pts = []; for (let k = 0; k <= 7; k++) pts.push([sx, Math.round(sy + (hy - sy) * k / 7)]);
+    if (S.dir === 0) armPix(pts, [sx, hy]);
+    c.save(); c.translate(sx + 2, hy); c.scale(1, Math.abs(f) < .25 ? (f < 0 ? -.25 : .25) : f); draw(c); c.restore();
+    if (S.dir === 1) armPix(pts, [sx, hy]);
+    return;
+  }
+  // de profil : le bras suit l'outil, levé pendant l'élan, abaissé pendant le coup
+  const sh = [[6, 11], [6, 10], [4, 11], [8, 11]][S.dir];
+  const dx = Math.sin(step), dy = -Math.cos(step);
   const AL = 7, hxp = Math.round(ox + sh[0] + dx * AL), hyp = Math.round(oy + sh[1] + dy * AL);
   const pt = k => [Math.round(ox + sh[0] + dx * k), Math.round(oy + sh[1] + dy * k)];
   c.fillStyle = '#241a14'; for (let k = 0; k <= AL; k++) { const [x, y] = pt(k); c.fillRect(x - 2, y - 2, 4, 4); }   // contour sombre : le bras se détache du corps
