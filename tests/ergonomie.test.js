@@ -80,3 +80,9 @@ test('interagir avec le décor : un petit texte du héros', () => {
 test('le temps passe plus lentement : 1 minute de jeu = 1 seconde', () => {
   assert.equal(CFG.MS_PER_MIN, 1000);
 });
+
+test('index.html (GitHub Pages) est à jour avec play.html (claude.ai)', async () => {
+  const { readFileSync } = await import('node:fs');
+  const idx = readFileSync(new URL('../index.html', import.meta.url), 'utf8'), play = readFileSync(new URL('../play.html', import.meta.url), 'utf8');
+  for (const id of [...play.matchAll(/id="([^"]+)"/g)].map(m => m[1])) assert.ok(idx.includes(`id="${id}"`), 'manque dans index.html : #' + id);
+});

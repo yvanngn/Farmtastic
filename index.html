@@ -3,13 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
-<title>Moteur Ferme</title>
+<title>Farm'tastic</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&family=Pixelify+Sans:wght@500;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Nunito:wght@400;600;700&family=Pixelify+Sans:wght@500;600;700&display=swap">
 <link rel="stylesheet" href="css/style.css">
+<style>:root{padding:0!important}</style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
-
 </head>
 <body>
 <canvas id="game"></canvas>
@@ -18,7 +18,6 @@
   <div class="ligne"><b id="hName"></b><span>🪙 <b id="hMoney"></b></span></div>
   <div id="hTime"></div>
   <span class="lbl">⚡ Énergie</span><div class="bar"><i id="hEn"></i></div>
-  <span class="lbl">❤️ Vie</span><div class="bar"><i id="hHp"></i></div>
   <div id="saveDot"></div>
 </div>
 <div id="topbtns" style="display:none">
@@ -45,10 +44,35 @@
   </div>
 </div>
 <div id="toast" class="box"></div>
+<div id="hearts" aria-label="Vie" hidden></div>
+<div id="dlg" class="box" role="dialog" aria-live="polite"><div id="dlgName"></div><div id="dlgText"></div><div id="dlgChoices"></div><span id="dlgNext">▸</span><button id="dlgSkip">Passer ⏭</button></div>
+
+<div id="ovTitle" class="overlay on">
+  <canvas id="titleCv"></canvas>
+  <div class="titre-bloc">
+    <h1 class="logo" aria-label="Farm'tastic"><span style="--i:0">F</span><span style="--i:1">a</span><span style="--i:2">r</span><span style="--i:3">m</span><span style="--i:4">'</span><span style="--i:5">t</span><span style="--i:6">a</span><span style="--i:7">s</span><span style="--i:8">t</span><span style="--i:9">i</span><span style="--i:10">c</span></h1>
+    <div class="logo-sous">✦ une ferme à partager ✦</div>
+  </div>
+  <div id="titleTap">Touchez l'écran pour commencer</div>
+  <nav id="titleMenu" class="titre-menu" style="display:none"></nav>
+</div>
+<div id="ovHowto" class="overlay">
+  <div class="panel box">
+    <div class="row" style="justify-content:space-between;margin:0"><h2>📖 Comment jouer</h2><button id="howtoClose" aria-label="Fermer">✕</button></div>
+    <ul class="howto">
+      <li><b>🕹️ Joystick</b> (ou ZQSD / flèches) : se déplacer.</li>
+      <li><b>✋ Bouton d'action</b> (ou Espace) : il choisit le bon outil tout seul. Maintenir = répéter.</li>
+      <li><b>🛠️ Roue des outils</b> (1) et <b>🎒 roue du sac</b> (2) : glisser vers un objet pour le prendre en main.</li>
+      <li><b>🗺️ Carte</b> (M), <b>📜 Menu</b> (E), <b>💾 Sauvegarde</b>, <b>⚙ Réglages</b> en haut à droite.</li>
+      <li>La partie se sauvegarde toute seule toutes les 30 s.</li>
+    </ul>
+    <div class="row" style="justify-content:flex-end"><button class="primaire" onclick="document.getElementById('ovHowto').classList.remove('on')">C'est parti !</button></div>
+  </div>
+</div>
 
 <div id="ovLook" class="overlay">
   <div class="panel box">
-    <div class="titre-jeu">Moteur Ferme</div>
+    <div class="titre-jeu">Farm'tastic</div>
     <div class="sous-titre">Créez votre fermier</div>
     <div class="perso">
       <div class="apercu"><canvas id="preview" width="36" height="45"></canvas>
@@ -58,7 +82,7 @@
         <div id="lookOpts"></div>
       </div>
     </div>
-    <div class="row" style="justify-content:flex-end;margin-top:12px"><button id="bContinue" style="display:none">Continuer la partie</button><button id="bStart" class="primaire">Commencer ▶</button></div>
+    <div class="row" style="justify-content:flex-end;margin-top:12px"><button id="bBack" style="margin-right:auto">◀ Retour</button><button id="bContinue" style="display:none">Continuer la partie</button><button id="bStart" class="primaire">Commencer ▶</button></div>
     <div id="netState"></div>
   </div>
 </div>

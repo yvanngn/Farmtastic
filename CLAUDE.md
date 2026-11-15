@@ -13,3 +13,4 @@
 - **Dès 100 répliques 🆕**, envoyer `docs/DIALOGUES.md` à l'utilisateur pour relecture. Ses corrections s'appliquent telles quelles, puis `node tools/export-dialogues.mjs --valider` et committer `tools/dialogues_valides.txt`.
 - Discussions comme dans Witch'rok : la réplique du jour reste en tête, puis le choix des sujets du PNJ (`topics`) et « Rien. ».
 - Mémoire du projet : `docs/CARNET.md` (le lire en début de séance, le compléter à la fin).
+- `index.html` (GitHub Pages) est **généré** depuis `play.html` (claude.ai) : après toute modification de `play.html`, lancer `node tools/build-index.mjs` (un test vérifie qu'ils sont synchronisés).

@@ -213,6 +213,8 @@ Goûts de Franck (💡) : adore le croissant ; aime le pain, les œufs et le boi
 - **Orientation du téléphone** : une page web ne peut pas faire pivoter un iPhone, et dans la page claude.ai le plein écran peut être bloqué par le cadre. Sur iPhone, l'astuce reste « Sur l'écran d'accueil ».
 - **Quête de l'enquête sur Manuel** : à écrire. Qu'apprend-on de louche, et par qui ?
 
+- **Écran noir sur GitHub Pages (corrigé le 15/11)** : `index.html`, la page servie par GitHub, était restée sur la toute première version, alors que seule `play.html` (claude.ai) était mise à jour. Le jeu plantait donc au démarrage. `index.html` est maintenant régénérée depuis `play.html` (`node tools/build-index.mjs`), et un test vérifie qu'elles restent identiques.
+
 ## 6. Idées de Claude (💡 à valider)
 - Sous-titre de l'écran titre : « ✦ une ferme à partager ✦ » (déjà affiché, à garder ou retirer).
 - **Goûts de Luna** (tirés de sa personnalité : ancienne informaticienne, rêve de ferme, budget serré, retape sa maison) : adore les graines de carotte et de blé ; aime le pain, le croissant et le bois ; n'aime pas la pierre ni le foin ; déteste la gelée. Il n'existe pas encore de fleurs ni de bijoux à offrir.
