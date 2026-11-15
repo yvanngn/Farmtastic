@@ -49,7 +49,7 @@ export function isSolid(S, x, y) {
   const N = S.nature && S.nature[S.scene || 'farm'];
   if (N && N.rocks && N.rocks[x + ',' + y]) return true;   // cailloux et filons
   if (S.tent && (S.scene || 'farm') === 'farm' && S.tent.x === x && S.tent.y === y) return true;   // tente
-  if ((S.scene || 'farm') === 'farm' && (BUSH_SET.has(x + ',' + y) || (S.fires || []).some(f => f.x === x && f.y === y))) return true;   // buissons, feux
+  if ((S.scene || 'farm') === 'farm' && (BUSH_SET.has(x + ',' + y) || (S.fires || []).some(f => f.x === x && f.y === y) || (S.chests || []).some(c => c.x === x && c.y === y))) return true;   // buissons, feux, coffres
   if (S.scene === 'wild' && S.wild && S.wild.rocks && S.wild.rocks[x + ',' + y]) return true;
   if (S.scene === 'foret' && S.foret && S.foret.shrooms && S.foret.shrooms[x + ',' + y]) return false;
   if (S.scene && S.scene !== 'farm') { const t = tileAt(S.scene, x, y); if (S.scene === 'grange' && (t === 'p' || t === 'r') && S.grange && S.grange.broken.includes(x + ',' + y)) return false; return SOLID_TILES.includes(t); }

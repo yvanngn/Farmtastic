@@ -16,6 +16,7 @@ import { pickShroom } from './foret.js';
 import { repairAt, contribute, pickFieldTool } from './repair.js';
 import { pitchTent, tentAt, useTent } from './camp.js';
 import { pickJewel } from './igor.js';
+import { chestAt, placeChest } from './chests.js';
 import { fireAt, startCook, pickBush, placeFire } from './cooking.js';
 import { pickFlower, hitNature, natureAt, digTreasure } from './nature.js';
 import { findNPCAt, talk, gift, hearts } from './social.js';
@@ -87,6 +88,8 @@ function act0(g, tx, ty) {
   if (pickFieldTool(g, tx, ty)) return 'pick';
   if (pickJewel(g, tx, ty)) return 'pick';
   if (tentAt(S, tx, ty)) return useTent(g) && 'tent';
+  { const c = chestAt(S, tx, ty); if (c) { g.bus.emit('openChest', c); return 'chest'; } }
+  if (S.sel === 'chest' && sc === 'farm') return placeChest(g, tx, ty) ? 'chestPlaced' : 'missing';
   if (fireAt(S, tx, ty)) return startCook(g, tx, ty) ? 'cook' : 'fire';
   { const b = pickBush(g, tx, ty); if (b != null) return b ? 'berries' : 'empty'; }
   if (S.sel === 'campfire' && sc === 'farm') return placeFire(g, tx, ty) ? 'fire' : 'missing';

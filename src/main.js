@@ -54,6 +54,7 @@ import { removeFromIndex, deleteOnlineGame, readIndex, upsertIndex, mergeGames, 
 import { createGamesPanel } from './ui/gamesPanel.js';
 import { createInventoryGrid } from './ui/inventoryGrid.js';
 import { createSellPanel } from './ui/sellPanel.js';
+import { createChestPanel } from './ui/chestPanel.js';
 import { createMultiplayer, lerpOthers } from './net/multiplayer.js';
 
 const g = createGame();
@@ -66,6 +67,7 @@ const settingsPanel = createSettingsPanel(audio);
 const wheel = createWheel(g, audio);
 const invGrid = createInventoryGrid(g, audio);
 const sellPanel = createSellPanel(g, audio);
+const chestPanel = createChestPanel(g, audio);
 const mapView = createMapView(g, renderer, audio);
 const board = createBoard(g, audio);
 const dialog = createDialog(g, audio);
@@ -77,6 +79,7 @@ function wireBus() {
   g.bus.on('pop', p => g.fx.push({ ...p, life: 1 }));
   g.bus.on('newDay', () => { renderer.initWeather(); audio.play('day'); doSave(false); });
   g.bus.on('scene', () => { g.enemies.length = 0; });
+  g.bus.on('openChest', c => chestPanel.open(c));
   g.bus.on('showMap', () => { mapView.open(); toast('🗺️ Le plan est toujours là : bouton 🗺️ en haut à droite (ou touche M).'); });
   g.bus.on('clinic', () => { const h = NPCS.hailey; setTimeout(() => g.bus.emit('say', { name: h.name, color: h.color, voice: h.voice, lines: h.clinic }), 600); });
   g.bus.on('open', what => what === 'board' ? board.open() : what === 'sell' ? sellPanel.open() : menu.open(what, true));

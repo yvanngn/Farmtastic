@@ -22,6 +22,14 @@ function drawBush(c, x, y, ripe) {
   c.fillStyle = '#4a9a3a'; c.fillRect(px + 3, py + 4, 5, 4); c.fillRect(px + 9, py + 6, 4, 3); c.fillStyle = '#68b84c'; c.fillRect(px + 4, py + 4, 2, 1);
   if (ripe) for (const [a, b] of [[3, 7], [7, 5], [11, 8], [5, 11], [10, 11], [13, 6]]) { c.fillStyle = '#3a4ad0'; c.fillRect(px + a, py + b, 2, 2); c.fillStyle = '#9aa8ff'; c.fillRect(px + a, py + b, 1, 1); }
 }
+// Coffre en bois cerclé de fer, posé au sol.
+function drawChest(c, x, y) {
+  const px = x * T, py = y * T;
+  c.fillStyle = 'rgba(0,0,0,.28)'; c.fillRect(px + 1, py + 13, 14, 3);
+  c.fillStyle = '#6a3e1e'; c.fillRect(px + 1, py + 5, 14, 9); c.fillStyle = '#8a5428'; c.fillRect(px + 1, py + 3, 14, 4); c.fillStyle = '#a8703a'; c.fillRect(px + 2, py + 3, 12, 1);
+  c.fillStyle = '#3a3640'; c.fillRect(px + 1, py + 7, 14, 1); c.fillRect(px + 3, py + 3, 1, 11); c.fillRect(px + 12, py + 3, 1, 11);
+  c.fillStyle = '#e8c26a'; c.fillRect(px + 7, py + 7, 2, 3); c.fillStyle = '#4a2a14'; c.fillRect(px + 1, py + 13, 14, 1);
+}
 // Feu de camp : pierres en cercle, bûches, flammes qui dansent.
 function drawFire(c, x, y, now) {
   const px = x * T, py = y * T, f = (now / 120 | 0) % 3;
@@ -267,6 +275,7 @@ let swing = null;
     } });
     if (scene === 'farm') {
       for (const [x, y] of BUSHES) if (x >= x0 && x <= x1 && y >= y0 && y <= y1) list.push({ z: y + .8, d: () => drawBush(ctx, x, y, bushRipe(S, x, y)) });
+      for (const ch of S.chests || []) list.push({ z: ch.y + .8, d: () => drawChest(ctx, ch.x, ch.y) });
       for (const f of S.fires || []) list.push({ z: f.y + .7, d: () => drawFire(ctx, f.x, f.y, now) });
       if (g.cooking) list.push({ z: 9997, d: () => { const p = cookProgress(g), x = g.cooking.x * T, y = g.cooking.y * T - 8;
         ctx.fillStyle = 'rgba(0,0,0,.55)'; ctx.fillRect(x - 1, y - 1, 18, 5); ctx.fillStyle = '#f2a03a'; ctx.fillRect(x, y, Math.round(16 * p), 3); } });

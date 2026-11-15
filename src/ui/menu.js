@@ -15,7 +15,7 @@ import { isUnlocked } from '../systems/market.js';
 import { canRepairBench, repairBench } from '../systems/economy.js';
 import { WORKBENCH } from '../data/buildings.js';
 import { craftHand, canCraftHand } from '../systems/cooking.js';
-import { HAND_RECIPES } from '../data/recipes.js';
+import { HAND_RECIPES, RECIPE_CATS } from '../data/recipes.js';
 import { build, canBuild, canBuyAnimal, homeCount, buy, buyAnimal, buyBag, bagCost, buyStack, stackCost, STACKS, canCraft, craft } from '../systems/economy.js';
 import { consume } from '../systems/player.js';
 import { hearts, POINTS_PER_HEART, DEGREES, DEGREE_NAMES, tasteOf } from '../systems/social.js';
@@ -24,13 +24,13 @@ import { slots, usedSlots, stackSize } from '../systems/inventory.js';
 import { canUpgrade, upgradeTool, miningLevel, nextXp, toolTier, hasTool } from '../systems/skills.js';
 
 const TABS = { sac: 'Sac', recettes: '🔥 Recettes', quests: 'Quêtes', forge: 'Forge', social: 'Liens' };
-const TITLES = { market: '🏪 Marché', upgrades: '🧰 Magasin d\'amélioration', carpenter: '🪚 Charpentier', workshop: '🛠️ Établi', animals: '🐾 Marchand d\'animaux', bakery: '🥖 Boulangerie', butcher: '🥩 Boucherie', fishmonger: '🐟 Poissonnerie' };
+const TITLES = { recettes: '🔥 Recettes', market: '🏪 Marché', upgrades: '🧰 Magasin d\'amélioration', carpenter: '🪚 Charpentier', workshop: '🛠️ Établi', animals: '🐾 Marchand d\'animaux', bakery: '🥖 Boulangerie', butcher: '🥩 Boucherie', fishmonger: '🐟 Poissonnerie' };
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 const it = id => ITEMS[id] || { n: id, i: '❔', p: 0 };
 
 export function createMenu(g, opts) {
   const { online, audio } = opts;
-  let tab = 'sac';
+  let tab = 'sac', recCat = 'feu';
   const card = (h, cls = '') => `<div class="card ${cls}">${h}</div>`;
   // grille d'achat d'un commerce (×1 et ×5)
   const shopGrid = (S, id) => '<div class="grid">' + SHOPS[id].sells.filter(k => isUnlocked(S, k)).map(k => { const x = it(k);
@@ -41,7 +41,10 @@ export function createMenu(g, opts) {
     fishmonger: S => `<p class="info">Arrivage du jour.</p>${shopGrid(S, 'fishmonger')}`,
     recettes(S) {
       const known = (S.recipes || []).filter(id => HAND_RECIPES[id]);
-      return '<p class="info">Les recettes que tu connais. On les fabrique n\'importe où, avec ce qu\'on a sur soi.</p><div class="grid">' + known.map(id => { const r = HAND_RECIPES[id];
+      const cats = Object.keys(RECIPE_CATS).filter(c => known.some(id => HAND_RECIPES[id].cat === c));
+      if (!cats.includes(recCat)) recCat = cats[0];
+      const tabsH = '<div class="rec-tabs">' + cats.map(c => `<button data-rcat="${c}" class="${c === recCat ? 'on' : ''}">${RECIPE_CATS[c]}</button>`).join('') + '</div>';
+      return '<p class="info">Les recettes que tu connais, rangées par type. On les fabrique n\'importe où, avec ce qu\'on a sur soi.</p>' + tabsH + '<div class="grid">' + known.filter(id => HAND_RECIPES[id].cat === recCat).map(id => { const r = HAND_RECIPES[id];
         return card(`<div class="t">${it(r.out).i} <b>${it(r.out).n}</b> ×${r.q}</div><div>${Object.entries(r.in).map(([k, n]) => `${it(k).i}${n} <small>(${S.inv[k] || 0})</small>`).join(' ')}</div><button data-hcraft="${id}" ${canCraftHand(S, id) ? '' : 'disabled'}>Fabriquer</button>`); }).join('') + '</div>';
     },
     sac(S) {
@@ -150,7 +153,7 @@ export function createMenu(g, opts) {
   }
 
   const handlers = {
-    use: id => consume(g, id), deploy: () => { if (deployTent(g)) $('#ovBag').classList.remove('on'); }, craft: i => craft(g, +i), hcraft: id => craftHand(g, id), buy: id => buy(g, id), buy5: id => buy(g, id, 5), animal: id => buyAnimal(g, id),
+    use: id => consume(g, id), deploy: () => { if (deployTent(g)) $('#ovBag').classList.remove('on'); }, craft: i => craft(g, +i), hcraft: id => craftHand(g, id), rcat: c => { recCat = c; }, buy: id => buy(g, id), buy5: id => buy(g, id, 5), animal: id => buyAnimal(g, id),
     bag: () => buyBag(g), bench: () => repairBench(g), build: id => build(g, id), stack: () => buyStack(g), up: id => upgradeTool(g, id)
   };
   function render() {

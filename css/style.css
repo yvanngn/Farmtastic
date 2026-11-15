@@ -331,3 +331,10 @@ img.pix { width: 1.15em; height: 1.15em; image-rendering: pixelated; vertical-al
 .sell-q button { padding: 4px 10px } .sell-q .mini { font-size: 12px }
 .sell-foot { display: flex; align-items: center; gap: 8px; margin-top: 10px; flex-wrap: wrap } .sell-foot span { flex: 1 }
 .sell-log { max-height: 48vh; overflow-y: auto; padding-left: 18px; line-height: 1.6 }
+.rec-tabs { display: flex; gap: 6px; flex-wrap: wrap; margin: 6px 0 10px }
+.rec-tabs button { padding: 6px 12px; font-size: 14px }
+.rec-tabs button.on { background: var(--or-vif); color: #2a1a10 }
+.chest-panel { width: min(720px, 96vw) }
+.chest-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 12px }
+.chest-cols h3 { margin: 4px 0 6px; font-size: 15px } .chest-cols h3 small { opacity: .75; font-weight: 400 }
+@media (max-width: 520px) { .chest-cols { grid-template-columns: 1fr } }

@@ -31,7 +31,7 @@ export function createInventoryGrid(g, audio) {
     ov.querySelector('#invInfo').textContent = `${usedSlots(S)}/${slots(S)} cases · piles de ${stackSize(S)}`;
     const it = picked && ITEMS[picked];
     detail.innerHTML = it ? `<div><strong>${it.n}</strong><small>×${S.inv[picked] || 0} · ${it.p} 🪙/u · ${SORT_CATS[catOf(picked)]}</small></div>
-      <div class="inv-acts"><button data-a="hand">✋ En main</button>${it.eat ? '<button data-a="eat">😋 Manger</button>' : ''}${it.tent ? '<button data-a="tent" class="primaire">⛺ Déployer</button>' : ''}</div>`
+      <div class="inv-acts"><button data-a="hand">✋ En main</button>${it.eat ? '<button data-a="eat">😋 Manger</button>' : ''}${it.tent ? '<button data-a="tent" class="primaire">⛺ Déployer</button>' : ''}${picked === 'chest' || picked === 'campfire' ? '<button data-a="place" class="primaire">📍 Poser</button>' : ''}</div>`
       : '<small>Touche une case pour voir l’objet. Fais glisser une case sur une autre pour ranger.</small>';
   }
   detail.onclick = e => {
@@ -40,6 +40,7 @@ export function createInventoryGrid(g, audio) {
     if (a === 'hand') { g.S.sel = picked; g.bus.emit('inv'); close(); }
     else if (a === 'eat') { consume(g, picked); if (!g.S.inv[picked]) picked = null; render(); }
     else if (a === 'tent') { if (deployTent(g)) close(); }
+    else if (a === 'place') { g.S.sel = picked; g.bus.emit('inv'); g.bus.emit('toast', '📍 Touche une case libre juste à côté de toi pour le poser.'); close(); }
   };
   // glisser-déposer (souris et doigt)
   grid.addEventListener('pointerdown', e => {
