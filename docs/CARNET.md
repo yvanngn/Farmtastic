@@ -240,3 +240,9 @@ Goûts de Franck (💡) : adore le croissant ; aime le pain, les œufs et le boi
 - ✅ 4 emplacements de ferme (Nord = la tienne, Est, Sud, Ouest) visibles sur la carte « 🧭 Région », même en solo ; en multijoueur chacun annonce le sien.
 - ⏳ Choisir son emplacement en multijoueur (pour l'instant tout le monde a le Nord).
 - 🔨 **Mode test** (`CFG.ACCES_TEST: true` dans `src/config.js`) : portail des Terres sauvages ouvert dès le début, épée posée devant (case 45,18). Remettre `false` pour le jeu normal (le maire donne alors la clé et l'épée après les lampadaires).
+
+## Séance du 15/11/2026 (soir)
+- Vocabulaire : « la mine » = les Terres sauvages.
+- ✅ Fleurs sauvages à cueillir (ferme, forêt, Terres sauvages ; pas en ville), 3 espèces par saison dont une rare (💡 pâquerette/violette/muguet, coquelicot/bleuet/lavande, bruyère/souci/colchique, perce-neige/hellébore/edelweiss). Elles fanent chaque soir, de nouvelles poussent. ⏳ Serviront aux potions et à l'alchimie (fleurs + minerais).
+- ✅ Cailloux partout sauf en ville ; filons de cuivre, étain, fer, or (du plus courant au plus rare : 50/28/16/6). Un filon = 8 coups de pioche quel que soit le minerai (un caillou : 2), donne 2 à 4 minerais (💡 prix 15/25/40/100 🪙).
+- ✅ Arc-en-ciel : certains jours de pluie (💡 35 %), entre 13h et 16h pendant 3 h, au-dessus de la ferme ; un coffre au pied (💡 150 à 400 🪙 + 2 minerais plutôt rares + 1 fleur rare).

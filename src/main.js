@@ -21,6 +21,7 @@ import { NPCS, OUT_FROM, OUT_TO } from './data/npcs.js';
 import { placeNPC, findNPCAt, welcome } from './systems/social.js';
 import { autoPickup } from './systems/grange.js';
 import { pickTestSword } from './systems/wild.js';
+import { ensureNature, rainbowTick, pickFlower, digTreasure } from './systems/nature.js';
 import { doorAt } from './world/scenes.js';
 import { pickDrops, dropsAt, swapDrop, stackSize } from './systems/inventory.js';
 import { updateWild } from './systems/wild.js';
@@ -164,6 +165,8 @@ function loop(now) {
     updateWild(g, dt); // les monstres ne vivent que dans les Terres sauvages
     autoPickup(g);
     pickTestSword(g, Math.floor(g.S.x), Math.floor(g.S.y - .2));
+    ensureNature(g, g.S.scene || 'farm'); rainbowTick(g);
+    pickFlower(g, Math.floor(g.S.x), Math.floor(g.S.y - .2)); digTreasure(g, Math.floor(g.S.x), Math.floor(g.S.y - .2));
     if (g.S.scene === 'foret') { ensureShrooms(g); pickShroom(g, Math.floor(g.S.x), Math.floor(g.S.y - .2)); }
     // on entre directement en marchant vers une porte (si c'est possible)
     { const S = g.S, k = input.keys, moving = k.up || k.down || k.left || k.right || k.ax || k.ay, ft = facingTile(S);

@@ -13,6 +13,7 @@ import { grangeAction } from './grange.js';
 import { examineText } from './examine.js';
 import { hitZRock, isOpen, pickTestSword } from './wild.js';
 import { pickShroom } from './foret.js';
+import { pickFlower, hitNature, natureAt, digTreasure } from './nature.js';
 import { findNPCAt, talk, gift } from './social.js';
 import { add } from './inventory.js';
 import { TOOL_FOR } from './resources.js';
@@ -63,6 +64,9 @@ function act0(g, tx, ty) {
     talk(g, npc.id); return 'talk';
   }
   if (pickTestSword(g, tx, ty)) return 'pick';
+  if (digTreasure(g, tx, ty)) return 'treasure';
+  if (pickFlower(g, tx, ty)) return 'pick';
+  { const N = natureAt(S, sc); if (N && N.rocks[key(tx, ty)]) return hitNature(g, tx, ty) ? 'hit' : 'none'; }
   const d = doorAt(sc, tx, ty);
   if (d && d.to === 'wild' && !isOpen(S)) { g.bus.emit('sfx', 'denied'); g.bus.emit('toast', 'Le vieux portail est fermé à clé. Le chef du village saura peut-être…'); return 'locked'; }
   if (d && !(sc === 'farm' && BUILDINGS[d.to] && !(S.built && S.built[d.to]))) { enterScene(g, d.to, d.spawn); return 'door'; }

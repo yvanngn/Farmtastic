@@ -2,6 +2,36 @@
 // étalonnage météo, particules, vignettage. Responsive (devicePixelRatio, échelle entière).
 import { CFG } from '../config.js';
 import { TEST_SWORD, testSwordHere } from '../systems/wild.js';
+import { rainbowVisible } from '../systems/nature.js';
+import { VEINS } from '../data/nature.js';
+import { FLOWERS } from '../data/items.js';
+const FLOWER_COL = Object.fromEntries(FLOWERS.flat().map(f => [f.id, f.c]));
+// Petite fleur : tige, feuilles et corolle qui se balance un peu.
+function drawFlower(c, x, y, col, now) {
+  const px = x * T + 8, py = y * T + 13, s = Math.round(Math.sin(now / 700 + x * 3 + y) * .8);
+  c.fillStyle = '#3f7a28'; c.fillRect(px, py - 5, 1, 5); c.fillStyle = '#64ad3c'; c.fillRect(px - 2, py - 2, 2, 1); c.fillRect(px + 1, py - 3, 2, 1);
+  c.fillStyle = col; c.fillRect(px - 1 + s, py - 8, 3, 1); c.fillRect(px - 2 + s, py - 7, 5, 1); c.fillRect(px - 1 + s, py - 6, 3, 1);
+  c.fillStyle = '#f6d24a'; c.fillRect(px + s, py - 7, 1, 1);
+}
+// Filon : gros rocher sombre strié de la couleur du minerai.
+function drawVein(c, x, y, o, col) {
+  const px = x * T + (o.shake > 0 ? Math.round(Math.sin(o.shake * 40)) : 0), py = y * T;
+  c.fillStyle = 'rgba(0,0,0,.28)'; c.fillRect(px + 1, py + 13, 14, 3);
+  c.fillStyle = '#4a4650'; c.fillRect(px + 2, py + 3, 12, 11); c.fillRect(px + 1, py + 5, 14, 8);
+  c.fillStyle = '#625e6a'; c.fillRect(px + 3, py + 3, 9, 3); c.fillStyle = '#34313a'; c.fillRect(px + 1, py + 12, 14, 2);
+  c.fillStyle = col; for (const [a, b] of [[4, 6], [5, 7], [9, 5], [10, 6], [11, 9], [6, 10], [7, 10], [12, 11]]) c.fillRect(px + a, py + b, 1, 1);
+  c.fillStyle = '#fff'; c.fillRect(px + 9, py + 5, 1, 1);
+}
+// Arc-en-ciel : grand arc dont un pied touche le trésor ; il apparaît puis s'efface en douceur.
+function drawRainbow(c, fx, fy, minute, R) {
+  const t = (minute - R.from) / (R.to - R.from), a = Math.min(1, t * 6, (1 - t) * 6) * .45;
+  const r0 = 150, cx = fx - r0;
+  c.save(); c.globalAlpha = a;
+  ['#e04040', '#f0902a', '#f2d23a', '#5ac04a', '#3a8ae0', '#6a4ac8', '#a050c8'].forEach((col, i) => {
+    c.strokeStyle = col; c.lineWidth = 3; c.beginPath(); c.arc(cx, fy, r0 - i * 3, Math.PI, 0); c.stroke();
+  });
+  c.restore();
+}
 import { buildGround, drawWaterShimmer, LIGHTS, drawSoil } from './ground.js';
 import { drawChar, drawTree, drawRock, drawCrop, drawAnimal, drawSlime, drawSwing, treeSprite, KIND_SPRITE } from './sprites.js';
 import { buildInterior } from './interiors.js';
@@ -167,6 +197,24 @@ export function createRenderer(cv, g) {
         if (open) { ctx.fillStyle = '#ffd98a'; ctx.fillRect(wx + 2, wy + 2, 10, 8); ctx.fillStyle = '#3e5a7a'; ctx.fillRect(wx - 5, wy, 5, 12); ctx.fillRect(wx + 14, wy, 5, 12); }
         else { ctx.fillStyle = '#3e5a7a'; ctx.fillRect(wx, wy, 14, 12); ctx.fillStyle = '#2a4058'; for (let k = 2; k < 12; k += 3) ctx.fillRect(wx, wy + k, 14, 1); ctx.fillRect(wx + 7, wy, 1, 12); }
       } });
+    }
+    { // fleurs, cailloux et filons (ferme, forêt, Terres sauvages)
+      const N = S.nature && S.nature[scene];
+      if (N) {
+        for (const k in N.flowers) { const [x, y] = k.split(',').map(Number); if (x >= x0 && x <= x1 && y >= y0 && y <= y1) list.push({ z: y + .5, d: () => drawFlower(ctx, x, y, FLOWER_COL[N.flowers[k]] || '#fff', now) }); }
+        for (const k in N.rocks) { const [x, y] = k.split(',').map(Number), o = N.rocks[k]; if (x >= x0 && x <= x1 && y >= y0 && y <= y1) list.push({ z: y + .9, d: () => o.t === 'vein' ? drawVein(ctx, x, y, o, VEINS[o.v].c) : drawRock(ctx, x, y, o) }); }
+      }
+      if (scene === 'farm' && rainbowVisible(S)) {
+        const R = S.rainbow;
+        list.push({ z: R.y + .5, d: () => { // coffre qui scintille
+          const x = R.x * T, y = R.y * T, b = Math.round(Math.sin(now / 200) * 1);
+          ctx.fillStyle = 'rgba(0,0,0,.25)'; ctx.fillRect(x + 2, y + 13, 12, 2);
+          ctx.fillStyle = '#6a3e1e'; ctx.fillRect(x + 3, y + 6 + b, 10, 7); ctx.fillStyle = '#8a5428'; ctx.fillRect(x + 3, y + 5 + b, 10, 3);
+          ctx.fillStyle = '#f2c832'; ctx.fillRect(x + 3, y + 8 + b, 10, 1); ctx.fillRect(x + 7, y + 8 + b, 2, 3);
+          if ((now / 300 | 0) % 2) { ctx.fillStyle = '#fff'; ctx.fillRect(x + 12, y + 3 + b, 1, 3); ctx.fillRect(x + 11, y + 4 + b, 3, 1); }
+        } });
+        list.push({ z: 9999, d: () => drawRainbow(ctx, R.x * T + 8, R.y * T + 10, S.minute, R) });
+      }
     }
     if (scene === 'farm' && testSwordHere(S)) list.push({ z: TEST_SWORD.y + .4, d: () => {
       const b = Math.round(Math.sin(now / 250) * 1.5), x = TEST_SWORD.x * T, y = TEST_SWORD.y * T;

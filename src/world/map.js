@@ -37,6 +37,8 @@ export function ground(x, y) {
 import { tileAt, SOLID_TILES } from './scenes.js';
 
 export function isSolid(S, x, y) {
+  const N = S.nature && S.nature[S.scene || 'farm'];
+  if (N && N.rocks && N.rocks[x + ',' + y]) return true;   // cailloux et filons
   if (S.scene === 'wild' && S.wild && S.wild.rocks && S.wild.rocks[x + ',' + y]) return true;
   if (S.scene === 'foret' && S.foret && S.foret.shrooms && S.foret.shrooms[x + ',' + y]) return false;
   if (S.scene && S.scene !== 'farm') { const t = tileAt(S.scene, x, y); if (S.scene === 'grange' && (t === 'p' || t === 'r') && S.grange && S.grange.broken.includes(x + ',' + y)) return false; return SOLID_TILES.includes(t); }

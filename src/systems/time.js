@@ -2,6 +2,7 @@
 import { CFG } from '../config.js';
 import { SPAWN } from '../world/map.js';
 import { rollWeather } from './weather.js';
+import { rollRainbow } from './nature.js';
 import { animalsNewDay } from './animals.js';
 import { socialNewDay } from './social.js';
 import { regrow } from './resources.js';
@@ -28,6 +29,7 @@ export function newDay(g, slept) {
     g.bus.emit('toast', "Évanoui de fatigue… -10% d'argent");
   }
   S.weather = rollWeather(S.season, g.rnd());
+  rollRainbow(g);
   animalsNewDay(S);
   socialNewDay(S);
   regrow(g);

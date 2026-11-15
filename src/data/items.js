@@ -50,3 +50,20 @@ export const TOOLS = [
   { id: 'shovel', n: 'Pelle', i: '🪏' },
   { id: 'sword', n: 'Épée', i: '🗡️' }
 ];
+
+// Fleurs sauvages (💡 espèces et prix) : 3 par saison, la 3e plus rare. Serviront aux potions et à l'alchimie.
+export const FLOWERS = [
+  [{ id: 'paquerette', n: 'Pâquerette', p: 4, c: '#ffffff' }, { id: 'violette', n: 'Violette', p: 8, c: '#8a5ad0' }, { id: 'muguet', n: 'Muguet', p: 20, c: '#f2f6e0' }],
+  [{ id: 'coquelicot', n: 'Coquelicot', p: 5, c: '#e0402a' }, { id: 'bleuet', n: 'Bleuet', p: 9, c: '#4a7ae8' }, { id: 'lavande', n: 'Lavande', p: 22, c: '#a07ae0' }],
+  [{ id: 'bruyere', n: 'Bruyère', p: 5, c: '#d070b0' }, { id: 'souci', n: 'Souci', p: 9, c: '#f0a020' }, { id: 'colchique', n: 'Colchique', p: 24, c: '#c890e8' }],
+  [{ id: 'perce_neige', n: 'Perce-neige', p: 8, c: '#ffffff' }, { id: 'hellebore', n: 'Hellébore', p: 14, c: '#e8b8c8' }, { id: 'edelweiss', n: 'Edelweiss', p: 35, c: '#e8e8d8' }]
+];
+for (const season of FLOWERS) for (const f of season) ITEMS[f.id] = { n: f.n, p: f.p, i: '🌸', flower: true };
+
+// Minerais des filons (💡 prix) : du cuivre (courant) à l'or (rare).
+Object.assign(ITEMS, {
+  copper_ore: { n: 'Minerai de cuivre', p: 15, i: '🟠' },
+  tin_ore: { n: "Minerai d'étain", p: 25, i: '⚪' },
+  iron_ore: { n: 'Minerai de fer', p: 40, i: '⚫' },
+  gold_ore: { n: "Minerai d'or", p: 100, i: '🟡' }
+});
