@@ -9,9 +9,11 @@ import { TOOLS } from '../data/items.js';
 import { TIER_NAMES, UPGRADABLE, MAX_TIER } from '../data/tools.js';
 import { BUILDINGS } from '../data/buildings.js';
 import { SHOPS } from '../data/shops.js';
+import { isUnlocked } from '../systems/market.js';
 import { build, canBuild, canBuyAnimal, homeCount, buy, buyAnimal, buyBag, bagCost, buyStack, stackCost, STACKS, canCraft, craft } from '../systems/economy.js';
 import { consume } from '../systems/player.js';
-import { hearts } from '../systems/social.js';
+import { hearts, POINTS_PER_HEART, DEGREES, DEGREE_NAMES, tasteOf } from '../systems/social.js';
+import { ITEMS as ALL_ITEMS } from '../data/items.js';
 import { slots, usedSlots, stackSize } from '../systems/inventory.js';
 import { canUpgrade, upgradeTool, miningLevel, nextXp, toolTier } from '../systems/skills.js';
 
@@ -25,7 +27,7 @@ export function createMenu(g, opts) {
   let tab = 'sac';
   const card = (h, cls = '') => `<div class="card ${cls}">${h}</div>`;
   // grille d'achat d'un commerce (×1 et ×5)
-  const shopGrid = (S, id) => '<div class="grid">' + SHOPS[id].sells.map(k => { const x = it(k);
+  const shopGrid = (S, id) => '<div class="grid">' + SHOPS[id].sells.filter(k => isUnlocked(S, k)).map(k => { const x = it(k);
     return card(`<div class="t">${x.i} <b>${x.n}</b></div><div>${x.buy} 🪙${x.eat ? ' · se mange' : ''}</div><div class="row" style="margin:0"><button data-buy="${k}" ${S.money >= x.buy ? '' : 'disabled'}>Acheter</button><button data-buy5="${k}" ${S.money >= x.buy * 5 ? '' : 'disabled'}>×5</button></div>`); }).join('') + '</div>';
   const views = {
     bakery: S => `<p class="info">Pain frais et farine pour cuisiner.</p>${shopGrid(S, 'bakery')}`,
@@ -40,7 +42,7 @@ export function createMenu(g, opts) {
     },
     forge(S) {
       const lvl = miningLevel(S), xp = S.skills.mining.xp, nx = nextXp(xp), pct = nx ? Math.round(xp / nx * 100) : 100;
-      const why = { level: 'Niveau de minage insuffisant', money: "Pas assez d'argent", stone: 'Pas assez de pierre', max: 'Palier maximum' };
+      const why = { plans: 'Plans de forge : caravane 🐪', level: 'Niveau de minage insuffisant', money: "Pas assez d'argent", stone: 'Pas assez de pierre', max: 'Palier maximum' };
       return `<div class="xp"><b>⛏️ Minage niveau ${lvl}</b><span>${xp}${nx ? ' / ' + nx : ''} XP</span><div class="bar"><i style="width:${pct}%;background:linear-gradient(90deg,#c99a3a,#ffdf8a)"></i></div><small>Cassez des pierres pour gagner de l'expérience. Les gros rochers demandent une pioche Cuivre.</small></div>`
         + '<div class="grid">' + UPGRADABLE.map(id => {
           const t = TOOLS.find(x => x.id === id), ic = iconHTML(id), tier = toolTier(S, id), r = canUpgrade(S, id), c = r.cost;
@@ -58,13 +60,13 @@ export function createMenu(g, opts) {
       }).join('') + '</div>';
     },
     animals(S) {
-      return shopGrid(S, 'feed') + '<h3>🐾 Animaux</h3><div class="grid">' + Object.entries(ANIMALS).map(([id, a]) => {
+      return shopGrid(S, 'feed') + '<h3>🐾 Animaux</h3><div class="grid">' + Object.entries(ANIMALS).filter(([id]) => isUnlocked(S, id)).map(([id, a]) => {
         const r = canBuyAnimal(S, id), home = a.home && BUILDINGS[a.home];
         const why = { home: `Il faut d'abord ${home ? home.un : ''} (charpentier)`, full: home ? home.plein : '', money: "Pas assez d'argent" };
         return card(`<div class="t">${a.i} <b>${a.n}</b></div><div>${a.buy} 🪙${a.prod ? ` · ${it(a.prod).i} tous les ${a.every} j` : ' · compagnon'}</div>`
           + (home ? `<small>${home.i} ${home.n} : ${homeCount(S, a.home)}/${home.cap}</small>` : '<small>Vit en liberté</small>')
           + `<button data-animal="${id}" ${r.ok ? '' : 'disabled'}>Acheter</button>${r.ok ? '' : `<small>${why[r.why]}</small>`}`);
-      }).join('') + '</div>';
+      }).join('') + '</div>' + (['rabbit', 'pig', 'sheep'].some(k => !isUnlocked(S, k)) ? '<p class="info">D\'autres animaux arriveront avec la caravane 🐪 (panneau d\'affichage).</p>' : '');
     },
     upgrades(S) {
       const bc = bagCost(S), sc = stackCost(S), lvl = S.stackLvl || 0;
@@ -82,7 +84,21 @@ export function createMenu(g, opts) {
     },
     social(S) {
       const ids = Object.keys(S.social);
-      return '<h3>Habitants</h3>' + (ids.length ? ids.map(id => `${g.npcs[id] ? esc(g.npcs[id].name) : id} : ${'❤️'.repeat(hearts(S.social[id]))} (${S.social[id].points})`).join('<br>') : "<p class=\"info\">Aucun habitant pour l'instant.</p>")
+      // fiche de chaque habitant : cœurs, goûts découverts par degré, ce qu'on sait de sa vie
+      const fiche = id => {
+        const n = g.npcs[id], r = S.social[id]; if (!n) return '';
+        const h = hearts(r), pts = Math.max(0, r.points), known = r.known || {};
+        const all = Object.keys(ALL_ITEMS), unknown = all.filter(k => !(k in known) && tasteOf(n, k) !== 'neutre').length;
+        const rows = DEGREES.map(d => { const its = Object.keys(known).filter(k => known[k] === d); return its.length ? `<b>${DEGREE_NAMES[d]}</b><span>${its.map(k => it(k).i + ' ' + it(k).n).join(', ')}</span>` : ''; }).join('');
+        const life = (r.seen || []).map(i => n.story && n.story[i] ? `<li>${esc(n.story[i].t)}</li>` : '').join('');
+        return card(`<div class="pnj"><div class="nom" style="color:${n.color}">${esc(n.name)}</div>
+          <div>${'❤️'.repeat(h) + '🤍'.repeat(Math.max(0, 10 - h))}</div>
+          <small>${pts % POINTS_PER_HEART}/${POINTS_PER_HEART} vers le prochain cœur · aujourd'hui : ${r.talked ? '💬 ✔' : '💬 —'} ${r.gifted ? '🎁 ✔' : '🎁 —'}</small>
+          <h4>Goûts découverts</h4>${rows ? `<div class="gouts">${rows}</div>` : '<p class="info">Offrez-lui des objets pour découvrir ses goûts.</p>'}
+          ${unknown ? `<small>${unknown} goût(s) marqué(s) encore à découvrir.</small>` : ''}
+          ${life ? `<h4>Ce que je sais ${n.de || 'de lui'}</h4><ul class="vie">${life}</ul>` : ''}</div>`);
+      };
+      return '<h3>Habitants</h3>' + (ids.length ? ids.map(fiche).join('') : "<p class=\"info\">Aucun habitant pour l'instant.</p>")
         + '<h3>Joueurs en ligne</h3>' + (Object.values(g.others).map(o => esc(o.name)).join('<br>') || `<p class="info">${online() ? "Personne d'autre." : 'Hors ligne.'}</p>`)
         + '<h3>Animaux</h3>' + (S.animals.map(a => `${ANIMALS[a.type].i} ${ANIMALS[a.type].n} : ${'❤️'.repeat(Math.round(a.love / 20)) || '🤍'} (${a.love}/100)`).join('<br>') || '<p class="info">Aucun animal.</p>');
     }

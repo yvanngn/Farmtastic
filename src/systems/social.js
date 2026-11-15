@@ -1,11 +1,22 @@
 // Liens sociaux avec les PNJ. Les répliques d'histoire se débloquent avec l'amitié, une par jour.
 // 250 points = 1 cœur. Une discussion et un cadeau par jour.
 export const POINTS_PER_HEART = 250;
+// Cadeaux : degrés de goût et effet sur l'amitié.
+export const GIFT_PTS = { adore: 80, aime: 45, neutre: 20, naime: -20, deteste: -40 };
+export const DEGREES = ['adore', 'aime', 'neutre', 'naime', 'deteste'];
+export const DEGREE_NAMES = { adore: 'Adore', aime: 'Aime', neutre: 'Neutre', naime: "N'aime pas", deteste: 'Déteste' };
+export function tasteOf(n, item) {
+  const t = n.taste || {};
+  for (const d of DEGREES) if ((t[d] || []).includes(item)) return d;
+  if ((n.loves || []).includes(item)) return 'adore';
+  if ((n.hates || []).includes(item)) return 'deteste';
+  return 'neutre';
+}
 
 export function registerNPC(g, npc) {
   g.npcs[npc.id] = { ...npc, ...(g.npcs[npc.id] || {}), ...npc };
   g.S.social[npc.id] ||= { points: 0, talked: false, gifted: false };
-  g.S.social[npc.id].seen ||= [];
+  const r = g.S.social[npc.id]; r.seen ||= []; r.known ||= {}; r.asked ||= []; r.talks ||= 0;
 }
 
 // Choisit la réplique du jour : la prochaine réplique d'histoire débloquée, sinon une petite phrase.
@@ -24,11 +35,24 @@ export function nextLine(g, id) {
 export function talk(g, id) {
   const r = g.S.social[id], n = g.npcs[id];
   if (!r || !n) return false;
-  r.seen ||= [];
-  const line = nextLine(g, id);
-  if (!r.talked) { r.points += 20; r.talked = true; }
-  g.bus.emit('say', { name: n.name, color: n.color, voice: n.voice, lines: [line] });
+  r.seen ||= []; r.asked ||= []; r.talks ||= 0;
+  const say = (lines, extra) => g.bus.emit('say', { name: n.name, color: n.color, voice: n.voice, lines, ...extra });
+  // une question de temps en temps (1 discussion sur 3), une seule fois chacune
+  const q = !r.talked && r.talks % 3 === 2 && (n.questions || []).find(x => !r.asked.includes(x.id) && x.h <= hearts(r));
+  const line = q ? q.q : nextLine(g, id);
+  if (!r.talked) { r.points += 20; r.talked = true; r.talks++; }
+  if (q) { say([q.q], { choices: q.a.map(a => a.t), onChoose: i => answer(g, id, q.id, i) }); return q.q; }
+  say([line]);
   return line;
+}
+
+// Réponse à une question : petit effet sur l'amitié (lent), une seule fois.
+export function answer(g, id, qid, i) {
+  const r = g.S.social[id], n = g.npcs[id], q = (n.questions || []).find(x => x.id === qid), a = q && q.a[i];
+  if (!a || r.asked.includes(qid)) return false;
+  r.asked.push(qid); r.points += a.pts;
+  g.bus.emit('say', { name: n.name, color: n.color, voice: n.voice, lines: [a.r] });
+  return a.pts;
 }
 
 export function gift(g, id, item, add) {
@@ -37,10 +61,13 @@ export function gift(g, id, item, add) {
   if (r.gifted) { g.bus.emit('say', { name: n.name, color: n.color, voice: n.voice, lines: [n.already || '…'] }); return false; }
   add(g, item, -1);
   r.gifted = true;
-  r.points += (n.loves || []).includes(item) ? 80 : (n.hates || []).includes(item) ? -40 : 20;
-  g.bus.emit('sfx', 'collect');
-  if (n.thanks) g.bus.emit('say', { name: n.name, color: n.color, voice: n.voice, lines: [n.thanks] });
-  return true;
+  const deg = tasteOf(n, item);
+  r.points += GIFT_PTS[deg];
+  (r.known ||= {})[item] = deg; // le goût est découvert (fiche du menu)
+  g.bus.emit('sfx', GIFT_PTS[deg] > 0 ? 'collect' : 'denied');
+  const line = (n.react && n.react[deg]) || n.thanks || (GIFT_PTS[deg] > 0 ? 'Merci !' : 'Ah… merci.');
+  g.bus.emit('say', { name: n.name, color: n.color, voice: n.voice, lines: [line] });
+  return deg;
 }
 
 export const hearts = r => Math.floor(Math.max(0, r.points) / POINTS_PER_HEART);

@@ -232,3 +232,22 @@ img.pix { width: 1.15em; height: 1.15em; image-rendering: pixelated; vertical-al
 #dlgText { font: 600 clamp(16px, 4.2vmin, 20px)/1.4 var(--f-texte); color: #fdf6e8; text-shadow: 0 2px 2px rgba(0,0,0,.6); padding-right: 1.4em }
 #dlgNext { position: absolute; right: 16px; bottom: 10px; color: var(--or-vif); font-size: 20px; animation: clignote 1s ease-in-out infinite }
 #dlgSkip { position: absolute; right: 10px; top: 10px; font-size: 13px; padding: .3em .7em }
+#dlgChoices { display: flex; flex-direction: column; gap: 6px; margin-top: 8px }
+#dlgChoices:empty { display: none }
+#dlgChoices button { text-align: left; font-size: clamp(14px, 3.8vmin, 17px) }
+#dlgChoices button::before { content: "▸ "; color: var(--or-vif) }
+.pnj { display: grid; gap: 6px }
+.pnj .nom { font: 400 1.35em var(--f-logo) }
+.gouts { display: grid; grid-template-columns: auto 1fr; gap: 3px 10px; font-size: .92em }
+.gouts b { color: var(--doux); font-weight: 700 }
+.vie li { margin: 3px 0 3px 1.1em; color: var(--doux); font-size: .9em }
+/* ---------- Demandes à code couleur (lot 7) ---------- */
+.legende { display: flex; flex-wrap: wrap; gap: 6px; margin: 6px 0 10px }
+.legende span { font-size: .82em; font-weight: 700; padding: .25em .6em; border-radius: 999px; background: color-mix(in srgb, var(--k) 25%, transparent); border: 1px solid var(--k); color: var(--texte) }
+.jauges { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr)); gap: 8px; margin-bottom: 10px }
+.jauge { border-left: 4px solid var(--k); background: rgba(0,0,0,.25); border-radius: 10px; padding: 6px 10px; font-size: .9em; display: grid; gap: 3px }
+.jauge small { color: var(--doux) }
+.affiche[style*="--k"] { border-left: 6px solid var(--k) }
+.affiche .pastille { position: absolute; right: 6px; top: 4px; font-size: 1.1em }
+.affiche[style*="--k"]::before { background: var(--k) }
+#ovBoard .panel { width: min(760px, 100%) }

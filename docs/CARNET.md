@@ -30,7 +30,7 @@ Règle des dialogues : répliques débloquées par paliers d'amitié ; Claude li
 | 4 | Tout se débloque avec l'argent : pas de poulailler au départ, charpentier, marchand d'animaux | ✅ 15/11/2026 |
 | 5 | Boulanger, boucher, poissonnier | ✅ 15/11/2026 |
 | 6 | Luna et sa maison, dialogues qui distillent sa vie | ✅ 15/11/2026 (répliques à valider) |
-| 7 | Demandes à **code couleur** mélangeant 4 idées : reconstruction du village (jauge commune), fête de saison, demandes des habitants (amitié), caravane commerciale (graines, animaux, outils) | ⏳ |
+| 7 | Demandes à **code couleur** mélangeant 4 idées : reconstruction du village (jauge commune), fête de saison, demandes des habitants (amitié), caravane commerciale (graines, animaux, outils) | ✅ 15/11/2026 |
 
 ## 4. Ce qui existe dans le jeu
 - **Écran titre** : décor de ferme animé (aube, grange, silo, moulin, champ de blé, oiseaux, pollen), logo « Farm'tastic » en Lilita One doré qui flotte, « Touchez l'écran pour commencer », cascade d'étoiles, menu Continuer / Nouvelle partie / Comment jouer / Réglages, musique de titre.
@@ -48,6 +48,16 @@ Règle des dialogues : répliques débloquées par paliers d'amitié ; Claude li
 - **Luna** : sa petite maison mauve est au bord du chemin, près du portail du village. On y trouve des cartons de déménagement, un lit, une plante et une table. Elle est dehors devant chez elle de 8 h à 19 h, et chez elle le soir. On lui parle avec le bouton d'action, et on lui offre l'objet qu'on tient en main (un cadeau par jour).
 - **Dialogues** : une bulle en bas de l'écran, avec le nom en couleur, un ▸ qui clignote, et un bouton « Passer ». Sur téléphone, la caméra remonte pour que la bulle ne cache personne. Chaque PNJ a une petite voix.
 - **Amitié** : parler rapporte 20 points par jour, un cadeau 20 (80 s'il est aimé), et 250 points font 1 cœur. Luna dévoile au plus **une réplique d'histoire par jour**, débloquée selon ses cœurs ; une fois tout dit, elle fait la conversation.
+- **Panneau d'affichage (lot 7)** : 6 demandes en 4 familles à code couleur.
+  - 🔨 **Chantier du village** (orange) : bois, pierre, clôtures. Chaque objet livré remplit la jauge du chantier en cours : lampadaires (60), puis place du marché (120), puis vieux pont (200). Un chantier fini rapporte une prime.
+  - 🎉 **Fête de saison** (rose) : produits de la ferme. Il faut réunir 50 objets avant la fin de la saison (prime de 500 🪙) ; la jauge repart à zéro à chaque saison.
+  - 💚 **Demande d'un habitant** (vert) : un objet qu'il aime ou adore, avec +40 d'amitié.
+  - 🐪 **Caravane commerciale** (or) : moins d'argent, mais des **jetons**. Ils s'échangent contre des graines de carotte (2), de maïs (4), des lapins (5), des cochons (6), des moutons (8) et les plans de forge Or et Iridium (10).
+  - Une demande ne réclame jamais un objet qu'on ne peut pas encore produire.
+- **Départ d'une nouvelle partie** : seules les graines de blé, les poules et le chat sont disponibles ; tout le reste vient de la caravane. Une ancienne sauvegarde garde tout débloqué.
+- **Goûts des habitants par degrés** : adore +80, aime +45, neutre +20, n'aime pas −20, déteste −40. Le goût est découvert en offrant l'objet, et s'affiche ensuite dans la fiche du menu (onglet Liens).
+- **Questions à réponses** : une discussion sur trois, Luna pose une question à 2 ou 3 réponses (touches 1-2-3). Chaque question ne se pose qu'une fois, et l'effet reste faible (−8 à +12) pour que l'amitié avance lentement.
+- **Fiche des habitants** (onglet Liens) : nom, cœurs, points vers le prochain cœur, discussion et cadeau du jour, goûts découverts par degré, nombre de goûts encore à découvrir, et ce qu'on sait de sa vie.
 - **Bâtiments** : maison (lit), poulailler (mangeoire). **Village** : halle du marché (marché entre joueurs), panneau d'affichage (6 demandes, renouvelées toutes les 2 h réelles), magasin d'amélioration, fontaine.
 - **Animaux** : poule, lapin, mouton, chat à caresser.
 - **Monde** : temps, saisons, météo, nuit éclairée, particules, combat (slimes la nuit), carte zoomable.
@@ -74,6 +84,26 @@ Paliers : il faut le nombre de cœurs indiqué pour qu'elle en parle.
 15. (deuxième cadeau du jour) Tu m'as déjà fait un cadeau aujourd'hui !
 16. (soir, non utilisée pour l'instant) Il est tard… on se voit demain ?
 
+### Questions de Luna (à valider)
+17. (0 ♥) Dis… tu crois qu'on peut vraiment vivre de la terre, aujourd'hui ?
+   a. Bien sûr, il faut juste de la patience. (+12) → « Tu as raison. La patience, ça s'apprend. »
+   b. Ça dépend de la météo… et de la chance. (+5) → « Ha ! Alors je vais prier pour le soleil. »
+   c. Franchement ? Non. (−8) → « Ah… merci pour l'encouragement. »
+18. (1 ♥) Tu n'as jamais l'impression que les machines vont tout faire à notre place ?
+   a. Pas planter des carottes avec amour, en tout cas. (+12) → « Ha ! J'aime bien cette idée. »
+   b. Si, et ça me fait un peu peur aussi. (+8) → « Au moins, on est deux. »
+   c. Tant mieux, je ferai la sieste. (−5) → « Facile à dire quand on a encore son travail… »
+19. (2 ♥) Si tu avais une ferme de rêve, tu y mettrais quoi en premier ?
+   a. Des poules, évidemment. (+12) → « Pareil ! On est faits pour s'entendre. »
+   b. Un grand potager. (+10) → « Bon choix. Les carottes ne répondent jamais. »
+   c. Un hamac. (+3) → « … Je note. Le hamac. »
+### Réactions aux cadeaux (à valider)
+20. (adore) Des graines ?! Pour mon futur potager ? Tu es un amour !
+21. (aime) Oh, merci ! Ça me fait vraiment plaisir.
+22. (n'aime pas) Ah… merci. Je vais bien lui trouver une utilité.
+23. (déteste) Euh… c'est gluant. Tu peux le reprendre ?
+(La réplique 14 « Oh, pour moi ? Merci… » est remplacée par ces réactions.)
+
 ## 5. Contradictions et points à trancher
 - ✅ Réglé au lot 4 : le poulailler n'existe plus au départ, et les animaux ne se vendent plus que chez le marchand d'animaux. Une ancienne sauvegarde garde son poulailler, et sa bergerie si elle avait des moutons.
 - ✅ Réglé au lot 5 : la porcherie et la bergerie ont leur intérieur, et la Boutique du menu est supprimée.
@@ -89,6 +119,8 @@ Paliers : il faut le nombre de cœurs indiqué pour qu'elle en parle.
 
 ## 6. Idées de Claude (💡 à valider)
 - Sous-titre de l'écran titre : « ✦ une ferme à partager ✦ » (déjà affiché, à garder ou retirer).
+- **Goûts de Luna** (tirés de sa personnalité : ancienne informaticienne, rêve de ferme, budget serré, retape sa maison) : adore les graines de carotte et de blé ; aime le pain, le croissant et le bois ; n'aime pas la pierre ni le foin ; déteste la gelée. Il n'existe pas encore de fleurs ni de bijoux à offrir.
+- **Lot 7** : noms et objectifs des chantiers, primes, nom des fêtes, coûts en jetons de la caravane, poids de chaque famille de demandes.
 - **Luna** : son apparence (cheveux longs foncés, haut vert), sa maison mauve, ses horaires, le détail de la bouilloire, de la ville, du champ de blé et des petits boulots. Elle n'a pas encore de cadeau préféré : dis-moi ce qu'elle aime et déteste.
 - Produits et prix des trois commerces, l'étal de graines à la halle, le foin chez le marchand d'animaux.
 - Cochon et truffe (pour que la porcherie serve à quelque chose), les prix et le nombre de places des bâtiments, leur position au nord de l'enclos, la bergerie pour les moutons.

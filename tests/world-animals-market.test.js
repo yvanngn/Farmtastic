@@ -70,10 +70,10 @@ test('panneau du village : 6 demandes, place vide 2 h après livraison', () => {
   const slots = ensureOrders(g);
   assert.equal(slots.length, 6);
   const o = slots[0].order;
-  assert.equal(o.item, 'wheat');
-  assert.ok(o.price >= 7, 'mieux payé que le bac');
+  assert.equal(o.kind, 'chantier');
+  assert.ok(o.price >= ITEMS[o.item].p, 'au moins le prix du bac');
   assert.equal(fulfillOrder(g, o.id), false, 'pas assez de blé');
-  S.inv.wheat = o.qty;
+  S.inv[o.item] = o.qty;
   assert.equal(fulfillOrder(g, o.id), true);
   assert.equal(S.money, o.qty * o.price);
   assert.equal(slots[0].order, null);
@@ -124,4 +124,75 @@ test('village : le magasin d’amélioration ouvre son interface', async () => {
   const { UI_TILES, tileAt } = await import('../src/world/scenes.js');
   assert.equal(tileAt('town', 18, 3), 'U');
   assert.equal(UI_TILES.U, 'upgrades');
+});
+
+// ---- Lot 7 : demandes à code couleur ----
+import { newOrder, village, currentProject, unlock, isUnlocked } from '../src/systems/market.js';
+import { PROJECTS, FESTIVAL_GOAL, UNLOCKS } from '../src/data/requests.js';
+import { LUNA } from '../src/data/npcs.js';
+import { ITEMS } from '../src/data/items.js';
+import { registerNPC } from '../src/systems/social.js';
+import { canBuyAnimal, buy as buyItem } from '../src/systems/economy.js';
+import { canUpgrade } from '../src/systems/skills.js';
+
+const freshState = () => ({ caravan: { tokens: 0, unlocked: [] } });
+
+test('demandes : 4 familles, l’habitant demande ce qu’il aime', () => {
+  let k = 7; const { g } = makeGame({ state: freshState(), rnd: () => ((k = (k * 9301 + 49297) % 233280) / 233280) });
+  registerNPC(g, LUNA);
+  const kinds = new Set();
+  for (let i = 0; i < 80; i++) { const o = newOrder(g, 0); kinds.add(o.kind); if (o.kind === 'habitant') assert.ok([...LUNA.taste.adore, ...LUNA.taste.aime].includes(o.item)); }
+  assert.deepEqual([...kinds].sort(), ['caravane', 'chantier', 'fete', 'habitant']);
+});
+
+test('chantier : la jauge commune avance, le chantier fini paie et passe au suivant', () => {
+  const { g, S } = makeGame({ state: { ...freshState(), money: 0, inv: { wood: 10 } } });
+  village(S);
+  S.market = { slots: [{ order: { id: 'a', kind: 'chantier', item: 'wood', qty: PROJECTS[0].goal, price: 1, bot: 'x' }, next: 0 }] };
+  assert.equal(fulfillOrder(g, 'a'), false, 'pas assez de bois');
+  S.inv.wood = PROJECTS[0].goal;
+  assert.equal(fulfillOrder(g, 'a'), true);
+  assert.deepEqual(S.village.done, ['lampadaires']);
+  assert.equal(currentProject(S).id, 'place');
+  assert.equal(S.money, PROJECTS[0].goal + PROJECTS[0].reward);
+});
+
+test('fête de saison : jauge par saison, remise à zéro à la saison suivante', () => {
+  const { g, S } = makeGame({ state: { ...freshState(), inv: { wheat: FESTIVAL_GOAL } } });
+  village(S);
+  S.market = { slots: [{ order: { id: 'f', kind: 'fete', item: 'wheat', qty: FESTIVAL_GOAL, price: 1, bot: 'x' }, next: 0 }] };
+  fulfillOrder(g, 'f');
+  assert.equal(S.festival.done, true);
+  S.season = 1; village(S);
+  assert.equal(S.festival.pts, 0);
+});
+
+test('habitant : livrer donne de l’amitié ; caravane : des jetons qui débloquent', () => {
+  const { g, S } = makeGame({ state: { ...freshState(), inv: { bread: 1, wool: 2 } } });
+  registerNPC(g, LUNA); village(S);
+  S.market = { slots: [
+    { order: { id: 'h', kind: 'habitant', npc: 'luna', item: 'bread', qty: 1, price: 1, bot: 'Luna' }, next: 0 },
+    { order: { id: 'c', kind: 'caravane', item: 'wool', qty: 2, price: 1, tokens: 2, bot: 'x' }, next: 0 }] };
+  fulfillOrder(g, 'h'); fulfillOrder(g, 'c');
+  assert.equal(S.social.luna.points, 40);
+  assert.equal(S.caravan.tokens, 2);
+  assert.equal(isUnlocked(S, 'carrot_seed'), false);
+  assert.equal(unlock(g, 'carrot_seed'), true);
+  assert.equal(isUnlocked(S, 'carrot_seed'), true);
+  assert.equal(S.caravan.tokens, 0);
+});
+
+test('caravane : sans déblocage, pas de lapin, pas de graines de maïs, pas de forge Or', () => {
+  const { g, S } = makeGame({ state: { ...freshState(), money: 1e6, inv: { stone: 999 }, tools: { axe: 3, pick: 3, sickle: 3, sword: 3 }, skills: { mining: { xp: 99999 } } } });
+  assert.equal(canBuyAnimal(S, 'rabbit').why, 'locked');
+  assert.equal(buyItem(g, 'corn_seed'), false);
+  assert.equal(canUpgrade(S, 'axe').why, 'plans');
+  S.caravan.unlocked = UNLOCKS.map(u => u.id);
+  assert.equal(canBuyAnimal(S, 'rabbit').ok, true);
+  assert.equal(canUpgrade(S, 'axe').ok, true);
+});
+
+test('demandes : jamais un objet qu’on ne peut pas encore produire', () => {
+  let k = 3; const { g } = makeGame({ state: { ...freshState(), built: { coop: false, pigsty: false, barn: false } }, rnd: () => ((k = (k * 9301 + 49297) % 233280) / 233280) });
+  for (let i = 0; i < 100; i++) assert.ok(!['wool', 'rabbit_wool', 'truffle', 'egg', 'corn', 'carrot'].includes(newOrder(g, 0).item));
 });

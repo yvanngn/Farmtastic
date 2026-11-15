@@ -14,6 +14,7 @@ export function defaultState() {
     built: { coop: false, pigsty: false, barn: false },
     social: {}, savedAt: 0,
     scene: 'farm', invSlots: CFG.INV_SLOTS, stackLvl: 0, rockQueue: [],
+    village: { done: [], progress: 0 }, festival: null, caravan: { tokens: 0, unlocked: [] },
     skills: { mining: { xp: 0 } },
     tools: { axe: 1, pick: 1, sickle: 1, sword: 1 },
     market: { slots: [] }
@@ -28,6 +29,8 @@ export function migrate(raw) {
   s.look = Object.assign(d.look, raw.look || {});
   s.tools = Object.assign(d.tools, raw.tools || {});
   s.skills = Object.assign(d.skills, raw.skills || {});
+  // Avant le lot 7, tout était déjà disponible : on ne retire rien aux anciennes parties.
+  if (!raw.caravan) s.caravan = { tokens: 0, unlocked: ['carrot_seed', 'corn_seed', 'rabbit', 'pig', 'sheep', 'forge_or'] };
   // Avant le lot 4, le poulailler existait d'office (et la bergerie si on avait des moutons).
   if (!raw.built) s.built = { coop: true, pigsty: false, barn: (raw.animals || []).some(a => a.type === 'sheep') };
   else s.built = Object.assign(d.built, raw.built);

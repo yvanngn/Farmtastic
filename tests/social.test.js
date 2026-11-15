@@ -19,7 +19,7 @@ test('parler : +20 une seule fois par jour', () => {
 test('cadeau aimé +80, un par jour', () => {
   const { g, S } = makeGame({ state: { inv: { egg: 2 } } });
   registerNPC(g, NPC);
-  assert.equal(gift(g, 'test', 'egg', add), true);
+  assert.equal(gift(g, 'test', 'egg', add), 'adore');
   assert.equal(gift(g, 'test', 'egg', add), false);
   assert.equal(S.social.test.points, 80);
   assert.equal(S.inv.egg, 1);
@@ -32,7 +32,7 @@ test('cœurs : 250 points = 1 cœur', () => {
 
 // ---- Lot 6 : Luna ----
 import { LUNA, OUT_FROM, OUT_TO } from '../src/data/npcs.js';
-import { placeNPC, POINTS_PER_HEART } from '../src/systems/social.js';
+import { placeNPC, POINTS_PER_HEART, answer, GIFT_PTS } from '../src/systems/social.js';
 import { act } from '../src/systems/actions.js';
 import { isSolid } from '../src/world/map.js';
 
@@ -45,6 +45,7 @@ function withLuna(state = {}) {
 
 test('Luna : sa vie se dévoile une réplique par jour, et seulement avec assez d’amitié', () => {
   const { g, S, said } = withLuna();
+  S.social.luna.asked = LUNA.questions.map(q => q.id); // pas de question pour ce test
   talk(g, 'luna');
   assert.equal(said[0], LUNA.story[0].t);
   talk(g, 'luna');
@@ -54,6 +55,28 @@ test('Luna : sa vie se dévoile une réplique par jour, et seulement avec assez 
   assert.ok(LUNA.chat.includes(said.at(-1)));
   S.social.luna.points = 2 * POINTS_PER_HEART; socialNewDay(S); talk(g, 'luna');
   assert.equal(said.at(-1), LUNA.story[3].t, 'au premier cœur : son ancien métier');
+});
+
+test('Luna : une question une discussion sur trois ; la réponse change un peu l’amitié, une seule fois', () => {
+  const { g, S, said } = withLuna();
+  const asks = []; g.bus.on('say', d => d.choices && asks.push(d));
+  talk(g, 'luna'); socialNewDay(S); talk(g, 'luna'); socialNewDay(S); talk(g, 'luna');
+  assert.equal(asks.length, 1);
+  assert.equal(asks[0].lines[0], LUNA.questions[0].q);
+  const before = S.social.luna.points;
+  asks[0].onChoose(0);
+  assert.equal(S.social.luna.points, before + 12);
+  assert.equal(said.at(-1), LUNA.questions[0].a[0].r);
+  assert.equal(answer(g, 'luna', 'terre', 0), false, 'pas deux fois');
+});
+
+test('cadeaux par degrés : adore +80, aime +45, neutre +20, n’aime pas −20, déteste −40 ; le goût est découvert', () => {
+  const { g, S } = withLuna({ inv: { carrot_seed: 1, bread: 1, egg: 1, stone: 1, slime: 1 } });
+  const r = S.social.luna, pts = [];
+  for (const it of ['carrot_seed', 'bread', 'egg', 'stone', 'slime']) { const p0 = r.points; r.gifted = false; gift(g, 'luna', it, add); pts.push(r.points - p0); }
+  assert.deepEqual(pts, [80, 45, 20, -20, -40]);
+  assert.deepEqual(r.known, { carrot_seed: 'adore', bread: 'aime', egg: 'neutre', stone: 'naime', slime: 'deteste' });
+  assert.equal(GIFT_PTS.aime, 45);
 });
 
 test('Luna : l’IA a remplacé son poste (2 cœurs), sa ferme et l’argent ensuite', () => {
@@ -71,7 +94,7 @@ test('Luna : parler au bouton d’action, offrir l’objet tenu (un cadeau par j
   S.sel = 'bread';
   assert.equal(act(g, tx, ty), 'gift');
   assert.equal(S.inv.bread, 1);
-  assert.equal(said.at(-1), LUNA.thanks);
+  assert.equal(said.at(-1), LUNA.react.aime, 'elle aime le pain');
   act(g, tx, ty);
   assert.equal(said.at(-1), LUNA.already);
   assert.equal(S.inv.bread, 1);

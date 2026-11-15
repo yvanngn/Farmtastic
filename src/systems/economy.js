@@ -3,6 +3,7 @@ import { ITEMS } from '../data/items.js';
 import { ANIMALS } from '../data/animals.js';
 import { RECIPES } from '../data/recipes.js';
 import { BUILDINGS } from '../data/buildings.js';
+import { isUnlocked } from './market.js';
 import { add, has, slots, canAdd, stackSize, STACKS } from './inventory.js';
 import { CFG } from '../config.js';
 
@@ -45,7 +46,7 @@ export function sellAll(g) {
 
 export function buy(g, id, n = 1) {
   const it = ITEMS[id];
-  if (!it || !it.buy || g.S.money < it.buy * n) return false;
+  if (!it || !it.buy || !isUnlocked(g.S, id) || g.S.money < it.buy * n) return false;
   if (!canAddItem(g.S, id, n)) { g.bus.emit('toast', 'Sac plein 🎒'); g.bus.emit('sfx', 'denied'); return false; }
   g.S.money -= it.buy * n;
   g.bus.emit('sfx', 'buy');
@@ -77,6 +78,7 @@ export const homeCount = (S, home) => S.animals.filter(a => ANIMALS[a.type] && A
 export function canBuyAnimal(S, type) {
   const def = ANIMALS[type];
   if (!def) return { ok: false, why: 'unknown' };
+  if (!isUnlocked(S, type)) return { ok: false, why: 'locked' };
   if (def.home && !(S.built && S.built[def.home])) return { ok: false, why: 'home' };
   if (def.home && homeCount(S, def.home) >= BUILDINGS[def.home].cap) return { ok: false, why: 'full' };
   if (S.money < def.buy) return { ok: false, why: 'money' };

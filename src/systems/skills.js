@@ -1,4 +1,5 @@
 // Expérience de minage et amélioration des outils (forge).
+import { isUnlocked } from './market.js';
 import { MINING_XP, MAX_TIER, upgradeCost, TIER_NAMES } from '../data/tools.js';
 import { add } from './inventory.js';
 
@@ -25,6 +26,7 @@ export function canUpgrade(S, tool) {
   const tier = toolTier(S, tool);
   if (tier >= MAX_TIER) return { ok: false, why: 'max' };
   const cost = upgradeCost(tier);
+  if (tier >= 3 && !isUnlocked(S, 'forge_or')) return { ok: false, why: 'plans', cost };
   if (miningLevel(S) < cost.minLvl) return { ok: false, why: 'level', cost };
   if (S.money < cost.money) return { ok: false, why: 'money', cost };
   if ((S.inv.stone || 0) < cost.stone) return { ok: false, why: 'stone', cost };
