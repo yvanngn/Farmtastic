@@ -4,24 +4,34 @@ Mémoire du projet : tout ce qui a été dit, décidé, fait ou pas encore fait.
 
 Légende : ✅ fait · 🔨 en cours · ⏳ à faire · 💡 idée de Claude (à valider) · ❌ abandonné
 
-## 1. L'histoire et le monde (résumé)
-- Jeu de ferme pixel art multijoueur, style Stardew Valley, cultures façon Hay Day. Les joueurs partagent un même village.
-- Le village est à reconstruire petit à petit : au départ presque tout est fermé, on **débloque avec de l'argent** (bâtiments, commerces, animaux).
-- Ton : doux, un peu d'humour. Les habitants dévoilent **lentement** leur vie et leurs ambitions au fil de l'amitié.
+## 1. L'histoire et le monde (résumé, à jour le 15/11/2026 au soir)
+- Jeu de ferme pixel art multijoueur, style Stardew Valley, cultures façon Hay Day. Ton doux, un peu d'humour ; les habitants dévoilent **lentement** leur vie au fil de l'amitié.
+- **Le héros** (nom par défaut « Claude Gémini », modifiable : prénom et nom) a été licencié et cherche à redonner un sens à sa vie. Il a toujours rêvé de construire sa propre maison. Une annonce offrait une **cabane abandonnée** à qui voulait s'en occuper ; peu de gens sont venus, à cause d'une **rumeur : la ferme serait hantée**.
+- Il **arrive en train** à la gare. **Myst** l'attend sur le quai, l'accueille, lui montre le plan, la tente et la liste des tâches, puis repart.
+- La **cabane** et la **grange** sont délabrées : on les rafistole avec du bois et des pierres. En attendant, on dort sous la **tente**.
 - Pas d'histoire inventée par Claude : seulement ce que l'utilisateur décrit (les idées de Claude vont en 💡).
 
-## 2. Personnages
-| Qui | Ce qu'on sait (dit par l'utilisateur) | État |
+### La région (plan actuel)
+| Zone | Où | Contenu |
 |---|---|---|
-| Le joueur | Fermier personnalisable (homme/femme, peau, coiffure, couleurs, pantalon/jupe). | ✅ |
-| **Luna** | Jeune femme célibataire, arrivée récemment. Travaillait dans l'informatique ; l'IA a remplacé son poste. Veut monter sa ferme mais doit d'abord gagner de l'argent ; pour l'instant elle essaie d'en gagner un peu. A sa maison. | ✅ lot 6 (répliques à valider) |
-| Charpentier | Vend poulailler, porcherie, etc. | ⏳ lot 4 |
-| **Franck** | Voisin de Luna, timide, sort peu. Un traumatisme d'enfance dont il ne parle pas (on ne le saura jamais) a forgé son caractère. Il laisse passer le temps ; un objet fabriqué par le joueur l'animera et le changera radicalement. | ✅ lot 11 (répliques à valider, objet à définir) |
-| **Manuel** (chef du village) | Raconte qu'il a été élu à l'unanimité et qu'il aime ses villageois. **En secret**, il fait payer cher les impôts et profite de l'argent pour passer du bon temps et partir en vacances ; les gens croient qu'il travaille dur pour eux. **Quête future** : enquêter sur lui après avoir appris quelque chose de louche. | ✅ accueil, histoire et sujets (répliques à valider) ; enquête ⏳ |
-| Marchand d'animaux | Vend les animaux. | ⏳ lot 4 |
-| Boulanger, boucher, poissonnier | Commerces pour cuisiner de bons plats plus tard. | ⏳ lot 5 |
+| **4 fermes des joueurs** | en haut à gauche, côte à côte, chemins en croix | chaque joueur a la sienne (emplacements Nord-Ouest, Nord-Est, Sud-Ouest, Sud-Est) ; cabane, grange, champ, gare à l'ouest |
+| **Quartier résidentiel** | au sud des fermes | maisons de Luna, Franck, Hailey, clinique, et tout au fond, à l'écart, la vieille maison de Myst ; un terrain libre |
+| **Centre-ville** | à l'est des fermes | place, fontaine, halle du marché, panneau, commerces, magasin d'amélioration ; **villa de Manuel** au sud de la place |
+| **Forêt** | à l'est du centre-ville (panneau « FORÊT → ») | champignons de saison (il faut un **couteau**), promenades de certains habitants |
+| **Zone de la Caverne sombre** (« la mine ») | après la forêt | **fermée pour l'instant**, pas d'épée ; étage 1 de 15 salles prêt, d'autres étages à venir |
 
-Règle des dialogues : répliques débloquées par paliers d'amitié ; Claude livre les répliques en **liste numérotée** pour correction, et applique les corrections telles quelles.
+## 2. Personnages
+| Qui | Ce qu'on sait (dit par l'utilisateur) | Où | État |
+|---|---|---|---|
+| Le héros | Licencié, veut construire sa maison ; personnalisable. | sa ferme | ✅ |
+| **Myst** | Grand et mince, long manteau noir. Vit un peu à l'écart dans une vieille maison sombre (genre motel Bates). Sort le soir, parle peu mais écoute tout. Le village l'a toujours mis de côté (antisocial) : il est content qu'on arrive bousculer les choses. **Accueille le joueur à la gare.** | fond du quartier | ✅ (répliques 🆕) |
+| **Luna** | Jeune femme arrivée récemment ; travaillait dans l'informatique, remplacée par une IA ; veut sa ferme, gagne d'abord de l'argent. | quartier | ✅ répliques validées |
+| **Franck** | Voisin de Luna, timide, sort peu ; traumatisme d'enfance dont on ne saura jamais rien ; un objet fabriqué par le joueur l'animera. **Il est un peu amoureux de Luna** (idée validée, à exploiter plus tard). | quartier | ✅ (objet ⏳) |
+| **Hailey** | Infirmière, fraîchement diplômée, motivée ; découvre qu'elle travaille beaucoup pour peu, que beaucoup viennent pour rien, qu'elle reçoit le surplus des urgences saturées ; de longues journées ; frise le burn-out. | clinique (7h-23h), sa maison le soir | ✅ (répliques 🆕) |
+| **Manuel** | Chef du village, « élu à l'unanimité », aime ses villageois ; **en secret** fait payer cher les impôts et en profite (vacances). Quête future : enquête. N'accueille plus le joueur. | place du centre-ville ; villa au sud | ✅ (« à refaire en partie » selon l'utilisateur) |
+| Charpentier, marchand d'animaux, boulanger, boucher, poissonnier | commerces (pas encore de PNJ décrits) | centre-ville | ✅ |
+
+Règles : répliques débloquées par cœurs (10 cœurs max) ; **on n'entre chez un habitant qu'à partir de 5 cœurs**, avant on frappe et il parle à la porte. Claude livre les nouvelles répliques en liste numérotée ; les corrections s'appliquent telles quelles. Toutes les répliques sont dans `docs/DIALOGUES.md` (184, dont 25 🆕 au 15/11 au soir).
 
 ## 3. Lots de travail
 | # | Lot | État |
@@ -58,6 +68,8 @@ Mots de l'utilisateur, à respecter tels quels :
 - **Gros rochers de la ferme** : ils font doublon avec les 3 types de cailloux de la zone de combat.
 
 ## 4. Ce qui existe dans le jeu
+> **Attention** : cette liste est historique (dans l'ordre où les choses ont été faites). Ce qui a changé depuis est indiqué dans les séances datées à la fin du carnet. Points remplacés : l'accueil du chef (→ Myst à la gare), la hache dans la grange (→ dehors, parmi des arbres), les Terres sauvages derrière le portail est (→ Caverne sombre après la forêt, fermée), la forêt à l'ouest de la ferme (→ à l'est du centre-ville), les maisons de Luna et Franck sur la ferme (→ quartier), la roue des objets (→ sac en cases), l'évanouissement à 2h avec −10 % (→ pas d'énergie récupérée ; à 0 d'énergie, clinique −10 %), la caméra qui remonte pendant les dialogues (→ supprimé).
+
 - **Écran titre** : décor de ferme animé (aube, grange, silo, moulin, champ de blé, oiseaux, pollen), logo « Farm'tastic » en Lilita One doré qui flotte, « Touchez l'écran pour commencer », cascade d'étoiles, menu Continuer / Nouvelle partie / Comment jouer / Réglages, musique de titre.
 - **Personnage** : personnalisation complète, marche de profil animée.
 - **Ferme** : cultures en temps réel (blé, maïs, carotte ; pluie +25 %), bois/pierre, gros rochers, XP de minage (10 niveaux), forge (Cuivre → Iridium), énergie.
@@ -126,78 +138,15 @@ Mots de l'utilisateur, à respecter tels quels :
 - **Son** : musiques par ambiance, bruitages, réglages séparés.
 - **Technique** : sauvegarde auto 30 s + manuelle, multijoueur Supabase prêt mais pas branché (jeu solo, sauvegarde locale).
 
-## 4 bis. Répliques de Luna (à valider par l'utilisateur)
-Paliers : il faut le nombre de cœurs indiqué pour qu'elle en parle.
-1. (0 ♥) Oh, bonjour ! Je m'appelle Luna. Je viens d'emménager dans la petite maison, là.
-2. (0 ♥) Tout est encore dans les cartons. Je ne sais même plus où j'ai rangé la bouilloire.
-3. (0 ♥) C'est toujours aussi calme, par ici ? Ça me change de la ville.
-4. (1 ♥) Avant d'arriver, je travaillais dans l'informatique. Toute la journée devant des écrans.
-5. (1 ♥) Je n'avais jamais vu un vrai champ de blé de près. C'est beau, en fait.
-6. (2 ♥) Mon poste a été remplacé par une IA. Du jour au lendemain.
-7. (2 ♥) Le pire, c'est qu'elle fait mon ancien travail mieux que moi. Ça pique un peu.
-8. (3 ♥) Alors j'ai décidé de tout recommencer ici. Mon rêve, ce serait d'avoir ma propre ferme.
-9. (3 ♥) Des poules, un potager… quelque chose de vrai, que je fais de mes mains.
-10. (4 ♥) Mais pour l'instant, je n'ai presque rien de côté. Il faut d'abord que je gagne un peu d'argent.
-11. (4 ♥) Je prends tous les petits boulots que je trouve. Un jour, j'aurai ma ferme. Promis.
-12. (conversation) Bonne journée ! Ne travaille pas trop, hein.
-13. (conversation) Tu sens cette odeur d'herbe ? Je ne m'en lasse pas.
-14. (cadeau) Oh, pour moi ? Merci, c'est vraiment gentil.
-15. (deuxième cadeau du jour) Tu m'as déjà fait un cadeau aujourd'hui !
-16. (soir, non utilisée pour l'instant) Il est tard… on se voit demain ?
-
-### Questions de Luna (à valider)
-17. (0 ♥) Dis… tu crois qu'on peut vraiment vivre de la terre, aujourd'hui ?
-   a. Bien sûr, il faut juste de la patience. (+12) → « Tu as raison. La patience, ça s'apprend. »
-   b. Ça dépend de la météo… et de la chance. (+5) → « Ha ! Alors je vais prier pour le soleil. »
-   c. Franchement ? Non. (−8) → « Ah… merci pour l'encouragement. »
-18. (1 ♥) Tu n'as jamais l'impression que les machines vont tout faire à notre place ?
-   a. Pas planter des carottes avec amour, en tout cas. (+12) → « Ha ! J'aime bien cette idée. »
-   b. Si, et ça me fait un peu peur aussi. (+8) → « Au moins, on est deux. »
-   c. Tant mieux, je ferai la sieste. (−5) → « Facile à dire quand on a encore son travail… »
-19. (2 ♥) Si tu avais une ferme de rêve, tu y mettrais quoi en premier ?
-   a. Des poules, évidemment. (+12) → « Pareil ! On est faits pour s'entendre. »
-   b. Un grand potager. (+10) → « Bon choix. Les carottes ne répondent jamais. »
-   c. Un hamac. (+3) → « … Je note. Le hamac. »
-### Réactions aux cadeaux (à valider)
-20. (adore) Des graines ?! Pour mon futur potager ? Tu es un amour !
-21. (aime) Oh, merci ! Ça me fait vraiment plaisir.
-22. (n'aime pas) Ah… merci. Je vais bien lui trouver une utilité.
-23. (déteste) Euh… c'est gluant. Tu peux le reprendre ?
-(La réplique 14 « Oh, pour moi ? Merci… » est remplacée par ces réactions.)
-
-### Accueil du chef du village (à valider)
-24. Ah, te voilà enfin ! Bienvenue au village. Je suis le chef du village.
-25. Cette ferme est à toi, maintenant. Elle a bien besoin d'un coup de main, comme tu vois.
-26. En descendant le chemin, tu trouveras le village : la halle du marché, le panneau d'affichage et nos commerces.
-27. Sur le panneau, les gens affichent leurs demandes. Le village a besoin de toi pour se reconstruire.
-28. Les outils de l'ancien propriétaire doivent traîner dans la grange, à côté de la maison.
-29. Mais méfie-toi : cette grange cache bien plus de choses qu'elle n'en a l'air…
-30. Ta voisine, Luna, vient d'arriver elle aussi. Va lui dire bonjour !
-31. (réponse du joueur) Merci, chef ! → « Allez, au travail ! Et passe me voir sur la place quand tu veux. »
-32. (conversation) Le village renaît un peu plus chaque jour.
-33. (conversation) Tu as fouillé la grange ? On dit qu'elle s'enfonce loin sous la colline.
-Goûts du chef (💡) : aime le pain et les œufs ; déteste la gelée.
-
-### Franck (à valider)
-34. (0 ♥) … Oh. Bonjour.
-35. (0 ♥) Je… je ne reçois pas beaucoup de visites.
-36. (0 ♥) Tu peux bien refermer la porte en partant ? Merci.
-37. (1 ♥) Je m'appelle Franck. J'habite ici depuis longtemps.
-38. (1 ♥) Les journées passent. Je regarde par la fenêtre, surtout.
-39. (2 ♥) Il s'est passé quelque chose, quand j'étais petit. Je… je préfère ne pas en parler.
-40. (2 ♥) Depuis, je laisse le temps passer. Rien ne me donne vraiment envie.
-41. (3 ♥) J'ai ouvert les volets, ce matin. Ça fait bizarre, toute cette lumière.
-42. (3 ♥) Luna m'a fait signe, hier. J'ai… fait signe aussi.
-43. (4 ♥) Avant, j'aimais bien fabriquer des choses, je crois. Je ne sais plus trop quoi.
-44. (4 ♥) Si un jour tu trouves quelque chose qui… je ne sais pas. Qui me donnerait envie.
-45. (conversation) …  /  Il fait beau ? Je n'ai pas regardé.
-46. Question (0 ♥) « Tu… tu restes longtemps ? » : a. Juste le temps de dire bonjour. (+12) → « D'accord. C'est… gentil. » · b. Toute la journée, si tu veux ! (−5) → « Ah. Euh… » · c. Je repasserai demain. (+8) → « … D'accord. »
-47. Question (1 ♥) « Tu sors beaucoup, toi ? » : a. Tous les jours, il y a tant à voir ! (+5) → « Ça doit être fatigant. » · b. Un peu. Tu pourrais venir avec moi, un jour. (+12) → « … Peut-être. Un jour. » · c. Pas plus que nécessaire. (+8) → « Je comprends. »
-48. Réactions aux cadeaux : adore « … Un croissant ? Pour moi ? … Merci. Vraiment. » · aime « … Merci. C'est gentil. » · neutre « Oh. … Merci. » · n'aime pas « … Je vais le poser là. » · déteste « Ça sent… fort. Tu peux le garder ? » · déjà offert « … Tu m'as déjà apporté quelque chose aujourd'hui. »
-Goûts de Franck (💡) : adore le croissant ; aime le pain, les œufs et le bois ; n'aime pas la gelée ; déteste la truffe. Apparence : **grand, cheveux mi-longs, l'air triste** (décrit par l'utilisateur le 15/11) ; cheveux bruns et sweat gris (💡).
-**À décider par l'utilisateur** : quel objet on lui fabriquera, et comment il le change.
+## 4 bis. Répliques
+Les listes de répliques à valider qui étaient ici ont été relues et corrigées par l'utilisateur le 15/11/2026 (soir) : elles vivent maintenant dans `docs/DIALOGUES.md` (validées dans `tools/dialogues_valides.txt`). L'accueil du chef du village a été retiré (voir Abandonné).
 
 ## 5. Contradictions et points à trancher
+- ⏳ **Couteau** : obligatoire pour cueillir les champignons, mais on ne peut pas encore l'obtenir. Où le trouver ?
+- ⏳ **Visiter la ferme d'un autre joueur** : chacun a sa ferme, mais ses objets ne sont pas encore partagés.
+- ⏳ **Mode en ligne** : le SQL `supabase_ferme.sql` et « Anonymous sign-ins » restent à faire côté Supabase, puis tester sur GitHub Pages.
+- ⏳ **Manuel** « à refaire en partie » : quoi exactement ?
+- ⏳ La quête « Premiers pas » contient une étape feu de camp ajoutée par Claude (💡).
 - ✅ Réglé au lot 4 : le poulailler n'existe plus au départ, et les animaux ne se vendent plus que chez le marchand d'animaux. Une ancienne sauvegarde garde son poulailler, et sa bergerie si elle avait des moutons.
 - ✅ Réglé au lot 5 : la porcherie et la bergerie ont leur intérieur, et la Boutique du menu est supprimée.
 - **Bug corrigé (lot 5)** : la halle du marché plantait à l'ouverture (variable manquante) depuis le début. Elle affiche maintenant l'étal de graines, puis le marché entre joueurs (ou « hors ligne »).
@@ -230,6 +179,12 @@ Goûts de Franck (💡) : adore le croissant ; aime le pain, les œufs et le boi
 
 ## 7. Abandonné
 - Piles de 99 objets dès le départ (remplacées par 10 par case, lot 2).
+- ❌ Accueil du joueur par le chef du village (remplacé par Myst à la gare, demande de l'utilisateur du 15/11).
+- ❌ Myst qui vient voir la cabane une fois réparée, puis Myst qui somnole devant la cabane (remplacés par Myst qui attend sur le quai).
+- ❌ Indice précis sur l'emplacement de la hache (retiré : Myst dit seulement avoir vu un outil dans les environs).
+- ❌ Amende de 10 % quand on ne dort pas (remplacée : pas d'énergie récupérée ; la clinique prend 10 % à 0 d'énergie).
+- ❌ Roue des objets (remplacée par le sac en cases ; la roue reste pour les outils).
+- ❌ Accès direct de la ferme à la forêt et à la caverne (nouvelle région).
 
 ## Séance du 15/11/2026 (midi)
 - ✅ Toits de la ville remis à l'endroit.
