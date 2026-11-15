@@ -38,7 +38,7 @@ export function createMultiplayer({ sb, uid, g, world = CFG.WORLD }) {
   return {
     join() {
       if (!sb) return;
-      ch = sb.channel('world:' + world, { config: { presence: { key: uid }, broadcast: { self: false } } });
+      ch = sb.channel('ferme:' + world, { config: { presence: { key: uid }, broadcast: { self: false } } });
       ch.on('broadcast', { event: 'pos' }, ({ payload }) => applyPos(g.others, payload, Date.now()));
       ch.on('presence', { event: 'sync' }, () => applyPresence(g.others, ch.presenceState(), uid, Date.now()));
       ch.subscribe(s => { if (s === 'SUBSCRIBED') this.track(); });

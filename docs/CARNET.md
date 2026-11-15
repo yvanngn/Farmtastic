@@ -268,3 +268,9 @@ Ordre convenu : 1 mort/clignotement ✅ · 2 tente ✅ · 3 recettes (feu), baie
 - ✅ **Zoom** : un peu plus large par défaut (12 cases sur le petit côté au lieu de 10) ; réglable dans ⚙ Réglages : Proche / Normal / Loin (mémorisé sur l'appareil).
 - ✅ (6) **Caverne sombre** (remplace les « Terres sauvages » ; c'est la « mine ») : sol de pierre, parois rocheuses, piliers, cristaux, il fait sombre (lumière autour du héros et à la sortie). **Étage 1** : 5 × 3 salles (avant 3 × 2), toutes reliées mais en labyrinthe ; sortie juste à l'arrivée ; escalier vers l'**étage 2** au fond (bloqué par des éboulis, à faire). Plus de monstres et de cailloux, filons, pas de fleurs. Entrée sur la ferme redessinée (bloc rocheux + grille). **Slimes redessinés** (goutte de gelée qui s'écrase et saute, reflet, yeux).
 - ⏳ Étages suivants de la caverne (avec une sortie à l'arrivée de chaque étage).
+
+## Séance du 15/11/2026 (soir) — mode en ligne
+- ✅ Supabase : projet existant de l'utilisateur (le même que Le Défi), clé publique dans `src/config.js`. Tables **préfixées `ferme_`** (`supabase_ferme.sql`) : profils, parties, joueurs (emplacement de ferme 0-3), sauvegardes (une par joueur et par partie), marché. Créer / rejoindre / lister passent par des fonctions SQL.
+- ✅ Écran titre : **Nouvelle partie** → Solo / Créer une partie à plusieurs (code `FERME-XXXX`, 4 joueurs max, emplacement libre attribué) / Rejoindre avec un code. **Continuer** (dernière partie) et **Mes parties** (dès 2 parties). Le code s'affiche sur la carte « Région ».
+- Hors ligne (ou sur claude.ai, qui bloque Supabase) : partie solo sur l'appareil.
+- ⏳ À faire par l'utilisateur : coller `supabase_ferme.sql` dans SQL Editor, activer « Anonymous sign-ins ». Puis tester sur GitHub Pages.

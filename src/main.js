@@ -47,11 +47,13 @@ import { spawnEnemies, updateEnemies } from './systems/combat.js';
 import { registerNPC, talk, gift } from './systems/social.js';
 import { add } from './systems/inventory.js';
 import { initSupabase, upsertProfile } from './net/supabase.js';
-import { createSaveManager, localAdapter, supabaseAdapter } from './net/save.js';
+import { createSaveManager, localAdapter, supabaseAdapter, localKey } from './net/save.js';
+import { readIndex, upsertIndex, mergeGames, localGame, createOnlineGame, joinOnlineGame, myOnlineGames } from './net/games.js';
+import { createGamesPanel } from './ui/gamesPanel.js';
 import { createMultiplayer, lerpOthers } from './net/multiplayer.js';
 
 const g = createGame();
-let started = false, saved = null, overwriteArmed = false, net = { sb: null, uid: null }, mp = null;
+let started = false, net = { sb: null, uid: null }, mp = null, games = [], game = null, pending = null;
 const cv = $('#game');
 const renderer = createRenderer(cv, g);
 let store = null; try { store = localStorage; } catch { /* stockage bloqué */ }
@@ -75,6 +77,7 @@ wireBus();
 
 let saver = null;
 async function doSave(manual) {
+  if (!saver) return;
   const res = await saver.save();
   const ok = hud.savedAt(res);
   if (manual && res) audio.play('save');
@@ -88,19 +91,53 @@ const custom = createCustomizer({
   onStart(name, inGame) {
     g.S.name = name;
     if (inGame) { custom.close(); mp && mp.track(); upsertProfile(net.sb, net.uid, g.S); doSave(false); return; }
-    // confirm() est bloqué dans certains cadres : double appui pour écraser une sauvegarde.
-    if (saved && !overwriteArmed) { overwriteArmed = true; $('#bStart').textContent = 'Écraser la sauvegarde ?'; return; }
-    const look = g.S.look;
-    g.S = defaultState(); g.S.look = look; g.S.name = name; g.S.objs = genObjects();
-    begin();
+    startPicked(name);
   },
-  onContinue() { g.S = saved; if (!g.S.objs) g.S.objs = genObjects(); begin(); },
-  onBack() { custom.close(); overwriteArmed = false; title.open(); }
+  onContinue() { if (games[0]) continueGame(games[0]); },
+  onBack() { custom.close(); title.open(); }
 });
+// Une nouvelle partie : solo (en ligne si possible, sinon sur l'appareil), créée à plusieurs, ou rejointe avec un code.
+async function startPicked(name) {
+  const p = pending || { kind: 'solo' }, look = g.S.look;
+  let gm = null;
+  try {
+    if (p.kind === 'solo') gm = net.sb ? await createOnlineGame(net.sb, 'solo', name).catch(() => localGame()) : localGame();
+    else if (p.kind === 'create') gm = await createOnlineGame(net.sb, 'multi', name);
+    else gm = await joinOnlineGame(net.sb, p.code, name);
+  } catch (err) { toast('⚠️ ' + err.message); return; }
+  openGame(gm);
+  const old = p.kind === 'join' ? await saver.load() : null;   // déjà membre de cette partie : on reprend sa ferme
+  if (old) { g.S = old; g.S.name = name; }
+  else { g.S = defaultState(); g.S.look = look; g.S.name = name; g.S.objs = genObjects(); }
+  g.S.game = { id: gm.id, code: gm.code, mode: gm.mode }; g.S.farmLot = gm.lot || 0;
+  begin();
+  if (gm.mode === 'multi') setTimeout(() => toast(`👥 Code de la partie : ${gm.code} — envoie-le à tes amis !`), 1200);
+}
+function openGame(gm) {
+  game = gm;
+  const adapters = store ? [localAdapter(store, localKey(gm.id))] : [];
+  if (net.sb && !gm.offline) adapters.push(supabaseAdapter(net.sb, net.uid, gm.id));
+  saver = createSaveManager({ adapters, getState: () => g.S, canSave: () => started });
+  if (store) games = mergeGames(upsertIndex(store, gm), games);
+}
+async function continueGame(gm) {
+  openGame(gm);
+  const s = await saver.load();
+  if (!s) { toast('⚠️ Sauvegarde introuvable pour cette partie.'); return; }
+  title.close(); custom.close();
+  g.S = s; if (!g.S.objs) g.S.objs = genObjects();
+  g.S.game = { id: gm.id, code: gm.code || null, mode: gm.mode || 'solo' }; if (gm.lot != null) g.S.farmLot = gm.lot;
+  begin();
+}
+const gamesPanel = createGamesPanel({ audio, online: () => !!net.sb, onPick(p) {
+  if (p.kind === 'continue') return continueGame(p.game);
+  pending = p; title.close(); custom.open(false, false);
+} });
 const title = createTitle({
   audio,
-  onContinue() { title.close(); g.S = saved; if (!g.S.objs) g.S.objs = genObjects(); begin(); },
-  onNew() { title.close(); custom.open(false, !!saved); },
+  onContinue() { if (games[0]) continueGame(games[0]); },
+  onNew() { gamesPanel.showNew(); },
+  onGames() { gamesPanel.showList(games); },
   onSettings() { settingsPanel.open(); }
 });
 const repairPanel = createRepairPanel(g);
@@ -150,7 +187,7 @@ async function begin() {
     setTimeout(() => g.bus.emit('say', { name: g.S.name, color: '#ffdf8a', lines: INTRO_LINES, onEnd: () => { g.S.intro.arrived = true; toast('🏚️ Ta cabane est au nord, au bout du chemin.'); } }), 2600);
   }
   started = true; custom.close(); hud.show(); renderer.initWeather(); ensureOrders(g);
-  if (net.sb) { playerMarket = createPlayerMarket(net.sb, net.uid, g); await upsertProfile(net.sb, net.uid, g.S); mp = createMultiplayer({ sb: net.sb, uid: net.uid, g }); mp.join(); }
+  if (net.sb) { playerMarket = createPlayerMarket(net.sb, net.uid, g); await upsertProfile(net.sb, net.uid, g.S); if (game && game.mode === 'multi') { mp = createMultiplayer({ sb: net.sb, uid: net.uid, g, world: game.id }); mp.join(); } }
   doSave(false);
 }
 
@@ -213,11 +250,11 @@ function loop(now) {
   requestAnimationFrame(loop);
   net = await initSupabase();
   custom.status(net.status);
-  const adapters = store ? [localAdapter(store)] : [];
-  if (net.sb) adapters.push(supabaseAdapter(net.sb, net.uid));
-  saver = createSaveManager({ adapters, getState: () => g.S, canSave: () => started });
   setInterval(() => doSave(false), CFG.AUTOSAVE_MS);
   document.addEventListener('visibilitychange', () => { if (document.hidden) doSave(false); });
-  saved = await saver.load();
-  if (saved) { g.S.look = { ...saved.look }; g.S.name = saved.name; title.setSave(true); }
+  const local = store ? readIndex(store) : [];
+  // ancienne sauvegarde unique (avant les parties) : elle devient une partie solo de cet appareil
+  try { const old = store && JSON.parse(store.getItem(CFG.LSKEY)); if (old && !local.some(x => x.id === 'local')) local.push({ id: 'local', mode: 'solo', code: null, lot: 0, offline: true, at: old.savedAt || 1 }); } catch { /* rien */ }
+  games = mergeGames(local, net.sb ? await myOnlineGames(net.sb) : []);
+  if (games.length) title.setSave(true, games.length);
 })();

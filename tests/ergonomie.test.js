@@ -56,6 +56,7 @@ test('menu titre : Continuer seulement avec une sauvegarde', async () => {
   const { titleMenu } = await import('../src/ui/title.js');
   assert.deepEqual(titleMenu(false).map(i => i.id), ['new', 'howto', 'settings']);
   assert.deepEqual(titleMenu(true).map(i => i.id), ['continue', 'new', 'howto', 'settings']);
+  assert.deepEqual(titleMenu(true, true).map(i => i.id), ['continue', 'games', 'new', 'howto', 'settings'], 'plusieurs parties : « Mes parties »');
   assert.equal(titleMenu(true).find(i => i.main).id, 'continue');
 });
 

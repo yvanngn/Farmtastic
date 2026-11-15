@@ -3,9 +3,10 @@
 import { $ } from './dom.js';
 
 // Entrées du menu selon qu'une sauvegarde existe (logique pure, testée).
-export function titleMenu(hasSave) {
+export function titleMenu(hasSave, many = false) {
   return [
     ...(hasSave ? [{ id: 'continue', label: 'Continuer', icon: '▶', main: true }] : []),
+    ...(many ? [{ id: 'games', label: 'Mes parties', icon: '📂' }] : []),
     { id: 'new', label: hasSave ? 'Nouvelle partie' : 'Commencer', icon: '🌱', main: !hasSave },
     { id: 'howto', label: 'Comment jouer', icon: '📖' },
     { id: 'settings', label: 'Réglages', icon: '⚙' }
@@ -15,9 +16,9 @@ export function titleMenu(hasSave) {
 const BH = 144; // hauteur de la scène ; en portrait le ciel s'allonge au-dessus
 const SKY = ['#3b3f8c', '#4f56a6', '#6a6fbc', '#8a86c8', '#b293c6', '#d9a2b8', '#f2b7a0', '#ffcf9a', '#ffe0a8'];
 
-export function createTitle({ audio, onContinue, onNew, onSettings }) {
+export function createTitle({ audio, onContinue, onNew, onGames = () => {}, onSettings }) {
   const ov = $('#ovTitle'), cv = $('#titleCv'), ctx = cv.getContext('2d');
-  let W = 256, H = BH, hasSave = false, phase = 'tap';
+  let W = 256, H = BH, hasSave = false, many = false, phase = 'tap';
   const pollen = Array.from({ length: 46 }, (_, i) => ({ x: (i * 97) % 400, y: (i * 53) % H, s: 3 + (i % 5), p: i * 1.7 }));
 
   function resize() {
@@ -120,7 +121,7 @@ export function createTitle({ audio, onContinue, onNew, onSettings }) {
     phase = 'menu';
     $('#titleTap').style.display = 'none';
     const m = $('#titleMenu');
-    m.innerHTML = titleMenu(hasSave).map((it, i) => `<button data-id="${it.id}" class="${it.main ? 'primaire' : ''}" style="animation-delay:${i * 70}ms"><span>${it.icon}</span>${it.label}</button>`).join('');
+    m.innerHTML = titleMenu(hasSave, many).map((it, i) => `<button data-id="${it.id}" class="${it.main ? 'primaire' : ''}" style="animation-delay:${i * 70}ms"><span>${it.icon}</span>${it.label}</button>`).join('');
     m.style.display = '';
     m.querySelector('button')?.focus({ preventScroll: true });
   }
@@ -136,6 +137,7 @@ export function createTitle({ audio, onContinue, onNew, onSettings }) {
     const id = b.dataset.id;
     if (id === 'continue') onContinue();
     else if (id === 'new') onNew();
+    else if (id === 'games') onGames();
     else if (id === 'settings') onSettings();
     else if (id === 'howto') $('#ovHowto').classList.add('on');
   };
@@ -147,7 +149,7 @@ export function createTitle({ audio, onContinue, onNew, onSettings }) {
       ov.classList.add('on'); audio.setScreen('title');
       if (phase === 'menu') showMenu();
     },
-    setSave(v) { hasSave = v; if (phase === 'menu') showMenu(); },
+    setSave(v, n = 1) { hasSave = v; many = n > 1; if (phase === 'menu') showMenu(); },
     close() { ov.classList.remove('on'); audio.setScreen(null); },
     isOpen: () => ov.classList.contains('on'),
     draw

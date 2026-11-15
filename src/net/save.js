@@ -3,6 +3,8 @@
 import { CFG } from '../config.js';
 import { migrate } from '../core/state.js';
 
+// Une sauvegarde locale par partie (clé : ferme_save_v1:<id de la partie>). La partie « locale » historique garde l'ancienne clé.
+export const localKey = gameId => !gameId || gameId === 'local' ? CFG.LSKEY : CFG.LSKEY + ':' + gameId;
 export function localAdapter(storage, k = CFG.LSKEY) {
   return {
     name: 'local',
@@ -11,15 +13,16 @@ export function localAdapter(storage, k = CFG.LSKEY) {
   };
 }
 
-export function supabaseAdapter(sb, uid, slot = 1) {
+// Sauvegarde en ligne : une ligne par joueur et par partie.
+export function supabaseAdapter(sb, uid, gameId) {
   return {
     name: 'cloud',
     async read() {
-      const { data, error } = await sb.from('saves').select('data').eq('player_id', uid).eq('slot', slot).maybeSingle();
+      const { data, error } = await sb.from(CFG.TABLE + 'saves').select('data').eq('player_id', uid).eq('game_id', gameId).maybeSingle();
       return error ? null : (data && data.data) || null;
     },
     async write(S) {
-      const { error } = await sb.from('saves').upsert({ player_id: uid, slot, data: S, version: CFG.VERSION, saved_at: new Date().toISOString() });
+      const { error } = await sb.from(CFG.TABLE + 'saves').upsert({ game_id: gameId, player_id: uid, data: S, version: CFG.VERSION, saved_at: new Date().toISOString() });
       return !error;
     }
   };

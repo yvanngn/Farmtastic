@@ -8,7 +8,7 @@ Moteur de jeu de ferme pixel art multijoueur (style Stardew Valley, cultures fa�
 
 ## Supabase
 1. Authentication → activer **Anonymous sign-ins**.
-2. SQL Editor → exécuter `supabase_schema.sql`.
+2. SQL Editor → exécuter `supabase_ferme.sql` (tables préfixées `ferme_` ; `supabase_schema.sql` est l'ancien schéma, non utilisé).
 3. Renseigner `SUPABASE_URL` et `SUPABASE_KEY` (clé anon) dans `src/config.js`.
 Sans configuration : jeu solo, sauvegarde locale.
 

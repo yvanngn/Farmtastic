@@ -50,7 +50,7 @@ export function createMapView(g, renderer, audio) {
     ctx.fillText('🏘️', mx, my + 12 * u); ctx.fillText('🏙️', mx + 22 * u, my + 2 * u);
     ctx.font = `${2.4 * u}px Nunito, sans-serif`; ctx.fillText('Quartier', mx, my + 15 * u); ctx.fillText('Centre-ville', mx + 22 * u, my + 5 * u);
     ctx.fillText('Forêt', mx - 15 * u, my - 2 * u); ctx.fillText(S.wildOpen || CFG.ACCES_TEST ? 'Caverne sombre' : 'Grille fermée', mx + 15 * u, my - 2 * u);
-    $('#mapLvl').textContent = 'Région';
+    $('#mapLvl').textContent = S.game && S.game.code ? 'Code ' + S.game.code : 'Région';
     raf = requestAnimationFrame(draw);
   }
 

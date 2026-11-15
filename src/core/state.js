@@ -21,7 +21,7 @@ export function defaultState() {
     intro: { met: true, myst: false, arrived: false },   // arrivée en train, puis Myst une fois la cabane réparée
     repair: { house: { wood: 0, stone: 0 }, grange: { wood: 0, stone: 0 } },   // cabane et grange délabrées au début
     tilled: {},
-    farmLot: 0,                      // emplacement de ferme de ce joueur (multijoueur : un par joueur)
+    farmLot: 0, game: null,          // partie en cours { id, code, mode: 'solo'|'multi' }                      // emplacement de ferme de ce joueur (multijoueur : un par joueur)
     drops: [],                       // objets posés au sol (sac plein)
     workbench: false,                // établi de la maison, à faire réparer par le charpentier
     wildOpen: false, wild: null, nature: {}, rainbow: null,     // Caverne sombre (zone de combat), fermées au début                      // cases du champ bêchées (à la pelle)           // accueil du chef du village

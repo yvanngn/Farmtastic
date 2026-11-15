@@ -15,5 +15,5 @@ export async function initSupabase(lib = globalThis.supabase) {
 
 export async function upsertProfile(sb, uid, S) {
   if (!sb) return;
-  await sb.from('profiles').upsert({ id: uid, display_name: S.name, appearance: S.look, updated_at: new Date().toISOString() });
+  await sb.from(CFG.TABLE + 'profiles').upsert({ id: uid, display_name: S.name, appearance: S.look, updated_at: new Date().toISOString() });
 }

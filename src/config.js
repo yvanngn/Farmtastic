@@ -1,7 +1,8 @@
 // Configuration globale du moteur. Seul fichier à modifier pour brancher Supabase.
 export const CFG = {
-  SUPABASE_URL: '',
-  SUPABASE_KEY: '',
+  SUPABASE_URL: 'https://hhyudxnkuoxzrkfkjipn.supabase.co',
+  SUPABASE_KEY: 'sb_publishable_buAHqM4Mu-XuRKMM8uJaNQ_PYZhJZ23',   // clé publique (faite pour être dans le jeu)
+  TABLE: 'ferme_',           // préfixe des tables (le projet Supabase contient d'autres jeux)
   WORLD: 'monde-principal',  // nom du canal multijoueur
   T: 16,                     // taille d'une tuile (px)
   W: 48, H: 36,              // taille de la carte (tuiles)
