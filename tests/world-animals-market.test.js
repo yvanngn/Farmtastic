@@ -119,3 +119,9 @@ test('multijoueur : la scène voyage avec la position', () => {
   applyPos(others, { id: 'b', x: 1, y: 1, d: 0, f: 0, s: 'house' }, 0);
   assert.equal(others.b.scene, 'house');
 });
+
+test('village : le magasin d’amélioration ouvre son interface', async () => {
+  const { UI_TILES, tileAt } = await import('../src/world/scenes.js');
+  assert.equal(tileAt('town', 18, 3), 'U');
+  assert.equal(UI_TILES.U, 'upgrades');
+});

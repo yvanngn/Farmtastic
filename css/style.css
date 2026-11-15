@@ -222,3 +222,4 @@ img.pix { width: 1.15em; height: 1.15em; image-rendering: pixelated; vertical-al
 .titre-jeu { font-family: var(--f-logo); font-weight: 400 }
 @keyframes rebond { 0%, 70%, 100% { transform: none } 80% { transform: translateY(-6px) rotate(-3deg) } 90% { transform: translateY(1px) } }
 @keyframes clignote { 50% { opacity: .35 } }
+.tabs[hidden] { display: none }

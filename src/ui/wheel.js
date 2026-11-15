@@ -4,7 +4,7 @@
 import { $ } from './dom.js';
 import { ITEMS, TOOLS } from '../data/items.js';
 import { TIER_NAMES } from '../data/tools.js';
-import { slots, usedSlots } from '../systems/inventory.js';
+import { slots, usedSlots, cellsOf, stackSize } from '../systems/inventory.js';
 import { toolTier } from '../systems/skills.js';
 import { iconHTML } from './icons.js';
 
@@ -17,11 +17,11 @@ export function createWheel(g, audio) {
   function entries() {
     const S = g.S;
     if (kind === 'tools') return TOOLS.map(t => ({ id: t.id, n: t.n, sub: t.id === 'hand' ? 'Interagir, récolter, caresser' : 'Palier ' + TIER_NAMES[toolTier(S, t.id)], tier: t.id === 'hand' ? 0 : toolTier(S, t.id) }));
-    const out = Object.keys(S.inv).map(id => ({ id, n: ITEMS[id] ? ITEMS[id].n : id, c: S.inv[id], sub: ITEMS[id] ? `×${S.inv[id]} · ${ITEMS[id].p} 🪙/u` : '' }));
+    const out = cellsOf(S).map(({ id, n }) => ({ id, n: ITEMS[id] ? ITEMS[id].n : id, c: n, sub: ITEMS[id] ? `×${S.inv[id]} au total · ${ITEMS[id].p} 🪙/u` : '' }));
     while (out.length < slots(S)) out.push(null);
     return out;
   }
-  const defaultLabel = () => `<strong>${kind === 'tools' ? 'Outils' : `Sac ${usedSlots(g.S)}/${slots(g.S)}`}</strong><small>${touch ? 'Touchez un objet pour voir son nom' : 'Survolez pour voir, cliquez pour prendre'}</small>`;
+  const defaultLabel = () => `<strong>${kind === 'tools' ? 'Outils' : `Sac ${usedSlots(g.S)}/${slots(g.S)} · piles de ${stackSize(g.S)}`}</strong><small>${touch ? 'Touchez un objet pour voir son nom' : 'Survolez pour voir, cliquez pour prendre'}</small>`;
   function showName(idx) {
     preview = idx;
     ring.querySelectorAll('.wslot').forEach((b, i) => b.classList.toggle('apercu', i === idx));

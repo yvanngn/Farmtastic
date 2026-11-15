@@ -53,7 +53,7 @@ function wireBus() {
   g.bus.on('pop', p => g.fx.push({ ...p, life: 1 }));
   g.bus.on('newDay', () => { renderer.initWeather(); audio.play('day'); doSave(false); });
   g.bus.on('scene', () => { g.enemies.length = 0; });
-  g.bus.on('open', what => what === 'board' ? board.open() : menu.open('market', true));
+  g.bus.on('open', what => what === 'board' ? board.open() : menu.open(what, true));
 }
 wireBus();
 

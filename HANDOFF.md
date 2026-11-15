@@ -6,7 +6,10 @@ Document à donner à une nouvelle conversation pour reprendre le jeu sans rien 
 - **Code** : dépôt GitHub `yvanngn/Farmtastic` (branche `main`). README.md et CLAUDE.md font foi.
 - **Version jouable** : page claude.ai « Moteur Ferme » (publiée depuis `play.html` + `css/` + `src/`). Republier toujours sur la même page.
 - **Base de données** : `supabase_schema.sql` (profils, sauvegardes, mondes, objets partagés, PNJ, liens sociaux, marché entre joueurs). Supabase n'est pas encore branché (`src/config.js` vide → jeu solo, sauvegarde locale).
-- **Tests** : `npm test` (node:test, 69 tests au vert). Un fichier par système dans `tests/`.
+- **Tests** : `npm test` (node:test, 73 tests au vert). Un fichier par système dans `tests/`.
+
+## Mémoire du projet
+- **`docs/CARNET.md`** : histoire, personnages, lots, ce qui existe, contradictions, idées non validées. Le lire en premier, le mettre à jour à la fin de chaque séance (skill `carnet-de-projet`).
 
 ## Skills à utiliser
 - `moteur-ferme-multijoueur` : architecture, responsive, direction artistique, gameplay, multijoueur, livraison.
@@ -27,14 +30,15 @@ Document à donner à une nouvelle conversation pour reprendre le jeu sans rien 
 - Personnalisation : homme/femme, peau, 6 coiffures (dont queue, couettes), couleurs, pantalon/jupe.
 - Cultures façon Hay Day (temps réel, glisser, pluie +25 %), animaux façon Stardew (poule, lapin, mouton, chat à caresser).
 - Bois/pierre, gros rochers, XP de minage (10 niveaux), forge (Cuivre → Iridium), énergie 1 par coup (0,5 dès le Fer).
-- Sac à places limitées (12, +6 par achat, max 36), 99 par pile — **à changer, voir lot 2**.
+- Sac de 12 cases (+6 par achat, max 36), **10 objets par case**, piles améliorables (10 → 99) au magasin d'amélioration du village.
+- Écran titre animé façon Witch'rok + menu de jeu, police Lilita One.
 - Maison (lit), poulailler (mangeoire), village : halle du marché (marché entre joueurs) + panneau d'affichage (6 demandes, renouvellement 2 h en temps réel).
 - Temps, saisons, météo, lumière de nuit, particules, combat (slimes), carte zoomable, roues outils/sac avec aperçu du nom, joystick + bouton d'action intelligent (maintenir = répéter), animations de coups et chute d'arbre.
 - Musiques et bruitages synthétisés, menu ⚙ (volumes séparés), sauvegarde auto 30 s + manuelle, multijoueur Realtime prêt.
 
 ## À faire, dans l'ordre (demandes de l'utilisateur)
-1. **Titre et menu de jeu** stylés comme Witch'rok (titre lumineux qui flotte, menu), avec une **police « jeu de ferme »**.
-2. **Inventaire** : piles de **10 objets max par case**, augmentables via des améliorations dans un **magasin d'amélioration**.
+1. ✅ **Titre et menu de jeu** stylés comme Witch'rok (titre lumineux qui flotte, menu), avec une **police « jeu de ferme »**.
+2. ✅ **Inventaire** : piles de **10 objets max par case**, augmentables via des améliorations dans un **magasin d'amélioration**.
 3. **Ressources** :
    - Arbres : poussent **aléatoirement dans la zone de bois à l'est** de la ferme, mettent **3 jours** à pousser, **nombre max** dans la zone, **3 types d'arbres** qui donnent tous du bois.
    - Pierres : mêmes règles, **2 types** ; les plus grosses rapportent **2 pierres**.
@@ -48,4 +52,4 @@ Document à donner à une nouvelle conversation pour reprendre le jeu sans rien 
    - **caravane commerciale** qui débloque graines, animaux, outils.
 
 ## Pour démarrer la nouvelle conversation
-Joindre ce fichier ou écrire : « Reprends Farm'tastic depuis le dépôt yvanngn/Farmtastic, lis HANDOFF.md et attaque le lot 1. »
+Joindre ce fichier ou écrire : « Reprends Farm'tastic depuis le dépôt yvanngn/Farmtastic, lis HANDOFF.md et attaque le lot suivant. »

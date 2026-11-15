@@ -63,6 +63,22 @@ export function buildTown(season) {
     R(ax, ay + (k > 2 ? 9 : 0), 10, 8, ['#fdf6e3', '#f6e7b0', '#e8f0f8'][k % 3]); R(ax + 2, ay + 2 + (k > 2 ? 9 : 0), 6, 1, '#8a7a6a'); R(ax + 2, ay + 4 + (k > 2 ? 9 : 0), 4, 1, '#8a7a6a'); R(ax + 4, ay - 1 + (k > 2 ? 9 : 0), 2, 2, '#d8443a');
   }
 
+  // magasin d'amélioration (x17-20, y2-4) : échoppe en bois, toit d'ardoise, enseigne, sacs et caisses
+  const ux = 17 * T, uy = 2 * T, uw = 4 * T;
+  R(ux + 2, uy - 4, uw - 4, 3 * T + 2, '#8a5a32');
+  for (let k = 0; k < 3 * T; k += 4) R(ux + 2, uy - 4 + k, uw - 4, 1, '#74482a');
+  R(ux + uw - 12, uy - 4, 10, 3 * T + 2, '#6e4426');
+  for (let i = 0; i < 9; i++) R(ux - 3 + i * 2, uy - 24 + i * 2, uw + 6 - i * 4, 2, i % 2 ? '#4f5a74' : '#5f6b88');
+  R(ux - 4, uy - 6, uw + 8, 3, '#3b4258');
+  R(ux + 24, uy + 14, 16, 26, '#4a2c18'); R(ux + 26, uy + 16, 12, 24, '#6e4426'); R(ux + 35, uy + 28, 2, 2, '#e8c26a');
+  R(ux + 6, uy + 8, 14, 12, '#3b2414'); R(ux + 7, uy + 9, 12, 10, '#ffd98a'); R(ux + 12, uy + 9, 1, 10, '#3b2414'); R(ux + 7, uy + 13, 12, 1, '#3b2414');
+  R(ux + 44, uy + 8, 14, 12, '#3b2414'); R(ux + 45, uy + 9, 12, 10, '#ffd98a'); R(ux + 50, uy + 9, 1, 10, '#3b2414'); R(ux + 45, uy + 13, 12, 1, '#3b2414');
+  // sacs et caisses devant
+  disc(g, ux + 8, uy + 38, 5, '#c9a66a'); R(ux + 6, uy + 32, 4, 2, '#8a6a3a'); disc(g, ux + 9, uy + 37, 2, '#dcc394');
+  R(ux + 46, uy + 32, 12, 10, '#a8774a'); R(ux + 46, uy + 32, 12, 2, '#c99560'); R(ux + 51, uy + 32, 2, 10, '#7a4f2e');
+  R(ux + 4, uy - 2, uw - 8, 9, '#3f2615'); R(ux + 5, uy - 1, uw - 10, 7, '#e8c26a');
+  g.fillStyle = '#3b2414'; g.font = 'bold 6px Georgia'; g.textAlign = 'center'; g.fillText('AMÉLIORATIONS', ux + uw / 2, uy + 5);
+
   // fontaine (x11-13, y8-10)
   const fx = 11 * T + 24, fy = 8 * T + 24;
   disc(g, fx, fy + 2, 23, '#6f6a73'); disc(g, fx, fy, 22, '#9a958c'); disc(g, fx, fy, 18, '#3a7cc2'); disc(g, fx - 4, fy - 5, 6, '#6aa8e0');

@@ -26,7 +26,7 @@ export const LAYOUTS = {
   ]
 };
 // Centre du village (extérieur) : g herbe, . pavés, M halle du marché, Q panneau d'affichage,
-// F fontaine, T arbre, L lampadaire, b banc, f jardinière, D sortie vers la ferme.
+// U magasin d'amélioration, F fontaine, T arbre, L lampadaire, b banc, f jardinière, D sortie vers la ferme.
 function buildTown() {
   const W = 24, H = 16;
   const m = Array.from({ length: H }, (_, y) => Array.from({ length: W }, (_, x) => (x < 2 || x > 21 || y < 1 || y > 14 ? 'g' : '.')));
@@ -36,6 +36,7 @@ function buildTown() {
   for (const x of [3, 7, 17, 21]) put('T', x, 15);
   put('M', 4, 2, 7, 3);       // halle du marché
   put('Q', 14, 3, 3, 1);      // panneau d'affichage, juste à côté
+  put('U', 17, 2, 4, 3);      // magasin d'amélioration
   put('F', 11, 8, 3, 3);      // fontaine
   for (const [x, y] of [[3, 7], [20, 7], [3, 12], [20, 12]]) put('L', x, y);
   for (const [x, y] of [[8, 9], [16, 9], [8, 12], [16, 12]]) put('b', x, y);
@@ -43,9 +44,9 @@ function buildTown() {
   return m.map(r => r.join(''));
 }
 LAYOUTS.town = buildTown();
-export const SOLID_TILES = '#WDBKTPCHNMQFLf';
+export const SOLID_TILES = '#WDBKTPCHNMQUFLf';
 // Tuiles qui ouvrent une interface.
-export const UI_TILES = { M: 'market', Q: 'board' };
+export const UI_TILES = { M: 'market', Q: 'board', U: 'upgrades' };
 
 export const SCENES = {
   farm: { W: CFG.W, H: CFG.H, doors: [

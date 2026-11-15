@@ -12,7 +12,7 @@ export function defaultState() {
     plots: {}, objs: null,
     animals: [{ id: 'a1', type: 'chicken', x: 21.5, y: 9.5, fed: false, petted: false, love: 20, produced: false }],
     social: {}, savedAt: 0,
-    scene: 'farm', invSlots: CFG.INV_SLOTS,
+    scene: 'farm', invSlots: CFG.INV_SLOTS, stackLvl: 0,
     skills: { mining: { xp: 0 } },
     tools: { axe: 1, pick: 1, sickle: 1, sword: 1 },
     market: { slots: [] }

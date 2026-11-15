@@ -7,13 +7,14 @@ import { ANIMALS } from '../data/animals.js';
 import { RECIPES } from '../data/recipes.js';
 import { TOOLS } from '../data/items.js';
 import { TIER_NAMES, UPGRADABLE, MAX_TIER } from '../data/tools.js';
-import { buy, buyAnimal, buyBag, bagCost, canCraft, craft } from '../systems/economy.js';
+import { buy, buyAnimal, buyBag, bagCost, buyStack, stackCost, STACKS, canCraft, craft } from '../systems/economy.js';
 import { consume } from '../systems/player.js';
 import { hearts } from '../systems/social.js';
-import { slots, usedSlots } from '../systems/inventory.js';
+import { slots, usedSlots, stackSize } from '../systems/inventory.js';
 import { canUpgrade, upgradeTool, miningLevel, nextXp, toolTier } from '../systems/skills.js';
 
 const TABS = { sac: 'Sac', craft: 'Atelier', shop: 'Boutique', forge: 'Forge', social: 'Liens' };
+const TITLES = { market: '🏪 Marché', upgrades: '🧰 Magasin d\'amélioration' };
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 const it = id => ITEMS[id] || { n: id, i: '❔', p: 0 };
 
@@ -24,14 +25,13 @@ export function createMenu(g, opts) {
   const views = {
     sac(S) {
       const ids = Object.keys(S.inv);
-      return `<p class="info">${usedSlots(S)}/${slots(S)} places utilisées</p>` + (ids.length ? '<div class="grid">' + ids.map(id => card(`<div class="t">${it(id).i} <b>${it(id).n}</b></div><div>×${S.inv[id]} · ${it(id).p}🪙/u</div>${it(id).eat ? `<button data-use="${id}">Utiliser</button>` : ''}`)).join('') + '</div>' : 'Sac vide.');
+      return `<p class="info">${usedSlots(S)}/${slots(S)} cases utilisées · ${stackSize(S)} objets max par case</p>` + (ids.length ? '<div class="grid">' + ids.map(id => card(`<div class="t">${it(id).i} <b>${it(id).n}</b></div><div>×${S.inv[id]} · ${Math.ceil(S.inv[id] / stackSize(S))} case(s) · ${it(id).p}🪙/u</div>${it(id).eat ? `<button data-use="${id}">Utiliser</button>` : ''}`)).join('') + '</div>' : 'Sac vide.');
     },
     craft(S) {
       return '<div class="grid">' + RECIPES.map((r, i) => card(`<div class="t">${it(r.out).i} <b>${it(r.out).n}</b> ×${r.q}</div><div>${Object.entries(r.in).map(([k, n]) => `${it(k).i}${n} <small>(${S.inv[k] || 0})</small>`).join(' ')}</div><button data-craft="${i}" ${canCraft(S, r) ? '' : 'disabled'}>Fabriquer</button>`)).join('') + '</div>';
     },
     shop(S) {
-      const bag = slots(S) < CFG.INV_MAX ? card(`<div class="t">🎒 <b>Agrandir le sac</b></div><div>+6 places (${slots(S)} → ${slots(S) + 6})</div><div>${bagCost(S)} 🪙</div><button data-bag="1" ${S.money >= bagCost(S) ? '' : 'disabled'}>Acheter</button>`) : '';
-      return '<div class="grid">' + bag
+      return '<div class="grid">'
         + Object.entries(ITEMS).filter(([, x]) => x.buy).map(([id, x]) => card(`<div class="t">${x.i} <b>${x.n}</b></div><div>${x.buy} 🪙</div><button data-buy="${id}" ${S.money >= x.buy ? '' : 'disabled'}>Acheter</button>`)).join('')
         + Object.entries(ANIMALS).map(([id, a]) => card(`<div class="t">${a.i} <b>${a.n}</b></div><div>${a.buy} 🪙${a.prod ? ` · ${it(a.prod).i} tous les ${a.every} j` : ' · compagnon'}</div><button data-animal="${id}" ${S.money >= a.buy ? '' : 'disabled'}>Acheter</button>`)).join('')
         + '</div><p class="info">Vente rapide : bac 📦 près de la maison. Meilleurs prix : onglet Marché.</p>';
@@ -45,6 +45,16 @@ export function createMenu(g, opts) {
           return card(`<div class="t">${ic} <b>${t.n}</b></div><div class="tierlbl t${tier}">${TIER_NAMES[tier]}</div>`
             + (tier >= MAX_TIER ? '<div>Palier maximum ✨</div>' : `<div>→ ${TIER_NAMES[tier + 1]}</div><div>${c.money}🪙 · ${c.stone}🪨 · niv. ${c.minLvl}</div><button data-up="${id}" ${r.ok ? '' : 'disabled'}>Améliorer</button>${r.ok ? '' : `<small>${why[r.why]}</small>`}`));
         }).join('') + '</div>';
+    },
+    upgrades(S) {
+      const bc = bagCost(S), sc = stackCost(S), lvl = S.stackLvl || 0;
+      const bag = slots(S) < CFG.INV_MAX
+        ? card(`<div class="t">🎒 <b>Sac plus grand</b></div><div>+6 cases (${slots(S)} → ${slots(S) + 6})</div><div>${bc} 🪙</div><button data-bag="1" ${S.money >= bc ? '' : 'disabled'}>Acheter</button>`)
+        : card('<div class="t">🎒 <b>Sac plus grand</b></div><div>Taille maximale ✨</div>');
+      const pile = sc != null
+        ? card(`<div class="t">📦 <b>Piles plus hautes</b></div><div>${stackSize(S)} → ${STACKS[lvl + 1]} objets par case</div><div>${sc} 🪙</div><button data-stack="1" ${S.money >= sc ? '' : 'disabled'}>Acheter</button>`)
+        : card('<div class="t">📦 <b>Piles plus hautes</b></div><div>Piles maximales ✨</div>');
+      return `<p class="info">Votre sac : ${slots(S)} cases, ${stackSize(S)} objets par case.</p><div class="grid">${bag}${pile}</div>`;
     },
     market(S) {
       return `<p class="info">Vendez vos produits aux autres joueurs, ou achetez les leurs. Les demandes du village sont sur le panneau d'affichage, à côté.</p>${players}`;
@@ -81,7 +91,7 @@ export function createMenu(g, opts) {
 
   const handlers = {
     use: id => consume(g, id), craft: i => craft(g, +i), buy: id => buy(g, id), animal: id => buyAnimal(g, id),
-    bag: () => buyBag(g), up: id => upgradeTool(g, id)
+    bag: () => buyBag(g), stack: () => buyStack(g), up: id => upgradeTool(g, id)
   };
   function render() {
     $('#tabs').innerHTML = Object.entries(TABS).map(([k, v]) => `<button data-t="${k}" class="${k === tab ? 'on' : ''}">${v}</button>`).join('');
@@ -94,5 +104,5 @@ export function createMenu(g, opts) {
   });
   $('#bClose').onclick = () => $('#ovBag').classList.remove('on');
   // seul = ouvert depuis un lieu (halle du marché) : pas d'onglets
-  return { open(t, seul) { if (t) tab = t; else if (tab === 'market') tab = 'sac'; $('#tabs').hidden = !!seul; $('#menuTitle').textContent = seul ? '🏪 Marché' : '📜 Menu'; $('#ovBag').classList.add('on'); render(); } };
+  return { open(t, seul) { if (t) tab = t; else if (tab in TITLES) tab = 'sac'; $('#tabs').hidden = !!seul; $('#menuTitle').textContent = seul ? (TITLES[t] || '🏪') : '📜 Menu'; $('#ovBag').classList.add('on'); render(); } };
 }

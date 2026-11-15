@@ -1,27 +1,45 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { makeGame, seq } from './helpers.js';
-import { add, canAdd } from '../src/systems/inventory.js';
+import { add, canAdd, usedSlots, cellsOf, stackSize } from '../src/systems/inventory.js';
 import { level, gainXp, canUpgrade, upgradeTool, miningLevel } from '../src/systems/skills.js';
 import { hitObject } from '../src/systems/resources.js';
-import { buyBag, bagCost } from '../src/systems/economy.js';
+import { buyBag, bagCost, buyStack } from '../src/systems/economy.js';
 import { attack } from '../src/systems/combat.js';
 import { CFG } from '../src/config.js';
 
-test('sac limité : une place par type d’objet', () => {
+test('sac limité : 10 objets max par case', () => {
   const { g, S, toasts } = makeGame({ state: { inv: {}, invSlots: 2 } });
   assert.equal(add(g, 'wood', 5), 5);
   assert.equal(add(g, 'stone', 1), 1);
   assert.equal(add(g, 'egg', 1), 0);
   assert.match(toasts().at(-1), /Sac plein/);
-  assert.equal(add(g, 'wood', 1), 1, 'pile existante : ok');
+  assert.equal(add(g, 'wood', 6), 5, 'la case de bois se remplit jusqu’à 10');
+  assert.equal(S.inv.wood, 10);
   assert.equal(canAdd(S, 'egg'), false);
 });
 
-test('pile limitée à STACK', () => {
-  const { g, S } = makeGame({ state: { inv: { wood: CFG.STACK - 2 } } });
-  assert.equal(add(g, 'wood', 5), 2);
-  assert.equal(S.inv.wood, CFG.STACK);
+test('une grosse quantité occupe plusieurs cases', () => {
+  const { g, S } = makeGame({ state: { inv: {}, invSlots: 3 } });
+  assert.equal(add(g, 'wood', 25), 25);
+  assert.equal(usedSlots(S), 3);
+  assert.deepEqual(cellsOf(S).map(c => c.n), [10, 10, 5]);
+  assert.equal(add(g, 'wood', 9), 5, 'reste 5 places dans la dernière case');
+  add(g, 'wood', -12);
+  assert.equal(usedSlots(S), 2);
+});
+
+test('magasin d’amélioration : piles plus hautes', () => {
+  const { g, S } = makeGame({ state: { money: 3000, inv: {}, invSlots: 1 } });
+  assert.equal(stackSize(S), 10);
+  assert.equal(buyStack(g), true);
+  assert.equal(stackSize(S), 20);
+  assert.equal(S.money, 2200);
+  assert.equal(add(g, 'wood', 25), 20);
+  assert.equal(buyStack(g), true);
+  assert.equal(buyStack(g), false, 'pas assez d’argent');
+  S.money = 1e6; S.stackLvl = 4;
+  assert.equal(buyStack(g), false, 'niveau max');
 });
 
 test('agrandir le sac', () => {

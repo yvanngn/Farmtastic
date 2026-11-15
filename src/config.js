@@ -14,7 +14,6 @@ export const CFG = {
   NIGHT_FROM: 1200,          // monstres dès 20h
   INV_SLOTS: 12,             // places du sac au départ
   INV_MAX: 36,               // places max après agrandissements
-  STACK: 99,                 // quantité max par place
   VERSION: 1,
   LSKEY: 'ferme_save_v1'
 };
