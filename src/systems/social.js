@@ -80,19 +80,10 @@ export function placeNPC(n, S, OUT_FROM, OUT_TO) {
   if (n.mystic) return placeMyst(n, S);
   if (n.worker) { // au travail de longues heures, sinon introuvable
     const w = n.worker, on = S.minute >= w.from && S.minute < w.to;
-    n.scene = on ? w.scene : 'none'; Object.assign(n, w.at); n.walking = false; n.dir = 0;
+    n.scene = on ? w.scene : (n.home || 'none'); Object.assign(n, on ? w.at : (n.inside || w.at)); n.walking = false; n.dir = 0;
     return;
   }
   const out = S.minute >= OUT_FROM && S.minute < OUT_TO;
-  if (n.welcome && S.intro && !S.intro.met) { n.scene = 'farm'; Object.assign(n, n.welcome); n.walking = false; return; } // accueil du joueur
-  if (n.leaving) { // après l'accueil, il redescend le chemin vers le village
-    if (!Number.isFinite(n.x) || !Number.isFinite(n.y)) Object.assign(n, n.welcome || { x: 16.5, y: 6 });
-    const tx = 16.5, ty = n.y < 5.6 ? 5.6 : 35.4, path = n.x > 16.6 || n.x < 16.4 ? { x: 16.5, y: 5.6 } : { x: tx, y: ty };
-    const dx = path.x - n.x, dy = path.y - n.y, d = Math.hypot(dx, dy) || 1, st = 0.05;
-    n.walking = true; n.dir = Math.abs(dx) > Math.abs(dy) ? (dx < 0 ? 2 : 3) : (dy < 0 ? 1 : 0);
-    if (d <= st) { n.x = path.x; n.y = path.y; if (path.y > 35) { n.leaving = false; n.walking = false; } } else { n.x += dx / d * st; n.y += dy / d * st; }
-    if (n.leaving) { n.scene = 'farm'; return; }
-  }
   n.walking = false;
   const walk = (n.walks || []).find(w => S.day % (w.every || 1) === 0 && S.minute >= w.from && S.minute < w.to);
   if (walk && (!n.shy || hearts(S.social[n.id] || { points: 0 }) >= n.shy.minHearts)) { n.scene = walk.scene; Object.assign(n, walk.at); n.dir = 0; return; } // promenade en forêt
@@ -115,14 +106,22 @@ function walkTo(n, t, st = 0.06) {
   n.walking = true; n.x += dx / d * st; n.y += dy / d * st; return false;
 }
 const faceP = (n, S) => { if (S.scene === n.scene && Math.hypot(S.x - n.x, S.y - n.y) < 3) n.dir = Math.abs(S.x - n.x) > Math.abs(S.y - n.y) ? (S.x < n.x ? 2 : 3) : (S.y < n.y ? 1 : 0); else n.dir = 0; };
-// Myst : vient voir la cabane une fois réparée, repart chez lui, puis ne sort que le soir.
+// Myst : à l'arrivée du joueur, il somnole devant la cabane ; il se réveille quand on approche, accueille,
+// montre le plan, puis redescend chez lui (au fond du quartier). Ensuite, il ne sort que le soir.
+export const MYST_WAKE = 3.5;
 export function placeMyst(n, S) {
   const st = S.intro && S.intro.myst, R = n.route;
-  if (st === 'come' || st === 'talk' || st === 'leaving') {
-    if (n.scene !== 'farm' || !Number.isFinite(n.x)) { n.scene = 'farm'; Object.assign(n, st === 'leaving' ? R[R.length - 1] : R[0]); n.leg = st === 'leaving' ? R.length - 2 : 1; }
-    if (st === 'come') { if (walkTo(n, R[n.leg])) { if (n.leg < R.length - 1) n.leg++; else S.intro.myst = 'talk'; } }
-    else if (st === 'talk') { n.walking = false; faceP(n, S); n.leg = R.length - 2; }
-    else if (walkTo(n, R[Math.max(0, n.leg)])) { if (n.leg > 0) n.leg--; else { S.intro.myst = 'done'; n.scene = 'none'; } }
+  n.sleeping = false;
+  if (st === 'sleep' || st === 'talk') {
+    n.scene = 'farm'; Object.assign(n, n.sleepAt); n.walking = false; n.leg = R.length - 1;
+    if (st === 'sleep') { n.sleeping = true; n.dir = 0; if ((S.scene || 'farm') === 'farm' && Math.hypot(S.x - n.x, S.y - n.y) < MYST_WAKE) S.intro.myst = 'talk'; }
+    else faceP(n, S);
+    return;
+  }
+  if (st === 'leaving') {
+    if (n.scene !== 'farm' || !Number.isFinite(n.x)) { n.scene = 'farm'; Object.assign(n, n.sleepAt); n.leg = R.length - 1; }
+    if (n.leg == null) n.leg = R.length - 1;
+    if (walkTo(n, R[Math.max(0, n.leg)])) { if (n.leg > 0) n.leg--; else { S.intro.myst = 'done'; n.scene = 'none'; } }
     return;
   }
   n.walking = false;
@@ -130,13 +129,13 @@ export function placeMyst(n, S) {
   n.scene = out ? n.outScene : 'none'; Object.assign(n, n.night.at);
   faceP(n, S);
 }
-// Arrivée de Myst devant la cabane : il parle une fois, puis repart.
+// Accueil de Myst : il parle une fois, montre le plan, puis repart.
 export function mystTick(g) {
   const S = g.S, n = g.npcs.myst;
   if (!n || !S.intro || S.intro.myst !== 'talk' || g.mystSaid || (S.scene || 'farm') !== 'farm') return false;
   g.mystSaid = true;
   const r = S.social.myst; if (r) r.metAt = S.day;
-  g.bus.emit('say', { name: n.name, color: n.color, voice: n.voice, lines: n.arrival, onEnd: () => { S.intro.myst = 'leaving'; } });
+  g.bus.emit('say', { name: n.name, color: n.color, voice: n.voice, lines: n.arrival, onEnd: () => { S.intro.myst = 'leaving'; g.bus.emit('showMap'); } });
   return true;
 }
 
@@ -144,19 +143,6 @@ export function findNPCAt(g, tx, ty) {
   const sc = g.S.scene || 'farm';
   for (const id in g.npcs) { const n = g.npcs[id]; if ((n.scene || 'farm') === sc && Math.hypot(n.x - (tx + .5), n.y - .3 - (ty + .5)) < 1) return n; }
   return null;
-}
-
-// Accueil : le chef présente le village ; la partie commence vraiment après « Merci, chef ! ».
-export function welcome(g) {
-  const n = g.npcs.chef, S = g.S;
-  if (!n || !S.intro || S.intro.met) return false;
-  // Quelle que soit la façon de fermer l'accueil (réponse, « Passer »), le maire repart ensuite faire sa vie.
-  const done = () => { if (!S.intro.met) S.intro.met = true; n.leaving = true; };
-  g.bus.emit('say', { name: n.name, color: n.color, voice: n.voice, lines: n.welcomeLines, choices: [n.welcomeEnd.t], onEnd: done, onChoose: () => {
-    S.intro.met = true;
-    g.bus.emit('say', { name: n.name, color: n.color, voice: n.voice, lines: [n.welcomeEnd.r] });
-  } });
-  return true;
 }
 
 export function socialNewDay(S) {

@@ -58,6 +58,15 @@ export const LAYOUTS = {
     '#.......#',
     '####D####'
   ],
+  hailey: [
+    '#########',
+    '#WWWWWWW#',
+    '#B....PK#',
+    '#B......#',
+    '#..TT...#',
+    '#.......#',
+    '####D####'
+  ],
   luna: [
     '#########',
     '#WWWWWWW#',
@@ -129,6 +138,8 @@ LAYOUTS.quartier = (() => {
   for (let y = 4; y <= 6; y++) for (let x = 11; x <= 15; x++) m[y][x] = 'X';
   for (let y = 4; y <= 6; y++) for (let x = 18; x <= 21; x++) m[y][x] = 'X';   // clinique
   m[7][19] = '.';
+  for (let y = 4; y <= 6; y++) for (let x = 24; x <= 27; x++) m[y][x] = 'X';   // maison de Hailey
+  m[7][25] = '.';
   for (const x of [2, 10, 18, 26, 34]) m[11][x] = 'T';
   // Myst, à l'écart : une rangée d'arbres, puis sa vieille maison au fond (x31-36, y2-4, porche y5, porte x33)
   for (let y = 1; y <= 6; y++) m[y][29] = 'T';
@@ -200,9 +211,10 @@ export const SCENES = {
   grange: { W: 22, H: 11, dark: true, doors: [{ x: 5, y: 6, to: 'farm', spawn: { x: 12.5, y: 5.6 } }] },
   franck: { W: 9, H: 7, doors: [{ x: 4, y: 6, to: 'quartier', spawn: { x: 13.5, y: 7.8 } }] },
   clinique: { W: 9, H: 7, doors: [{ x: 4, y: 6, to: 'quartier', spawn: { x: 19.5, y: 7.8 } }] },
+  hailey: { W: 9, H: 7, doors: [{ x: 4, y: 6, to: 'quartier', spawn: { x: 25.5, y: 7.8 } }] },
   luna: { W: 9, H: 7, doors: [{ x: 4, y: 6, to: 'quartier', spawn: { x: 6.5, y: 7.8 } }] },
   // Quartier résidentiel, au sud de la ferme : les maisons des habitants.
-  quartier: { W: 38, H: 16, outdoor: true, doors: [{ x: 22, y: 0, to: 'farm', spawn: { x: 16.5, y: 34.4 } }, { x: 6, y: 6, to: 'luna', spawn: { x: 4.5, y: 5.4 } }, { x: 13, y: 6, to: 'franck', spawn: { x: 4.5, y: 5.4 } }, { x: 19, y: 6, to: 'clinique', spawn: { x: 4.5, y: 5.4 } }] },
+  quartier: { W: 38, H: 16, outdoor: true, doors: [{ x: 22, y: 0, to: 'farm', spawn: { x: 16.5, y: 34.4 } }, { x: 6, y: 6, to: 'luna', spawn: { x: 4.5, y: 5.4 } }, { x: 13, y: 6, to: 'franck', spawn: { x: 4.5, y: 5.4 } }, { x: 19, y: 6, to: 'clinique', spawn: { x: 4.5, y: 5.4 } }, { x: 25, y: 6, to: 'hailey', spawn: { x: 4.5, y: 5.4 } }] },
   pigsty: { W: 10, H: 7, doors: [{ x: 4, y: 6, to: 'farm', spawn: { x: 20.5, y: 8.9 } }] },
   barn: { W: 12, H: 8, doors: [{ x: 5, y: 7, to: 'farm', spawn: { x: 28.5, y: 8.9 } }] }
 };

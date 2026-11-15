@@ -6,7 +6,7 @@ import { defaultState, migrate } from '../src/core/state.js';
 import { act, smartTool } from '../src/systems/actions.js';
 import { hasTool, canUpgrade } from '../src/systems/skills.js';
 import { autoPickup, PICKUPS } from '../src/systems/grange.js';
-import { registerNPC, placeNPC, welcome } from '../src/systems/social.js';
+import { registerNPC, placeNPC } from '../src/systems/social.js';
 import { CHEF, OUT_FROM, OUT_TO } from '../src/data/npcs.js';
 import { isSolid, ground } from '../src/world/map.js';
 
@@ -143,7 +143,6 @@ test('cabane délabrée : on ne peut pas entrer, on dépose bois et pierres jusq
   while (!isRepaired(S, 'house')) assert.equal(act(g, 3, 2), 'repair');
   assert.deepEqual(S.repair.house, REPAIRS.house.need, 'jamais plus que nécessaire');
   assert.equal(S.inv.wood, 200 - (100 - 30));
-  assert.equal(S.intro.myst, 'come', 'Myst arrive');
   assert.equal(act(g, 5, 4), 'door', 'on peut entrer');
 });
 
@@ -155,24 +154,24 @@ test('grange délabrée : fermée jusqu’à sa réparation', () => {
   assert.equal(act(g, 12, 4), 'door');
 });
 
-test('Myst vient voir la cabane réparée, parle, repart, puis ne sort que le soir', () => {
-  const { g, S } = start({ ...ruined0(), minute: 600 });
+test('Myst somnole devant la cabane, se réveille quand on approche, accueille, montre le plan et redescend au quartier', () => {
+  const { g, S } = start({ ...ruined0(), minute: 600, x: 2, y: 20.6 });
+  S.intro.myst = 'sleep';
   registerNPC(g, MYST); const n = g.npcs.myst;
-  placeNPC(n, S, OUT_FROM, OUT_TO); assert.equal(n.scene, 'none', 'pas avant la réparation');
-  S.intro.myst = 'come';
-  for (let i = 0; i < 2000 && S.intro.myst === 'come'; i++) placeNPC(n, S, OUT_FROM, OUT_TO);
-  assert.equal(S.intro.myst, 'talk'); assert.ok(Math.hypot(n.x - 7.5, n.y - 5.6) < .1, 'devant la cabane');
-  const said = []; g.bus.on('say', d => said.push(d));
+  placeNPC(n, S, OUT_FROM, OUT_TO);
+  assert.equal(n.scene, 'farm'); assert.equal(n.sleeping, true, 'il dort devant la cabane');
+  S.x = 7.5; S.y = 8.5; placeNPC(n, S, OUT_FROM, OUT_TO);
+  assert.equal(S.intro.myst, 'talk', 'il nous aperçoit');
+  const said = [], maps = []; g.bus.on('say', d => said.push(d)); g.bus.on('showMap', () => maps.push(1));
   assert.equal(mystTick(g), true); assert.equal(mystTick(g), false, 'une seule fois');
-  assert.ok(said[0].lines.some(l => /hanté/.test(l)));
-  said[0].onEnd();
-  for (let i = 0; i < 2000 && S.intro.myst === 'leaving'; i++) placeNPC(n, S, OUT_FROM, OUT_TO);
+  assert.ok(said[0].lines.some(l => /quartier/.test(l)), 'il dit qu’il habite au quartier');
+  said[0].onEnd(); assert.equal(maps.length, 1, 'il montre le plan');
+  for (let i = 0; i < 3000 && S.intro.myst === 'leaving'; i++) placeNPC(n, S, OUT_FROM, OUT_TO);
   assert.equal(S.intro.myst, 'done'); assert.equal(n.scene, 'none');
   S.minute = 1200; placeNPC(n, S, OUT_FROM, OUT_TO); assert.equal(n.scene, 'quartier', 'il sort le soir, devant chez lui au fond du quartier');
   assert.ok(LAY.quartier[3].slice(31, 37) === 'XXXXXX' && LAY.quartier[3][29] === 'T', 'sa maison est à l’écart, derrière une rangée d’arbres');
   assert.equal(MYST.look.tall && MYST.look.coat, true, 'grand, long manteau');
 });
-
 test('gare à l’ouest : quai, chemin vers la ferme et le village ; la villa du maire au sud de la ville', () => {
   assert.ok(isStation(2, 15) && isPlatform(1, 20));
   assert.equal(isSolid({ scene: 'farm' }, 0, 20), true, 'la voie ferrée');
@@ -197,6 +196,7 @@ test('quartier au sud de la ferme : Luna et Franck y habitent', () => {
   assert.ok(LAY.quartier.some(r => r.includes('X')));
   registerNPC(g, LUNA); placeNPC(g.npcs.luna, S, OUT_FROM, OUT_TO);
   assert.equal(g.npcs.luna.scene, 'quartier', 'Luna sort dans le quartier');
+  S.social.luna = { ...(S.social.luna || {}), points: 1250 };
   S.x = 6.5; S.y = 7.6; assert.equal(act(g, 6, 6), 'door'); assert.equal(S.scene, 'luna');
   assert.equal(SCENES.franck.doors[0].to, 'quartier');
   assert.equal(SCENES.farm.doors.some(d => d.to === 'luna' || d.to === 'franck'), false, 'plus de maisons d’habitants sur la ferme');

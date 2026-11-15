@@ -13,6 +13,7 @@ const THEME = {
   luna: { floor: '#c49a6a', seam: '#a07850', wall: '#d8c2e8', wallD: '#bca4d0', trim: '#7a5a8a', beam: '#4a2c3a' },
   pigsty: { floor: '#c9a66a', seam: '#a8854a', wall: '#9a6a3c', wallD: '#7a4e2a', trim: '#c99560', beam: '#4a2c18' },
   clinique: { floor: '#dfe6e4', seam: '#c4cecb', wall: '#eef4f2', wallD: '#d6e2de', trim: '#5aa8a0', beam: '#3a4a48' },
+  hailey: { floor: '#c8a47a', seam: '#a8845a', wall: '#f2dce0', wallD: '#e2c4ca', trim: '#7cc8c0', beam: '#4a3a3e' },
   barn: { floor: '#d4b870', seam: '#b0944c', wall: '#b8452f', wallD: '#93321f', trim: '#f0e6d0', beam: '#4a2c18' }
 };
 
@@ -64,7 +65,7 @@ export function buildInterior(name, S = {}) {
   const bedC = ([x, y, w, h]) => { R(x + 1, y + 2, w - 2, h - 3, '#c4cecb'); R(x + 2, y + 3, w - 4, h - 6, '#ffffff'); R(x + 3, y + 4, w - 6, 5, '#f4f8f7'); R(x + 2, y + 12, w - 4, h - 16, '#7cc8c0'); R(x + 1, y + h - 2, 2, 2, '#6a7472'); R(x + w - 3, y + h - 2, 2, 2, '#6a7472'); };
   const draw = {
     R: ([x, y, w, h]) => { R(x + 1, y + 1, w - 2, h - 2, '#a8392c'); R(x + 3, y + 3, w - 6, h - 6, '#d0573f'); R(x + 5, y + 5, w - 10, h - 10, '#e8c26a'); R(x + 7, y + 7, w - 14, h - 14, '#a8392c'); for (let k = x + 3; k < x + w - 3; k += 4) { R(k, y, 1, 2, '#e8c26a'); R(k, y + h - 2, 1, 2, '#e8c26a'); } },
-    B: ([x, y, w, h]) => { if (S.bed === false) { R(x + 2, y + 2, w - 4, 1, 'rgba(0,0,0,.18)'); R(x + 2, y + h - 3, w - 4, 1, 'rgba(0,0,0,.18)'); R(x + 2, y + 2, 1, h - 4, 'rgba(0,0,0,.18)'); R(x + w - 3, y + 2, 1, h - 4, 'rgba(0,0,0,.18)'); return; } R(x, y, w, h, '#5a3a22'); R(x + 1, y + 1, w - 2, 7, '#f4efe4'); R(x + 2, y + 2, w - 4, 4, '#ffffff'); R(x + 1, y + 9, w - 2, h - 11, '#3f6fb0'); for (let k = 0; k < w - 4; k += 4) R(x + 2 + k, y + 10, 2, h - 13, '#5b8fd0'); R(x + 1, y + h - 3, w - 2, 2, '#2f548a'); },
+    B: ([x, y, w, h]) => { if (name === 'house' && S.bed === false) { R(x + 2, y + 2, w - 4, 1, 'rgba(0,0,0,.18)'); R(x + 2, y + h - 3, w - 4, 1, 'rgba(0,0,0,.18)'); R(x + 2, y + 2, 1, h - 4, 'rgba(0,0,0,.18)'); R(x + w - 3, y + 2, 1, h - 4, 'rgba(0,0,0,.18)'); return; } R(x, y, w, h, '#5a3a22'); R(x + 1, y + 1, w - 2, 7, '#f4efe4'); R(x + 2, y + 2, w - 4, 4, '#ffffff'); R(x + 1, y + 9, w - 2, h - 11, '#3f6fb0'); for (let k = 0; k < w - 4; k += 4) R(x + 2 + k, y + 10, 2, h - 13, '#5b8fd0'); R(x + 1, y + h - 3, w - 2, 2, '#2f548a'); },
     K: ([x, y, w, h]) => { R(x, y, w, h, '#6b4226'); R(x, y, w, 4, '#c9b28a'); R(x, y + 4, w, 1, '#8a6a46'); for (let k = x + 2; k < x + w - 4; k += 8) { R(k, y + 6, 6, 8, '#835330'); R(k + 4, y + 9, 1, 2, '#e8c26a'); } R(x + w - 10, y - 2, 7, 4, '#3a3a40'); R(x + w - 9, y - 4, 5, 2, '#5a5a62'); },
     T: ([x, y, w, h]) => { R(x + 1, y + 3, w - 2, h - 8, '#8a5a32'); R(x + 1, y + 3, w - 2, 2, '#b07a48'); R(x + 2, y + h - 5, 2, 5, '#5a3a22'); R(x + w - 4, y + h - 5, 2, 5, '#5a3a22'); disc(g, x + w / 2, y + 9, 3, '#f4efe4'); R(x + w / 2 - 1, y + 8, 2, 2, '#e08a3a'); },
     P: ([x, y, w, h]) => { R(x + 4, y + 9, 8, 7, '#b0603a'); R(x + 4, y + 9, 8, 2, '#c97a4f'); disc(g, x + 8, y + 5, 5, '#3e8a34'); disc(g, x + 6, y + 4, 2, '#6bb33f'); },

@@ -283,3 +283,10 @@ Ordre convenu : 1 mort/clignotement ✅ · 2 tente ✅ · 3 recettes (feu), baie
 - ✅ **Clinique** dans le quartier (x18-21) et **Hailey**, infirmière (7h-23h 💡), histoire par cœurs : jeune diplômée motivée → beaucoup de gens pour rien, surplus des urgences saturées → 12 h par jour, mal payée → fatigue → burn-out. Répliques 🆕 à relire.
 - ✅ **Sac en cases** (remplace la roue des objets ; 🎒 ou touche I) : glisser une case sur une autre pour ranger, bouton **« 🔀 Tri auto »** à droite (graines, nourriture, fleurs, champignons, minerais, ressources, objets). Toucher une case : nom, prix, type et actions (En main, Manger, Déployer). L'ordre est sauvegardé (`S.invOrder`). La roue reste pour les outils.
 - ✅ Date avec l'**année** : « Printemps j1, an 1 ».
+
+## Séance du 15/11/2026 (fin de soirée)
+- ✅ Corrections des dialogues appliquées telles quelles (159 répliques validées ; `tools/dialogues_valides.txt`). Accueil de Manuel retiré.
+- ✅ **Myst accueille le joueur** : il somnole devant la cabane (Zzz), se réveille quand on approche, souhaite la bienvenue, parle de la rumeur, **montre le plan** (la carte s'ouvre) et dit qu'il habite au fond du quartier, puis redescend chez lui. Ses répliques sont réécrites (🆕).
+- ✅ **Maison de Hailey** dans le quartier (x24-27, rose, toit turquoise) ; le soir elle rentre chez elle.
+- ✅ **Maisons des habitants** : on n'y entre qu'à partir de **5 cœurs sur 10** (la moitié). Avant, on frappe : si l'habitant est là, il vient parler à la porte.
+- 💡/📝 **Franck est un peu amoureux de Luna** (idée validée par l'utilisateur, à exploiter plus tard : il lui fait signe, il la trouve « gentille »…).

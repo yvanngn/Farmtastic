@@ -27,7 +27,6 @@ export function contribute(g, id) {
   g.bus.emit('sfx', 'pick'); g.bus.emit('pop', { t: moved.trim(), x: (R.x0 + R.x1) / 2, y: R.y1 });
   if (isRepaired(S, id)) {
     g.bus.emit('sfx', 'levelup'); g.bus.emit('toast', `✅ ${R.n} est réparée !`); g.bus.emit('repaired', id);
-    if (id === 'house') { S.intro ||= {}; if (!S.intro.myst) S.intro.myst = 'come'; }
   }
   return true;
 }

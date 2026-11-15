@@ -185,7 +185,16 @@ export function buildQuartier(season) {
     R(x0 + T, y0 + 3 * T - 1, 16, 3, '#c2bdb4');
     signBoard(R, x0 + w / 2, y0 - 26, 'CLINIQUE');
   }
-  for (const x0 of [24 * T]) { R(x0, 4 * T, 4 * T, 3 * T, 'rgba(120,84,48,.18)'); for (const px of [x0, x0 + 4 * T - 2]) R(px, 4 * T, 2, 8, '#8a5a32'); R(x0 + 2 * T - 1, 5 * T, 2, 12, '#5b3a22'); R(x0 + 2 * T - 9, 5 * T - 6, 18, 9, '#3f2615'); R(x0 + 2 * T - 8, 5 * T - 5, 16, 7, '#e8c26a'); }
+  { // maison de Hailey (x24-27, y4-6) : petite maison rose pâle, toit turquoise, jardinière, porte x25
+    const x0 = 24 * T, y0 = 4 * T, w = 4 * T;
+    R(x0 + 2, y0 - 4, w - 4, 3 * T + 4, '#f2dce0'); for (let k = 0; k < 3 * T; k += 5) R(x0 + 2, y0 - 4 + k, w - 4, 1, '#e4c8ce');
+    for (let i = 0; i < 9; i++) R(x0 - 3 + (8 - i) * 2, y0 - 22 + i * 2, w + 6 - (8 - i) * 4, 2, i % 2 ? '#4a8a84' : '#5aa8a0');
+    R(x0 - 4, y0 - 5, w + 8, 3, '#2e5a56');
+    R(x0 + T + 2, y0 + 2 * T - 6, 12, T + 6, '#6a4a3e'); R(x0 + T + 3, y0 + 2 * T - 5, 10, T + 5, '#8a5e4a'); R(x0 + T + 10, y0 + 2 * T + 2, 2, 2, '#e8c26a');
+    for (const wx of [x0 + 6, x0 + w - 18]) { R(wx, y0 + 8, 12, 11, '#6a4a3e'); R(wx + 1, y0 + 9, 10, 9, '#bfe3f5'); R(wx + 5, y0 + 9, 1, 9, '#6a4a3e'); R(wx - 1, y0 + 19, 14, 3, '#8a5a32'); R(wx, y0 + 17, 3, 2, '#f07ab0'); R(wx + 5, y0 + 17, 3, 2, '#f6d24a'); R(wx + 9, y0 + 17, 3, 2, '#f07ab0'); }
+    R(x0 + T, y0 + 3 * T - 1, 16, 3, '#c2bdb4');
+  }
+  for (const x0 of []) { R(x0, 4 * T, 4 * T, 3 * T, 'rgba(120,84,48,.18)'); for (const px of [x0, x0 + 4 * T - 2]) R(px, 4 * T, 2, 8, '#8a5a32'); R(x0 + 2 * T - 1, 5 * T, 2, 12, '#5b3a22'); R(x0 + 2 * T - 9, 5 * T - 6, 18, 9, '#3f2615'); R(x0 + 2 * T - 8, 5 * T - 5, 16, 7, '#e8c26a'); }
   // bancs et lampadaires le long de la rue
   for (const x of [3 * T, 20 * T]) { R(x, 10 * T + 6, 22, 3, '#8a5a32'); R(x, 10 * T + 6, 22, 1, '#c99560'); R(x + 1, 10 * T + 9, 2, 3, '#5b3a22'); R(x + 19, 10 * T + 9, 2, 3, '#5b3a22'); }
   for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) if (L[y][x] === 'T') g.drawImage(treeSprite(season, (x + y) % 4), x * T - 9, y * T - 28);

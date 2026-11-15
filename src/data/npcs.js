@@ -16,10 +16,10 @@ export const LUNA = {
     deteste: ['slime']
   },
   react: {
-    adore: "Des graines ?! Pour mon futur potager ? Tu es un amour !",
+    adore: "Des graines ?! Pour mon futur potager ? Merci beaucoup !",
     aime: "Oh, merci ! Ça me fait vraiment plaisir.",
     naime: "Ah… merci. Je vais bien lui trouver une utilité.",
-    deteste: "Euh… c'est gluant. Tu peux le reprendre ?"
+    deteste: "Euh… Tu peux le reprendre ?"
   },
   // Questions (une seule fois chacune, effets faibles : l'amitié reste lente).
   questions: [
@@ -33,17 +33,17 @@ export const LUNA = {
       { t: 'Tant mieux, je ferai la sieste.', pts: -5, r: "Facile à dire quand on a encore son travail…" }] },
     { id: 'reve', h: 2, q: "Si tu avais une ferme de rêve, tu y mettrais quoi en premier ?", a: [
       { t: 'Des poules, évidemment.', pts: 12, r: "Pareil ! On est faits pour s'entendre." },
-      { t: 'Un grand potager.', pts: 10, r: 'Bon choix. Les carottes ne répondent jamais.' },
+      { t: 'Un grand potager.', pts: 10, r: 'Ah bon ? Faut qu\'il soit d\'accord pour ça ton ami haha.' },
       { t: 'Un hamac.', pts: 3, r: '… Je note. Le hamac.' }] }
   ],
   story: [
-    { h: 0, t: "Oh, bonjour ! Je m'appelle Luna. Je viens d'emménager dans la petite maison, là." },
+    { h: 0, t: "Oh, bonjour ! Je m'appelle Luna. Je viens d'emménager dans cette petite maison." },
     { h: 0, t: "Tout est encore dans les cartons. Je ne sais même plus où j'ai rangé la bouilloire." },
     { h: 0, t: "C'est toujours aussi calme, par ici ? Ça me change de la ville." },
     { h: 1, t: "Avant d'arriver, je travaillais dans l'informatique. Toute la journée devant des écrans." },
     { h: 1, t: "Je n'avais jamais vu un vrai champ de blé de près. C'est beau, en fait." },
-    { h: 2, t: "Mon poste a été remplacé par une IA. Du jour au lendemain." },
-    { h: 2, t: "Le pire, c'est qu'elle fait mon ancien travail mieux que moi. Ça pique un peu." },
+    { h: 2, t: "Mon poste a été remplacé par une Intelligence Artificielle (IA). Du jour au lendemain." },
+    { h: 2, t: "Le pire, c'est que l'intelligence artificielle fait mon ancien travail mieux que moi et beaucoup plus rapidement ..." },
     { h: 3, t: "Alors j'ai décidé de tout recommencer ici. Mon rêve, ce serait d'avoir ma propre ferme." },
     { h: 3, t: "Des poules, un potager… quelque chose de vrai, que je fais de mes mains." },
     { h: 4, t: "Mais pour l'instant, je n'ai presque rien de côté. Il faut d'abord que je gagne un peu d'argent." },
@@ -67,16 +67,6 @@ export const CHEF = {
   walks: [{ scene: 'foret', from: 780, to: 840, every: 3, at: { x: 18.5, y: 13.5 } }],  // promenade digestive, un jour sur trois, 13 h – 14 h (💡)
   traits: ['Chef élu à l\'unanimité', 'Dit aimer ses villageois', 'En secret : impôts élevés, bon temps et vacances'],
   taste: { adore: [], aime: ['bread', 'egg'], naime: [], deteste: ['slime'] },
-  welcomeLines: [
-    "Ah, te voilà enfin ! Bienvenue au village. Je suis Manuel, le chef du village.",
-    "Cette ferme est à toi, maintenant. Elle a bien besoin d'un coup de main, comme tu vois.",
-    "En descendant le chemin, tu trouveras le village : la halle du marché, le panneau d'affichage et nos commerces.",
-    "Sur le panneau, les gens affichent leurs demandes. Le village a besoin de toi pour se reconstruire.",
-    "Les outils de l'ancien propriétaire doivent traîner dans la grange, à côté de la maison.",
-    "Mais méfie-toi : cette grange cache bien plus de choses qu'elle n'en a l'air…",
-    "Ta voisine, Luna, vient d'arriver elle aussi. Va lui dire bonjour !"
-  ],
-  welcomeEnd: { t: 'Merci, chef !', r: 'Allez, au travail ! Et passe me voir sur la place quand tu veux.' },
   story: [
     { h: 0, t: "Ce village, c'est toute ma vie. J'aime chacun de mes villageois, sincèrement." },
     { h: 0, t: "J'ai été élu à l'unanimité, tu sais. Pas une seule voix contre !" },
@@ -106,11 +96,11 @@ export const FRANCK = {
   traits: ['Timide', 'Sort peu', 'Laisse passer le temps', 'Aimait peut-être fabriquer des choses'],
   taste: { adore: ['croissant'], aime: ['bread', 'egg', 'wood'], naime: ['slime'], deteste: ['truffle'] },
   react: {
-    adore: '… Un croissant ? Pour moi ? … Merci. Vraiment.',
+    adore: '… Pour moi ? … Merci. Vraiment.',
     aime: '… Merci. C\'est gentil.',
     neutre: 'Oh. … Merci.',
     naime: '… Je vais le poser là.',
-    deteste: "Ça sent… fort. Tu peux le garder ?"
+    deteste: "Ça sent… bizarre. Tu peux le garder ?"
   },
   already: '… Tu m\'as déjà apporté quelque chose aujourd\'hui.',
   story: [
@@ -154,21 +144,28 @@ export const MYST = {
   outScene: 'quartier', night: { from: 1140, to: 1380, at: { x: 33.5, y: 6.6 } },   // sort le soir devant chez lui (💡 19h-23h)
   traits: ['Grand et mince', 'Long manteau noir', 'Sort le soir', 'Parle peu, écoute tout', 'Mis de côté par le village'],
   taste: { adore: [], aime: ['colchique', 'lavande'], naime: ['slime'], deteste: [] },   // 💡 fleurs calmes du soir
+  // Accueil : il somnole devant la cabane à l'arrivée du joueur, se réveille, l'accueille et lui montre le plan.
+  sleepAt: { x: 7.5, y: 6.5 },
   arrival: [
-    "… Tiens. Quelqu'un a réparé la cabane.",
-    "Personne n'habite ici depuis longtemps. Au village, ils disent que l'endroit est hanté.",
-    "Tu peux rester, si tu veux. Moi, ça ne me dérange pas.",
-    "Je m'appelle Myst. J'habite la vieille maison au fond du quartier, un peu à l'écart.",
-    "Ça leur fera du bien, qu'on bouscule un peu les choses."
+    "Mmh… ? Oh. Je somnolais. Il fait bon, devant cette cabane.",
+    "Tu dois être la personne de l'annonce. Bienvenue. Moi, c'est Myst.",
+    "Personne n'habite ici depuis longtemps. Au village, ils disent que l'endroit est hanté. Moi, je n'y crois pas trop.",
+    "Tiens, je te montre le plan. Ici, ta ferme. Le chemin du sud descend au quartier résidentiel : c'est là que j'habite, tout au fond.",
+    "À l'est, la route mène au centre-ville. À l'ouest, la gare, et la forêt un peu plus haut.",
+    "Ça leur fera du bien, qu'on bouscule un peu les choses. … Bon. À plus tard."
   ],
   story: [
-    { h: 0, t: '… Bonsoir.' },
-    { h: 0, t: "Je parle peu. Mais j'écoute." },
-    { h: 1, t: "Au village, on ne m'a jamais beaucoup aimé. Trop silencieux, sans doute." },
-    { h: 2, t: "Le soir, tout le monde se tait. C'est là que j'entends le mieux." }
+    { h: 0, t: '… Bonsoir. Je sors souvent, le soir. C\'est calme.' },
+    { h: 0, t: "Je parle peu. Mais j'écoute. On apprend beaucoup en écoutant." },
+    { h: 1, t: 'Au quartier, on me salue de loin. Je suis le voisin bizarre du fond, je crois.' },
+    { h: 2, t: "Au village, on ne m'a jamais vraiment accepté. Trop silencieux, sans doute." },
+    { h: 3, t: "Depuis que tu es là, les gens parlent de la ferme. Ça bouge un peu. Ça me plaît." }
   ],
-  topics: [{ t: 'Et le village ?', lines: ['Ils parlent beaucoup. Ils écoutent peu.'] }],
-  chat: ['…', 'Hm.'],
+  topics: [
+    { t: 'Et le village ?', lines: ['Ils parlent beaucoup. Ils écoutent peu.'] },
+    { t: 'Pourquoi tu vis à l\'écart ?', h: 1, lines: ['Au fond du quartier, personne ne vient frapper par hasard. Ça me va.'] }
+  ],
+  chat: ['… Bonsoir.', "La nuit, tout le monde se tait. J'entends mieux."],
   questions: []
 };
 // Hailey (décrite par l'utilisateur) : infirmière de la clinique, fraîchement diplômée, motivée ; elle découvre
@@ -177,7 +174,7 @@ export const MYST = {
 export const HAILEY = {
   id: 'hailey', name: 'Hailey', de: "d'elle", color: '#7cc8c0', voice: 'voiceLuna',
   look: { body: 'f', bottom: 'pant', skin: '#f3d0b4', hair: 1, hairC: '#c8843a', shirt: '#8fd0c8', pants: '#6fb4ac' },   // tenue d'infirmière turquoise 💡
-  home: null, worker: { scene: 'clinique', at: { x: 6.5, y: 3.7 }, from: 420, to: 1380 },   // de 7h à 23h (💡) : de très longues journées
+  home: 'hailey', inside: { x: 3.5, y: 3.7 }, worker: { scene: 'clinique', at: { x: 6.5, y: 3.7 }, from: 420, to: 1380 },   // de 7h à 23h (💡) : de très longues journées
   traits: ['Infirmière', 'Fraîchement diplômée', 'Motivée', 'Travaille beaucoup', 'Fatiguée'],
   taste: { adore: [], aime: ['berry_cooked', 'lavande'], naime: ['slime'], deteste: [] },   // 💡 un petit quelque chose qui réconforte
   story: [
@@ -207,11 +204,9 @@ export const HAILEY = {
 
 // Arrivée en train (pensées du héros, 🆕) : après un licenciement, il cherche un sens à sa vie.
 export const INTRO_LINES = [
-  "Après mon licenciement, j'ai voulu donner un sens à ma vie.",
-  "J'ai toujours rêvé de construire ma maison. Alors, quand j'ai vu cette annonce…",
-  "« Cabane à retaper : qui la remet en état peut y habiter. »",
-  "Paraît que peu de gens sont venus, à cause d'une rumeur. Tant mieux pour moi !",
-  "Le chemin part vers ma ferme, au nord, et descend vers le village, au sud."
+  "Après mon licenciement, j'ai voulu redonner un sens à ma vie.",
+  "J'ai toujours rêvé de construire ma propre maison. Alors, quand j'ai vu l'annonce qui disait que cette cabane abandonnée était offerte à la personne qui voulait s'en occuper…",
+  "Il paraît que peu de gens sont venus essayer, à cause de la fameuse rumeur comme quoi la ferme serait hantée !",
 ];
 export const NPCS = { luna: LUNA, chef: CHEF, franck: FRANCK, myst: MYST, hailey: HAILEY };
 // Luna est dehors de 8 h à 19 h, chez elle le reste du temps.

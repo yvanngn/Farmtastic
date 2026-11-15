@@ -17,7 +17,7 @@ import { repairAt, contribute, pickFieldTool } from './repair.js';
 import { pitchTent, tentAt, useTent } from './camp.js';
 import { fireAt, startCook, pickBush, placeFire } from './cooking.js';
 import { pickFlower, hitNature, natureAt, digTreasure } from './nature.js';
-import { findNPCAt, talk, gift } from './social.js';
+import { findNPCAt, talk, gift, hearts } from './social.js';
 import { add } from './inventory.js';
 import { TOOL_FOR } from './resources.js';
 
@@ -50,6 +50,22 @@ export function enterScene(g, to, spawn) {
 }
 
 // Action + commentaire du héros quand on interagit avec un élément du décor qu'on ne peut pas prendre.
+// Maisons des habitants : on n'entre qu'avec au moins la moitié de leur affinité (5 cœurs sur 10).
+// Avant, on frappe : s'ils sont chez eux, ils viennent parler à la porte.
+export const HOME_OWNER = { luna: 'luna', franck: 'franck', hailey: 'hailey' };
+export const ENTER_HEARTS = 5;
+export const canEnterHome = (S, id) => hearts(S.social[id] || { points: 0 }) >= ENTER_HEARTS;
+function knock(g, id) {
+  const n = g.npcs[id], home = n && n.scene === id;
+  g.bus.emit('sfx', 'ui');
+  if (g.now() - (g.knockT || -1e9) < 2500) return 'knock';
+  g.knockT = g.now();
+  if (!home) { g.bus.emit('toast', `🚪 Toc toc… Personne ne répond. ${n ? n.name : ''} n'est pas chez ${n && n.de === "d'elle" ? 'elle' : 'lui'}.`); return 'knock'; }
+  g.bus.emit('toast', `🚪 Toc toc… ${n.name} entrouvre la porte. (Pour entrer : ${ENTER_HEARTS} ❤️)`);
+  talk(g, id);
+  return 'knock';
+}
+
 export function act(g, tx, ty) {
   const r = act0(g, tx, ty);
   if (r === 'none' || r === false) {
@@ -79,6 +95,7 @@ function act0(g, tx, ty) {
   { const N = natureAt(S, sc); if (N && N.rocks[key(tx, ty)]) return hitNature(g, tx, ty) ? 'hit' : 'none'; }
   const d = doorAt(sc, tx, ty);
   if (d && d.to === 'wild' && !isOpen(S)) { g.bus.emit('sfx', 'denied'); g.bus.emit('toast', 'La grille de la caverne est fermée à clé. Le chef du village saura peut-être…'); return 'locked'; }
+  if (d && HOME_OWNER[d.to] && !canEnterHome(S, HOME_OWNER[d.to])) return knock(g, HOME_OWNER[d.to]);
   if (d && !(sc === 'farm' && BUILDINGS[d.to] && !(S.built && S.built[d.to]))) { enterScene(g, d.to, d.spawn); return 'door'; }
   if (sc === 'grange') { const r = grangeAction(g, tx, ty); if (r !== 'none') return r; }
   if (sc === 'foret') return pickShroom(g, tx, ty) ? 'pick' : 'none';

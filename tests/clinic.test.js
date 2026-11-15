@@ -49,7 +49,8 @@ test('Hailey travaille à la clinique du quartier de 7h à 23h', () => {
   const { g, S } = makeGame({ state: { minute: 600 } });
   registerNPC(g, HAILEY); const n = g.npcs.hailey;
   placeNPC(n, S, OUT_FROM, OUT_TO); assert.equal(n.scene, 'clinique');
-  S.minute = 1400; placeNPC(n, S, OUT_FROM, OUT_TO); assert.equal(n.scene, 'none');
+  S.minute = 1400; placeNPC(n, S, OUT_FROM, OUT_TO); assert.equal(n.scene, 'hailey', 'le soir, elle rentre chez elle, dans le quartier');
+  assert.ok(SCENES.quartier.doors.some(d => d.to === 'hailey'));
   assert.ok(SCENES.quartier.doors.some(d => d.to === 'clinique'));
   assert.equal(LAYOUTS.quartier[5].slice(18, 22), 'XXXX');
   assert.ok(HAILEY.story.some(s => /burn-out/.test(s.t)), 'son histoire va jusqu’au burn-out');

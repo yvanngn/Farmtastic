@@ -4,6 +4,7 @@
 //         node tools/export-dialogues.mjs --valider  → marque toutes les répliques actuelles comme validées
 import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { NPCS, INTRO_LINES } from '../src/data/npcs.js';
+import { NIGHT_TIP } from '../src/systems/camp.js';
 import { EXAMINE } from '../src/data/examine.js';
 
 const VALID = new URL('./dialogues_valides.txt', import.meta.url), OUT = new URL('../docs/DIALOGUES.md', import.meta.url);
@@ -12,7 +13,8 @@ const all = [];
 for (const n of Object.values(NPCS)) {
   const add = (where, t) => all.push({ npc: n.name, where, t });
   (n.welcomeLines || []).forEach(t => add('accueil', t));
-  (n.arrival || []).forEach(t => add('arrivée (cabane réparée)', t));
+  (n.arrival || []).forEach(t => add('accueil (il somnolait devant la cabane)', t));
+  (n.clinic || []).forEach(t => add('à la clinique (après un malaise)', t));
   if (n.welcomeEnd) { add('accueil (réponse du joueur)', n.welcomeEnd.t); add('accueil', n.welcomeEnd.r); }
   (n.story || []).forEach(l => add(`histoire ${l.h} ♥`, l.t));
   (n.topics || []).forEach(tp => { add('sujet (joueur)', tp.t); tp.lines.forEach(t => add('sujet', t)); });
@@ -21,6 +23,7 @@ for (const n of Object.values(NPCS)) {
   for (const [k, t] of Object.entries(n.react || {})) add(`cadeau : ${k}`, t);
   for (const k of ['already', 'night', 'thanks']) if (typeof n[k] === 'string') add(k === 'already' ? 'cadeau : déjà offert' : k, n[k]);
 }
+for (const t of NIGHT_TIP) all.push({ npc: 'Conseil (à 18h)', where: 'nuit', t });
 for (const t of INTRO_LINES) all.push({ npc: 'Le héros (arrivée en train)', where: 'intro', t });
 for (const [k, t] of Object.entries(EXAMINE.farm)) all.push({ npc: 'Décor (le héros commente)', where: k, t });
 for (const [k, t] of Object.entries(EXAMINE.tiles)) all.push({ npc: 'Décor (le héros commente)', where: k, t });

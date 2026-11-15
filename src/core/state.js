@@ -18,7 +18,7 @@ export function defaultState() {
     village: { done: [], progress: 0 }, festival: null, caravan: { tokens: 0, unlocked: [] },
     skills: { mining: { xp: 0 } },
     tools: {},                       // aucun outil au départ : ils sont dans la grange
-    intro: { met: true, myst: false, arrived: false },   // arrivée en train, puis Myst une fois la cabane réparée
+    intro: { met: true, myst: 'sleep', arrived: false },   // arrivée en train ; Myst somnole devant la cabane et accueille le joueur
     repair: { house: { wood: 0, stone: 0 }, grange: { wood: 0, stone: 0 } },   // cabane et grange délabrées au début
     tilled: {},
     farmLot: 0, game: null,          // partie en cours { id, code, mode: 'solo'|'multi' }                      // emplacement de ferme de ce joueur (multijoueur : un par joueur)
@@ -43,6 +43,7 @@ export function migrate(raw) {
   if (raw.bed === undefined) s.bed = true;   // anciennes parties : le lit existait déjà
   if (!raw.repair) { s.repair = { house: { wood: 100, stone: 50 }, grange: { wood: 150, stone: 80 } }; s.intro = { ...s.intro, myst: 'done', arrived: true }; }
   s.intro = { met: true, myst: 'done', arrived: true, ...s.intro };
+  if (s.intro.myst === false || s.intro.myst === 'come') s.intro.myst = s.intro.myst === 'come' ? 'done' : 'sleep';
   if (s.objs) for (const k of Object.keys(s.objs)) { const [x, y] = k.split(',').map(Number); if ((y === 5 && x <= 43) || (x >= 39 && x <= 46 && y <= 6) || (y === 20 && x <= 15) || (x <= 3 && y >= 8 && y <= 24)) delete s.objs[k]; }
   if (raw.workbench === undefined) s.workbench = true; // avant le lot 12, on fabriquait déjà
   // Avant le lot 9, tout le champ était déjà prêt.

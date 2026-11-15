@@ -106,7 +106,7 @@ test('Luna : dehors le jour devant sa maison (quartier), chez elle le soir ; sa 
   S.minute = 1200; placeNPC(g.npcs.luna, S, OUT_FROM, OUT_TO);
   assert.equal(g.npcs.luna.scene, 'luna');
   assert.equal(isSolid(S, 5, 5), true);
-  S.minute = 600; assert.equal(act(g, 6, 6), 'door');
+  S.minute = 600; S.social.luna.points = 1250; assert.equal(act(g, 6, 6), 'door');
   assert.equal(S.scene, 'luna');
 });
 
@@ -140,7 +140,7 @@ test('Franck ne parle jamais de son traumatisme ; la quête avance avec la confi
 test('maison de Franck à côté de celle de Luna, on y entre par sa porte', () => {
   const { g, S } = makeGame({ state: { minute: 600, scene: 'quartier' } });
   assert.equal(isSolid(S, 12, 5), true);
-  assert.equal(act(g, 13, 6), 'door');
+  S.social.franck = { points: 1250 }; assert.equal(act(g, 13, 6), 'door');
   assert.equal(S.scene, 'franck');
 });
 
@@ -162,7 +162,18 @@ test('parler : la réplique du jour en tête, puis les sujets et « Rien. »', (
 
 test('Manuel, le chef du village : élu à l’unanimité, il aime ses villageois', () => {
   assert.equal(CHEF.name, 'Manuel');
-  assert.match(CHEF.welcomeLines[0], /Manuel/);
   assert.ok(CHEF.story.some(l => /unanimité/.test(l.t)));
   assert.ok(CHEF.story.some(l => /villageois/.test(l.t)));
+});
+
+test('maisons des habitants : on frappe tant qu’on n’a pas 5 cœurs ; s’ils sont là, ils viennent parler à la porte', async () => {
+  const { registerNPC: reg } = await import('../src/systems/social.js');
+  const { FRANCK } = await import('../src/data/npcs.js');
+  const { g, S } = makeGame({ state: { minute: 600, scene: 'quartier' } });
+  reg(g, FRANCK); placeNPC(g.npcs.franck, S, OUT_FROM, OUT_TO);
+  const said = []; g.bus.on('say', d => said.push(d));
+  assert.equal(act(g, 13, 6), 'knock'); assert.equal(S.scene, 'quartier', 'la porte reste fermée');
+  assert.equal(said.length, 1, 'Franck parle à la porte');
+  S.social.franck.points = 5 * 250; g.knockT = -1e9;
+  assert.equal(act(g, 13, 6), 'door'); assert.equal(S.scene, 'franck');
 });
