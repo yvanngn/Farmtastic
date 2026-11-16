@@ -31,7 +31,7 @@ Ce qu'on peut faire, ce qu'on doit faire et combien de temps ça prend, du 1er j
 
 ## Ce qu'on PEUT faire sans énergie (pour remplir la journée)
 - **Parler aux habitants** : Luna, Franck (en frappant), Hailey (clinique), Igor (ruelle), Manuel (place, 8 h-19 h), Myst (le soir). +20 d'amitié par jour chacun → ≈ 5 min.
-- **Cueillir** les baies (8 buissons, repoussent en 2 jours) et les fleurs. Les griller au feu (5 s par baie).
+- **Cueillir** les baies et les mûres (16 buissons, repoussent en 2 jours) et les fleurs. Les griller au feu (5 s par baie).
 - **Marteler** la cabane ou la grange avec ce qu'on a ramassé (gratuit en énergie).
 - **Vendre** au bac (un tuto l'explique au 1er bois ou à la 1re pierre), **acheter** (patron du chaudron 50 🪙 + louche 30 🪙 chez Igor), cuisiner au chaudron.
 - **Explorer** : quartier, centre-ville, forêt, montagne gelée (froid sans manteau à 400 🪙), parc FARM-LAND caché (attractions qui **rendent de l'énergie**, mais payantes).
