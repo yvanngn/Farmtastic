@@ -250,3 +250,13 @@ export const INTRO_LINES = [
 export const NPCS = { luna: LUNA, chef: CHEF, franck: FRANCK, myst: MYST, hailey: HAILEY, igor: IGOR };
 // Luna est dehors de 8 h à 19 h, chez elle le reste du temps.
 export const OUT_FROM = 480, OUT_TO = 1140;
+
+// Quête « Ghostbuster » (décrite par l'utilisateur) : la ferme serait hantée. Pensées du héros, 🆕 à valider.
+export const GHOST = { x: 22, y: 14, from: 1320, near: 2.2 };   // 💡 où et dès quelle heure (22h) l'esprit apparaît, la 3e nuit
+export const GHOST_LINES = {
+  n1: ['… Hou-hou… Hou-hou…', "Un hululement, dans la nuit. Sûrement une chouette… sûrement."],
+  n2: ['… Hoooooou…', "Ça, ce n'était pas une chouette."],
+  n3: ['… Hoooooou…', "Encore ce bruit. Cette fois, je vais voir ce qui se passe sur la ferme."],
+  pleure: "On dirait… une vieille femme. Transparente. Elle pleure.",
+  vanish: ["Elle a disparu dès que je me suis approché(e)…", "Il me faudrait un moyen de lui parler. Mais lequel ?"]
+};

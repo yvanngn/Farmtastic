@@ -3,6 +3,16 @@ import { hearts } from './social.js';
 import { isRepaired } from './repair.js';
 
 export const QUESTS = {
+  ghost: {
+    n: 'Ghostbuster', i: '👻',
+    steps: [
+      { id: 'n1', t: 'Un hululement dans la nuit…', done: S => !!S.quests?.ghost?.n1 },
+      { id: 'n2', t: 'Un « hoooou » la nuit suivante', done: S => !!S.quests?.ghost?.n2 },
+      { id: 'n3', t: 'La 3e nuit, aller voir sur la ferme', done: S => !!S.quests?.ghost?.seen },
+      { id: 'vanish', t: "S'approcher de l'esprit de la vieille femme", done: S => !!S.quests?.ghost?.vanish },
+      { id: 'parler', t: "Trouver un moyen de lui parler (objet à venir)", done: S => !!S.quests?.ghost?.talked, locked: true }
+    ]
+  },
   igor: {
     n: 'Un coffre pour ranger', i: '📦', from: 3,
     steps: [

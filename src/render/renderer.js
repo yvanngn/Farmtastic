@@ -14,6 +14,8 @@ import { isRepaired, fieldToolAt } from '../systems/repair.js';
 import { FIELD_TOOLS } from '../data/repairs.js';
 import { BUSHES } from '../data/recipes.js';
 import { bushRipe, cookProgress } from '../systems/cooking.js';
+import { ghostVisible } from '../systems/ghost.js';
+import { GHOST } from '../data/npcs.js';
 // Buisson à baies (baies bleues quand il y en a).
 function drawBush(c, x, y, ripe) {
   const px = x * T, py = y * T;
@@ -31,6 +33,17 @@ function drawChest(c, x, y) {
   c.fillStyle = '#e8c26a'; c.fillRect(px + 7, py + 7, 2, 3); c.fillStyle = '#4a2a14'; c.fillRect(px + 1, py + 13, 14, 1);
 }
 // Feu de camp : pierres en cercle, bûches, flammes qui dansent.
+// Esprit d'une vieille femme qui pleure : silhouette pâle et transparente qui flotte, chignon, châle, larmes.
+function drawGhost(c, x, y, now) {
+  const px = x * T, py = y * T + Math.round(Math.sin(now / 500) * 1.5) - 4;
+  c.save(); c.globalAlpha = .45 + Math.sin(now / 700) * .12;
+  c.fillStyle = '#d8ecff'; c.fillRect(px + 5, py + 2, 6, 6); c.fillRect(px + 6, py, 4, 2);       // tête et chignon
+  c.fillStyle = '#b8d4f0'; c.fillRect(px + 3, py + 8, 10, 6); c.fillRect(px + 2, py + 12, 12, 3);   // châle et robe
+  for (let i = 0; i < 4; i++) c.fillRect(px + 2 + i * 3, py + 15, 2, 1 + ((now / 160 + i) | 0) % 2);   // bas flottant
+  c.fillStyle = '#5a7090'; c.fillRect(px + 6, py + 4, 1, 1); c.fillRect(px + 9, py + 4, 1, 1);       // yeux baissés
+  c.fillStyle = '#7ac8ff'; const k = (now / 250 | 0) % 3; c.fillRect(px + 6, py + 5 + k, 1, 1); c.fillRect(px + 9, py + 6 + (k + 1) % 3, 1, 1);   // larmes
+  c.restore();
+}
 // Chaudron en fonte sur trois pieds, bûches dessous ; vapeur quand un plat cuit.
 function drawPot(c, x, y, now, busy) {
   const px = x * T, py = y * T;
@@ -289,6 +302,7 @@ let swing = null;
       for (const [x, y] of BUSHES) if (x >= x0 && x <= x1 && y >= y0 && y <= y1) list.push({ z: y + .8, d: () => drawBush(ctx, x, y, bushRipe(S, x, y)) });
       for (const ch of S.chests || []) list.push({ z: ch.y + .8, d: () => drawChest(ctx, ch.x, ch.y) });
       for (const f of S.fires || []) list.push({ z: f.y + .7, d: () => drawFire(ctx, f.x, f.y, now) });
+      if (ghostVisible(S)) list.push({ z: GHOST.y + .9, d: () => drawGhost(ctx, GHOST.x, GHOST.y, now) });
       for (const p of S.pots || []) list.push({ z: p.y + .7, d: () => { drawPot(ctx, p.x, p.y, now, !!p.cook);
         if (p.cook) { const x = p.x * T, y = p.y * T - 8; ctx.fillStyle = 'rgba(0,0,0,.55)'; ctx.fillRect(x - 1, y - 1, 18, 5); ctx.fillStyle = p.cook.p >= 1 ? '#7ad04a' : '#f2a03a'; ctx.fillRect(x, y, Math.round(16 * p.cook.p), 3); } } });
       if (g.cooking) list.push({ z: 9997, d: () => { const p = cookProgress(g), x = g.cooking.x * T, y = g.cooking.y * T - 8;

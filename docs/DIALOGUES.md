@@ -175,58 +175,72 @@
 154. *(histoire 4 ♥)* Je fais de bons outils. Mais ce que j'aimerais vraiment apprendre, c'est forger des armes. 🆕
 155. *(sujet (joueur))* Tu fais quoi, à la forge ? 🆕
 156. *(sujet)* Des outils, surtout. Solides. Qui durent. 🆕
-157. *(conversation)* La cheville tient le coup, aujourd’hui. 🆕
-158. *(conversation)* Un bon outil, ça se respecte. 🆕
+157. *(sujet (joueur))* Tu vends quoi ? 🆕
+158. *(sujet)* Des patrons, et de quoi bien travailler. Regarde. 🆕
+159. *(conversation)* La cheville tient le coup, aujourd’hui. 🆕
+160. *(conversation)* Un bon outil, ça se respecte. 🆕
 
 ## Conseil (à 18h)
 
-159. *(nuit)* 🌙 Il est 18h : la nuit tombe. 🆕
-160. *(nuit)* Dors sous ta tente pour récupérer ton énergie (touche la tente → Dormir). 🆕
-161. *(nuit)* Si tu ne dors pas, tu ne récupères rien le lendemain. Et si ton énergie tombe à 0, tu t'effondres : réveil à la clinique, avec 10 % de frais ! 🆕
+161. *(nuit)* 🌙 Il est 18h : la nuit tombe. 🆕
+162. *(nuit)* Dors sous ta tente pour récupérer ton énergie (touche la tente → Dormir). 🆕
+163. *(nuit)* Si tu ne dors pas, tu ne récupères rien le lendemain. Et si tu n'es pas couché(e) à 1h, ou si ton énergie tombe à 0, tu t'effondres : réveil à la clinique, avec 10 % de frais ! 🆕
+
+## Le héros (quête Ghostbuster)
+
+164. *(nuit)* … Hou-hou… Hou-hou… 🆕
+165. *(nuit)* Un hululement, dans la nuit. Sûrement une chouette… sûrement. 🆕
+166. *(nuit)* … Hoooooou… 🆕
+167. *(nuit)* Ça, ce n'était pas une chouette. 🆕
+168. *(nuit)* … Hoooooou… 🆕
+169. *(nuit)* Encore ce bruit. Cette fois, je vais voir ce qui se passe sur la ferme. 🆕
+170. *(nuit)* On dirait… une vieille femme. Transparente. Elle pleure. 🆕
+171. *(nuit)* Elle a disparu dès que je me suis approché(e)… 🆕
+172. *(nuit)* Il me faudrait un moyen de lui parler. Mais lequel ? 🆕
 
 ## Le héros (arrivée en train)
 
-162. *(intro)* Après mon licenciement, j'ai voulu redonner un sens à ma vie.
-163. *(intro)* J'ai toujours rêvé de construire ma propre maison. Alors, quand j'ai vu l'annonce qui disait que cette cabane abandonnée était offerte à la personne qui voulait s'en occuper…
-164. *(intro)* Il paraît que peu de gens sont venus essayer, à cause de la fameuse rumeur comme quoi la ferme serait hantée !
+173. *(intro)* Après mon licenciement, j'ai voulu redonner un sens à ma vie.
+174. *(intro)* J'ai toujours rêvé de construire ma propre maison. Alors, quand j'ai vu l'annonce qui disait que cette cabane abandonnée était offerte à la personne qui voulait s'en occuper…
+175. *(intro)* Il paraît que peu de gens sont venus essayer, à cause de la fameuse rumeur comme quoi la ferme serait hantée !
 
 ## Décor (le héros commente)
 
-165. *(house)* Un jour cette cabane sera plus belle.
-166. *(grange)* La vieille grange. On dirait qu'elle s'enfonce sous la colline…
-167. *(fence)* Une clôture en bois qui semble solide.
-168. *(water)* L'eau est claire. Je crois voir des têtards.
-169. *(luna)* Une belle maison. Il y a encore des cartons derrière la fenêtre.
-170. *(franck)* Les volets sont fermés.
-171. *(franckOpen)* L'intérieur semble cosy !
-172. *(gate)* J'entends des bruits visqueux.
-173. *(coop)* Le poulailler. On entend glousser là-dedans.
-174. *(pigsty)* La porcherie. Ça sent… la porcherie.
-175. *(barn)* La bergerie. Une bêle bergerie !
-176. *(houseRuin)* Ma future maison ... enfin cabane pour le moment… Avec du bois et des pierres, je peux la rafistoler.
-177. *(grangeRuin)* La grange tient à peine debout. Impossible d'entrer pour l'instant.
-178. *(hailey)* Une petite maison rose, avec des fleurs aux fenêtres. 🆕
-179. *(clinic)* La clinique du quartier. On y soigne les bobos… et les gens épuisés.
-180. *(myst)* Une vieille maison sombre, un peu à l'écart. Les rideaux sont tirés.
-181. *(station)* La petite gare. Le train ne repassera pas avant un moment.
-182. *(rails)* La voie ferrée. Elle file vers le sud.
-183. *(villa)* Très belle villa.
-184. *(K)* Le plan de travail. Il ne manque plus qu'un bon repas.
-185. *(T)* Une table en bois, avec une tasse oubliée dessus.
-186. *(P)* Une plante verte. Elle a l'air de bien se porter.
-187. *(C)* Un coffre. Vide, pour l'instant.
-188. *(N)* Un nid douillet, plein de paille.
-189. *(Y)* Une botte de foin. Ça gratte rien qu'à la regarder.
-190. *(X)* Des cartons de déménagement. « Fragile », écrit à la main.
-191. *(A)* Un vieux fauteuil, creusé juste là où l'on s'assoit.
-192. *(B)* Un lit fait au carré.
-193. *(F)* La fontaine du village. L'eau chante doucement.
-194. *(L)* Un lampadaire en fer forgé.
-195. *(Lon)* Un lampadaire. Il brille de nouveau, grâce à moi !
-196. *(b)* Un simple banc.
-197. *(f)* Des fleurs bien entretenues. Quelqu'un en prend soin.
-198. *(treeTown)* Un grand arbre qui fait de l'ombre à la place.
-199. *(treeWild)* Des arbres serrés. Impossible de passer par là.
-200. *(rockWild)* Un rocher énorme. Ma pioche ne lui ferait rien.
-201. *(rockGrange)* De la roche dure.
-202. *(wallGrange)* Des planches couvertes de toiles d'araignée.
+176. *(house)* Un jour cette cabane sera plus belle.
+177. *(grange)* La vieille grange. On dirait qu'elle s'enfonce sous la colline…
+178. *(fence)* Une clôture en bois qui semble solide.
+179. *(water)* L'eau est claire. Je crois voir des têtards.
+180. *(luna)* Une belle maison. Il y a encore des cartons derrière la fenêtre.
+181. *(franck)* Les volets sont fermés.
+182. *(franckOpen)* L'intérieur semble cosy !
+183. *(gate)* J'entends des bruits visqueux.
+184. *(coop)* Le poulailler. On entend glousser là-dedans.
+185. *(pigsty)* La porcherie. Ça sent… la porcherie.
+186. *(barn)* La bergerie. Une bêle bergerie !
+187. *(houseRuin)* Ma future maison ... enfin cabane pour le moment… Avec du bois et des pierres, je peux la rafistoler.
+188. *(grangeRuin)* La grange tient à peine debout. Impossible d'entrer pour l'instant.
+189. *(hailey)* Une petite maison rose, avec des fleurs aux fenêtres. 🆕
+190. *(clinic)* La clinique du quartier. On y soigne les bobos… et les gens épuisés.
+191. *(myst)* Une vieille maison sombre, un peu à l'écart. Les rideaux sont tirés.
+192. *(station)* La petite gare. Le train ne repassera pas avant un moment.
+193. *(rails)* La voie ferrée. Elle file vers le sud.
+194. *(villa)* Très belle villa.
+195. *(K)* Le plan de travail. Il ne manque plus qu'un bon repas.
+196. *(T)* Une table en bois, avec une tasse oubliée dessus.
+197. *(P)* Une plante verte. Elle a l'air de bien se porter.
+198. *(C)* Un coffre. Vide, pour l'instant.
+199. *(N)* Un nid douillet, plein de paille.
+200. *(Y)* Une botte de foin. Ça gratte rien qu'à la regarder.
+201. *(X)* Des cartons de déménagement. « Fragile », écrit à la main.
+202. *(A)* Un vieux fauteuil, creusé juste là où l'on s'assoit.
+203. *(B)* Un lit fait au carré.
+204. *(F)* La fontaine du village. L'eau chante doucement.
+205. *(L)* Un lampadaire en fer forgé.
+206. *(Lon)* Un lampadaire. Il brille de nouveau, grâce à moi !
+207. *(b)* Un simple banc.
+208. *(f)* Des fleurs bien entretenues. Quelqu'un en prend soin.
+209. *(treeTown)* Un grand arbre qui fait de l'ombre à la place.
+210. *(treeWild)* Des arbres serrés. Impossible de passer par là.
+211. *(rockWild)* Un rocher énorme. Ma pioche ne lui ferait rien.
+212. *(rockGrange)* De la roche dure.
+213. *(wallGrange)* Des planches couvertes de toiles d'araignée.

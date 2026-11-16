@@ -27,6 +27,7 @@ import { coldTick } from './systems/cold.js';
 import { createFishPanel } from './ui/fishPanel.js';
 import { createParcPanel } from './ui/parcPanel.js';
 import { nightTip } from './systems/camp.js';
+import { ghostTick } from './systems/ghost.js';
 import { BUSHES } from './data/recipes.js';
 import { createRepairPanel } from './ui/repairPanel.js';
 import { autoPickup } from './systems/grange.js';
@@ -245,7 +246,7 @@ function loop(now) {
     wander(g, dt);
     updateWild(g, dt); // les monstres ne vivent que dans les Caverne sombre
     autoPickup(g);
-    pickTestSword(g, Math.floor(g.S.x), Math.floor(g.S.y - .2)); pickFieldTool(g, Math.floor(g.S.x), Math.floor(g.S.y - .2)); pickJewel(g, Math.floor(g.S.x), Math.floor(g.S.y - .2)); mystTick(g); cookTick(g); nightTip(g); fishTick(g, dt); coldTick(g, dt);
+    pickTestSword(g, Math.floor(g.S.x), Math.floor(g.S.y - .2)); pickFieldTool(g, Math.floor(g.S.x), Math.floor(g.S.y - .2)); pickJewel(g, Math.floor(g.S.x), Math.floor(g.S.y - .2)); mystTick(g); cookTick(g); nightTip(g); ghostTick(g); fishTick(g, dt); coldTick(g, dt);
     ensureNature(g, g.S.scene || 'farm'); rainbowTick(g);
     pickFlower(g, Math.floor(g.S.x), Math.floor(g.S.y - .2)); digTreasure(g, Math.floor(g.S.x), Math.floor(g.S.y - .2));
     if (g.S.scene === 'foret') { ensureShrooms(g); pickShroom(g, Math.floor(g.S.x), Math.floor(g.S.y - .2)); }

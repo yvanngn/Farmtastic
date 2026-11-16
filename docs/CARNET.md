@@ -325,3 +325,9 @@ Problème repéré par l'utilisateur : énergie vide en 5-10 min, puis 10-15 min
 - ✅ **Lot 3** : quête du jour sur le panneau dès le jour 2 (1re : 💡 10 bois → 60 🪙 ; ensuite au hasard, 50-90 🪙). Quête « Un coffre pour ranger » (bijou d'Igor → recette → fabriquer le coffre) seulement à partir du jour 3.
 - ✅ **Lot 4** : métiers forgeron, alchimiste, couturier, joaillier, cuisinier (10 niveaux, onglet 🧑‍🔧 Métiers, 💡 15 XP par fabrication/plat). Magasins = patrons + ingrédients de base (la boulangerie ne vend plus pain ni croissant, seulement la farine). 💡 Patrons : bague de cuivre (Igor, joaillier), tisane fleurie et bonnet de laine (étal, alchimiste/couturier), pain (boulangerie), ragoût (boucherie), soupe de poisson (poissonnerie) au chaudron. Seul le patron du chaudron est en vente ; les autres sont affichés « ⏳ Bientôt » (demande du 16/11).
 - ⏳ Pas encore de boutique propre pour l'alchimiste, le couturier et le joaillier (PNJ à décrire par l'utilisateur).
+
+## Séance 16/11/2026 (13h30) — quête « Ghostbuster »
+- ✅ Décrite par l'utilisateur : la ferme est dite hantée. 1re nuit : un hululement. 2e nuit : un « hoooou ». 3e nuit : on décide d'aller voir sur la ferme ; on trouve l'**esprit d'une vieille femme qui pleure** ; dès qu'on l'approche, elle **disparaît**. Onglet Quêtes « 👻 Ghostbuster » (5 étapes, la dernière « lui parler » verrouillée).
+- 💡 Les bruits arrivent à partir de 22h ; l'esprit est sur la ferme (case 22,14), visible la nuit seulement ; il disparaît à moins de 2 cases. Une nuit où l'on dort avant 22h est sautée (la suite vient la nuit suivante).
+- ⏳ Objet pour lui parler : à déterminer. Piste de l'utilisateur : un **lanceur à neutrons** façon Ghostbusters, disponible à un certain niveau (lequel ? quel métier ?).
+- Pensées du héros 🆕 dans `docs/DIALOGUES.md` (54 🆕 au total).
