@@ -4,6 +4,9 @@ Mémoire du projet : tout ce qui a été dit, décidé, fait ou pas encore fait.
 
 Légende : ✅ fait · 🔨 en cours · ⏳ à faire · 💡 idée de Claude (à valider) · ❌ abandonné
 
+## 0. Parcours du joueur
+Le résumé du début de partie (à faire, possible, temps moyens, moments creux) est dans **`docs/PARCOURS.md`**. Le relire avant d'ajouter du contenu et le mettre à jour (skill `parcours-debut`) dès qu'un lot change l'énergie, les coûts, les quêtes ou les déblocages.
+
 ## 1. L'histoire et le monde (résumé, à jour le 15/11/2026 au soir)
 - Jeu de ferme pixel art multijoueur, style Stardew Valley, cultures façon Hay Day. Ton doux, un peu d'humour ; les habitants dévoilent **lentement** leur vie au fil de l'amitié.
 - **Le héros** (nom par défaut « Claude Gémini », modifiable : prénom et nom) a été licencié et cherche à redonner un sens à sa vie. Il a toujours rêvé de construire sa propre maison. Une annonce offrait une **cabane abandonnée** à qui voulait s'en occuper ; peu de gens sont venus, à cause d'une **rumeur : la ferme serait hantée**.
