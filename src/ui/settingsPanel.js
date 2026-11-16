@@ -12,7 +12,7 @@ const CH = [
 ];
 
 // Zoom : nombre de cases visibles sur le petit côté de l'écran (mémorisé sur cet appareil).
-export const ZOOMS = { 9: 'Proche', 12: 'Normal', 15: 'Loin' };
+export const ZOOMS = { 9: 'Proche', 12: 'Normal', 15: 'Loin', 20: 'Très loin' };   // 16/11 : un niveau de plus
 export const ZOOM_DEFAULT = 12;   // un peu plus large qu'avant (10)
 export function getZoom() { try { const v = +localStorage.getItem('ferme_zoom'); return ZOOMS[v] ? v : ZOOM_DEFAULT; } catch { return ZOOM_DEFAULT; } }
 function setZoom(v) { try { localStorage.setItem('ferme_zoom', v); } catch {} window.dispatchEvent(new Event('ferme-zoom')); }

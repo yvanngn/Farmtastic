@@ -16,6 +16,7 @@ import { createWheel } from './ui/wheel.js';
 import { createMapView } from './ui/mapView.js';
 import { createBoard } from './ui/board.js';
 import { createTitle } from './ui/title.js';
+import { createHotbar } from './ui/hotbar.js';
 import { createDialog } from './ui/dialog.js';
 import { NPCS, OUT_FROM, OUT_TO, INTRO_LINES } from './data/npcs.js';
 import { placeNPC, findNPCAt, mystTick } from './systems/social.js';
@@ -190,13 +191,15 @@ function doAction() {
   act(g, ft.tx, ft.ty);
 }
 const controls = createControls(g, input, { onAct: doAction, onTools: () => wheel.open('tools'), onItems: () => invGrid.open() });
+const hotbar = createHotbar(g, audio);
 const hud = createHud(g, controls);
 addEventListener('keydown', e => {
   if (!started || custom.isOpen() || title.isOpen() || dialog.isOpen || e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') return;
   const k = e.key.toLowerCase();
   if (k === ' ') { e.preventDefault(); doAction(); }
-  else if (k === '1' || k === 'tab') { e.preventDefault(); wheel.open('tools'); }
-  else if (k === '2' || k === 'i') invGrid.open();
+  else if (/^[1-8]$/.test(k)) { e.preventDefault(); hotbar.pick(+k - 1); }   // barre d'outils
+  else if (k === 'tab') { e.preventDefault(); wheel.open('tools'); }
+  else if (k === 'i') invGrid.open();
   else if (k === 'm') mapView.isOpen ? mapView.close() : mapView.open();
   else if (k === 'escape') { wheel.close(); mapView.close(); document.querySelectorAll('.overlay.on').forEach(o => { if (o.id !== 'ovLook') o.classList.remove('on'); }); }
 });
@@ -229,7 +232,7 @@ async function begin() {
     g.trainT = performance.now();
     setTimeout(() => g.bus.emit('say', { name: g.S.name, color: '#ffdf8a', lines: INTRO_LINES, onEnd: () => { g.S.intro.arrived = true; } }), 2600);
   }
-  started = true; g.inGame = true; custom.close(); hud.show(); renderer.initWeather(); ensureOrders(g);
+  started = true; g.inGame = true; custom.close(); hud.show(); hotbar.show(); renderer.initWeather(); ensureOrders(g);
   if (net.sb) { playerMarket = createPlayerMarket(net.sb, net.uid, g); await upsertProfile(net.sb, net.uid, g.S); if (game && game.mode === 'multi') { mp = createMultiplayer({ sb: net.sb, uid: net.uid, g, world: game.id }); mp.join(); } }
   doSave(false);
 }

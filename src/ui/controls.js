@@ -29,7 +29,7 @@ export function createControls(g, input, { onAct, onTools, onItems }) {
   const stop = () => { clearInterval(rep); rep = null; bAct.classList.remove('presse'); };
   bAct.addEventListener('pointerdown', e => { e.preventDefault(); bAct.setPointerCapture(e.pointerId); bAct.classList.add('presse'); onAct(); clearInterval(rep); rep = setInterval(onAct, 340); });
   bAct.addEventListener('pointerup', stop); bAct.addEventListener('pointercancel', stop); bAct.addEventListener('lostpointercapture', stop);
-  $('#bTools').onclick = onTools; $('#bItems').onclick = onItems;
+  $('#bItems').onclick = onItems;   // les outils sont dans la barre du bas (hotbar.js)
 
   return {
     setAction(html) { const el = $('#bActIcon'); if (el.dataset.h !== html) { el.dataset.h = html; el.innerHTML = html; } },

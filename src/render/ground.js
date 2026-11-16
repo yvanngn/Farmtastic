@@ -40,14 +40,32 @@ export function buildGround(season, built = {}, fixed = { house: true, grange: t
       R(px, py, T, T, '#c9a66a');
       for (let k = 0; k < 6; k++) R(px + (r() * 15 | 0), py + (r() * 15 | 0), 1, 1, r() < .5 ? '#b08e56' : '#dcbf86');
       for (let k = 0; k < 2; k++) { const sx = px + 1 + (r() * 9 | 0), sy = py + 1 + (r() * 10 | 0); R(sx, sy, 5, 3, '#dcc394'); R(sx, sy + 3, 5, 1, '#a88650'); R(sx + 1, sy, 2, 1, '#eedcb2'); }
+      // bord du chemin : liseré plus sombre et brins d'herbe qui débordent (transition douce, plus de bord droit)
+      const gr = (a, c) => ground(a, c) === 'grass' || ground(a, c) === 'soil', bl = shade(B, .86), bt = shade(B, 1.1);
+      const fringe = (horiz, x0, y0, dir) => { for (let k = 0; k < T; k++) { const len = r() < .55 ? 1 + (r() * 3 | 0) : 0; if (!len) continue;
+        if (horiz) { R(x0 + k, dir > 0 ? y0 : y0 - len + 1, 1, len, r() < .3 ? bt : bl); } else { R(dir > 0 ? x0 : x0 - len + 1, y0 + k, len, 1, r() < .3 ? bt : bl); } } };
+      if (gr(x, y - 1)) { R(px, py, T, 1, '#a88650'); fringe(true, px, py, 1); }
+      if (gr(x, y + 1)) { R(px, py + T - 1, T, 1, '#b8975e'); fringe(true, px, py + T - 1, -1); }
+      if (gr(x - 1, y)) { R(px, py, 1, T, '#a88650'); fringe(false, px, py, 1); }
+      if (gr(x + 1, y)) { R(px + T - 1, py, 1, T, '#a88650'); fringe(false, px + T - 1, py, -1); }
       continue;
     }
-    // herbe : taches de tons + touffes + fleurs
-    for (let by = 0; by < T; by += 4) for (let bx = 0; bx < T; bx += 4) R(px + bx, py + by, 4, 4, tones[r() * tones.length | 0]);
-    for (let k = 0; k < 2; k++) {
-      const sx = px + 1 + (r() * 12 | 0), sy = py + 2 + (r() * 10 | 0), d = shade(B, .78), l = shade(B, 1.18);
-      R(sx, sy + 1, 1, 2, d); R(sx + 2, sy + 1, 1, 2, d); R(sx + 1, sy, 1, 3, d); R(sx + 1, sy, 1, 1, l);
+    // herbe (16/11, essai « façon Stardew ») : grandes nappes de tons qui varient doucement d'une case à l'autre,
+    // puis une multitude de petits brins (ombre en bas, pointe claire), quelques touffes plus denses et des trèfles.
+    const wave = Math.sin(x * .55) + Math.cos(y * .47) + Math.sin((x + y) * .23) * 1.4, base = shade(B, 1 + wave * .028);
+    R(px, py, T, T, base);
+    if (r() < .35) { const cx = px + 3 + (r() * 10 | 0), cy = py + 3 + (r() * 10 | 0), dk = shade(base, .93); R(cx - 3, cy - 1, 7, 3, dk); R(cx - 2, cy - 2, 5, 5, dk); }   // nappe sombre
+    for (let k = 0; k < 13; k++) {
+      const bx = px + (r() * 16 | 0), by = py + 1 + (r() * 14 | 0), h = 1 + (r() * 3 | 0), tone = r();
+      R(bx, by, 1, h, shade(base, tone < .5 ? .82 : tone < .8 ? .9 : 1.12));
+      if (tone >= .8) R(bx, by, 1, 1, shade(base, 1.22));   // pointe éclairée
     }
+    if (r() < .22) {   // touffe : plusieurs brins serrés
+      const sx = px + 2 + (r() * 10 | 0), sy = py + 4 + (r() * 8 | 0), d = shade(base, .74), l = shade(base, 1.2);
+      R(sx, sy + 1, 1, 3, d); R(sx + 2, sy, 1, 4, d); R(sx + 4, sy + 1, 1, 3, d); R(sx + 1, sy + 2, 1, 2, shade(base, .85)); R(sx + 3, sy + 2, 1, 2, shade(base, .85));
+      R(sx + 2, sy, 1, 1, l); R(sx, sy + 1, 1, 1, l); R(sx - 1, sy + 4, 7, 1, 'rgba(20,40,10,.18)');
+    }
+    if (season < 3 && r() < .05) { const cx = px + 4 + (r() * 8 | 0), cy = py + 4 + (r() * 8 | 0), cl = shade(base, 1.15), cd = shade(base, .8); R(cx, cy, 2, 2, cl); R(cx + 2, cy + 1, 2, 2, cl); R(cx + 1, cy + 2, 2, 2, cl); R(cx + 1, cy + 4, 1, 2, cd); }   // trèfle
     if (season < 2 && r() < .05) {
       const col = ['#ffffff', '#f5e050', '#f07ab0', '#9ab8ff'][r() * 4 | 0], fx = px + 4 + (r() * 8 | 0), fy = py + 4 + (r() * 8 | 0);
       R(fx - 1, fy, 3, 1, col); R(fx, fy - 1, 1, 3, col); R(fx, fy, 1, 1, '#f2c230');

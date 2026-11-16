@@ -124,9 +124,8 @@ label { font-size: .85em; color: var(--doux) }
 #bAct { right: 0; bottom: 0; width: var(--act); height: var(--act); font-size: calc(var(--act) * .42);
   border: 2px solid var(--or); background: radial-gradient(circle at 40% 30%, rgba(255,223,138,.35), rgba(30,24,52,.8)) !important }
 .rond { width: calc(var(--act) * .62); height: calc(var(--act) * .62); font-size: calc(var(--act) * .28) }
-#bTools { right: calc(var(--act) * 1.08); bottom: calc(var(--act) * .12) }
 #bItems { right: calc(var(--act) * .2); bottom: calc(var(--act) * 1.06) }
-#bRecipes { right: calc(var(--act) * .95); bottom: calc(var(--act) * .88) }   /* entre les outils et le sac */
+#bRecipes { right: calc(var(--act) * 1.08); bottom: calc(var(--act) * .12) }   /* à gauche du bouton d'action (les outils sont dans la barre du bas) */
 #droite button.presse, #bAct:active { transform: scale(.92); box-shadow: 0 0 18px rgba(255,223,138,.6) }
 @media (hover: hover) and (pointer: fine) { #stick { display: none } }
 
@@ -385,3 +384,17 @@ body.admin #bSet::after { content: '🛠️'; position: absolute; font-size: 11p
 .quetes-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; align-items: start }
 .quetes-cols h3 { margin-top: 0 }
 @media (max-width: 600px) { .quetes-cols { grid-template-columns: 1fr } }
+
+/* Barre d'outils toujours visible, en bas au centre (entre le joystick et les boutons) */
+#hotbar { pointer-events: auto; position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(var(--sa-b) + var(--pad) * 2);
+  display: flex; gap: 4px; padding: 5px; border-radius: 14px; background: var(--verre); border: 1px solid var(--bord);
+  backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); box-shadow: 0 6px 16px rgba(0,0,0,.45);
+  max-width: calc(100vw - var(--stick) - var(--act) * 2.2 - var(--pad) * 8) }
+#hotbar:empty { display: none }
+#hotbar button { position: relative; width: clamp(36px, 7vmin, 50px); aspect-ratio: 1; padding: 0; border-radius: 9px; flex: 0 1 auto; min-width: 30px;
+  display: grid; place-items: center; font-size: clamp(16px, 3.6vmin, 24px); background: rgba(20,16,36,.55); border: 2px solid transparent; touch-action: none }
+#hotbar button img.pix { width: 78%; height: 78%; image-rendering: pixelated; pointer-events: none }
+#hotbar button small { position: absolute; left: 3px; top: 1px; font-size: 9px; opacity: .7; pointer-events: none }
+#hotbar button.on { border-color: #ffdf8a; background: rgba(255,223,138,.22); box-shadow: 0 0 10px rgba(255,223,138,.5) }
+/* Téléphone en portrait : pas de place entre les commandes → la barre passe juste au-dessus */
+@media (max-aspect-ratio: 1/1) { #hotbar { bottom: calc(var(--sa-b) + var(--pad) * 3 + var(--act) * 1.95); max-width: calc(100vw - var(--pad) * 4) } }

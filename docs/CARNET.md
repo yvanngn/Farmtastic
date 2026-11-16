@@ -413,3 +413,9 @@ Remarque : si le joueur s'effondre pendant son jour de repos ou la nuit, il se r
 - [ ] La **quête du magasin d'Ed** : quel magasin, où en ville, quelles étapes.
 - [ ] Goûts (cadeaux aimés / détestés) d'Ed, Suzie et Jade.
 - [ ] Routines quotidiennes d'Ed, Suzie et Jade (sur le modèle de Hailey).
+
+## Séance 16/11/2026 (22h) — v0.1.5
+- ✅ Zoom : 4e niveau **« Très loin »** (⚙ Réglages → Zoom).
+- ✅ **Barre d'outils toujours visible en bas** (comme Stardew) : tous les outils possédés, un appui = en main, touches 1 à 8. En portrait, elle passe juste au-dessus des commandes. Le bouton rond 🛠️ (roue des outils) est retiré ; la roue reste sur la touche Tab.
+- ✅ Essai graphique « façon Stardew » sur le **sol de la ferme** : nappes de tons qui varient doucement, brins d'herbe fins avec pointes éclairées, touffes, trèfles ; **bords des chemins adoucis** (liseré + herbe qui déborde).
+- ⏳ Pistes pour aller plus loin vers Stardew (à valider) : personnages plus détaillés (plus d'images d'animation, contours), herbe qui ondule au vent, mêmes textures en forêt / quartier / centre-ville, ombres portées selon l'heure, transitions herbe-terre partout, objets avec contour sombre.

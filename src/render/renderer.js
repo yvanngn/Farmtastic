@@ -156,7 +156,7 @@ let swing = null;
     cv.width = Math.round(innerWidth * dpr); cv.height = Math.round(innerHeight * dpr);
     cv.style.width = innerWidth + 'px'; cv.style.height = innerHeight + 'px';
     // ~12 tuiles sur le plus petit côté (réglable : Proche 9 / Normal 12 / Loin 15)
-    scale = Math.max(2, Math.min(8, Math.round(Math.min(cv.width, cv.height) / (T * getZoom()))));
+    scale = Math.max(1, Math.min(8, Math.round(Math.min(cv.width, cv.height) / (T * getZoom()))));   // 1 possible : « Très loin » sur petit écran
     ctx.imageSmoothingEnabled = false;
     vignette = document.createElement('canvas'); vignette.width = cv.width; vignette.height = cv.height;
     const v = vignette.getContext('2d'), gr = v.createRadialGradient(cv.width / 2, cv.height / 2, Math.min(cv.width, cv.height) * .35, cv.width / 2, cv.height / 2, Math.hypot(cv.width, cv.height) / 2);
