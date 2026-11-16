@@ -94,8 +94,8 @@ test('vieille sauvegarde : le poulailler (et la bergerie si moutons) restent con
 
 test('village : charpentier et marchand d’animaux', async () => {
   const { UI_TILES, tileAt } = await import('../src/world/scenes.js');
-  assert.equal(UI_TILES[tileAt('town', 5, 12)], 'carpenter');
-  assert.equal(UI_TILES[tileAt('town', 18, 12)], 'animals');
+  assert.equal(UI_TILES[tileAt('town', 4, 14)], 'carpenter');
+  assert.equal(UI_TILES[tileAt('town', 28, 14)], 'animals');
 });
 
 // ---- Lot 5 : commerces du village ----
@@ -105,8 +105,8 @@ import { BUILDINGS } from '../src/data/buildings.js';
 
 test('commerces : boulangerie, boucherie, poissonnerie, chacun avec ses produits à vendre', async () => {
   const { UI_TILES, tileAt } = await import('../src/world/scenes.js');
-  for (const [id, x] of [['bakery', 5], ['butcher', 11], ['fishmonger', 18]]) {
-    assert.equal(UI_TILES[tileAt('town', x, 17)], id);
+  for (const [id, x] of [['bakery', 4], ['butcher', 14], ['fishmonger', 27]]) {
+    assert.equal(UI_TILES[tileAt('town', x, 21)], id);
     for (const k of SHOPS[id].sells) assert.ok(ITEMS[k] && ITEMS[k].buy > 0, k);
   }
   const { g, S } = makeGame({ state: { money: 200, inv: {} } });

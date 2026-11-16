@@ -107,7 +107,8 @@ export function createRenderer(cv, g) {
   function farmGround() { const b = g.S.built || {}, fx = { house: isRepaired(g.S, 'house'), grange: isRepaired(g.S, 'grange') }, key = g.S.season + JSON.stringify(b) + fx.house + fx.grange; if (farmSeason !== key) { farm = buildGround(g.S.season, b, fx); farmSeason = key; } return farm; }
   let vignette = null, light = null, lastStep = 0;
   const cam = { x: 0, y: 0 }, screenFx = [], worldFx = [];
-  let trans = 0; const TRANS_MS = 650;
+  const LQ = 4;
+let trans = 0; const TRANS_MS = 650;
 let swing = null;
   const SEASON_LEAF = ['#4a8f36', '#3b7f31', '#e08a2a', '#eef5f7'];
   // Animation de l'outil (coup) et effets d'impact : copeaux, éclats, chute d'arbre.
@@ -135,7 +136,7 @@ let swing = null;
     const v = vignette.getContext('2d'), gr = v.createRadialGradient(cv.width / 2, cv.height / 2, Math.min(cv.width, cv.height) * .35, cv.width / 2, cv.height / 2, Math.hypot(cv.width, cv.height) / 2);
     gr.addColorStop(0, 'rgba(0,0,0,0)'); gr.addColorStop(1, 'rgba(10,6,20,.38)');
     v.fillStyle = gr; v.fillRect(0, 0, cv.width, cv.height);
-    light = document.createElement('canvas'); light.width = cv.width; light.height = cv.height;
+    light = document.createElement('canvas'); light.width = Math.ceil(cv.width / LQ); light.height = Math.ceil(cv.height / LQ);   // carte de lumière en basse résolution (dégradés doux : invisible à l'œil, 16× moins de pixels)
     initWeather();
   }
 
@@ -392,16 +393,20 @@ let swing = null;
       const holes = LIGHTS_HERE.map(l => [...toScreen(l.x, l.y), l.r * scale]);
       holes.push([...toScreen(S.x * T, S.y * T - 8), 44 * scale]); // le joueur reste lisible
       for (const f of worldFx) if (f.k === 'fly') holes.push([...toScreen(f.x, f.y), 6 * scale]);
-      for (const [x, y, rad] of holes) {
+      for (let [x, y, rad] of holes) {
+        x /= LQ; y /= LQ; rad /= LQ;
+        if (x + rad < 0 || y + rad < 0 || x - rad > light.width || y - rad > light.height) continue;   // hors écran
         const gr = lc.createRadialGradient(x, y, 0, x, y, rad);
         gr.addColorStop(0, 'rgba(0,0,0,1)'); gr.addColorStop(1, 'rgba(0,0,0,0)');
         lc.fillStyle = gr; lc.fillRect(x - rad, y - rad, rad * 2, rad * 2);
       }
-      ctx.drawImage(light, 0, 0);
+      ctx.imageSmoothingEnabled = true; ctx.drawImage(light, 0, 0, cv.width, cv.height); ctx.imageSmoothingEnabled = false;
       // halo additif (bloom) des fenêtres et lucioles
       ctx.globalCompositeOperation = 'lighter';
       for (const l of LIGHTS_HERE) {
-        const [x, y] = toScreen(l.x, l.y), rad = l.r * .6 * scale, gr = ctx.createRadialGradient(x, y, 0, x, y, rad);
+        const [x, y] = toScreen(l.x, l.y), rad = l.r * .6 * scale;
+        if (x + rad < 0 || y + rad < 0 || x - rad > cv.width || y - rad > cv.height) continue;
+        const gr = ctx.createRadialGradient(x, y, 0, x, y, rad);
         gr.addColorStop(0, `rgba(255,190,90,${.35 * dark})`); gr.addColorStop(1, 'rgba(255,190,90,0)');
         ctx.fillStyle = gr; ctx.fillRect(x - rad, y - rad, rad * 2, rad * 2);
       }

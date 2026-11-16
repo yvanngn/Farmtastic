@@ -43,7 +43,9 @@ export function createMapView(g, renderer, audio) {
     for (let k = 0; k < 260; k++) { const x = X(rnd()), y = Y(rnd()); F(rnd() < .5 ? '#8ab85a' : '#acd07a', x, y, 1.2 * u, .6 * u); }
     // chemins de terre (bordure foncée puis terre claire)
     const road = pts => { for (const [w, c] of [[3.2, '#8a6a3a'], [2.2, '#d9b878']]) { ctx.strokeStyle = c; ctx.lineWidth = w * u; ctx.lineCap = ctx.lineJoin = 'round'; ctx.beginPath(); pts.forEach(([a, b], i) => i ? ctx.lineTo(X(a), Y(b)) : ctx.moveTo(X(a), Y(b))); ctx.stroke(); } };
-    road([[.27, .02], [.27, .5], [.27, .62]]); road([[.02, .25], [.55, .25]]); road([[.75, .25], [.79, .25]]); road([[.92, .25], [.95, .25]]);
+    const multi = S.game && S.game.mode === 'multi', ml = FARM_LOTS.find(l => l.id === (S.farmLot || 0));
+    if (multi) { road([[.27, .02], [.27, .5], [.27, .62]]); road([[.02, .25], [.55, .25]]); }
+    else { const fx = .155 + ml.c * .22, fy = .135 + ml.r * .23; road([[.02, .25], [fx, .25], [fx, fy]]); road([[fx, .25], [.55, .25]]); road([[fx, .25], [fx, .5], [.27, .5], [.27, .62]]); } road([[.75, .25], [.79, .25]]); road([[.92, .25], [.95, .25]]);
     // petits dessins
     const tree = (x, y, s, c = '#3f7a32') => { F('#6a4426', x - .25 * s, y, .5 * s, .8 * s); circ(c, x, y - .2 * s, .9 * s); circ('rgba(255,255,255,.15)', x - .3 * s, y - .5 * s, .35 * s); };
     const pine = (x, y, s) => { F('#5a3a22', x - .2 * s, y, .4 * s, .7 * s); ctx.fillStyle = '#2c5f2a'; for (let i = 0; i < 3; i++) { ctx.beginPath(); ctx.moveTo(x, y - (2.2 - i * .6) * s); ctx.lineTo(x - (.7 + i * .3) * s, y - (.9 - i * .5) * s); ctx.lineTo(x + (.7 + i * .3) * s, y - (.9 - i * .5) * s); ctx.fill(); } };
@@ -61,6 +63,10 @@ export function createMapView(g, renderer, audio) {
     for (const l of FARM_LOTS) {
       const x0 = X(.06 + l.c * .22), y0 = Y(.04 + l.r * .23), w = X(.25) - X(.06), h = Y(.23) - Y(.04);
       const mine = l.id === (S.farmLot || 0), who = mine ? S.name : (others.find(o => o.farmLot === l.id) || {}).name;
+      if (!mine && !(S.game && S.game.mode === 'multi')) { // en solo, les autres emplacements ne sont que des bois et des prés
+        for (let k = 0; k < 9; k++) tree(x0 + w * (.12 + (k * .37) % .8), y0 + h * (.15 + (k * .53) % .75), 1.5 * u, k % 3 ? '#3f7a32' : '#4f8a3a');
+        continue;
+      }
       ctx.fillStyle = mine ? '#b8d888' : '#a8cc78'; ctx.beginPath(); ctx.roundRect(x0, y0, w, h, 1.5 * u); ctx.fill();
       ctx.strokeStyle = '#8a6a3a'; ctx.setLineDash([1.2 * u, .8 * u]); ctx.lineWidth = .5 * u; ctx.stroke(); ctx.setLineDash([]);
       for (let r = 0; r < 4; r++) F('#8a5a32', x0 + w * .52, y0 + h * (.45 + r * .12), w * .4, h * .06);

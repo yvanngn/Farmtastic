@@ -1,7 +1,7 @@
 // Centre du village pré-rendu : place pavée, halle du marché, panneau d'affichage,
 // fontaine, lampadaires, bancs, jardinières et arbres. Reconstruit à chaque saison.
 import { CFG } from '../config.js';
-import { LAYOUTS, QUARTIER } from '../world/scenes.js';
+import { LAYOUTS, QUARTIER, TOWN_B, TOWN_LAMPS } from '../world/scenes.js';
 import { rng } from '../world/map.js';
 import { shade, disc } from './pixel.js';
 import { GRASS, drawLunaHouse, drawFranckHouse, drawMystHouse } from './ground.js';
@@ -10,7 +10,7 @@ import { signBoard } from './pixfont.js';
 const T = CFG.T;
 
 // Lampadaires allumés la nuit (px du village).
-export const TOWN_LIGHTS = [[3, 7], [20, 7], [3, 12], [20, 12]].map(([x, y]) => ({ x: x * T + 8, y: y * T - 6, r: 40 }));
+export const TOWN_LIGHTS = TOWN_LAMPS.map(([x, y]) => ({ x: x * T + 8, y: y * T - 6, r: 40 }));
 
 export function buildTown(season) {
   const L = LAYOUTS.town, H = L.length, W = L[0].length;
@@ -34,10 +34,9 @@ export function buildTown(season) {
     }
   }
   // bordure de la place
-  R(2 * T, T - 1, 20 * T, 2, '#8f887f'); R(2 * T, 21 * T - 1, 20 * T, 2, '#8f887f');
 
   // halle du marché (x4-10, y2-4) : socle de pierre, poteaux, auvent rayé, étal garni
-  const mx = 4 * T, my = 2 * T, mw = 7 * T;
+  const mx = TOWN_B.M.x * T, my = TOWN_B.M.y * T, mw = 7 * T;
   R(mx - 2, my - 22, mw + 4, 3, '#6b2a1e');
   for (let i = 0; i < 7; i++) R(mx - 2 + i * 2, my - 22 + 3 + i * 2, mw + 4 - i * 4, 2, i % 2 ? '#8a3a2a' : '#a8453a');
   R(mx, my - 6, mw, 8, '#3f2615');
@@ -53,7 +52,7 @@ export function buildTown(season) {
   signBoard(R, mx + mw / 2, my - 16, 'MARCHÉ', 44);
 
   // panneau d'affichage (x14-16, y3) : toit, cadre, affiches épinglées
-  const qx = 14 * T, qy = 3 * T;
+  const qx = TOWN_B.Q.x * T, qy = TOWN_B.Q.y * T;
   R(qx + 4, qy + 2, 3, 14, '#5b3a22'); R(qx + 3 * T - 7, qy + 2, 3, 14, '#5b3a22');
   R(qx + 1, qy - 22, 3 * T - 2, 26, '#5b3a22'); R(qx + 3, qy - 20, 3 * T - 6, 22, '#c9955a');
   for (let k = 0; k < 3 * T - 6; k += 3) R(qx + 3 + k, qy - 20, 1, 22, '#b48450');
@@ -64,7 +63,7 @@ export function buildTown(season) {
   }
 
   // magasin d'amélioration (x17-20, y2-4) : échoppe en bois, toit d'ardoise, enseigne, sacs et caisses
-  const ux = 17 * T, uy = 2 * T, uw = 4 * T;
+  const ux = TOWN_B.U.x * T, uy = TOWN_B.U.y * T, uw = 4 * T;
   R(ux + 2, uy - 4, uw - 4, 3 * T + 2, '#8a5a32');
   for (let k = 0; k < 3 * T; k += 4) R(ux + 2, uy - 4 + k, uw - 4, 1, '#74482a');
   R(ux + uw - 12, uy - 4, 10, 3 * T + 2, '#6e4426');
@@ -93,37 +92,37 @@ export function buildTown(season) {
     deco(ux, uy, uw);
   }
   // charpentier (x4-7, y11-13) : planches empilées, scie, rondins
-  shop(4, 11, 4, '#7a3a22', '#94482a', 'CHARPENTIER', (ux, uy, uw) => {
+  shop(TOWN_B.J.x, TOWN_B.J.y, 4, '#7a3a22', '#94482a', 'CHARPENTIER', (ux, uy, uw) => {
     for (let k = 0; k < 3; k++) { R(ux - 2, uy + 36 - k * 3, 18, 3, ['#c99560', '#b07a48', '#d9a870'][k]); R(ux - 2, uy + 36 - k * 3, 18, 1, '#e8c08a'); }
     for (const [x, y] of [[uw - 6, 38], [uw - 1, 38], [uw - 4, 34]]) { disc(g, ux + x, uy + y, 3, '#7a4f2e'); disc(g, ux + x, uy + y, 2, '#c99560'); R(ux + x, uy + y, 1, 1, '#7a4f2e'); }
     R(ux + 20, uy + 22, 10, 3, '#c2c7cc'); for (let k = 0; k < 10; k += 2) R(ux + 20 + k, uy + 25, 1, 1, '#8a8f96'); R(ux + 30, uy + 21, 4, 5, '#7a4f2e');
   });
   // marchand d'animaux (x17-19, y11-13) : botte de foin, abreuvoir, fer à cheval
-  shop(17, 11, 3, '#2f5a3a', '#3b7048', 'ANIMAUX', (ux, uy, uw) => {
+  shop(TOWN_B.A.x, TOWN_B.A.y, 3, '#2f5a3a', '#3b7048', 'ANIMAUX', (ux, uy, uw) => {
     R(ux - 3, uy + 32, 14, 10, '#e6c34a'); R(ux - 3, uy + 32, 14, 2, '#f5dd7a'); for (let k = 0; k < 14; k += 3) R(ux - 3 + k, uy + 35, 1, 6, '#c9a330');
     R(ux + uw - 12, uy + 36, 14, 6, '#7a4f2e'); R(ux + uw - 11, uy + 37, 12, 3, '#5a9ad0');
     R(ux + uw / 2 - 3, uy + 10, 6, 1, '#9aa0a8'); R(ux + uw / 2 - 3, uy + 10, 1, 4, '#9aa0a8'); R(ux + uw / 2 + 2, uy + 10, 1, 4, '#9aa0a8');
   });
 
   // boulangerie (x4-7, y16-18) : pains en vitrine, auvent crème
-  shop(4, 16, 4, '#c98a4a', '#e0a560', 'BOULANGERIE', (ux, uy, uw) => {
+  shop(TOWN_B.O.x, TOWN_B.O.y, 4, '#c98a4a', '#e0a560', 'BOULANGERIE', (ux, uy, uw) => {
     R(ux + 4, uy + 22, 14, 6, '#8a5a32'); for (let k = 0; k < 3; k++) { disc(g, ux + 7 + k * 4, uy + 22, 2, '#d9a050'); R(ux + 6 + k * 4, uy + 21, 3, 1, '#f2c88a'); }
     R(ux + uw - 14, uy + 34, 10, 8, '#7a4f2e'); R(ux + uw - 13, uy + 32, 8, 3, '#e8c08a'); R(ux + uw - 12, uy + 31, 6, 1, '#f5dcae');
   });
   // boucherie (x10-13, y16-18) : auvent rayé rouge, jambons suspendus
-  shop(10, 16, 4, '#a83a32', '#f0e6d0', 'BOUCHERIE', (ux, uy, uw) => {
+  shop(TOWN_B.V.x, TOWN_B.V.y, 4, '#a83a32', '#f0e6d0', 'BOUCHERIE', (ux, uy, uw) => {
     for (const k of [6, 12]) { R(ux + k + 2, uy + 20, 1, 3, '#5b3a22'); disc(g, ux + k + 2, uy + 26, 3, '#c25a4a'); R(ux + k + 1, uy + 27, 3, 2, '#f0e6d0'); }
     R(ux + uw - 14, uy + 34, 12, 8, '#8a8f96'); R(ux + uw - 13, uy + 34, 10, 2, '#c2c7cc');
   });
   // poissonnerie (x17-20, y16-18) : auvent bleu, étal de glace et poissons
-  shop(17, 16, 4, '#2f5a8a', '#4a7cb0', 'POISSONNERIE', (ux, uy, uw) => {
+  shop(TOWN_B.Z.x, TOWN_B.Z.y, 4, '#2f5a8a', '#4a7cb0', 'POISSONNERIE', (ux, uy, uw) => {
     R(ux - 2, uy + 32, 20, 10, '#7a4f2e'); R(ux - 1, uy + 32, 18, 4, '#dff2fb');
     for (let k = 0; k < 3; k++) { R(ux + 1 + k * 6, uy + 33, 4, 2, ['#8aa8c0', '#e08a6a', '#a8b8c8'][k]); R(ux + 5 + k * 6, uy + 33, 1, 2, '#5a6a7a'); }
     R(ux + uw - 10, uy + 36, 8, 6, '#3a5a7a'); R(ux + uw - 9, uy + 37, 6, 2, '#6aa0c8');
   });
 
   // fontaine (x11-13, y8-10)
-  const fx = 11 * T + 24, fy = 8 * T + 24;
+  const fx = TOWN_B.F.x * T + 24, fy = TOWN_B.F.y * T + 24;
   disc(g, fx, fy + 2, 23, '#6f6a73'); disc(g, fx, fy, 22, '#9a958c'); disc(g, fx, fy, 18, '#3a7cc2'); disc(g, fx - 4, fy - 5, 6, '#6aa8e0');
   disc(g, fx, fy, 6, '#9a958c'); R(fx - 2, fy - 14, 4, 12, '#b4afb8'); disc(g, fx, fy - 15, 4, '#bfe3f5');
   for (const [a, b] of [[-9, 6], [8, -7], [10, 9], [-11, -4]]) R(fx + a, fy + b, 3, 1, '#e1f4ff');
@@ -136,15 +135,15 @@ export function buildTown(season) {
   }
   for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) if (L[y][x] === 'T') g.drawImage(treeSprite(season, (x + y) % 4), x * T - 9, y * T - 28);
   // panneau vers la forêt, près de la sortie est
-  R(22 * T + 7, 8 * T + 6, 2, 12, '#5b3a22'); signBoard(R, 21 * T + 4, 8 * T + 2, 'FORÊT →');
+  R(32 * T + 7, 8 * T + 6, 2, 12, '#5b3a22'); signBoard(R, 30 * T + 10, 8 * T + 2, 'FORÊT →');
   // villa de Manuel, le maire (x9-14, y22-25) : grande maison blanche, toit de tuiles, colonnes, haie taillée
-  { const x0 = 9 * T, x1 = 15 * T, top = 22 * T, bot = 26 * T;
+  { const x0 = TOWN_B.W.x * T, x1 = (TOWN_B.W.x + 6) * T, top = TOWN_B.W.y * T, bot = (TOWN_B.W.y + 4) * T;
     R(x0 - 6, top - 4, x1 - x0 + 12, bot - top + 8, '#3e7a34'); R(x0 - 4, top - 2, x1 - x0 + 8, bot - top + 4, '#5a9a46');   // haie
     R(x0, top + 22, x1 - x0, bot - top - 22, '#f4efe4'); for (let y = top + 26; y < bot; y += 6) R(x0, y, x1 - x0, 1, '#ddd6c8');
     for (let i = 0; i < 8; i++) { const ins = Math.max(0, 12 - i * 2); R(x0 - 4 + ins, top + i * 3, x1 - x0 + 8 - ins * 2, 3, i % 2 ? '#b8432f' : '#c8553e'); }
     R(x0 - 5, top + 22, x1 - x0 + 10, 3, '#6b2a1e');
     for (const wx of [x0 + 8, x0 + 26, x1 - 34, x1 - 16]) { R(wx, top + 32, 10, 14, '#c8c0b0'); R(wx + 1, top + 33, 8, 12, '#7fb6d9'); R(wx + 1, top + 33, 8, 3, '#a9d3ec'); R(wx - 2, top + 32, 2, 14, '#3e5a7a'); R(wx + 10, top + 32, 2, 14, '#3e5a7a'); }
-    const dx = 12 * T - 9; R(dx - 6, top + 26, 30, 4, '#e8e2d4');
+    const dx = (TOWN_B.W.x + 3) * T - 9; R(dx - 6, top + 26, 30, 4, '#e8e2d4');
     for (const cx of [dx - 5, dx + 20]) { R(cx, top + 30, 3, bot - top - 32, '#ffffff'); R(cx + 2, top + 30, 1, bot - top - 32, '#d8d2c4'); }
     R(dx, top + 40, 18, bot - top - 40, '#5a2e18'); R(dx + 1, top + 41, 8, bot - top - 42, '#7a4426'); R(dx + 9, top + 41, 8, bot - top - 42, '#7a4426'); R(dx + 7, top + 52, 2, 2, '#f2cf73'); R(dx + 10, top + 52, 2, 2, '#f2cf73');
     R(dx - 4, bot - 2, 26, 3, '#c2bdb4');

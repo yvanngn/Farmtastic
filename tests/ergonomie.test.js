@@ -71,7 +71,7 @@ test('interagir avec le décor : un petit texte du héros', () => {
   assert.equal(act2(g, 3, 2), 'look');
   assert.equal(said.at(-1), EXAMINE.farm.house);
   assert.equal(act2(g, 12, 24), 'look', 'la mare');
-  S.scene = 'town'; act2(g, 12, 9);
+  S.scene = 'town'; act2(g, 16, 7);
   assert.equal(said.at(-1), EXAMINE.tiles.F);
   S.scene = 'house'; act2(g, 4, 4);
   assert.equal(said.at(-1), EXAMINE.tiles.T);

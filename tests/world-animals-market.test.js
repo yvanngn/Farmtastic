@@ -105,8 +105,8 @@ test('village : portail, halle du marché et panneau d’affichage', () => {
   const opened = []; g.bus.on('open', w => opened.push(w));
   assert.equal(act(g, 47, 5), 'door', 'la route de l’est mène en ville');
   assert.equal(S.scene, 'town');
-  assert.equal(act(g, 6, 4), 'market');
-  assert.equal(act(g, 15, 3), 'board');
+  assert.equal(act(g, 5, 4), 'market');
+  assert.equal(act(g, 13, 4), 'board');
   assert.deepEqual(opened, ['market', 'board']);
   assert.ok(!isSolid(S, 12, 6), 'la place est praticable');
   assert.equal(act(g, 0, 10), 'door');
@@ -121,7 +121,7 @@ test('multijoueur : la scène voyage avec la position', () => {
 
 test('village : le magasin d’amélioration ouvre son interface', async () => {
   const { UI_TILES, tileAt } = await import('../src/world/scenes.js');
-  assert.equal(tileAt('town', 18, 3), 'U');
+  assert.equal(tileAt('town', 26, 3), 'U');
   assert.equal(UI_TILES.U, 'upgrades');
 });
 

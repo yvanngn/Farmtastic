@@ -106,13 +106,22 @@ const SHROOM_PIX = {
   trompette: [' B    B ', ' BBBBBB ', '  BDDB  ', '  BDDB  ', '   BB   ', '   BB   '],
   mousseron: ['  DCCD  ', ' CHCCCC ', ' DDDDDD ', '   Ww   ', '   Ww   ', '   Ww   ']
 };
+const SHROOM_CACHE = {};
 export function drawShroom(c, x, y, m, color) {
-  const pat = SHROOM_PIX[m.sp] || SHROOM_PIX.cepe, k = m.size === 'l' ? 2 : m.size === 'm' ? 1.5 : 1;
+  const pat = SHROOM_PIX[m.sp] || SHROOM_PIX.cepe, k = m.size === 'l' ? 2 : m.size === 'm' ? 1.5 : 1, h = pat.length;
+  const key = m.sp + m.size + color;
+  let spr = SHROOM_CACHE[key];
+  if (!spr) { // dessiné une seule fois, puis réutilisé
+    spr = document.createElement('canvas'); spr.width = Math.ceil(8 * k) + 1; spr.height = Math.ceil(h * k) + 1;
+    drawShroomPix(spr.getContext('2d'), pat, k, color); SHROOM_CACHE[key] = spr;
+  }
+  c.fillStyle = 'rgba(0,0,0,.28)'; c.fillRect(Math.round(x * T + 8 - 4 * k), Math.round(y * T + 13), Math.round(8 * k), 2);
+  c.drawImage(spr, Math.round(x * T + 8 - 4 * k), Math.round(y * T + 14 - h * k));
+}
+function drawShroomPix(c, pat, k, color) {
   const col = { C: color, D: shade(color, .72), H: shade(color, 1.45), G: '#e8dcc0', W: '#f4ead8', w: '#d2c6ae', Y: '#f2d23a', y: '#c8a82a', V: '#f4f0e6', B: '#2a2228' };
-  const h = pat.length, px = x * T + 8 - 4 * k, py = y * T + 14 - h * k;
-  c.fillStyle = 'rgba(0,0,0,.28)'; c.fillRect(Math.round(px), Math.round(y * T + 13), Math.round(8 * k), 2);
-  for (let r = 0; r < h; r++) for (let q = 0; q < 8; q++) {
+  for (let r = 0; r < pat.length; r++) for (let q = 0; q < 8; q++) {
     const ch = pat[r][q]; if (ch === ' ') continue;
-    c.fillStyle = col[ch]; c.fillRect(Math.round(px + q * k), Math.round(py + r * k), Math.ceil(k), Math.ceil(k));
+    c.fillStyle = col[ch]; c.fillRect(Math.round(q * k), Math.round(r * k), Math.ceil(k), Math.ceil(k));
   }
 }

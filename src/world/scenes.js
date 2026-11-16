@@ -99,32 +99,35 @@ export const LAYOUTS = {
 };
 // Centre du village (extérieur) : g herbe, . pavés, M halle du marché, O boulangerie, V boucherie, Z poissonnerie, Q panneau d'affichage,
 // U magasin d'amélioration, W villa du maire, J charpentier, A marchand d'animaux, F fontaine, T arbre, L lampadaire, b banc, f jardinière, D sortie vers la ferme.
+// Centre-ville réorganisé (16/11) : bâtiments espacés, pelouses entre eux, une grande rue (y10-11),
+// une rue des commerces au sud (y24), une avenue (x20-21) qui descend jusqu'à la villa du maire.
+export const TOWN_B = {
+  M: { x: 3, y: 2, w: 7, h: 3 }, Q: { x: 12, y: 4, w: 3, h: 1 }, U: { x: 25, y: 2, w: 4, h: 3 },
+  F: { x: 15, y: 6, w: 3, h: 3 }, J: { x: 3, y: 13, w: 4, h: 3 }, A: { x: 27, y: 13, w: 3, h: 3 },
+  O: { x: 3, y: 20, w: 4, h: 3 }, V: { x: 13, y: 20, w: 4, h: 3 }, Z: { x: 26, y: 20, w: 4, h: 3 },
+  W: { x: 14, y: 26, w: 6, h: 4 }
+};
+export const TOWN_LAMPS = [[10, 8], [23, 8], [10, 12], [23, 12], [10, 25], [24, 25]];
 function buildTown() {
-  const W = 24, H = 28;
-  const m = Array.from({ length: H }, (_, y) => Array.from({ length: W }, (_, x) => (x < 2 || x > 21 || y < 1 || y > 20 ? 'g' : '.')));
+  const W = 34, H = 32;
+  const m = Array.from({ length: H }, () => Array(W).fill('g'));
+  const pave = (x0, y0, x1, y1) => { for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) m[y][x] = '.'; };
   const put = (ch, x0, y0, w = 1, h = 1) => { for (let y = y0; y < y0 + h; y++) for (let x = x0; x < x0 + w; x++) m[y][x] = ch; };
-  put('D', 0, 10); put('.', 1, 10);   // entrée à l'ouest : la route qui vient de la ferme
-  for (const y of [1, 4, 7, 13, 16, 19]) { put('T', 0, y); put('T', 23, y); }
-  put('D', 23, 10); put('.', 22, 10);   // sortie est : vers la forêt
-  for (const x of [3, 9, 15, 21]) put('T', x, 21);
-  put('M', 4, 2, 7, 3);       // halle du marché
-  put('Q', 14, 3, 3, 1);      // panneau d'affichage, juste à côté
-  put('U', 17, 2, 4, 3);      // magasin d'amélioration
-  put('J', 4, 11, 4, 3);      // charpentier
-  put('A', 17, 11, 3, 3);     // marchand d'animaux
-  put('O', 4, 16, 4, 3);      // boulangerie
-  put('V', 10, 16, 4, 3);     // boucherie
-  put('Z', 17, 16, 4, 3);     // poissonnerie
-  put('F', 11, 8, 3, 3);      // fontaine
-  put('W', 9, 22, 6, 4);      // villa de Manuel, le maire
-  for (const [x, y] of [[3, 7], [20, 7], [3, 12], [20, 12]]) put('L', x, y);
-  for (const [x, y] of [[8, 9], [16, 9], [8, 12], [16, 12]]) put('b', x, y);
-  for (const [x, y] of [[2, 3], [21, 3], [2, 20], [21, 20]]) put('f', x, y);
-  // au sud de la place : deux allées qui contournent la villa du maire (W) et se rejoignent devant
-  for (let y = 21; y <= 26; y++) { m[y][8] = '.'; m[y][16] = '.'; }
-  for (let x = 8; x <= 16; x++) m[26][x] = '.';
-  for (const y of [22, 25]) { m[y][0] = 'T'; m[y][23] = 'T'; }
-  for (const x of [2, 5, 18, 21]) m[27][x] = 'T';
+  pave(0, 10, W - 1, 11);                 // grande rue (ouest → est)
+  pave(12, 5, 21, 9);                     // place de la fontaine
+  pave(2, 24, 31, 24);                    // rue des commerces
+  pave(20, 12, 21, 30); pave(14, 30, 21, 30);   // avenue jusqu'à la villa
+  for (const k of 'MUJAOVZ') { const b = TOWN_B[k]; pave(b.x - 1, b.y + b.h, b.x + b.w, b.y + b.h); }   // trottoir devant chaque porte
+  pave(6, 5, 6, 9); pave(26, 5, 26, 9);   // halle et magasin → grande rue
+  pave(7, 12, 7, 16); pave(30, 12, 30, 16); pave(4, 17, 4, 19); pave(28, 17, 28, 19); pave(15, 12, 15, 19);   // ruelles
+  for (const [k, b] of Object.entries(TOWN_B)) put(k, b.x, b.y, b.w, b.h);
+  put('D', 0, 10); put('D', W - 1, 10); put('g', 0, 11); put('g', W - 1, 11);   // entrée ouest (ferme), sortie est (forêt)
+  for (let y = 0; y < H; y++) for (const x of [0, W - 1]) if (y % 3 === 1 && m[y][x] === 'g') m[y][x] = 'T';
+  for (let x = 0; x < W; x++) { if (x % 3 === 0 && m[0][x] === 'g') m[0][x] = 'T'; if (x % 3 === 1 && m[H - 1][x] === 'g') m[H - 1][x] = 'T'; }
+  for (const [x, y] of [[9, 3], [23, 3], [10, 15], [24, 15], [9, 21], [23, 21], [8, 28], [26, 28], [12, 14], [18, 16]]) if (m[y][x] === 'g') m[y][x] = 'T';
+  for (const [x, y] of TOWN_LAMPS) put('L', x, y);
+  for (const [x, y] of [[13, 5], [19, 5], [12, 9], [20, 9]]) put('b', x, y);
+  for (const [x, y] of [[11, 2], [22, 2], [2, 26], [31, 26], [12, 22], [24, 22]]) if (m[y][x] === 'g') put('f', x, y);
   return m.map(r => r.join(''));
 }
 LAYOUTS.town = buildTown();
@@ -216,11 +219,11 @@ export const SCENES = {
     { x: 16, y: 35, to: 'quartier', spawn: { x: 22.5, y: 1.8 } }, { x: 15, y: 35, to: 'quartier', spawn: { x: 22.5, y: 1.8 } }, { x: 17, y: 35, to: 'quartier', spawn: { x: 22.5, y: 1.8 } },
     { x: 47, y: 5, to: 'town', spawn: { x: 1.6, y: 10.6 } }, { x: 47, y: 4, to: 'town', spawn: { x: 1.6, y: 10.6 } }, { x: 47, y: 6, to: 'town', spawn: { x: 1.6, y: 10.6 } }
   ] },
-  town: { W: 24, H: 28, outdoor: true, doors: [{ x: 0, y: 10, to: 'farm', spawn: { x: 45.6, y: 5.6 } }, { x: 23, y: 10, to: 'foret', spawn: { x: 1.6, y: 9.6 } }] },
+  town: { W: 34, H: 32, outdoor: true, doors: [{ x: 0, y: 10, to: 'farm', spawn: { x: 45.6, y: 5.6 } }, { x: 33, y: 10, to: 'foret', spawn: { x: 1.6, y: 9.6 } }] },
   house: { W: 12, H: 9, doors: [{ x: 5, y: 8, to: 'farm', spawn: { x: 5.5, y: 5.9 } }] },
   coop: { W: 10, H: 7, doors: [{ x: 4, y: 6, to: 'farm', spawn: { x: 24.5, y: 8.9 } }] },
   // Forêt : à l'est du centre-ville ; au-delà (est), la zone de la Caverne sombre (fermée pour l'instant).
-  foret: { W: 30, H: 18, outdoor: true, doors: [{ x: 0, y: 9, to: 'town', spawn: { x: 22.2, y: 10.6 } }, { x: 29, y: 9, to: 'wild', spawn: { x: 1.6, y: 4.5 } }] },
+  foret: { W: 30, H: 18, outdoor: true, doors: [{ x: 0, y: 9, to: 'town', spawn: { x: 32.2, y: 10.6 } }, { x: 29, y: 9, to: 'wild', spawn: { x: 1.6, y: 4.5 } }] },
   wild: { W: 50, H: 24, dark: true, cave: true, rooms: { w: 10, h: 8 }, doors: [{ x: 0, y: 4, to: 'foret', spawn: { x: 28.2, y: 9.6 } }] },
   grange: { W: 22, H: 11, dark: true, doors: [{ x: 5, y: 6, to: 'farm', spawn: { x: 12.5, y: 5.6 } }] },
   franck: { W: 9, H: 7, doors: [{ x: 4, y: 6, to: 'quartier', spawn: { x: 10.5, y: 15.8 } }] },
