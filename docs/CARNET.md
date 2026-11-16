@@ -419,3 +419,40 @@ Remarque : si le joueur s'effondre pendant son jour de repos ou la nuit, il se r
 - ✅ **Barre d'outils toujours visible en bas** (comme Stardew) : tous les outils possédés, un appui = en main, touches 1 à 8. En portrait, elle passe juste au-dessus des commandes. Le bouton rond 🛠️ (roue des outils) est retiré ; la roue reste sur la touche Tab.
 - ✅ Essai graphique « façon Stardew » sur le **sol de la ferme** : nappes de tons qui varient doucement, brins d'herbe fins avec pointes éclairées, touffes, trèfles ; **bords des chemins adoucis** (liseré + herbe qui déborde).
 - ⏳ Pistes pour aller plus loin vers Stardew (à valider) : personnages plus détaillés (plus d'images d'animation, contours), herbe qui ondule au vent, mêmes textures en forêt / quartier / centre-ville, ombres portées selon l'heure, transitions herbe-terre partout, objets avec contour sombre.
+
+## Chantier graphique « niveau Stardew » (liste à faire petit à petit)
+Fait : sol de la ferme (herbe en brins, nappes de tons, bords de chemins adoucis) — v0.1.5.
+Chaque ligne = un lot indépendant, à demander quand il y a des crédits.
+
+### Sols et décors
+- [ ] Même herbe que la ferme en **forêt, quartier, centre-ville, parc, montagne, plage**.
+- [ ] Transitions douces **herbe ↔ terre bêchée**, herbe ↔ pavés, herbe ↔ sable, herbe ↔ eau (berges arrondies).
+- [ ] **Pavés** du centre-ville et du quartier : pierres de tailles variées, joints, usure.
+- [ ] **Eau** : reflets animés, bord d'écume, nénuphars, petits poissons qui passent.
+- [ ] **Herbe et fleurs qui ondulent** au vent (et s'écartent quand on passe).
+- [ ] Variantes **saisonnières** plus marquées (feuilles mortes au sol en automne, neige qui s'accumule en hiver).
+
+### Personnages
+- [ ] Sprites plus grands et plus détaillés (visage, mains, plis des vêtements), **contour sombre**.
+- [ ] Marche en **8 images** pour tous (voir le skill animation-marche-pixel), plus des animations d'outils (hache, pioche, arrosage, pêche).
+- [ ] **Portraits** des PNJ dans les dialogues, avec quelques expressions (content, triste, surpris).
+- [ ] Silhouette **d'enfant** (Jade) et de personnes âgées.
+- [ ] Animaux plus détaillés et animés (picorer, dormir, brouter).
+
+### Objets et bâtiments
+- [ ] **Arbres** : plus de volume dans le feuillage, tronc texturé, chute de feuilles, arbre qui tombe quand on le coupe.
+- [ ] **Rochers, filons, buissons** : contour sombre, éclats quand on les frappe.
+- [ ] **Bâtiments** : façades plus détaillées (tuiles, briques, bois), ombres portées, fumée des cheminées.
+- [ ] **Intérieurs** : meubles dessinés un par un (pas en blocs), tapis, cadres, objets sur les étagères ; chaque maison avec son style.
+- [ ] **Icônes d'objets** dessinées en pixel art (remplacer les émojis du sac, des magasins, des objets au sol).
+
+### Lumière et ambiance
+- [ ] **Ombres portées** qui tournent avec l'heure.
+- [ ] Lumière du **matin dorée**, midi neutre, soir orangé, nuit bleutée (déjà en partie), fenêtres allumées le soir partout.
+- [ ] Particules d'ambiance : pollen au printemps, lucioles l'été (déjà), feuilles en automne, flocons qui tiennent en hiver.
+- [ ] Nuages dont l'ombre passe sur le sol.
+
+### Interface
+- [ ] Cadres de fenêtres et boutons en **pixel art** (bois / parchemin), police pixel partout.
+- [ ] Barre d'outils façon inventaire Stardew (cases dessinées, quantité, case choisie qui brille).
+- [ ] Horloge et date dessinées (cadran soleil / lune).
