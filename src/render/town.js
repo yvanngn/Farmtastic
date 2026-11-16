@@ -148,6 +148,7 @@ export function buildTown(season) {
     R(dx, top + 40, 18, bot - top - 40, '#5a2e18'); R(dx + 1, top + 41, 8, bot - top - 42, '#7a4426'); R(dx + 9, top + 41, 8, bot - top - 42, '#7a4426'); R(dx + 7, top + 52, 2, 2, '#f2cf73'); R(dx + 10, top + 52, 2, 2, '#f2cf73');
     R(dx - 4, bot - 2, 26, 3, '#c2bdb4');
     for (const fx of [x0 + 4, x1 - 8]) { R(fx, bot - 8, 6, 6, '#8a5a32'); R(fx + 1, bot - 11, 4, 4, '#f07ab0'); } }
+  drawHedges(R, LAYOUTS.town);   // haies de bordure
   return c;
 }
 
@@ -205,6 +206,7 @@ export function buildQuartier(season) {
   for (const x0 of []) { R(x0, 4 * T, 4 * T, 3 * T, 'rgba(120,84,48,.18)'); for (const px of [x0, x0 + 4 * T - 2]) R(px, 4 * T, 2, 8, '#8a5a32'); R(x0 + 2 * T - 1, 5 * T, 2, 12, '#5b3a22'); R(x0 + 2 * T - 9, 5 * T - 6, 18, 9, '#3f2615'); R(x0 + 2 * T - 8, 5 * T - 5, 16, 7, '#e8c26a'); }
   // bancs et lampadaires le long de la rue
   for (const [x, yb] of [[3 * T, 10], [33 * T, 10], [20 * T, 19], [28 * T, 19]]) { const by = yb * T; R(x, by + 6, 22, 3, '#8a5a32'); R(x, by + 6, 22, 1, '#c99560'); R(x + 1, by + 9, 2, 3, '#5b3a22'); R(x + 19, by + 9, 2, 3, '#5b3a22'); } for (const x of []) { R(x, 10 * T + 6, 22, 3, '#8a5a32'); R(x, 10 * T + 6, 22, 1, '#c99560'); R(x + 1, 10 * T + 9, 2, 3, '#5b3a22'); R(x + 19, 10 * T + 9, 2, 3, '#5b3a22'); }
+  drawHedges(R, L);
   for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) if (L[y][x] === 'T') g.drawImage(treeSprite(season, (x + y) % 4), x * T - 9, y * T - 28);
   return c;
 }
@@ -286,4 +288,13 @@ export function buildParc(season) {
   signBoard(R, 17 * T, 21 * T, 'FARM-LAND');
   for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) if (L[y][x] === 'T') g.drawImage(treeSprite(season, (x + y) % 4), x * T - 9, y * T - 28);
   return c;
+}
+
+// Haies de bordure (tuiles « h ») : on voit tout de suite qu'on ne passe pas.
+export function drawHedges(R, L) {
+  for (let y = 0; y < L.length; y++) for (let x = 0; x < L[0].length; x++) if (L[y][x] === 'h') {
+    const px = x * T, py = y * T;
+    R(px, py + 4, T, T - 4, '#2f6a2a'); R(px + 1, py + 2, 6, 6, '#3f8a34'); R(px + 8, py + 1, 7, 7, '#3f8a34'); R(px + 3, py + 6, 10, 6, '#4a9a3a');
+    R(px + 2, py + 3, 2, 1, '#68b84c'); R(px + 10, py + 2, 2, 1, '#68b84c'); R(px, py + T - 2, T, 2, '#24521f');
+  }
 }

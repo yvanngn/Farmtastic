@@ -311,3 +311,7 @@ Ordre convenu : 1 mort/clignotement ✅ · 2 tente ✅ · 3 recettes (feu), baie
 - ✅ **Plus de choix automatique de l'outil** : le bouton d'action utilise l'outil tenu ; il faut ouvrir la roue 🛠️ et choisir le bon (hache, pioche, marteau…). Messages, aide « Comment jouer », fenêtre de réparation et accueil de Myst mis à jour.
 - ✅ **Réparation lente** : 1 bois et 1 pierre par coup de marteau (avant 5), un coup toutes les 0,4 s en restant appuyé.
 - ✅ **Parc d'attractions « FARM-LAND »** (scène `parc`, **caché**) : au nord de la zone de la caverne, on y accède par une **trouée secrète** tout en haut à droite de la forêt (aucun panneau, absent du plan de la région). Attractions (💡 prix et effets) : **grande roue** (qui tourne), **carrousel** (chevaux qui montent et descendent), **montagnes russes**, **autos tamponneuses**, **maison hantée** → on paie, petit texte, +énergie, le temps passe ; **chamboule-tout** et **stand de tir** → jauge de visée, 3 essais de plus en plus rapides, lots selon les réussites (barbe à papa, peluche, peluche géante) ; **stand de barbe à papa** (+8 ⚡). ⏳ Quand et comment le joueur le découvre.
+
+## Séance 16/11/2026 — outils et bordures
+- Outils redessinés en grandes icônes détaillées (hache, pioche, marteau, pelle, épée, canne, faucille).
+- Bordures infranchissables avec décor : barrière en bois au nord de la ferme, falaise rocheuse à l'ouest, haies à l'est ; en ville, gros arbres et haies sur les bords (sauf les sorties).

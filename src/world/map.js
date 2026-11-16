@@ -30,7 +30,10 @@ export const isPath = (x, y) => (y === 5 && x >= 2 && x <= 47) || (y === 20 && x
   || (y >= 33 && x >= 15 && x <= 17) || (x >= 45 && y >= 4 && y <= 6);   // sorties élargies (vers le quartier, vers la ville)
 export const isForest = (x) => x >= 34;
 // Haies sur les bords de la ferme qui ne mènent nulle part (bas et droite), pour voir où sont les sorties.
-export const isHedge = (x, y) => (y === 35 && (x < 15 || x > 17)) || (x === 47 && y >= 8 && y < 35);
+export const isHedge = (x, y) => (y === 35 && (x < 15 || x > 17)) || (x === 47 && ((y >= 8 && y < 35) || y <= 3 || y === 7));
+// Bord nord de la ferme : une barrière en bois ; bord ouest (au-dessus de la gare) : une falaise rocheuse.
+export const isFarmFence = (x, y) => y === 0 && x > 0 && x < 47;
+export const isCliff = (x, y) => x === 0 && y <= 12;
 // Gare (à l'ouest) : petit bâtiment x1-3 y14-16, quai x1-2 y17-23, voie ferrée x0 dès y13.
 export const isStation = (x, y) => inRect(x, y, 1, 14, 3, 16);
 export const isPlatform = (x, y) => inRect(x, y, 1, 17, 2, 23);
@@ -49,7 +52,7 @@ import { BUSHES } from '../data/recipes.js';
 const BUSH_SET = new Set(BUSHES.map(([x, y]) => x + ',' + y));
 
 export function isSolid(S, x, y) {
-  if ((S.scene || 'farm') === 'farm' && isHedge(x, y)) return true;
+  if ((S.scene || 'farm') === 'farm' && (isHedge(x, y) || isFarmFence(x, y) || isCliff(x, y))) return true;
   const N = S.nature && S.nature[S.scene || 'farm'];
   if (N && N.rocks && N.rocks[x + ',' + y]) return true;   // cailloux et filons
   if (S.tent && (S.scene || 'farm') === 'farm' && S.tent.x === x && S.tent.y === y) return true;   // tente

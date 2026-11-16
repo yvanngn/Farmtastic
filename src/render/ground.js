@@ -78,6 +78,10 @@ export function buildGround(season, built = {}, fixed = { house: true, grange: t
     R(px, py + 4, T, T - 4, '#2f6a2a'); R(px + 1, py + 2, 6, 6, '#3f8a34'); R(px + 8, py + 1, 7, 7, '#3f8a34'); R(px + 3, py + 6, 10, 6, '#4a9a3a');
     R(px + 2, py + 3, 2, 1, '#68b84c'); R(px + 10, py + 2, 2, 1, '#68b84c'); R(px, py + T - 2, T, 2, '#24521f');
   }
+  // barrière en bois au nord (derrière les bâtiments) et falaise rocheuse à l'ouest, au-dessus de la gare
+  for (let x = 1; x < CFG.W - 1; x++) { const px = x * T; R(px, 6, T, 2, '#8a5a32'); R(px, 11, T, 2, '#8a5a32'); R(px, 6, T, 1, '#b07a48'); if (x % 2 === 0) { R(px + 6, 2, 3, 13, '#6a4426'); R(px + 6, 2, 3, 1, '#b07a48'); } }
+  for (let y = 0; y <= 12; y++) { const py = y * T; R(0, py, T, T, '#7a7480'); R(0, py, 3, T, '#5a5560'); R(T - 3, py, 3, T, '#a8a2ae'); R(4, py + 3 + (y % 3) * 3, 8, 4, '#8f8a96'); R(4, py + 3 + (y % 3) * 3, 8, 1, '#c4bfca'); R(2, py + T - 2, T - 2, 2, '#4a4650'); }
+  for (const y of [0, 1, 2, 3, 7]) { const py = y * T; R(47 * T, py, T, T - 4, '#2f6a2a'); R(47 * T + 2, py + 2, 12, 8, '#3f8a34'); }
   // bordures de pierre le long des sorties élargies
   for (const [x0, y0, x1, y1] of [[15, 33, 17, 35], [45, 4, 47, 6]]) { R(x0 * T - 2, y0 * T, 2, (y1 - y0 + 1) * T, '#8f887f'); R((x1 + 1) * T, y0 * T, 2, (y1 - y0 + 1) * T, '#8f887f'); if (y1 - y0 < 3) { R(x0 * T, y0 * T - 2, (x1 - x0 + 1) * T, 2, '#8f887f'); R(x0 * T, (y1 + 1) * T, (x1 - x0 + 1) * T, 2, '#8f887f'); } }
   // panneau au bout de la route de l'est : « Centre-ville → »

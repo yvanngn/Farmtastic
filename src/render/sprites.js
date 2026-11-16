@@ -115,31 +115,45 @@ export function drawChar(c, ox, oy, L, d, f, t = 0, noArm = false) {
 export function toolIcon(id) {
   if (!TOOL_PIX[id]) return null;
   return cache('icon' + id, () => {
-    const s = canvas(16, 16), c = s.getContext('2d');
-    c.translate(id === 'sickle' ? 6 : 7, 13); TOOL_PIX[id](c); // pas de rotation : pixels nets
+    const s = canvas(17, 22), c = s.getContext('2d');
+    c.translate(8, 14); TOOL_PIX[id](c); // l'outil entier, pixels nets
     return outline(s, '#1b1226').toDataURL();
   });
 }
 
 /* ---------------- Outils tenus en main (animation de coup) ---------------- */
 export function drawToolPix(c, id) { const f = TOOL_PIX[id]; if (f) f(c); }
-const TOOL_PIX = {
-  axe: c => { c.fillStyle = '#7a4f2e'; c.fillRect(-1, -1, 2, 9); c.fillStyle = '#9aa0a8'; c.fillRect(-1, -10, 5, 4); c.fillStyle = '#d6dbe0'; c.fillRect(3, -10, 1, 4); c.fillStyle = '#7a4f2e'; c.fillRect(-1, -7, 2, 6); },
-  hammer: c => { c.fillStyle = '#7a4f2e'; c.fillRect(-1, -6, 2, 14); c.fillStyle = '#6a6f78'; c.fillRect(-4, -10, 8, 4); c.fillStyle = '#c4cad2'; c.fillRect(-4, -10, 8, 1); },
-  rod: c => { c.fillStyle = '#8a5a32'; c.fillRect(-1, -12, 1, 20); c.fillStyle = '#c99560'; c.fillRect(0, -12, 1, 14); c.fillStyle = '#3a3640'; c.fillRect(-3, 4, 3, 3); c.fillStyle = '#e8e8f0'; c.fillRect(0, -12, 4, 1); },
-  pick: c => { c.fillStyle = '#7a4f2e'; c.fillRect(-1, -8, 2, 16); c.fillStyle = '#9aa0a8'; c.fillRect(-5, -10, 10, 2); c.fillRect(-6, -9, 2, 2); c.fillRect(4, -9, 2, 2); c.fillStyle = '#d6dbe0'; c.fillRect(-4, -10, 8, 1); },
-  sickle: c => { // lame en croissant au bout d'un manche court
-    c.fillStyle = '#7a4f2e'; c.fillRect(-1, -1, 2, 9); c.fillStyle = '#5b3a22'; c.fillRect(0, 2, 1, 6);
-    c.fillStyle = '#e8c26a'; c.fillRect(-1, -2, 2, 1);
-    const B = [[0, -3], [1, -4], [2, -5], [3, -6], [4, -7], [4, -8], [4, -9], [3, -10], [2, -11], [1, -11], [0, -11], [-1, -10], [-2, -10]];
-    c.fillStyle = '#7d828a'; for (const [x, y] of B) c.fillRect(x - 1, y, 1, 1);
-    c.fillStyle = '#d6dbe0'; for (const [x, y] of B) c.fillRect(x, y, 1, 1);
-    c.fillStyle = '#ffffff'; c.fillRect(4, -9, 1, 2); c.fillRect(1, -11, 2, 1);
-  },
-  shovel: c => { c.fillStyle = '#7a4f2e'; c.fillRect(-1, -6, 2, 14); c.fillStyle = '#5b3a22'; c.fillRect(-3, 6, 6, 2); c.fillStyle = '#9aa0a8'; c.fillRect(-3, -12, 6, 7); c.fillRect(-2, -13, 4, 1); c.fillStyle = '#d6dbe0'; c.fillRect(-2, -12, 2, 6); },
-  sword: c => { c.fillStyle = '#5a3a22'; c.fillRect(-1, 2, 2, 4); c.fillStyle = '#e8c26a'; c.fillRect(-3, 1, 6, 1); c.fillStyle = '#d6dbe0'; c.fillRect(-1, -11, 2, 12); c.fillStyle = '#ffffff'; c.fillRect(-1, -11, 1, 11); },
-  hand: null
+// Outils dessinés pixel par pixel (13 × 21, la main du héros en (0, 0), la tête de l'outil vers le haut).
+// b bois, B bois foncé, h bois clair, s acier, S acier foncé, w reflet, g laiton, r rouge, k noir, l fil, c liège, e cuir.
+const TP = { b: '#8a5a32', B: '#5b3a22', h: '#c08a54', s: '#a8afb8', S: '#5e646e', w: '#f2f6fa', g: '#e8c26a', G: '#a8842a', r: '#d8402e', k: '#2a2228', l: '#e8eef4', c: '#f4f0e6', e: '#6a3a22' };
+const TOOL_ART = {
+  axe: [           // hache : grande lame en éventail d'un côté, dos carré de l'autre
+    '......SSs....', '.....SsssS...', '...SSsswwsS..', '..Sssswwwwss.', 'SSSBsswwwwss.', 'SsBBssswwwsS.', 'SSSBssssssS..', '...BSSssSS...',
+    '...hb.SS.....', '...hb........', '...hb........', '...hb........', '...hB........', '...hb........', '...hb........', '...eB........', '...ee........', '...eB........', '...hb........', '...BB........', '.............'],
+  pick: [          // pioche : tête en arc, deux pointes
+    '..S.......S..', '.Ss.......sS.', '.Sss.....ssS.', '..Sssw.wssS..', '...SsswssS...', '....SsBsS....', '.....hBS.....',
+    '.....hb......', '.....hb......', '.....hb......', '.....hb......', '.....hB......', '.....hb......', '.....hb......', '.....eB......', '.....ee......', '.....eB......', '.....hb......', '.....hb......', '.....BB......', '.............'],
+  hammer: [        // marteau : tête carrée d'un côté, panne fendue (arrache-clou) de l'autre
+    '.............', '.............', 'SS.SSSSSSS...', 'Ss.SwwsssSS..', 'SssSwsssssS..', '.SsSssssssS..', '..SSSSSSSS...', '.....hb......',
+    '.....hb......', '.....hb......', '.....hB......', '.....hb......', '.....hb......', '.....eB......', '.....ee......', '.....eB......', '.....hb......', '.....hb......', '.....BB......', '.............', '.............'],
+  shovel: [        // pelle : fer arrondi, manche, poignée en D
+    '....SSSSS....', '...SswwssS...', '...SswsssS...', '...SswsssS...', '...SssssS....', '....SsssS....', '.....SgS.....', '.....hb......',
+    '.....hb......', '.....hb......', '.....hb......', '.....hB......', '.....hb......', '.....hb......', '.....hb......', '....BhbB.....', '...B...B.....', '...BhhhB.....', '....BBB......', '.............', '.............'],
+  sword: [         // épée : lame fine à arête claire, garde dorée, poignée de cuir, pommeau
+    '......w......', '.....wsS.....', '.....wsS.....', '.....wsS.....', '.....wsS.....', '.....wsS.....', '.....wsS.....', '.....wsS.....',
+    '.....wsS.....', '.....wsS.....', '.....wsS.....', '.....wsS.....', '..GggggggG...', '...GGgGG.....', '.....ee......', '.....eB......', '.....ee......', '.....gG......', '.............', '.............', '.............'],
+  rod: [           // canne à pêche : scion fin, anneaux, moulinet, bouchon rouge et blanc au bout du fil
+    '..........h..', '.........hl..', '........hb.l.', '........hb..l', '.......hb...l', '.......hb..rr', '......hb...cc', '......hb.....',
+    '.....hb......', '.....hb......', '....hbSSk....', '....hbSwSk...', '....hbSSk....', '....eB.......', '....ee.......', '....eB.......', '....ee.......', '....BB.......', '.............', '.............', '.............'],
+  sickle: [        // faucille : lame en croissant
+    '...SSSS......', '..Swwwss.....', '.Sw....sS....', 'Sw......sS...', 'Sw.......sS..', 'Sw.......sS..', '.S.......sS..', '........SsS..',
+    '.......SsS...', '......hgS....', '......hb.....', '......hb.....', '......hB.....', '......hb.....', '......eB.....', '......ee.....', '......BB.....', '.............', '.............', '.............', '.............']
 };
+const TOOL_PIX = {};
+for (const [id, rows] of Object.entries(TOOL_ART)) TOOL_PIX[id] = c => {
+  for (let y = 0; y < rows.length; y++) for (let x = 0; x < rows[y].length; x++) { const k = rows[y][x]; if (k !== '.') { c.fillStyle = TP[k]; c.fillRect(x - 6, y - 13, 1, 1); } }
+};
+TOOL_PIX.hand = null;
 // Hache, pioche, faucille, épée : arc de mouvement selon la direction (p de 0 à 1).
 export function drawSwing(c, S, tool, p) {
   const draw = TOOL_PIX[tool]; if (!draw) return;

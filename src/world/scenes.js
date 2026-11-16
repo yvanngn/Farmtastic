@@ -123,8 +123,8 @@ function buildTown() {
   for (const [k, b] of Object.entries(TOWN_B)) put(k, b.x, b.y, b.w, b.h);
   pave(16, 1, 17, 4); put('D', 16, 0); put('D', 17, 0);   // au nord : le chemin de la plage
   put('D', 0, 10); put('D', W - 1, 10); put('g', 0, 11); put('g', W - 1, 11);   // entrée ouest (ferme), sortie est (forêt)
-  for (let y = 0; y < H; y++) for (const x of [0, W - 1]) if (y % 3 === 1 && m[y][x] === 'g') m[y][x] = 'T';
-  for (let x = 0; x < W; x++) { if (x % 3 === 0 && m[0][x] === 'g') m[0][x] = 'T'; if (x % 3 === 1 && m[H - 1][x] === 'g') m[H - 1][x] = 'T'; }
+  for (let y = 0; y < H; y++) for (const x of [0, W - 1]) if (m[y][x] === 'g' || (m[y][x] === '.' && y !== 10)) m[y][x] = y % 3 === 1 ? 'T' : 'h';   // bordures : arbres et haies
+  for (let x = 0; x < W; x++) for (const y of [0, H - 1]) if (m[y][x] === 'g') m[y][x] = x % 3 === 0 ? 'T' : 'h';
   for (const [x, y] of [[9, 3], [23, 3], [10, 15], [24, 15], [9, 21], [23, 21], [8, 28], [26, 28], [12, 14], [18, 16]]) if (m[y][x] === 'g') m[y][x] = 'T';
   for (const [x, y] of TOWN_LAMPS) put('L', x, y);
   for (const [x, y] of [[13, 5], [19, 5], [12, 9], [20, 9]]) put('b', x, y);
@@ -246,7 +246,7 @@ LAYOUTS.foret = buildForest();
 LAYOUTS.foret = LAYOUTS.foret.map((r, y) => y === 0 ? r.slice(0, 27) + '.' + r.slice(28) : r);
 // Forêt : entrée à l'ouest (depuis le centre-ville) et sentier qui la traverse jusqu'à la sortie est.
 LAYOUTS.foret = LAYOUTS.foret.map((r, y) => y === 9 ? 'D' + '.'.repeat(r.length - 2) + 'D' : r);
-export const SOLID_TILES = '#WDBKTPCHNYXMQUJAOVZFLfprEmncwGRIxyzqju';   // + attractions du parc (R I x y z q j u)   // w eau (mer, lac), G grotte   // m n lits de la clinique, c bureau  // A = fauteuil (Franck) / marchand d'animaux (village)
+export const SOLID_TILES = '#WDBKTPCHNYXMQUJAOVZFLfprEmncwGRIxyzqjuh';   // h haie de bordure   // + attractions du parc (R I x y z q j u)   // w eau (mer, lac), G grotte   // m n lits de la clinique, c bureau  // A = fauteuil (Franck) / marchand d'animaux (village)
 // Tuiles qui ouvrent une interface.
 export const UI_TILES = { M: 'market', Q: 'board', U: 'upgrades', J: 'carpenter', A: 'animals', O: 'bakery', V: 'butcher', Z: 'fishmonger' };
 
