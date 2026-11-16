@@ -10,7 +10,7 @@ export const knowsPot = (S, id) => !!POT_RECIPES[id].base ? (S.recipes || []).in
 export const hasPattern = (S, id) => (S.recipes || []).includes(PATTERNS[id].recipe);
 export function buyPattern(g, id) {
   const S = g.S, p = PATTERNS[id];
-  if (!p || hasPattern(S, id) || S.money < p.price) { g.bus.emit('sfx', 'denied'); return false; }
+  if (!p || p.soon || hasPattern(S, id) || S.money < p.price) { g.bus.emit('sfx', 'denied'); return false; }
   S.money -= p.price; if (p.recipe === 'chaudron') { /* la soupe de baies vient avec */ }
   S.recipes = [...new Set([...(S.recipes || []), p.recipe])];
   g.bus.emit('sfx', 'buy'); g.bus.emit('toast', `📜 Nouvelle recette : ${ITEMS[p.recipe] ? ITEMS[p.recipe].n : p.n.replace('Patron : ', '')} ${p.pot ? ' — à préparer au chaudron 🍲' : ' — onglet 🔥 Recettes'}`);

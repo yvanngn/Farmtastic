@@ -1,13 +1,14 @@
+// soon: true = patron pas encore disponible (affiché « Bientôt »). Seul le chaudron est en vente pour l'instant.
 // Patrons vendus dans les magasins : acheter un patron apprend une recette (onglet 🔥 Recettes).
 // 💡 prix et ingrédients proposés par Claude, sauf le chaudron (50 🪙 chez le forgeron, demande de l'utilisateur).
 export const PATTERNS = {
   p_chaudron: { n: 'Patron du chaudron', recipe: 'chaudron', price: 50, shop: 'forge', job: 'forgeron' },
-  p_bague: { n: 'Patron : bague de cuivre', recipe: 'bague_cuivre', price: 120, shop: 'forge', job: 'joaillier' },
-  p_tisane: { n: 'Patron : tisane fleurie', recipe: 'tisane', price: 60, shop: 'stall', job: 'alchimiste' },
-  p_bonnet: { n: 'Patron : bonnet de laine', recipe: 'bonnet', price: 80, shop: 'stall', job: 'couturier' },
-  p_pain: { n: 'Patron : pain maison', recipe: 'pain', price: 40, shop: 'bakery', job: 'cuisinier', pot: true },
-  p_ragout: { n: 'Patron : ragoût', recipe: 'ragout', price: 90, shop: 'butcher', job: 'cuisinier', pot: true },
-  p_soupe_poisson: { n: 'Patron : soupe de poisson', recipe: 'soupe_poisson', price: 90, shop: 'fishmonger', job: 'cuisinier', pot: true }
+  p_bague: { n: 'Patron : bague de cuivre', recipe: 'bague_cuivre', price: 120, shop: 'forge', job: 'joaillier', soon: true },
+  p_tisane: { n: 'Patron : tisane fleurie', recipe: 'tisane', price: 60, shop: 'stall', job: 'alchimiste', soon: true },
+  p_bonnet: { n: 'Patron : bonnet de laine', recipe: 'bonnet', price: 80, shop: 'stall', job: 'couturier', soon: true },
+  p_pain: { n: 'Patron : pain maison', recipe: 'pain', price: 40, shop: 'bakery', job: 'cuisinier', pot: true, soon: true },
+  p_ragout: { n: 'Patron : ragoût', recipe: 'ragout', price: 90, shop: 'butcher', job: 'cuisinier', pot: true, soon: true },
+  p_soupe_poisson: { n: 'Patron : soupe de poisson', recipe: 'soupe_poisson', price: 90, shop: 'fishmonger', job: 'cuisinier', pot: true, soon: true }
 };
 // Plats du chaudron : on remue à la louche (rester appuyé) jusqu'à ce que la jauge soit pleine.
 export const POT_RECIPES = {

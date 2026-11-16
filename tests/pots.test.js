@@ -30,7 +30,9 @@ test('lot 4 : métiers — patrons et cuisine font monter les niveaux', async ()
   S.sel = 'chaudron'; placePot(g, 21, 20); const p = potAt(S, 21, 20); S.sel = 'louche';
   const said = []; g.bus.on('say', d => said.push(d));
   assert.equal(usePot(g, p), 'missing', 'pain inconnu sans patron');
-  buyPattern(g, 'p_pain'); usePot(g, p); said.at(-1).onChoose(said.at(-1).choices.findIndex(c => /Pain/.test(c)));
+  assert.equal(buyPattern(g, 'p_pain'), false, 'pas encore disponible');
+  const { PATTERNS } = await import('../src/data/patterns.js'); PATTERNS.p_pain.soon = false;
+  buyPattern(g, 'p_pain'); PATTERNS.p_pain.soon = true; usePot(g, p); said.at(-1).onChoose(said.at(-1).choices.findIndex(c => /Pain/.test(c)));
   for (let i = 0; i < 10; i++) usePot(g, p);
   assert.equal(S.inv.bread, 2); assert.equal(jobXp(S, 'cuisinier'), 15);
   for (let i = 0; i < 3; i++) (await import('../src/systems/jobs.js')).gainJob(g, 'cuisinier');
