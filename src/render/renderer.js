@@ -1,5 +1,5 @@
 import { getZoom } from '../ui/settingsPanel.js';
-import { QUARTIER } from '../world/scenes.js';
+import { QUARTIER, PARC_B } from '../world/scenes.js';
 import { JEWEL, jewelHere } from '../systems/igor.js';
 // Caverne : la lumière du jour entre par la sortie ; quelques cristaux luisent.
 const CAVE_LIGHTS = [{ x: 8, y: 72, r: 60 }, { x: 25 * 16, y: 12 * 16, r: 18 }, { x: 44 * 16, y: 20 * 16, r: 18 }];
@@ -71,7 +71,7 @@ function drawRainbow(c, fx, fy, minute, R) {
 import { buildGround, drawWaterShimmer, LIGHTS, drawSoil } from './ground.js';
 import { drawChar, drawTree, drawRock, drawCrop, drawAnimal, drawSlime, drawSwing, treeSprite, KIND_SPRITE } from './sprites.js';
 import { buildInterior } from './interiors.js';
-import { buildBiome, buildQuartier, buildTown, TOWN_LIGHTS } from './town.js';
+import { buildParc, buildBiome, buildQuartier, buildTown, TOWN_LIGHTS } from './town.js';
 import { PICKUPS, isBroken } from '../systems/grange.js';
 import { buildWild, drawMob, drawZRock, drawShroom } from './wild.js';
 import { MUSHROOMS } from '../data/items.js';
@@ -202,7 +202,7 @@ let swing = null;
     const scene = S.scene || 'farm', outside = scene === 'farm', sky = outside || !!SCENES[scene].outdoor, SC = SCENES[scene];
     if (scene === 'house' && cacheScene === 'house' && cache !== interiors['house' + !!S.workbench + (S.bed !== false)]) cacheScene = ''; // établi réparé
     if (cacheSeason !== S.season || cacheScene !== scene) {
-      cache = outside ? farmGround() : scene === 'wild' ? (interiors['wild' + S.season] ||= buildWild(S.season)) : scene === 'foret' ? (interiors['foret' + S.season] ||= buildWild(S.season, 'foret')) : scene === 'town' ? (interiors['town' + S.season] ||= buildTown(S.season)) : scene === 'quartier' ? (interiors['quartier' + S.season] ||= buildQuartier(S.season)) : (scene === 'montagne' || scene === 'plage') ? (interiors[scene] ||= buildBiome(scene, S.season)) : (scene === 'house' ? (interiors['house' + !!S.workbench + (S.bed !== false)] ||= buildInterior(scene, S)) : (interiors[scene] ||= buildInterior(scene, S)));
+      cache = outside ? farmGround() : scene === 'wild' ? (interiors['wild' + S.season] ||= buildWild(S.season)) : scene === 'foret' ? (interiors['foret' + S.season] ||= buildWild(S.season, 'foret')) : scene === 'town' ? (interiors['town' + S.season] ||= buildTown(S.season)) : scene === 'quartier' ? (interiors['quartier' + S.season] ||= buildQuartier(S.season)) : (scene === 'montagne' || scene === 'plage') ? (interiors[scene] ||= buildBiome(scene, S.season)) : scene === 'parc' ? (interiors['parc' + S.season] ||= buildParc(S.season)) : (scene === 'house' ? (interiors['house' + !!S.workbench + (S.bed !== false)] ||= buildInterior(scene, S)) : (interiors[scene] ||= buildInterior(scene, S)));
       if (cacheSeason !== S.season) initWeather();
       cacheSeason = S.season; cacheScene = scene;
     }
@@ -299,6 +299,23 @@ let swing = null;
           ctx.fillStyle = '#ffe7a6'; ctx.textAlign = 'center'; ctx.fillText(label, lx, ly + 1); ctx.textAlign = 'start';
         } });
       }
+    }
+    if (scene === 'parc') { // grande roue qui tourne, carrousel qui scintille
+      const Rb = PARC_B.R, cx = (Rb.x + Rb.w / 2) * T, cy = (Rb.y + Rb.h / 2 - .4) * T, rad = Rb.w * T * .44, a0 = now / 4000;
+      list.push({ z: Rb.y + Rb.h - .2, d: () => {
+        ctx.strokeStyle = '#d8d2c4'; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(cx, cy, rad, 0, 7); ctx.stroke();
+        ctx.strokeStyle = '#8a8490'; ctx.lineWidth = 1; for (let k = 0; k < 8; k++) { const a = a0 + k * Math.PI / 4; ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(cx + Math.cos(a) * rad, cy + Math.sin(a) * rad); ctx.stroke(); }
+        ctx.fillStyle = '#5a5560'; ctx.fillRect(cx - 2, cy - 2, 4, (Rb.y + Rb.h) * T - cy);
+        for (let k = 0; k < 8; k++) { const a = a0 + k * Math.PI / 4, nx = cx + Math.cos(a) * rad, ny = cy + Math.sin(a) * rad;
+          ctx.fillStyle = ['#e8402a', '#f2c832', '#3a8ae0', '#4ab04a'][k % 4]; ctx.fillRect(Math.round(nx - 5), Math.round(ny), 10, 8); ctx.fillStyle = '#bfe3f5'; ctx.fillRect(Math.round(nx - 3), Math.round(ny + 2), 6, 3); }
+      } });
+      const Ib = PARC_B.I, ix = Ib.x * T, iy = Ib.y * T, iw = Ib.w * T;
+      list.push({ z: Ib.y + Ib.h - .2, d: () => {
+        ctx.fillStyle = '#e8402a'; ctx.beginPath(); ctx.moveTo(ix - 4, iy + 18); ctx.lineTo(ix + iw / 2, iy - 6); ctx.lineTo(ix + iw + 4, iy + 18); ctx.fill();
+        for (let k = 0; k < iw; k += 10) { ctx.fillStyle = ((k / 10 | 0) + (now / 250 | 0)) % 2 ? '#ffe28a' : '#fff6e0'; ctx.fillRect(ix + k, iy + 17, 3, 3); }
+        for (let k = 0; k < 4; k++) { const ph = now / 600 + k * Math.PI / 2, hx = ix + iw / 2 + Math.cos(ph) * iw * .36, hy = iy + 34 + Math.sin(now / 200 + k) * 3;
+          ctx.fillStyle = '#c9a330'; ctx.fillRect(Math.round(hx), iy + 18, 1, hy - iy - 18); ctx.fillStyle = Math.sin(ph) > 0 ? '#fff6e0' : '#d8c8b0'; ctx.fillRect(Math.round(hx - 5), Math.round(hy), 11, 6); ctx.fillRect(Math.round(hx + 4), Math.round(hy - 3), 3, 4); }
+      } });
     }
     if (g.fishing) list.push({ z: 9996, d: () => { // ligne, bouchon, ombre du poisson qui tourne (façon Zelda) puis « ! »
       const F = g.fishing, bx = F.x * T + 8, by = F.y * T + 8, hx = S.x * T + (S.dir === 2 ? -6 : 6), hy = S.y * T - 18;

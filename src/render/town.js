@@ -1,7 +1,7 @@
 // Centre du village pré-rendu : place pavée, halle du marché, panneau d'affichage,
 // fontaine, lampadaires, bancs, jardinières et arbres. Reconstruit à chaque saison.
 import { CFG } from '../config.js';
-import { LAYOUTS, QUARTIER, TOWN_B, TOWN_LAMPS } from '../world/scenes.js';
+import { LAYOUTS, QUARTIER, TOWN_B, TOWN_LAMPS, PARC_B } from '../world/scenes.js';
 import { rng } from '../world/map.js';
 import { shade, disc } from './pixel.js';
 import { GRASS, drawLunaHouse, drawFranckHouse, drawMystHouse } from './ground.js';
@@ -250,5 +250,40 @@ export function buildBiome(name, season) {
       for (let i = 0; i < 4; i++) { const w = 6 + i * 4; R(px + 8 - w / 2, py - 16 + i * 6, w, 6, '#2c5f4a'); R(px + 8 - w / 2, py - 16 + i * 6, w, 2, '#f4f8fc'); }
     }
   }
+  return c;
+}
+
+// Parc d'attractions : pelouse, allées, guirlandes ; chaque attraction dessinée (la grande roue et le carrousel bougent : renderer).
+export function buildParc(season) {
+  const L = LAYOUTS.parc, H = L.length, W = L[0].length;
+  const c = document.createElement('canvas'); c.width = W * T; c.height = H * T;
+  const g = c.getContext('2d'), r = rng(303 + season);
+  const R = (x, y, w, h, col) => { g.fillStyle = col; g.fillRect(x, y, w, h); };
+  const B = GRASS[season];
+  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
+    const px = x * T, py = y * T, ch = L[y][x];
+    if (ch === '.' || ch === 'D') { R(px, py, T, T, (x + y) % 2 ? '#d8c8b0' : '#e4d6c0'); R(px, py, T, 1, '#c4b498'); continue; }
+    for (let by = 0; by < T; by += 4) for (let bx = 0; bx < T; bx += 4) R(px + bx, py + by, 4, 4, [B, B, shade(B, .93), shade(B, 1.06)][r() * 4 | 0]);
+  }
+  const P = PARC_B, box = k => { const b = P[k]; return [b.x * T, b.y * T, b.w * T, b.h * T]; };
+  { const [x, y, w, h] = box('R'); R(x + w / 2 - 14, y + h - 10, 28, 10, '#6a4a3a'); R(x + 6, y + h - 4, w - 12, 4, '#4a3a30'); }   // socle de la roue
+  { const [x, y, w, h] = box('I'); R(x, y + h - 10, w, 10, '#a8302b'); for (let k = 0; k < w; k += 8) R(x + k, y + h - 10, 4, 10, '#f4ead2'); }   // plateau du carrousel
+  { const [x, y, w, h] = box('x');   // montagnes russes : rails en bosses sur poteaux
+    for (let k = 0; k <= w; k += 6) { const top = y + 14 + Math.round(Math.sin(k / 18) * 18 + Math.cos(k / 7) * 4); R(x + k, top + 4, 2, y + h - top - 4, '#8a5a32'); R(x + k - 3, top, 8, 3, '#c4342a'); R(x + k - 3, top + 3, 8, 1, '#3a2a28'); }
+    R(x + 18, y + 2, 14, 8, '#3a8ae0'); R(x + 20, y + 4, 4, 3, '#ffe28a'); R(x + 26, y + 4, 4, 3, '#ffe28a'); }   // wagon
+  { const [x, y, w, h] = box('y'); R(x, y, w, h, '#5a5560'); R(x + 2, y + 2, w - 4, h - 4, '#7a7480'); R(x, y, w, 4, '#f2c832');   // piste
+    for (const [a, b, col] of [[10, 14, '#e8402a'], [40, 30, '#3a8ae0'], [70, 18, '#4ab04a']]) { R(x + a, y + b, 16, 10, col); R(x + a + 4, y + b + 2, 8, 4, '#bfe3f5'); R(x + a + 7, y + b - 10, 1, 10, '#2a2a30'); } }
+  const booth = (k, roof, sign) => { const [x, y, w, h] = box(k); R(x, y + 8, w, h - 8, '#9a6a3c'); for (let i = 0; i < w; i += 8) R(x + i, y, 4, 9, roof), R(x + i + 4, y, 4, 9, '#f4ead2'); R(x + 4, y + 14, w - 8, 8, '#4a2a18'); signBoard(R, x + w / 2, y - 10, sign); };
+  booth('z', '#e8402a', 'CHAMBOULE'); booth('q', '#3a8ae0', 'TIR');
+  { const [x, y] = box('z'); for (const [a, b] of [[14, 15], [20, 15], [26, 15], [17, 11], [23, 11], [20, 7]]) R(x + a, y + b, 5, 4, ['#f2c832', '#4ab04a', '#e8402a'][(a + b) % 3]); }
+  { const [x, y] = box('q'); for (let k = 0; k < 4; k++) { R(x + 6 + k * 9, y + 16, 6, 4, '#f2c832'); R(x + 10 + k * 9, y + 15, 2, 2, '#e8802a'); } }
+  { const [x, y, w, h] = box('j');   // maison hantée
+    R(x + 2, y + 14, w - 4, h - 14, '#4a4250'); for (let i = 0; i < 6; i++) R(x + 2 + i * 2, y + 14 - i * 3, w - 4 - i * 4, 3, '#2a2430');
+    R(x + 10, y + 26, 10, 10, '#d8c070'); R(x + w - 20, y + 26, 10, 10, '#1a1420'); R(x + w / 2 - 6, y + h - 18, 12, 18, '#140e18');
+    R(x + 14, y + 29, 2, 2, '#1a1420'); R(x + 18, y + 29, 2, 2, '#1a1420'); signBoard(R, x + w / 2, y - 6, 'FRISSONS'); }
+  { const [x, y, w, h] = box('u'); R(x, y + 10, w, h - 10, '#f4b0c8'); for (let i = 0; i < w; i += 6) R(x + i, y + 4, 3, 7, '#f07ab0'), R(x + i + 3, y + 4, 3, 7, '#fff'); R(x + 6, y - 2, 8, 6, '#ffd0e8'); R(x + 9, y + 4, 1, 6, '#c9a330'); }
+  for (let k = 0; k < W * T; k += 12) { R(k, 8 * T + 2 + Math.round(Math.sin(k / 30) * 3), 2, 2, ['#f2c832', '#e8402a', '#3a8ae0', '#4ab04a'][(k / 12 | 0) % 4]); }   // guirlande
+  signBoard(R, 17 * T, 21 * T, 'FARM-LAND');
+  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) if (L[y][x] === 'T') g.drawImage(treeSprite(season, (x + y) % 4), x * T - 9, y * T - 28);
   return c;
 }

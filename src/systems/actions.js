@@ -17,6 +17,7 @@ import { repairAt, contribute, pickFieldTool } from './repair.js';
 import { pitchTent, tentAt, useTent } from './camp.js';
 import { pickJewel } from './igor.js';
 import { cast, hook, zoneAt } from './fishing.js';
+import { parcAt, ride, startGame, buyStall } from './parc.js';
 import { chestAt, placeChest } from './chests.js';
 import { fireAt, startCook, pickBush, placeFire } from './cooking.js';
 import { pickFlower, hitNature, natureAt, digTreasure } from './nature.js';
@@ -107,6 +108,7 @@ function act0(g, tx, ty) {
   if (d && !(sc === 'farm' && BUILDINGS[d.to] && !(S.built && S.built[d.to]))) { enterScene(g, d.to, d.spawn); return 'door'; }
   if (sc === 'grange') { const r = grangeAction(g, tx, ty); if (r !== 'none') return r; }
   if (sc === 'foret') { const r = pickShroom(g, tx, ty); return r ? 'pick' : r === false ? 'noknife' : 'none'; }
+  if (sc === 'parc') { const t = tileAt(sc, tx, ty), k = parcAt(t); if (k === 'ride') return ride(g, t) ? 'ride' : 'none'; if (k === 'game') return startGame(g, t) ? 'game' : 'none'; if (k === 'stall') return buyStall(g, t) ? 'buy' : 'none'; }
   if (tileAt(sc, tx, ty) === 'G') { g.bus.emit('toast', '🧊 Une grotte gelée, bouchée par des éboulis et de la glace. Impossible d’entrer… pour l’instant.'); return 'locked'; }
   if (sc === 'wild' && tileAt(sc, tx, ty) === 'S') { g.bus.emit('sfx', 'denied'); g.bus.emit('toast', '⬇️ Un escalier s’enfonce vers l’étage 2… bloqué par des éboulis pour l’instant.'); return 'stairs'; }
   if (sc === 'wild') return S.wild && S.wild.rocks[key(tx, ty)] ? (hitZRock(g, tx, ty) ? 'hit' : 'none') : 'none';

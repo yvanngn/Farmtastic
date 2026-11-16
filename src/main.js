@@ -25,6 +25,7 @@ import { cookTick } from './systems/cooking.js';
 import { fishTick } from './systems/fishing.js';
 import { coldTick } from './systems/cold.js';
 import { createFishPanel } from './ui/fishPanel.js';
+import { createParcPanel } from './ui/parcPanel.js';
 import { nightTip } from './systems/camp.js';
 import { BUSHES } from './data/recipes.js';
 import { createRepairPanel } from './ui/repairPanel.js';
@@ -72,6 +73,7 @@ const invGrid = createInventoryGrid(g, audio);
 const sellPanel = createSellPanel(g, audio);
 const chestPanel = createChestPanel(g, audio);
 createFishPanel(g, audio);
+createParcPanel(g, audio);
 const mapView = createMapView(g, renderer, audio);
 const board = createBoard(g, audio);
 const dialog = createDialog(g, audio);
@@ -232,7 +234,7 @@ function loop(now) {
   const dt = Math.min(0.05, (now - last) / 1000); last = now;
   if (started) {
     const arrivee = g.S.intro && ['wait', 'sleep', 'talk'].includes(g.S.intro.myst);   // sur le quai, jusqu'à la fin de l'accueil de Myst
-    if (g.fishing) { g.player.target = null; g.player.walkFrame = 0; }   // on ne bouge pas en pêchant
+    if (g.fishing || g.parcGame) { g.player.target = null; g.player.walkFrame = 0; }   // on ne bouge pas en pêchant
     else if (g.talking || arrivee) { g.player.target = null; g.player.walkFrame = 0; }   // pendant un dialogue ou l'arrivée, on ne bouge pas
     else updatePlayer(g, dt, input.keys, (tx, ty) => act(g, tx, ty));
     const wf = g.player.walkFrame; if (wf !== lastFrame && (wf === 1 || wf === 3)) audio.play('step'); lastFrame = wf;

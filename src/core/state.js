@@ -7,7 +7,7 @@ export function defaultState() {
     look: { body: 'h', bottom: 'pant', skin: '#f6d2b0', hair: 0, hairC: '#7a4a22', shirt: '#d04a3a', pants: '#3a4a8a' },
     money: 500, energy: 100, maxE: 100, hp: 100, maxHp: 100,
     day: 1, season: 0, year: 1, minute: CFG.DAY_START, weather: 'sun',
-    inv: { wheat_seed: 10, hay: 5, backpack: 1, tent: 1 }, sel: 'hand', invOrder: [], saleLog: [], chests: [], fishLog: {},   // poissons pêchés : { id: { n, best, first, last } }   // coffres posés { x, y, items }   // ordre des cases choisi par le joueur
+    inv: { wheat_seed: 10, hay: 5, backpack: 1, tent: 1 }, sel: 'hand', invOrder: [], saleLog: [], chests: [], fishLog: {}, parc: {},   // poissons pêchés : { id: { n, best, first, last } }   // coffres posés { x, y, items }   // ordre des cases choisi par le joueur
     tent: null, bed: false, recipes: ['campfire'], fires: [], bushes: {},   // recettes connues, feux posés, buissons cueillis (jour)          // tente posée {x,y} ; lit de la maison à construire
     x: 2.0, y: 20.6, dir: 3,         // on descend du train, sur le quai de la gare
     plots: {}, objs: null,

@@ -132,6 +132,23 @@ function buildTown() {
   return m.map(r => r.join(''));
 }
 LAYOUTS.town = buildTown();
+// Parc d'attractions abandonné… ou presque (caché : au nord de la zone de la caverne, par une trouée secrète de la forêt).
+// Chaque attraction : lettre, position (coin haut-gauche), taille. L'entrée est en bas.
+export const PARC_B = {
+  R: { x: 3, y: 2, w: 6, h: 6, n: 'Grande roue' }, I: { x: 13, y: 3, w: 5, h: 4, n: 'Carrousel' },
+  x: { x: 21, y: 2, w: 10, h: 5, n: 'Montagnes russes' }, y: { x: 3, y: 12, w: 6, h: 4, n: 'Autos tamponneuses' },
+  z: { x: 13, y: 12, w: 3, h: 2, n: 'Chamboule-tout' }, q: { x: 18, y: 12, w: 3, h: 2, n: 'Stand de tir' },
+  j: { x: 24, y: 11, w: 6, h: 5, n: 'Maison hantée' }, u: { x: 13, y: 17, w: 2, h: 2, n: 'Barbe à papa' }
+};
+LAYOUTS.parc = (() => {
+  const W = 34, H = 24, m = Array.from({ length: H }, (_, y) => Array.from({ length: W }, (_, x) => (x === 0 || y === 0 || x === W - 1 || y === H - 1 ? 'T' : 'g')));
+  const pave = (x0, y0, x1, y1) => { for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) m[y][x] = '.'; };
+  pave(1, 9, W - 2, 10); pave(1, 19, W - 2, 20); pave(16, 9, 17, H - 1); pave(11, 1, 11, 20); pave(22, 8, 22, 10);
+  for (const [k, b] of Object.entries(PARC_B)) { pave(b.x - 1, b.y + b.h, b.x + b.w, b.y + b.h); for (let y = b.y; y < b.y + b.h; y++) for (let x = b.x; x < b.x + b.w; x++) m[y][x] = k; }
+  m[H - 1][16] = 'D'; m[H - 1][17] = 'D';
+  for (const [x, y] of [[2, 18], [8, 21], [26, 21], [31, 18], [31, 8], [20, 16]]) if (m[y][x] === 'g') m[y][x] = 'T';
+  return m.map(r => r.join(''));
+})();
 // Montagne gelée (à l'est du quartier) : n neige, . sentier, T sapins enneigés, G grotte (on ne peut pas y entrer), w lac gelé (trous de pêche).
 LAYOUTS.montagne = (() => {
   const W = 36, H = 24, m = Array.from({ length: H }, (_, y) => Array.from({ length: W }, (_, x) => (x === 0 || y === 0 || x === W - 1 || y === H - 1 ? 'T' : 'n')));
@@ -225,9 +242,11 @@ function buildForest() {
   return m.map(r => r.join(''));
 }
 LAYOUTS.foret = buildForest();
+// passage secret : une trouée entre les arbres, tout en haut à droite de la forêt (vers le parc d'attractions caché)
+LAYOUTS.foret = LAYOUTS.foret.map((r, y) => y === 0 ? r.slice(0, 27) + '.' + r.slice(28) : r);
 // Forêt : entrée à l'ouest (depuis le centre-ville) et sentier qui la traverse jusqu'à la sortie est.
 LAYOUTS.foret = LAYOUTS.foret.map((r, y) => y === 9 ? 'D' + '.'.repeat(r.length - 2) + 'D' : r);
-export const SOLID_TILES = '#WDBKTPCHNYXMQUJAOVZFLfprEmncwG';   // w eau (mer, lac), G grotte   // m n lits de la clinique, c bureau  // A = fauteuil (Franck) / marchand d'animaux (village)
+export const SOLID_TILES = '#WDBKTPCHNYXMQUJAOVZFLfprEmncwGRIxyzqju';   // + attractions du parc (R I x y z q j u)   // w eau (mer, lac), G grotte   // m n lits de la clinique, c bureau  // A = fauteuil (Franck) / marchand d'animaux (village)
 // Tuiles qui ouvrent une interface.
 export const UI_TILES = { M: 'market', Q: 'board', U: 'upgrades', J: 'carpenter', A: 'animals', O: 'bakery', V: 'butcher', Z: 'fishmonger' };
 
@@ -247,7 +266,8 @@ export const SCENES = {
   house: { W: 12, H: 9, doors: [{ x: 5, y: 8, to: 'farm', spawn: { x: 5.5, y: 5.9 } }] },
   coop: { W: 10, H: 7, doors: [{ x: 4, y: 6, to: 'farm', spawn: { x: 24.5, y: 8.9 } }] },
   // Forêt : à l'est du centre-ville ; au-delà (est), la zone de la Caverne sombre (fermée pour l'instant).
-  foret: { W: 30, H: 18, outdoor: true, doors: [{ x: 0, y: 9, to: 'town', spawn: { x: 32.2, y: 10.6 } }, { x: 29, y: 9, to: 'wild', spawn: { x: 1.6, y: 4.5 } }] },
+  parc: { W: 34, H: 24, outdoor: true, hidden: true, doors: [{ x: 16, y: 23, to: 'foret', spawn: { x: 27.5, y: 1.4 } }, { x: 17, y: 23, to: 'foret', spawn: { x: 27.5, y: 1.4 } }] },
+  foret: { W: 30, H: 18, outdoor: true, doors: [{ x: 27, y: 0, to: 'parc', spawn: { x: 16.5, y: 22.2 } }, { x: 0, y: 9, to: 'town', spawn: { x: 32.2, y: 10.6 } }, { x: 29, y: 9, to: 'wild', spawn: { x: 1.6, y: 4.5 } }] },
   wild: { W: 50, H: 24, dark: true, cave: true, rooms: { w: 10, h: 8 }, doors: [{ x: 0, y: 4, to: 'foret', spawn: { x: 28.2, y: 9.6 } }] },
   grange: { W: 22, H: 11, dark: true, doors: [{ x: 5, y: 6, to: 'farm', spawn: { x: 12.5, y: 5.6 } }] },
   franck: { W: 9, H: 7, doors: [{ x: 4, y: 6, to: 'quartier', spawn: { x: 10.5, y: 15.8 } }] },

@@ -369,3 +369,12 @@ body:not([data-nrj="haut"]) #hEnBar, body:not([data-nrj="haut"]) #hud .lbl:first
 .fish-list { display: flex; flex-direction: column; gap: 6px; max-height: 56vh; overflow-y: auto }
 .fish-row { display: flex; gap: 10px; align-items: flex-start; padding: 8px; border-radius: 10px; background: rgba(0,0,0,.22) }
 .fish-row .fi { font-size: 26px } .fish-row small { display: block; opacity: .85 } .fish-row.inconnu { opacity: .6 }
+
+/* Stands du parc */
+#parcGame { position: fixed; z-index: 40; left: 50%; bottom: calc(var(--sa-b) + 120px); transform: translateX(-50%); width: min(380px, 92vw); padding: 12px 14px; border-radius: 16px;
+  background: var(--verre-fort); color: #fff6e0; display: flex; flex-direction: column; gap: 8px; box-shadow: 0 6px 20px rgba(0,0,0,.4); touch-action: none }
+#parcGame[hidden] { display: none } #parcGame b { color: var(--or-vif) } #parcGame small { opacity: .85 }
+.pg-track { position: relative; height: 26px; border-radius: 13px; background: rgba(0,0,0,.4); overflow: hidden }
+.pg-zone { position: absolute; top: 0; bottom: 0; background: linear-gradient(#ffe28a, #c9a330) }
+.pg-cur { position: absolute; top: -2px; bottom: -2px; width: 6px; border-radius: 3px; background: #fff; box-shadow: 0 0 6px #fff }
+#pgScore { min-height: 1.2em; text-align: center; font-size: 18px }
