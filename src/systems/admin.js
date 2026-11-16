@@ -10,4 +10,4 @@ export function setAdmin(g, on) {
   if (on) { const t = { ...g.S.tools }; for (const o of TOOLS) if (o.id !== 'hand') t[o.id] = 1; g.S.tools = t; }
   g.bus.emit('admin', ADMIN.on);
 }
-export const seaOpen = S => ADMIN.on || !!S.seaOpen;
+export const seaOpen = S => true;   // 16/11 : la plage est ouverte à tous (demande de l'utilisateur)

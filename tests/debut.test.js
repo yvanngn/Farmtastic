@@ -223,13 +223,13 @@ test('réparer demande le marteau', () => {
   S.sel = 'hammer'; assert.equal(act(g, 3, 2), 'repair');
 });
 
-test('mode test : outils, plage, caverne, vitesse ; plage fermée et pas de canne sinon', async () => {
+test('mode test : outils, caverne, vitesse ; plage ouverte, pas de canne sinon', async () => {
   const { ADMIN, setAdmin, checkCode } = await import('../src/systems/admin.js');
   const { act } = await import('../src/systems/actions.js');
   const { isOpen } = await import('../src/systems/wild.js');
   const { g } = makeGame({ state: { scene: 'town', x: 16.5, y: 1.5 } });
   assert.ok(!g.S.tools.rod);
-  assert.equal(act(g, 16, 0), 'locked');
+  assert.equal(act(g, 16, 0), 'door', 'la plage est ouverte'); g.S.scene = 'town';
   assert.ok(!checkCode('x') && checkCode(' gemini '));
   setAdmin(g, true);
   try {

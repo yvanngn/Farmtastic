@@ -6,7 +6,7 @@ import { add } from './inventory.js';
 import { newDay } from './time.js';
 
 export const TENT_ZONE = { x0: 1, y0: 5, x1: 9, y1: 9 };   // « à côté de la maison »
-export const TENT_ENERGY = 0.5;
+export const TENT_ENERGY = 1;   // 16/11 : dormir rend 100 % de l'énergie (demande de l'utilisateur)
 
 export function canPitch(S, x, y) {
   return (S.scene || 'farm') === 'farm' && !S.tent && inRect(x, y, TENT_ZONE.x0, TENT_ZONE.y0, TENT_ZONE.x1, TENT_ZONE.y1)
@@ -40,7 +40,7 @@ export function sleepTent(g) {
   S.energy = Math.round(S.maxE * TENT_ENERGY);
   ((S.quests ||= {}).debut ||= {}).dormi = true;
   S.x = t.x + .5; S.y = t.y + 1.6; S.scene = 'farm';
-  g.bus.emit('sfx', 'sleep'); g.bus.emit('toast', 'Nuit sous la tente… le sol est dur (50 % d’énergie) ⛺');
+  g.bus.emit('sfx', 'sleep'); g.bus.emit('toast', 'Nuit sous la tente… bien reposé(e) ! ⛺');
   return true;
 }
 

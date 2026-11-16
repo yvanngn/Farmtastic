@@ -6,7 +6,7 @@ Ce qu'on peut faire, ce qu'on doit faire et combien de temps ça prend, du 1er j
 
 ## Les repères de temps
 - **Une journée** dure environ **20 min réelles** (6 h → 1 h du matin, 1 min de jeu = 1 s).
-- **L'énergie** est de 100 au départ. La tente rend **50 %** par nuit. Sans dormir, on ne récupère rien, et si on n'est pas couché à 1 h → infirmerie (−10 % d'argent).
+- **L'énergie** est de 100 au départ. La tente rend **100 %** par nuit (16/11). Sans dormir, on ne récupère rien, et si on n'est pas couché à 1 h → infirmerie (−10 % d'argent).
 - **Un coup d'outil** prend environ 0,4 s et coûte 1 ⚡. Un arbre demande 8 coups et donne 3 à 5 bois ; un caillou, 6 coups et 1 pierre ; un gros caillou, 9 coups et 2 pierres.
   → 100 ⚡ ≈ **12 arbres (≈ 50 bois)** ou **≈ 18 pierres**, en **5 à 10 min** en comptant la marche.
 - **Le marteau** (réparations) ne coûte **pas d'énergie** : 1 bois + 1 pierre par coup.
@@ -25,9 +25,9 @@ Ce qu'on peut faire, ce qu'on doit faire et combien de temps ça prend, du 1er j
 | Jour 3 : quête du coffre (bijou d'Igor) | trouver le bijou derrière la cabane, puis 80 bois + 20 pierres | 10 min + ≈ 2 jours d'énergie |
 | Nuits 1-2-3 : quête Ghostbuster | rester dehors après 22 h, aller voir l'esprit la 3e nuit | 5 min |
 
-**Énergie par jour** (dès le jour 2) : 50 (tente) + cueillette. 11 buissons à baies et 5 ronces à mûres (2 à 4 fruits, repoussent en 2 jours) ≈ **16 baies et 7 mûres par jour**.
+**Énergie par jour** (dès le jour 2) : 100 (tente) + cueillette. 11 buissons à baies et 5 ronces à mûres (2 à 4 fruits, repoussent en 2 jours) ≈ **16 baies et 7 mûres par jour**.
 - crues : ≈ +30 ⚡ · grillées au feu : ≈ +120 ⚡ · **en soupe au chaudron : ≈ +300 ⚡** (4 baies ou 3 mûres = +50 ⚡)
-→ **≈ 170 ⚡ par jour** sans chaudron, **≈ 350 ⚡** avec.
+→ **≈ 220 ⚡ par jour** sans chaudron, **≈ 400 ⚡** avec (tente à 100 %). On coupe aussi les arbres de la forêt.
 
 ## Ce qu'on PEUT faire sans énergie (pour remplir la journée)
 - **Parler aux habitants** : Luna, Franck (en frappant), Hailey (clinique), Igor (ruelle), Manuel (place, 8 h-19 h), Myst (le soir). +20 d'amitié par jour chacun → ≈ 5 min.
@@ -50,3 +50,4 @@ Ce qu'on peut faire, ce qu'on doit faire et combien de temps ça prend, du 1er j
 ## Historique des mises à jour
 - 16/11/2026 : première version (lots 1 à 4, Ghostbuster).
 - 16/11/2026 14h : cabane 80/30, grange 100/60, soupe +50 ⚡, mûres, buissons plus nombreux, étape « Faire la cuisine », tuto de la vente.
+- 16/11/2026 20h50 : tente 100 %, plage ouverte, arbres de la forêt coupables.

@@ -16,6 +16,7 @@ import { BUSHES } from '../data/recipes.js';
 import { bushRipe, cookProgress } from '../systems/cooking.js';
 import { ghostVisible } from '../systems/ghost.js';
 import { SCATTER_MS } from '../systems/inventory.js';
+import { isForestTree, forestCut } from '../systems/foret.js';
 import { GHOST } from '../data/npcs.js';
 // Buisson à baies (baies bleues quand il y en a).
 function drawBush(c, x, y, ripe, mure) {
@@ -98,7 +99,7 @@ import { drawChar, drawTree, drawRock, drawCrop, drawAnimal, drawSlime, drawSwin
 import { buildInterior } from './interiors.js';
 import { buildParc, buildBiome, buildQuartier, buildTown, TOWN_LIGHTS } from './town.js';
 import { PICKUPS, isBroken } from '../systems/grange.js';
-import { buildWild, drawMob, drawZRock, drawShroom } from './wild.js';
+import { buildWild, drawMob, drawZRock, drawShroom, drawForestTree } from './wild.js';
 import { MUSHROOMS } from '../data/items.js';
 import { LAYOUTS } from '../world/scenes.js';
 import { toolIcon, drawToolPix } from './sprites.js';
@@ -260,6 +261,8 @@ let swing = null;
     if (outside) for (const a of S.animals) list.push({ z: a.y, d: () => drawAnimal(ctx, a, now, ANIMALS[a.type]) });
     if (outside) for (const e of g.enemies) list.push({ z: e.y, d: () => drawSlime(ctx, e, now) });
     if (scene === 'foret') {
+      for (let y = Math.max(1, y0); y <= Math.min(LAYOUTS.foret.length - 2, y1 + 2); y++) for (let x = Math.max(1, x0 - 1); x <= Math.min(LAYOUTS.foret[0].length - 2, x1 + 1); x++)
+        if (isForestTree(x, y)) { const cut = forestCut(S, x, y); list.push({ z: y + .9, d: () => drawForestTree(ctx, x, y, S.season, cut) }); }
       const cols = {}; for (const ss of MUSHROOMS) for (const m of ss) cols[m.id] = m.c;
       for (const k in (S.foret && S.foret.shrooms) || {}) { const [x, y] = k.split(',').map(Number), m = S.foret.shrooms[k]; list.push({ z: y + .6, d: () => drawShroom(ctx, x, y, m, cols[m.sp]) }); }
     }

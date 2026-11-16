@@ -189,6 +189,12 @@ export function createAudio(g, storage) {
     SFX[name](ac.currentTime + 0.01);
   }
 
+  // Navigateur fermé, onglet caché ou page quittée : on coupe le son (sinon la musique continue).
+  const pause = () => { if (ac && ac.state === 'running') ac.suspend(); };
+  const resume = () => { if (ac && ac.state === 'suspended' && !document.hidden) ac.resume(); };
+  document.addEventListener('visibilitychange', () => document.hidden ? pause() : resume());
+  addEventListener('pagehide', () => { pause(); try { ac && ac.close(); ac = null; clearInterval(sched); } catch { /* rien */ } });
+  addEventListener('blur', () => { if (document.hidden) pause(); });
   // Premier geste = démarrage
   const unlock = () => start();
   addEventListener('pointerdown', unlock); addEventListener('keydown', unlock);

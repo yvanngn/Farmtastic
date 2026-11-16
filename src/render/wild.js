@@ -64,7 +64,7 @@ export function buildWild(season, name = 'wild') {
   for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) if (L[y][x] === '#') {
     const px = x * T + 8, py = y * T + 9; disc(g, px, py + 1, 8, '#3c3843'); disc(g, px - 1, py, 7, '#6a6672'); disc(g, px - 3, py - 3, 3, '#9a96a2');
   }
-  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) if (L[y][x] === 'T') {
+  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) if (L[y][x] === 'T' && !(name === 'foret' && x > 0 && y > 0 && x < W - 1 && y < H - 1)) {   // forêt : arbres intérieurs dessinés à part (on peut les couper)
     const v = (x * 7 + y * 3) % 4, im = (x + y) % 3 === 0 || (name === 'foret' && (x * y) % 5 === 1) ? pineSprite(season, v) : treeSprite(season, v);
     g.drawImage(im, x * T - 9, y * T - 26);
   }
@@ -72,6 +72,12 @@ export function buildWild(season, name = 'wild') {
 }
 
 // Monstres : slimes vert ou bleu, cochon qui tire (sanglier sombre au lance-pierre).
+// Arbre de la forêt (coupable) : même dessin que le fond ; souche quand il est coupé.
+export function drawForestTree(c, x, y, season, cut) {
+  if (cut) { c.fillStyle = '#5b3a22'; c.fillRect(x * T + 5, y * T + 9, 6, 4); c.fillStyle = '#c08a54'; c.fillRect(x * T + 5, y * T + 8, 6, 2); c.fillStyle = '#8a5a32'; c.fillRect(x * T + 7, y * T + 8, 2, 1); return; }
+  const v = (x * 7 + y * 3) % 4, im = (x + y) % 3 === 0 || (x * y) % 5 === 1 ? pineSprite(season, v) : treeSprite(season, v);
+  c.drawImage(im, x * T - 9, y * T - 26);
+}
 export function drawMob(c, e, now) {
   const px = Math.round(e.x * T), py = Math.round(e.y * T), R = (a, b, w, h, col) => { c.fillStyle = col; c.fillRect(px + a, py + b, w, h); };
   if (e.type === 'pig') {

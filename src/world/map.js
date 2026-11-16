@@ -49,6 +49,7 @@ export function ground(x, y) {
 import { tileAt, SOLID_TILES } from './scenes.js';
 import { AXE_GROVE } from '../data/repairs.js';
 import { BUSHES } from '../data/recipes.js';
+import { TREE_GROW_DAYS } from '../data/forest.js';
 const BUSH_SET = new Set(BUSHES.map(([x, y]) => x + ',' + y));
 
 export function isSolid(S, x, y) {
@@ -59,6 +60,7 @@ export function isSolid(S, x, y) {
   if ((S.scene || 'farm') === 'farm' && (BUSH_SET.has(x + ',' + y) || (S.fires || []).some(f => f.x === x && f.y === y) || (S.chests || []).some(c => c.x === x && c.y === y))) return true;   // buissons, feux, coffres
   if (S.scene === 'wild' && S.wild && S.wild.rocks && S.wild.rocks[x + ',' + y]) return true;
   if (S.scene === 'foret' && S.foret && S.foret.shrooms && S.foret.shrooms[x + ',' + y]) return false;
+  if (S.scene === 'foret' && S.foret && S.foret.cut && S.foret.cut[x + ',' + y] != null && (S.year - 1) * 112 + S.season * 28 + S.day - S.foret.cut[x + ',' + y] < TREE_GROW_DAYS) return false;   // arbre coupé (repousse comme à la ferme)
   if (S.scene && S.scene !== 'farm') { const t = tileAt(S.scene, x, y); if (S.scene === 'grange' && (t === 'p' || t === 'r') && S.grange && S.grange.broken.includes(x + ',' + y)) return false; return SOLID_TILES.includes(t); }
   if (x < 0 || y < 0 || x >= CFG.W || y >= CFG.H) return true;
   return isPond(x, y) || isHouse(x, y) || isGrange(x, y) || (x === 0 && ((y >= 9 && y <= 11) || y >= 13)) || isStation(x, y) || isMystHouse(x, y) || isFranckHouse(x, y) || isLunaHouse(x, y) || !!buildingAt(S.built, x, y) || isGate(x, y) || isFence(x, y, S.built) || isBin(x, y) || !!(S.objs && S.objs[key(x, y)]);

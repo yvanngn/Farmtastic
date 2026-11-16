@@ -351,3 +351,10 @@ Problème repéré par l'utilisateur : énergie vide en 5-10 min, puis 10-15 min
 - ✅ ⚙ Réglages → **🏠 Revenir au menu principal** (sauvegarde, puis retour à l'écran titre).
 - ✅ Partie multijoueur : **code pour rejoindre** affiché en haut du 📜 Menu.
 - ✅ **Clic droit et menu contextuel désactivés**.
+
+## Séance 16/11/2026 (20h50) — v0.1.2
+- ✅ **Plage ouverte** à tous (la question « qui donne la canne » reste ouverte).
+- ✅ **Dormir rend 100 %** d'énergie (tente comprise).
+- ✅ Son coupé quand on cache l'onglet, ferme ou quitte la page (reprend au retour).
+- ✅ **Hache et pioche redessinées** (pioche : tête en arc, pointes vers le bas ; hache : lame verticale, tranchant clair).
+- ✅ **Arbres de la forêt coupables** à la hache (8 coups, 3-5 bois au sol) ; souche, puis repousse en 3 jours comme à la ferme. Les arbres du bord ne se coupent pas (ils ferment la carte).

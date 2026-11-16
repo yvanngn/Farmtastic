@@ -61,3 +61,19 @@ test('caverne : des filons, mais pas de fleurs', () => {
   const N = ensureNature(g, 'wild');
   assert.equal(Object.keys(N.flowers).length, 0);
 });
+
+test('16/11 : on coupe les arbres de la forêt (hache) ; souche, puis ils repoussent comme à la ferme', async () => {
+  const { forestTreeAt, chopForest, isForestTree } = await import('../src/systems/foret.js');
+  const { TREE_HP } = await import('../src/world/map.js');
+  const { TREE_GROW_DAYS } = await import('../src/data/forest.js');
+  const { LAYOUTS } = await import('../src/world/scenes.js');
+  const L = LAYOUTS.foret; let x, y;
+  outer: for (y = 1; y < L.length - 1; y++) for (x = 1; x < L[0].length - 1; x++) if (L[y][x] === 'T') break outer;
+  const { g, S } = game({ scene: 'foret', sel: 'axe', tools: { axe: 1 }, energy: 99, inv: {} });
+  assert.ok(isForestTree(x, y) && isSolid(S, x, y));
+  assert.ok(!isForestTree(0, 3), 'les arbres du bord restent');
+  for (let i = 0; i < TREE_HP; i++) assert.equal(act(g, x, y), 'hit');
+  assert.ok(!forestTreeAt(S, x, y)); assert.equal(isSolid(S, x, y), false, 'souche : on passe');
+  ramasse(g); assert.ok(S.inv.wood >= 3);
+  S.day += TREE_GROW_DAYS; assert.ok(forestTreeAt(S, x, y), 'repoussé');
+});

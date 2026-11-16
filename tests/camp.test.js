@@ -20,7 +20,7 @@ test('la tente se pose à côté de la cabane, pas n’importe où', () => {
   assert.equal(isSolid(S, 8, 7), true);
 });
 
-test('dormir sous la tente : nouvelle journée mais 50 % d’énergie ; on peut la replier', () => {
+test('dormir sous la tente : nouvelle journée, 100 % d’énergie ; on peut la replier', () => {
   const { g, S } = makeGame({ state: { tent: { x: 8, y: 7 }, minute: 1200, energy: 10, money: 100, inv: {}, bed: false } });
   const said = []; g.bus.on('say', d => said.push(d));
   assert.equal(act(g, 8, 7), 'tent');

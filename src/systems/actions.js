@@ -1,3 +1,4 @@
+import { forestTreeAt, chopForest } from './foret.js';
 // Aiguillage d'une action sur une tuile, selon la scène (ferme ou intérieur).
 import { isBin, key, isPlot } from '../world/map.js';
 import { seaOpen } from './admin.js';
@@ -112,6 +113,7 @@ function act0(g, tx, ty) {
   if (d && HOME_OWNER[d.to] && !canEnterHome(S, HOME_OWNER[d.to])) return knock(g, HOME_OWNER[d.to]);
   if (d && !(sc === 'farm' && BUILDINGS[d.to] && !(S.built && S.built[d.to]))) { enterScene(g, d.to, d.spawn); return 'door'; }
   if (sc === 'grange') { const r = grangeAction(g, tx, ty); if (r !== 'none') return r; }
+  if (sc === 'foret' && forestTreeAt(S, tx, ty)) return chopForest(g, tx, ty) ? 'hit' : 'none';
   if (sc === 'foret') { const r = pickShroom(g, tx, ty); return r ? 'pick' : r === false ? 'noknife' : 'none'; }
   if (sc === 'parc') { const t = tileAt(sc, tx, ty), k = parcAt(t); if (k === 'ride') return ride(g, t) ? 'ride' : 'none'; if (k === 'game') return startGame(g, t) ? 'game' : 'none'; if (k === 'stall') return buyStall(g, t) ? 'buy' : 'none'; }
   if (tileAt(sc, tx, ty) === 'G') { g.bus.emit('toast', '🧊 Une grotte gelée, bouchée par des éboulis et de la glace. Impossible d’entrer… pour l’instant.'); return 'locked'; }

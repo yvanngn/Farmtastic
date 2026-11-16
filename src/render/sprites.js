@@ -127,12 +127,10 @@ export function drawToolPix(c, id) { const f = TOOL_PIX[id]; if (f) f(c); }
 // b bois, B bois foncé, h bois clair, s acier, S acier foncé, w reflet, g laiton, r rouge, k noir, l fil, c liège, e cuir.
 const TP = { b: '#8a5a32', B: '#5b3a22', h: '#c08a54', s: '#a8afb8', S: '#5e646e', w: '#f2f6fa', g: '#e8c26a', G: '#a8842a', r: '#d8402e', k: '#2a2228', l: '#e8eef4', c: '#f4f0e6', e: '#6a3a22' };
 const TOOL_ART = {
-  axe: [           // hache : grande lame en éventail d'un côté, dos carré de l'autre
-    '......SSs....', '.....SsssS...', '...SSsswwsS..', '..Sssswwwwss.', 'SSSBsswwwwss.', 'SsBBssswwwsS.', 'SSSBssssssS..', '...BSSssSS...',
-    '...hb.SS.....', '...hb........', '...hb........', '...hb........', '...hB........', '...hb........', '...hb........', '...eB........', '...ee........', '...eB........', '...hb........', '...BB........', '.............'],
-  pick: [          // pioche : tête en arc, deux pointes
-    '..S.......S..', '.Ss.......sS.', '.Sss.....ssS.', '..Sssw.wssS..', '...SsswssS...', '....SsBsS....', '.....hBS.....',
-    '.....hb......', '.....hb......', '.....hb......', '.....hb......', '.....hB......', '.....hb......', '.....hb......', '.....eB......', '.....ee......', '.....eB......', '.....hb......', '.....hb......', '.....BB......', '.............'],
+  axe: [           // hache (16/11) : lame verticale à gauche, tranchant clair, collier et talon autour du manche
+    '.SSS.........', 'SwssS........', 'SwssBhbBS....', 'SwssshbsS....', 'SwssBhbBS....', 'SwssShb......', '.SSS.hb......', '.....hb......', '.....hb......', '.....hb......', '.....hb......', '.....hb......', '.....hb......', '.....hb......', '.....hb......', '.....hB......', '.....hb......', '.....eB......', '.....ee......', '.....eB......', '.....ee......'],
+  pick: [          // pioche (16/11) : tête en arc au-dessus du manche, deux pointes vers le bas
+    '....SSSSS....', '..SSswwwsSS..', '.SssSBhBSssS.', 'Sss..BhB..ssS', 'Ss...hb....sS', 'S....hb.....S', '.....hb......', '.....hb......', '.....hb......', '.....hb......', '.....hb......', '.....hb......', '.....hb......', '.....hb......', '.....hb......', '.....hB......', '.....hb......', '.....eB......', '.....ee......', '.....eB......', '.....ee......'],
   hammer: [        // marteau : tête carrée d'un côté, panne fendue (arrache-clou) de l'autre
     '.............', '.............', 'SS.SSSSSSS...', 'Ss.SwwsssSS..', 'SssSwsssssS..', '.SsSssssssS..', '..SSSSSSSS...', '.....hb......',
     '.....hb......', '.....hb......', '.....hB......', '.....hb......', '.....hb......', '.....eB......', '.....ee......', '.....eB......', '.....hb......', '.....hb......', '.....BB......', '.............', '.............'],

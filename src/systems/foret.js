@@ -41,3 +41,33 @@ export function pickShroom(g, x, y) {
   if (m.size === 'l') g.bus.emit('toast', 'Un gros champignon ! 🍄');
   return id;
 }
+
+// Arbres de la forêt : on peut les couper (hache) comme à la ferme ; ils repoussent en TREE_GROW_DAYS jours.
+// Les arbres du bord restent (ils ferment la carte). État : S.foret.cut = { 'x,y': jourCoupé }, S.foret.hits = { 'x,y': coups }.
+import { TREE_GROW_DAYS } from '../data/forest.js';
+import { TREE_HP } from '../world/map.js';
+import { scatter } from './inventory.js';
+import { useEnergy } from './player.js';
+import { toolTier, hasTool } from './skills.js';
+import { energyCost } from '../data/tools.js';
+const dayN = S => (S.year - 1) * 112 + S.season * 28 + S.day;
+const W = () => LAYOUTS.foret[0].length, H = () => LAYOUTS.foret.length;
+export const isForestTree = (x, y) => x > 0 && y > 0 && x < W() - 1 && y < H() - 1 && LAYOUTS.foret[y][x] === 'T';
+export const forestCut = (S, x, y) => { const d = S.foret && S.foret.cut && S.foret.cut[key(x, y)]; return d != null && dayN(S) - d < TREE_GROW_DAYS; };
+export const forestTreeAt = (S, x, y) => S.scene === 'foret' && isForestTree(x, y) && !forestCut(S, x, y);
+export function chopForest(g, x, y) {
+  const S = g.S, k = key(x, y);
+  if (!forestTreeAt(S, x, y)) return false;
+  if (S.sel !== 'axe') { g.bus.emit('sfx', 'denied'); g.bus.emit('toast', hasTool(S, 'axe') ? 'Il faut la hache 🪓 : ouvre la roue des outils 🛠️' : 'Il me faudrait une hache pour couper ces arbres.'); return false; }
+  const tier = toolTier(S, 'axe');
+  if (!useEnergy(g, energyCost(tier))) return false;
+  S.foret ||= { day: null, shrooms: {} }; const hits = (S.foret.hits ||= {}), cut = (S.foret.cut ||= {});
+  hits[k] = (hits[k] || 0) + tier;
+  g.bus.emit('swing', 'axe'); g.bus.emit('objHit', { x, y, t: 'tree', broken: hits[k] >= TREE_HP });
+  if (hits[k] < TREE_HP) { g.bus.emit('sfx', 'chop'); return true; }
+  delete hits[k]; cut[k] = dayN(S);
+  g.bus.emit('sfx', 'break');
+  const n = 3 + (g.rnd() * 3 | 0); scatter(g, 'wood', n, x, y);
+  g.bus.emit('pop', { t: '+' + n + '🪵', x, y });
+  return true;
+}
