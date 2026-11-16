@@ -278,3 +278,4 @@ Ordre convenu : 1 mort/clignotement ✅ · 2 tente ✅ · 3 recettes (feu), baie
 - ✅ **Graphismes optimisés** (mesuré) : la nuit, la carte de lumière est calculée en basse résolution puis lissée (rendu identique à l'œil) et les lumières hors écran sont ignorées → temps de dessin de la lumière divisé par ~4 ; champignons dessinés une fois puis réutilisés.
 - ✅ **Plan de la région cohérent** : en solo, seule ta ferme apparaît (les autres emplacements sont des bois) avec un chemin propre ; en multijoueur, les 4 fermes et la croix de chemins.
 - ✅ **Centre-ville réorganisé** (34 × 32) : bâtiments espacés avec pelouses et arbres, place de la fontaine, grande rue ouest-est, rue des commerces au sud, ruelles vers chaque porte, avenue jusqu'à la villa du maire (au fond) ; Manuel marche de la villa à la place par l'avenue.
+- ✅ Plan de la région : le centre-ville y est dessiné d'après la vraie disposition (rues, place, fontaine, commerces espacés, villa au fond, arbres).

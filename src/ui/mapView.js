@@ -5,6 +5,7 @@ import { CFG } from '../config.js';
 import { ANIMALS } from '../data/animals.js';
 import { SCENES } from '../world/scenes.js';
 import { isRipe } from '../systems/farming.js';
+import { LAYOUTS, TOWN_B } from '../world/scenes.js';
 import { FARM_LOTS } from '../data/buildings.js';
 const T = CFG.T, LEVELS = [1, 1.6, 2.6, 4];
 
@@ -88,14 +89,20 @@ export function createMapView(g, renderer, audio) {
       house(x0 + w * .1, y0 + h * .82, 2.4 * u, '#4a4650', '#24212a');
       for (const f of [.04, .3, .45, .88, .95]) tree(x0 + w * f, y0 + h * .78, 1.4 * u, '#4f8a3a');
       ribbon(x0 + w * .55, y0 + h * .86, '🏘️ Quartier résidentiel', 'Luna · Franck · Hailey · Igor · Myst · clinique'); }
-    // centre-ville : pavés, toits, fontaine
-    { const x0 = X(.55), y0 = Y(.06), w = X(.75) - X(.55), h = Y(.46) - Y(.06);
-      ctx.fillStyle = '#c9c2b4'; ctx.beginPath(); ctx.roundRect(x0, y0, w, h, 2 * u); ctx.fill();
-      for (let k = 0; k < 40; k++) F('#b3aca2', x0 + rnd() * w, y0 + rnd() * h, 1.2 * u, .8 * u);
-      circ('#7fb6d9', x0 + w / 2, y0 + h * .45, 2.6 * u); circ('#bfe3f5', x0 + w / 2, y0 + h * .45, 1.2 * u);
-      for (const [fx, fy, r] of [[.2, .15, '#c8553e'], [.8, .15, '#2f5a3a'], [.2, .75, '#c98a4a'], [.5, .78, '#a83a32'], [.8, .75, '#2f5a8a']]) house(x0 + w * fx, y0 + h * fy, 2.2 * u, '#9a6a3c', r);
-      house(x0 + w * .5, y0 + h * .98, 2.2 * u, '#f4efe4', '#b8432f');
-      ribbon(x0 + w / 2, y0 + h * .3, '🏙️ Centre-ville', 'commerces · place · villa de Manuel'); }
+    // centre-ville : plan réduit de la vraie ville (34 × 32 cases) — pelouse, rues pavées, bâtiments espacés
+    { const x0 = X(.55), y0 = Y(.04), w = X(.75) - X(.55), h = Y(.48) - Y(.04), L = LAYOUTS.town, cw = w / L[0].length, ch = h / L.length;
+      ctx.fillStyle = '#a8cc78'; ctx.beginPath(); ctx.roundRect(x0, y0, w, h, 2 * u); ctx.fill();
+      for (let y = 0; y < L.length; y++) for (let x = 0; x < L[0].length; x++) if (L[y][x] === '.' || L[y][x] === 'D') F('#d2cbbd', x0 + x * cw, y0 + y * ch, cw + .5, ch + .5);
+      const COL = { M: ['#e8c26a', '#a8432f'], U: ['#8a5a32', '#3e3a44'], J: ['#9a6a3c', '#7a3a22'], A: ['#9a6a3c', '#2f5a3a'], O: ['#c98a4a', '#e0a560'], V: ['#9a6a3c', '#a83a32'], Z: ['#9a6a3c', '#2f5a8a'], W: ['#f4efe4', '#b8432f'] };
+      for (const [k, b] of Object.entries(TOWN_B)) {
+        const bx = x0 + b.x * cw, by = y0 + b.y * ch, bw = b.w * cw, bh = b.h * ch;
+        if (k === 'F') { circ('#7fb6d9', bx + bw / 2, by + bh / 2, bw * .45); circ('#bfe3f5', bx + bw / 2, by + bh / 2, bw * .2); continue; }
+        if (k === 'Q') { F('#8a5a32', bx, by, bw, bh); continue; }
+        const [wall, roof] = COL[k] || ['#9a6a3c', '#7a3a22'];
+        F('rgba(0,0,0,.2)', bx + .4 * u, by + .4 * u, bw, bh); F(wall, bx, by + bh * .4, bw, bh * .6); F(roof, bx, by, bw, bh * .45);
+      }
+      for (let y = 0; y < L.length; y++) for (let x = 0; x < L[0].length; x++) if (L[y][x] === 'T') circ('#4f8a3a', x0 + (x + .5) * cw, y0 + (y + .5) * ch, cw * .6);
+      ribbon(x0 + w / 2, y0 + h * .4, '🏙️ Centre-ville', 'commerces · place · villa de Manuel'); }
     // forêt : sapins serrés et champignons
     { const x0 = X(.79), y0 = Y(.02), w = X(.92) - X(.79), h = Y(.5) - Y(.02);
       ctx.fillStyle = '#5a9a46'; ctx.beginPath(); ctx.roundRect(x0, y0, w, h, 3 * u); ctx.fill();
