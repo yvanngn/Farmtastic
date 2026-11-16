@@ -15,9 +15,11 @@ Légende : ✅ fait · 🔨 en cours · ⏳ à faire · 💡 idée de Claude (à
 | Zone | Où | Contenu |
 |---|---|---|
 | **4 fermes des joueurs** | en haut à gauche, côte à côte, chemins en croix | chaque joueur a la sienne (emplacements Nord-Ouest, Nord-Est, Sud-Ouest, Sud-Est) ; cabane, grange, champ, gare à l'ouest |
-| **Quartier résidentiel** | au sud des fermes | maisons de Luna, Franck, Hailey, clinique, et tout au fond, à l'écart, la vieille maison de Myst ; un terrain libre |
+| **Quartier résidentiel** | au sud des fermes | maisons de Luna, Franck, Hailey (pancartes), clinique, Igor qui traîne dans la ruelle ; tout en bas à gauche, à l'écart, la vieille maison de Myst ; un terrain libre |
+| **Montagne gelée** | à l'est du quartier | froid (manteau d'hiver), lac gelé (pêche), filons, grotte bouchée |
+| **Plage** | au nord du centre-ville | mer (pêche), sable, palmiers, ponton |
 | **Centre-ville** | à l'est des fermes | place, fontaine, halle du marché, panneau, commerces, magasin d'amélioration ; **villa de Manuel** au sud de la place |
-| **Forêt** | à l'est du centre-ville (panneau « FORÊT → ») | champignons de saison (il faut un **couteau**), promenades de certains habitants |
+| **Forêt** | à l'est du centre-ville (panneau « FORÊT → », sortie est) | champignons de saison (il faut un **couteau**), promenades de certains habitants |
 | **Zone de la Caverne sombre** (« la mine ») | après la forêt | **fermée pour l'instant**, pas d'épée ; étage 1 de 15 salles prêt, d'autres étages à venir |
 
 ## 2. Personnages
@@ -29,9 +31,26 @@ Légende : ✅ fait · 🔨 en cours · ⏳ à faire · 💡 idée de Claude (à
 | **Franck** | Voisin de Luna, timide, sort peu ; traumatisme d'enfance dont on ne saura jamais rien ; un objet fabriqué par le joueur l'animera. **Il est un peu amoureux de Luna** (idée validée, à exploiter plus tard). | quartier | ✅ (objet ⏳) |
 | **Hailey** | Infirmière, fraîchement diplômée, motivée ; découvre qu'elle travaille beaucoup pour peu, que beaucoup viennent pour rien, qu'elle reçoit le surplus des urgences saturées ; de longues journées ; frise le burn-out. | clinique (7h-23h), sa maison le soir | ✅ (répliques 🆕) |
 | **Manuel** | Chef du village, « élu à l'unanimité », aime ses villageois ; **en secret** fait payer cher les impôts et en profite (vacances). Quête future : enquête. N'accueille plus le joueur. | place du centre-ville ; villa au sud | ✅ (« à refaire en partie » selon l'utilisateur) |
+| **Igor** | Forgeron. Ancien sportif de haut niveau ; cheville tordue, rêves de JO brisés. Reconverti, plutôt bon : fait de bons outils, aimerait apprendre les armes. A perdu son bijou (derrière la cabane) ; en remerciement, apprend le coffre. | traîne dans le quartier (pas de maison pour l'instant) | ✅ (répliques 🆕) |
 | Charpentier, marchand d'animaux, boulanger, boucher, poissonnier | commerces (pas encore de PNJ décrits) | centre-ville | ✅ |
 
-Règles : répliques débloquées par cœurs (10 cœurs max) ; **on n'entre chez un habitant qu'à partir de 5 cœurs**, avant on frappe et il parle à la porte. Claude livre les nouvelles répliques en liste numérotée ; les corrections s'appliquent telles quelles. Toutes les répliques sont dans `docs/DIALOGUES.md` (184, dont 25 🆕 au 15/11 au soir).
+### Liens entre les personnages
+**Ce que l'utilisateur a dit (fait foi) :**
+- **Franck → Luna** : il est un peu amoureux d'elle. Elle lui fait signe, il ose répondre ; il la trouve « gentille ». Voisins dans le quartier.
+- **Myst ↔ le village** : le village l'a toujours mis de côté (trop antisocial) ; il vit à l'écart, au fond du quartier, et se réjouit que le héros « bouscule les choses ». C'est lui qui accueille le héros à la gare.
+- **Manuel ↔ les villageois** : chef « élu à l'unanimité », il dit les aimer, mais profite en secret des impôts (vacances) → future enquête du héros.
+- **Hailey ↔ tout le monde** : elle soigne tous les habitants à la clinique ; beaucoup viennent pour rien, elle reçoit le surplus des urgences saturées ; c'est elle qui accueille le héros après un malaise.
+- **Igor ↔ le héros** : le héros lui rend son bijou ; il lui apprend un savoir-faire (le coffre).
+- **Luna ↔ le héros** : même parcours (perte d'emploi, envie de recommencer avec une ferme) — le héros a été licencié, Luna remplacée par une IA.
+
+**💡 Idées de Claude (à valider, rien n'est codé) :**
+- Luna et le héros se comprennent : une réplique où elle remarque qu'ils ont tous deux « tout recommencé ».
+- Igor forge pour Manuel (outils de la villa) et entend parler des impôts → piste pour l'enquête.
+- Myst, qui « écoute tout », est un témoin clé de l'enquête sur Manuel.
+- Hailey voit souvent Franck… ou ne l'a jamais vu (il ne sort pas) : à creuser.
+- Igor, ancien sportif, motive Franck à sortir marcher (en lien avec son traumatisme dont on ne saura rien).
+
+Règles : répliques débloquées par cœurs (10 cœurs max) ; **on n'entre chez un habitant qu'à partir de 5 cœurs**, avant on frappe et il parle à la porte. Claude livre les nouvelles répliques en liste numérotée ; les corrections s'appliquent telles quelles. Toutes les répliques sont dans `docs/DIALOGUES.md` (202, dont 43 🆕 au 16/11 au matin).
 
 ## 3. Lots de travail
 | # | Lot | État |
@@ -142,6 +161,8 @@ Mots de l'utilisateur, à respecter tels quels :
 Les listes de répliques à valider qui étaient ici ont été relues et corrigées par l'utilisateur le 15/11/2026 (soir) : elles vivent maintenant dans `docs/DIALOGUES.md` (validées dans `tools/dialogues_valides.txt`). L'accueil du chef du village a été retiré (voir Abandonné).
 
 ## 5. Contradictions et points à trancher
+- ⏳ **Canne à pêche** : donnée dès le début pour tester (`CFG.ROD_TEST`) — où l'obtenir normalement ?
+- ⏳ **Maison d'Igor** et forge : où ?
 - ⏳ **Couteau** : obligatoire pour cueillir les champignons, mais on ne peut pas encore l'obtenir. Où le trouver ?
 - ⏳ **Visiter la ferme d'un autre joueur** : chacun a sa ferme, mais ses objets ne sont pas encore partagés.
 - ⏳ **Mode en ligne** : le SQL `supabase_ferme.sql` et « Anonymous sign-ins » restent à faire côté Supabase, puis tester sur GitHub Pages.
