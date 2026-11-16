@@ -16,7 +16,9 @@ export function createRepairPanel(g) {
         const v = Math.min(need, st[k] || 0), full = v >= need;
         return `<div class="rp-row"><span>${ICON[k]} ${NAME[k]}</span><div class="rp-bar"><i style="width:${v / need * 100}%"></i></div><span class="rp-n">${full ? '<em>✔</em>' : `${v}/${need}`}</span></div>`;
       }).join('')
-      + (done ? '' : `<small>Il faut ${R.need.wood} bois et ${R.need.stone} pierres sur toi. Prends le marteau 🔨 (roue des outils) et reste appuyé sur le bâtiment.</small>`);
+      + (done ? '' : (g.S.tips && g.S.tips.hammer)
+        ? `<small>Reste : ${Object.entries(R.need).map(([k, n]) => `${Math.max(0, n - (st[k] || 0))} ${ICON[k]}`).join(' · ')}</small>`   // après la 1re fois : seulement ce qui manque
+        : `<small>Prends le marteau 🔨 (roue des outils) et reste appuyé sur le bâtiment : il prend le bois et les pierres de ton sac.</small>`);
     el.classList.toggle('done', done); el.hidden = false;
   }
   return {

@@ -126,11 +126,15 @@ export function createMenu(g, opts) {
     },
     quests(S) {
       const dn = (S.year - 1) * 112 + S.season * 28 + S.day;
-      return Object.keys(QUESTS).filter(id => dn >= (QUESTS[id].from || 0) || S.quests?.[id]).map(id => {
+      const one = id => {
         const { q, done, cur } = questProgress(S, id);
         return card(`<div class="t" style="font-size:1.1em">${q.i} <b>${q.n}</b></div><ol class="etapes">` + q.steps.map((st, i) =>
           `<li class="${done[i] ? 'fait' : i === cur ? 'encours' : 'avenir'}">${done[i] ? '✔ ' : i === cur ? '▸ ' : ''}${i <= cur || done[i] ? esc(st.t) : '???'}${st.locked && !done[i] && i === cur ? ' <small>(bientôt)</small>' : ''}</li>`).join('') + '</ol>');
-      }).join('');
+      };
+      const ids = Object.keys(QUESTS).filter(id => dn >= (QUESTS[id].from || 0) || Object.keys(S.quests?.[id] || {}).length)
+        .sort((a, b) => (QUESTS[b].order || 0) - (QUESTS[a].order || 0));   // « Premiers pas » en tête
+      const col = (t, list) => `<div><h3>${t}</h3>${list.map(one).join('') || '<p class="info">Aucune pour l’instant.</p>'}</div>`;
+      return `<div class="quetes-cols">${col('⭐ Quêtes principales', ids.filter(id => QUESTS[id].main))}${col('📋 Quêtes secondaires', ids.filter(id => !QUESTS[id].main))}</div>`;
     },
     social(S) {
       const ids = Object.keys(S.social);

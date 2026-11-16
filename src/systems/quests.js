@@ -4,7 +4,7 @@ import { isRepaired } from './repair.js';
 
 export const QUESTS = {
   ghost: {
-    n: 'Ghostbuster', i: '👻',
+    n: 'Ghostbuster', i: '👻', main: true,
     steps: [
       { id: 'n1', t: 'Un hululement dans la nuit…', done: S => !!S.quests?.ghost?.n1 },
       { id: 'n2', t: 'Un « hoooou » la nuit suivante', done: S => !!S.quests?.ghost?.n2 },
@@ -23,7 +23,7 @@ export const QUESTS = {
     ]
   },
   debut: {
-    n: 'Premiers pas', i: '🌱',
+    n: 'Premiers pas', i: '🌱', main: true, order: 9,   // quête principale (les autres sont secondaires)
     steps: [
       { id: 'tente', t: 'Ouvrir le sac 🎒, choisir la tente et « Déployer » à côté de la cabane', done: S => !!S.tent || isRepaired(S, 'house') },
       { id: 'nuit', t: 'Dès 18h il fait nuit : dormir sous la tente (sinon pas d’énergie le lendemain ; à 0 d’énergie, clinique et 10 % de frais)', done: S => !!S.quests?.debut?.dormi || isRepaired(S, 'house') },

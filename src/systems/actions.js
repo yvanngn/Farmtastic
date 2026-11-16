@@ -61,7 +61,7 @@ export function enterScene(g, to, spawn) {
 // Avant, on frappe : s'ils sont chez eux, ils viennent parler à la porte.
 export const HOME_OWNER = { luna: 'luna', franck: 'franck', hailey: 'hailey' };
 export const ENTER_HEARTS = 5;
-export const canEnterHome = (S, id) => hearts(S.social[id] || { points: 0 }) >= ENTER_HEARTS;
+export const canEnterHome = (S, id) => true;   // 16/11 : on entre dans toutes les maisons (chacune aura une pièce secrète, plus tard)
 function knock(g, id) {
   const n = g.npcs[id], home = n && n.scene === id;
   g.bus.emit('sfx', 'ui');

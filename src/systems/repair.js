@@ -24,6 +24,7 @@ export function contribute(g, id) {
     if (give > 0) { add(g, k, -give); st[k] = (st[k] || 0) + give; moved += `+${give}${k === 'wood' ? '🪵' : '🪨'} `; }
   }
   if (!moved) { g.bus.emit('sfx', 'denied'); g.bus.emit('toast', 'Il te manque du bois ou des pierres : va en chercher !'); return false; }
+  (S.tips ||= {}).hammer = true;   // l'explication « reste appuyé avec le marteau » n'est plus utile
   g.bus.emit('sfx', 'pick'); g.bus.emit('pop', { t: moved.trim(), x: (R.x0 + R.x1) / 2, y: R.y1 });
   if (isRepaired(S, id)) {
     g.bus.emit('sfx', 'levelup'); g.bus.emit('toast', `✅ ${R.n} est réparée !`); g.bus.emit('repaired', id);

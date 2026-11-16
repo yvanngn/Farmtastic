@@ -384,9 +384,13 @@ let swing = null;
       // vol en cloche depuis l'objet cassé, puis petit rebond au sol
       const k = Math.min(1, age / SCATTER_MS), fly = k < 1, ox = fly ? (d.fx + (d.x - d.fx) * k) : d.x, oy = fly ? (d.fy + (d.y - d.fy) * k) : d.y;
       const b = fly ? -Math.round(Math.sin(k * Math.PI) * 10) : age < SCATTER_MS + 250 ? -Math.round(Math.sin((age - SCATTER_MS) / 250 * Math.PI) * 2) : Math.round(Math.sin(now / 250 + d.x) * 1.5);
-      ctx.fillStyle = 'rgba(0,0,0,.25)'; ctx.fillRect(ox * T + 3, oy * T + 12, 10, 2);
-      ctx.font = '10px serif'; ctx.textAlign = 'center'; ctx.fillText(it ? it.i : '❔', ox * T + 8, oy * T + 10 + b); ctx.textAlign = 'start';
-      if (d.n > 1 && !fly) { ctx.font = 'bold 6px Georgia'; ctx.fillStyle = '#fff6e0'; ctx.fillText(d.n, d.x * T + 11, d.y * T + 15); }
+      // bien visible : ombre, pastille claire cerclée, objet plein (opaque) et un peu plus grand
+      ctx.globalAlpha = 1; ctx.fillStyle = 'rgba(0,0,0,.35)'; ctx.fillRect(ox * T + 3, oy * T + 13, 10, 2);
+      const cx = ox * T + 8, cy = oy * T + 7 + b;
+      ctx.fillStyle = '#2a2228'; ctx.beginPath(); ctx.arc(cx, cy, 6.5, 0, 7); ctx.fill();
+      ctx.fillStyle = '#fff6e0'; ctx.beginPath(); ctx.arc(cx, cy, 5.5, 0, 7); ctx.fill();
+      ctx.font = '9px serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillStyle = '#000'; ctx.fillText(it ? it.i : '❔', cx, cy + .5); ctx.textBaseline = 'alphabetic'; ctx.textAlign = 'start';
+      if (d.n > 1 && !fly) { ctx.font = 'bold 6px Georgia'; ctx.fillStyle = '#2a2228'; ctx.fillText(d.n, d.x * T + 12, d.y * T + 16); ctx.fillStyle = '#fff6e0'; ctx.fillText(d.n, d.x * T + 11, d.y * T + 15); }
     } });
     if (scene === 'grange') {
       // outils au sol (avec un éclat) et passages encore fermés

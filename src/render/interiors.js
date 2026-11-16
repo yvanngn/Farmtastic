@@ -14,6 +14,7 @@ const THEME = {
   pigsty: { floor: '#c9a66a', seam: '#a8854a', wall: '#9a6a3c', wallD: '#7a4e2a', trim: '#c99560', beam: '#4a2c18' },
   clinique: { floor: '#dfe6e4', seam: '#c4cecb', wall: '#eef4f2', wallD: '#d6e2de', trim: '#5aa8a0', beam: '#3a4a48' },
   hailey: { floor: '#c8a47a', seam: '#a8845a', wall: '#f2dce0', wallD: '#e2c4ca', trim: '#7cc8c0', beam: '#4a3a3e' },
+  myst: { floor: '#4a3a3a', seam: '#3a2c2c', wall: '#3e3848', wallD: '#2e2a36', trim: '#8a7ab0', beam: '#1c181c' },
   barn: { floor: '#d4b870', seam: '#b0944c', wall: '#b8452f', wallD: '#93321f', trim: '#f0e6d0', beam: '#4a2c18' }
 };
 

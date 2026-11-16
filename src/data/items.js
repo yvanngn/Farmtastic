@@ -36,8 +36,8 @@ export const ITEMS = {
   bonnet: { n: 'Bonnet de laine', p: 200, i: '🧢' },
   ragout: { n: 'Ragoût', p: 160, i: '🍲', eat: { e: 60, h: 10 } },
   soupe_poisson: { n: 'Soupe de poisson', p: 90, i: '🥣', eat: { e: 45 } },
-  soupe_mures: { n: 'Soupe de mûres', p: 30, i: '🥣', eat: { e: 50 } },
-  soupe_baies: { n: 'Soupe de baies', p: 25, i: '🥣', eat: { e: 50 } },
+  soupe_mures: { n: 'Soupe de mûres', p: 30, i: '🥣', eat: { e: 45 } },
+  soupe_baies: { n: 'Soupe de baies', p: 25, i: '🥣', eat: { e: 45 } },
   chest: { n: 'Coffre', p: 0, i: '📦', keep: true },             // appris auprès d'Igor ; à poser plus tard
   manteau: { n: 'Manteau d’hiver', p: 150, i: '🧥', keep: true, buy: 400 },   // protège du froid de la montagne (💡 vendu à l'étal du marché)
   barbe_papa: { n: 'Barbe à papa', p: 5, i: '🍭', eat: { e: 8 } },

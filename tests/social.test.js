@@ -166,16 +166,10 @@ test('Manuel, le chef du village : élu à l’unanimité, il aime ses villageoi
   assert.ok(CHEF.story.some(l => /villageois/.test(l.t)));
 });
 
-test('maisons des habitants : on frappe tant qu’on n’a pas 5 cœurs ; s’ils sont là, ils viennent parler à la porte', async () => {
-  const { registerNPC: reg } = await import('../src/systems/social.js');
-  const { FRANCK } = await import('../src/data/npcs.js');
+test('16/11 : on entre dans toutes les maisons, Myst compris', () => {
   const { g, S } = makeGame({ state: { minute: 600, scene: 'quartier' } });
-  reg(g, FRANCK); placeNPC(g.npcs.franck, S, OUT_FROM, OUT_TO);
-  const said = []; g.bus.on('say', d => said.push(d));
-  assert.equal(act(g, 10, 14), 'knock'); assert.equal(S.scene, 'quartier', 'la porte reste fermée');
-  assert.equal(said.length, 1, 'Franck parle à la porte');
-  S.social.franck.points = 5 * 250; g.knockT = -1e9;
   assert.equal(act(g, 10, 14), 'door'); assert.equal(S.scene, 'franck');
+  S.scene = 'quartier'; assert.equal(act(g, 5, 26), 'door'); assert.equal(S.scene, 'myst');
 });
 
 test('Igor le forgeron : il cherche son bijou (derrière la cabane) et nous apprend le coffre', async () => {
@@ -220,4 +214,14 @@ test('lot 3 : quête du coffre d’Igor pas avant le 3e jour', async () => {
   reg(g, IGOR); placeNPC(g.npcs.igor, S, OUT_FROM, OUT_TO);
   tk(g, 'igor'); assert.ok(!S.quests?.igor?.asked, 'pas de bijou le 2e jour');
   S.day = 3; S.social.igor.talked = false; tk(g, 'igor'); assert.ok(S.quests.igor.asked);
+});
+
+test('16/11 : routine de Hailey — clinique le jour, déjeuner variable, repos 1 jour sur 7', async () => {
+  const { HAILEY } = await import('../src/data/npcs.js');
+  const { routinePlace } = await import('../src/systems/social.js');
+  const at = (day, minute) => routinePlace(HAILEY, { year: 1, season: 0, day, minute });
+  assert.equal(at(1, 380), 'maison'); assert.equal(at(1, 600), 'clinique'); assert.equal(at(1, 1430), 'maison');
+  const lunch = new Set([1, 2, 3, 4, 5, 6].map(d => at(d, 740)));
+  assert.ok(lunch.size >= 2, 'le déjeuner change selon le jour');
+  assert.equal(at(7, 600), 'maison', 'jour de repos : grasse matinée'); assert.equal(at(7, 900), 'foret');
 });

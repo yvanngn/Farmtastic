@@ -26,7 +26,7 @@ Ce qu'on peut faire, ce qu'on doit faire et combien de temps ça prend, du 1er j
 | Nuits 1-2-3 : quête Ghostbuster | rester dehors après 22 h, aller voir l'esprit la 3e nuit | 5 min |
 
 **Énergie par jour** (dès le jour 2) : 100 (tente) + cueillette. 11 buissons à baies et 5 ronces à mûres (2 à 4 fruits, repoussent en 2 jours) ≈ **16 baies et 7 mûres par jour**.
-- crues : ≈ +30 ⚡ · grillées au feu : ≈ +120 ⚡ · **en soupe au chaudron : ≈ +300 ⚡** (4 baies ou 3 mûres = +50 ⚡)
+- crues : ≈ +30 ⚡ · grillées au feu : ≈ +120 ⚡ · **en soupe au chaudron : ≈ +270 ⚡** (4 baies ou 3 mûres = +45 ⚡)
 → **≈ 220 ⚡ par jour** sans chaudron, **≈ 400 ⚡** avec (tente à 100 %). On coupe aussi les arbres de la forêt.
 
 ## Ce qu'on PEUT faire sans énergie (pour remplir la journée)
@@ -51,3 +51,4 @@ Ce qu'on peut faire, ce qu'on doit faire et combien de temps ça prend, du 1er j
 - 16/11/2026 : première version (lots 1 à 4, Ghostbuster).
 - 16/11/2026 14h : cabane 80/30, grange 100/60, soupe +50 ⚡, mûres, buissons plus nombreux, étape « Faire la cuisine », tuto de la vente.
 - 16/11/2026 20h50 : tente 100 %, plage ouverte, arbres de la forêt coupables.
+- 16/11/2026 21h : soupe +45 ⚡, toutes les maisons ouvertes.

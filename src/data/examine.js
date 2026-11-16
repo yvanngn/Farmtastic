@@ -38,6 +38,7 @@ export const EXAMINE = {
     b: 'Un simple banc.',
     f: 'Des fleurs bien entretenues. Quelqu\'un en prend soin.',
     treeTown: 'Un grand arbre qui fait de l\'ombre à la place.',
+    treeForest: "Un grand arbre de la forêt. Avec la hache, je pourrais le couper… sauf ceux du bord.",
     treeWild: "Des arbres serrés. Impossible de passer par là.",
     rockWild: 'Un rocher énorme. Ma pioche ne lui ferait rien.',
     rockGrange: 'De la roche dure.',

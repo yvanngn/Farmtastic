@@ -240,7 +240,8 @@
 207. *(b)* Un simple banc.
 208. *(f)* Des fleurs bien entretenues. Quelqu'un en prend soin.
 209. *(treeTown)* Un grand arbre qui fait de l'ombre à la place.
-210. *(treeWild)* Des arbres serrés. Impossible de passer par là.
-211. *(rockWild)* Un rocher énorme. Ma pioche ne lui ferait rien.
-212. *(rockGrange)* De la roche dure.
-213. *(wallGrange)* Des planches couvertes de toiles d'araignée.
+210. *(treeForest)* Un grand arbre de la forêt. Avec la hache, je pourrais le couper… sauf ceux du bord. 🆕
+211. *(treeWild)* Des arbres serrés. Impossible de passer par là.
+212. *(rockWild)* Un rocher énorme. Ma pioche ne lui ferait rien.
+213. *(rockGrange)* De la roche dure.
+214. *(wallGrange)* Des planches couvertes de toiles d'araignée.

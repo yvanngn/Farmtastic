@@ -89,8 +89,24 @@ function alongDir(pts, t, back) {
   const a = alongPath(pts, t), b = alongPath(pts, Math.min(1, t + .02)), dx = (b.x - a.x) * (back ? -1 : 1), dy = (b.y - a.y) * (back ? -1 : 1);
   return Math.abs(dx) > Math.abs(dy) ? (dx < 0 ? 2 : 3) : (dy < 0 ? 1 : 0);
 }
+// Routine quotidienne qui varie un peu chaque jour (Hailey pour commencer). Renvoie le lieu du moment.
+// Étape : [heure, lieu] ; heure ou lieu peuvent être une liste (une variante choisie selon le jour) ;
+// un lieu « x? » n'a lieu qu'un soir sur deux (sinon on reste à l'étape d'avant).
+export const routineDay = S => (S.year - 1) * 112 + S.season * 28 + S.day;
+export function routinePlace(n, S) {
+  const d = routineDay(S), pick = (v, k) => Array.isArray(v) ? v[(d * 7 + k * 3) % v.length] : v;
+  const steps = d % 7 === 0 ? n.routine.repos : n.routine.travail;
+  let at = null;
+  steps.forEach(([h, p], k) => {
+    const from = pick(h, k); let place = pick(p, k + 1);
+    if (place.endsWith('?')) { if ((d + k) % 2) return; place = place.slice(0, -1); }
+    if (S.minute >= from) at = place;
+  });
+  return at || 'maison';
+}
 export function placeNPC(n, S, OUT_FROM, OUT_TO) {
   if (n.mystic) return placeMyst(n, S);
+  if (n.routine) { const p = n.places[routinePlace(n, S)]; n.scene = p.scene; n.x = p.x; n.y = p.y; n.walking = false; faceP(n, S); return; }
   if (n.worker) { // au travail de longues heures, sinon introuvable
     const w = n.worker, on = S.minute >= w.from && S.minute < w.to;
     n.scene = on ? w.scene : (n.home || 'none'); Object.assign(n, on ? w.at : (n.inside || w.at)); n.walking = false; n.dir = 0;

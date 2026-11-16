@@ -203,7 +203,7 @@ addEventListener('keydown', e => {
 
 $('#bSave').onclick = () => doSave(true);
 $('#bBag').onclick = () => { audio.play('ui'); menu.open(); };
-$('#bRecipes').onclick = () => { audio.play('ui'); menu.open('recettes'); };
+$('#bRecipes').onclick = () => { audio.play('ui'); menu.open('recettes', true); };   // seulement les recettes (le menu complet reste en haut)
 // Revenir au menu principal : on sauvegarde, puis on recharge le jeu sur l'écran titre (tout repart proprement, multijoueur compris).
 g.bus.on('toTitle', () => {
   if (!started) return;

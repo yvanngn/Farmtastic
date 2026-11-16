@@ -358,3 +358,36 @@ Problème repéré par l'utilisateur : énergie vide en 5-10 min, puis 10-15 min
 - ✅ Son coupé quand on cache l'onglet, ferme ou quitte la page (reprend au retour).
 - ✅ **Hache et pioche redessinées** (pioche : tête en arc, pointes vers le bas ; hache : lame verticale, tranchant clair).
 - ✅ **Arbres de la forêt coupables** à la hache (8 coups, 3-5 bois au sol) ; souche, puis repousse en 3 jours comme à la ferme. Les arbres du bord ne se coupent pas (ils ferment la carte).
+
+## Séance 16/11/2026 (21h) — v0.1.3
+- ✅ **Toutes les maisons sont ouvertes** (Luna, Franck, Hailey, et maintenant **Myst** : intérieur sombre, porte au fond de son porche). ⏳ Chaque maison aura **une pièce secrète**, à mettre en place plus tard.
+- ✅ Soupes de baies et de mûres : **+45 ⚡** (au lieu de +50).
+- ✅ Objets au sol bien visibles : pastille claire cerclée de noir, objet plein et un peu plus grand.
+- ✅ Le 📜 Menu complet reste en haut ; le bouton 🔥 près du bouton d'action n'ouvre **que les recettes**.
+- ✅ Forêt : l'arbre n'affiche plus le texte de la « table en bois » (même lettre T que la table des intérieurs).
+- ✅ Réparation au marteau : l'explication « reste appuyé » s'affiche **jusqu'au 1er coup**, ensuite seulement « Reste : X 🪵 · Y 🪨 ».
+- ✅ Quêtes en deux colonnes : **⭐ principales** (Premiers pas, Ghostbuster) / **📋 secondaires** (coffre d'Igor, Franck).
+
+## Routines quotidiennes des PNJ (commencé le 16/11 avec Hailey, 💡 à adapter par l'utilisateur)
+Principe : une journée type en étapes « à partir de telle heure → tel lieu ». Certaines heures ou certains lieux ont **plusieurs variantes**, choisies selon le jour ; une étape marquée « ? » n'a lieu qu'un jour sur deux. Données dans `src/data/npcs.js` (`places`, `routine`), moteur `routinePlace` dans `src/systems/social.js`. À faire ensuite pour tous les personnages.
+
+### Hailey (infirmière, fatiguée, travaille beaucoup)
+**Jour de travail (6 jours sur 7)**
+| Heure | Où | Variation |
+|---|---|---|
+| 6 h – 7 h | chez elle | — |
+| 7 h – 12 h | clinique | — |
+| 12 h – 13 h | **déjeuner** | selon le jour : banc de la place du centre-ville, devant chez elle (perron), ou reste à la clinique (jour chargé) |
+| 13 h – fin | clinique | fin de service **20 h, 21 h ou 22 h** selon le jour |
+| fin – + 30 min | devant chez elle (perron) | un soir sur deux ; sinon elle rentre directement |
+| ensuite | chez elle (dort) | rentre à 20 h 30, 21 h 30 ou 22 h 30 |
+
+**Jour de repos (1 jour sur 7 : jours 7, 14, 21, 28)**
+| Heure | Où |
+|---|---|
+| 6 h – 14 h | chez elle (grasse matinée) |
+| 14 h – 17 h | balade en forêt |
+| 17 h – 18 h 30 | devant chez elle |
+| 18 h 30 → | chez elle |
+
+Remarque : si le joueur s'effondre pendant son jour de repos ou la nuit, il se réveille quand même à la clinique soigné par Hailey (à revoir si on veut être cohérent).

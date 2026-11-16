@@ -180,7 +180,20 @@ export const MYST = {
 export const HAILEY = {
   id: 'hailey', name: 'Hailey', de: "d'elle", color: '#7cc8c0', voice: 'voiceLuna',
   look: { body: 'f', bottom: 'pant', skin: '#f3d0b4', hair: 1, hairC: '#c8843a', shirt: '#8fd0c8', pants: '#6fb4ac' },   // tenue d'infirmière turquoise 💡
-  home: 'hailey', inside: { x: 3.5, y: 3.7 }, worker: { scene: 'clinique', at: { x: 6.5, y: 3.7 }, from: 420, to: 1380 },   // de 7h à 23h (💡) : de très longues journées
+  home: 'hailey', inside: { x: 3.5, y: 3.7 },
+  // Routine quotidienne (16/11, 💡 à adapter par l'utilisateur) : elle varie un peu chaque jour (voir docs/CARNET.md).
+  // Lieux nommés, puis la journée : [heure de début, lieu]. Les variantes sont choisies selon le jour.
+  places: {
+    maison: { scene: 'hailey', x: 3.5, y: 3.7 }, clinique: { scene: 'clinique', x: 6.5, y: 3.7 },
+    perron: { scene: 'quartier', x: 25.5, y: 15.8 }, place: { scene: 'town', x: 13.5, y: 6.2 },
+    foret: { scene: 'foret', x: 18.5, y: 12.5 }
+  },
+  routine: {
+    // jour de travail (6 jours sur 7) : déjeuner et fin de journée changent selon le jour
+    travail: [[360, 'maison'], [420, 'clinique'], [720, ['place', 'perron', 'clinique']], [780, 'clinique'], [[1200, 1260, 1320], 'perron?'], [[1230, 1290, 1350], 'maison']],
+    // jour de repos (1 jour sur 7) : grasse matinée, balade en forêt l'après-midi, soirée au calme
+    repos: [[360, 'maison'], [840, 'foret'], [1020, 'perron'], [1110, 'maison']]
+  },
   traits: ['Infirmière', 'Fraîchement diplômée', 'Motivée', 'Travaille beaucoup', 'Fatiguée'],
   taste: { adore: [], aime: ['berry_cooked', 'lavande'], naime: ['slime'], deteste: [] },   // 💡 un petit quelque chose qui réconforte
   story: [

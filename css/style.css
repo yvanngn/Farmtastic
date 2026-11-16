@@ -380,3 +380,8 @@ body:not([data-nrj="haut"]) #hEnBar, body:not([data-nrj="haut"]) #hud .lbl:first
 .pg-cur { position: absolute; top: -2px; bottom: -2px; width: 6px; border-radius: 3px; background: #fff; box-shadow: 0 0 6px #fff }
 #pgScore { min-height: 1.2em; text-align: center; font-size: 18px }
 body.admin #bSet::after { content: '🛠️'; position: absolute; font-size: 11px; transform: translate(10px, -12px); }
+
+/* Quêtes : principales à gauche, secondaires à droite (une colonne sur téléphone en portrait) */
+.quetes-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; align-items: start }
+.quetes-cols h3 { margin-top: 0 }
+@media (max-width: 600px) { .quetes-cols { grid-template-columns: 1fr } }

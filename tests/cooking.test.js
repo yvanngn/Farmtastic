@@ -60,7 +60,7 @@ test('16/11 : mûres sur les ronces, soupe de baies à +50 ⚡, tuto de la vente
   const { add } = await import('../src/systems/inventory.js');
   const { g, S } = (await import('./helpers.js')).makeGame({ state: { scene: 'farm', bushes: {}, tips: { berry: true }, inv: {} } });
   const [x, y] = BUSHES.find(b => b[2] === 'mure'); assert.ok(pickBush(g, x, y) > 0); (await import('./helpers.js')).ramasse(g); assert.ok(S.inv.mure > 0);
-  assert.equal(ITEMS.soupe_baies.eat.e, 50);
+  assert.equal(ITEMS.soupe_baies.eat.e, 45);
   const said = []; g.bus.on('say', d => said.push(d));
   add(g, 'wood', 3); add(g, 'stone', 1);
   assert.equal(said.length, 1); assert.ok(said[0].lines.some(l => /bac de vente/.test(l)));
