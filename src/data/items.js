@@ -57,7 +57,8 @@ export const TOOLS = [
   { id: 'sickle', n: 'Faucille', i: '🔪' },
   { id: 'shovel', n: 'Pelle', i: '🪏' },
   { id: 'sword', n: 'Épée', i: '🗡️' },
-  { id: 'rod', n: 'Canne à pêche', i: '🎣' }
+  { id: 'rod', n: 'Canne à pêche', i: '🎣' },
+  { id: 'hammer', n: 'Marteau', i: '🔨' }
 ];
 
 // Fleurs sauvages (💡 espèces et prix) : 3 par saison, la 3e plus rare. Serviront aux potions et à l'alchimie.

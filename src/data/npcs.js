@@ -155,6 +155,7 @@ export const MYST = {
     "Tiens, voici le plan. Tu le retrouveras avec le bouton 🗺️, en haut à droite. Le quartier résidentiel est au sud : c'est là que j'habite, tout au fond.",
     "Ta cabane ne tiendra pas la nuit. Ouvre ton sac 🎒, choisis la tente et appuie sur « Déployer », juste à côté de la cabane.",
     "Si tu te demandes quoi faire, ta liste des tâches 📜, en haut à droite, te le dira.",
+    "Et pense à prendre le bon outil dans ta roue 🛠️ avant de t'attaquer à quelque chose. Pour la cabane, c'est le marteau.",
     "Pour réparer la cabane, il te faudra du bois et des pierres. On peut couper les arbres… J'ai cru voir un outil pour ça, dans les environs.",
     "Et pour les pierres, il y a une vieille pioche abandonnée, quelque part du côté de la grange.",
     "Ça leur fera du bien, qu'on bouscule un peu les choses. … Bon. À plus tard."

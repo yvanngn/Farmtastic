@@ -17,7 +17,7 @@ export function defaultState() {
     scene: 'farm', invSlots: CFG.INV_SLOTS, stackLvl: 0, rockQueue: [],
     village: { done: [], progress: 0 }, festival: null, caravan: { tokens: 0, unlocked: [] },
     skills: { mining: { xp: 0 } },
-    tools: {},                       // aucun outil au départ : ils sont dans la grange
+    tools: { hammer: 1 },            // seulement le marteau au départ (réparations) ; les autres outils se trouvent
     intro: { met: true, myst: 'wait', arrived: false },   // arrivée en train ; Myst attend sur le quai et accueille le joueur
     repair: { house: { wood: 0, stone: 0 }, grange: { wood: 0, stone: 0 } },   // cabane et grange délabrées au début
     tilled: {},
@@ -38,6 +38,7 @@ export function migrate(raw) {
   s.look = Object.assign(d.look, raw.look || {});
   // Avant le lot 8, on avait tous les outils et pas d'accueil : on garde ça pour les anciennes parties.
   s.tools = raw.tools ? { ...raw.tools } : { axe: 1, pick: 1, sickle: 1, sword: 1 };
+  if (!s.tools.hammer) s.tools.hammer = 1;   // tout le monde a un marteau
   if (!raw.intro) s.intro = { met: true };
   // Avant la cabane à rafistoler : tout était déjà debout, Myst déjà passé.
   if (raw.bed === undefined) s.bed = true;   // anciennes parties : le lit existait déjà

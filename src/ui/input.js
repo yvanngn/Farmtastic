@@ -31,7 +31,7 @@ export function createInput(cv, g, renderer, { isActive, onMenu }) {
     }
     if (repairAt(S, tx, ty)) { // rester appuyé sur un bâtiment délabré : dépôt continu
       clearInterval(hold);
-      hold = setInterval(() => { if (repairAt(g.S, tx, ty) && Math.hypot(tx + .5 - g.S.x, ty + .5 - g.S.y) < 3.2) act(g, tx, ty); }, 160);
+      hold = setInterval(() => { if (repairAt(g.S, tx, ty) && Math.hypot(tx + .5 - g.S.x, ty + .5 - g.S.y) < 3.2) act(g, tx, ty); }, 420);   // un coup de marteau toutes les 0,4 s
     }
     dragMode = farmAction(g, tx, ty);
     if (!dragMode) g.player.target = { tx, ty, reach: isHouse(tx, ty) || isGrange(tx, ty) ? 2.5 : 1.4 };

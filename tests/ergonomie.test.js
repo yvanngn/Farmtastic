@@ -1,31 +1,18 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { makeGame } from './helpers.js';
-import { smartTool } from '../src/systems/actions.js';
 import { hitObject } from '../src/systems/resources.js';
 import { harvest, plant } from '../src/systems/farming.js';
 import { migrate } from '../src/core/state.js';
 
-test('action intelligente : bon outil selon la cible', () => {
-  const { g, S, clock } = makeGame();
-  S.objs['30,20'] = { t: 'tree', hp: 3 }; S.objs['31,20'] = { t: 'rock', hp: 2 };
-  assert.equal(smartTool(g, 30, 20), 'axe');
-  assert.equal(smartTool(g, 31, 20), 'pick');
-  plant(g, 5, 9, 'wheat_seed'); clock.t += 61_000;
-  S.sel = 'axe';
-  assert.equal(smartTool(g, 5, 9), 'sickle', 'récolte mûre');
-  assert.equal(smartTool(g, 0, 0), 'hand', 'rien devant : on range la hache');
+test('pas de choix automatique : devant un arbre, il faut prendre la hache soi-même', async () => {
+  const { act } = await import('../src/systems/actions.js');
+  const { g, S, toasts } = makeGame({ state: { sel: 'hand', tools: { axe: 1, pick: 1, hammer: 1 } } });
+  S.objs['30,20'] = { t: 'tree', k: 'oak', g: 3, hp: 8 };
+  act(g, 30, 20); assert.equal(S.objs['30,20'].hp, 8, 'rien ne se passe');
+  assert.match(toasts().at(-1), /roue des outils/);
+  S.sel = 'axe'; act(g, 30, 20); assert.ok(S.objs['30,20'].hp < 8);
 });
-
-test('action intelligente : un objet tenu est gardé, sauf devant un arbre ou un monstre', () => {
-  const { g, S } = makeGame({ state: { sel: 'hay' } });
-  assert.equal(smartTool(g, 5, 9), 'hay');
-  S.objs['30,20'] = { t: 'tree', hp: 3 };
-  assert.equal(smartTool(g, 30, 20), 'axe');
-  g.enemies.push({ x: S.x + 1, y: S.y, hp: 100 });
-  assert.equal(smartTool(g, 5, 9), 'sword');
-});
-
 test('coup sur un arbre : animation d’outil et impact émis', () => {
   const { g, S } = makeGame();
   const seen = [];

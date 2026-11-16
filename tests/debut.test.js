@@ -3,7 +3,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { makeGame } from './helpers.js';
 import { defaultState, migrate } from '../src/core/state.js';
-import { act, smartTool } from '../src/systems/actions.js';
+import { act } from '../src/systems/actions.js';
 import { hasTool, canUpgrade } from '../src/systems/skills.js';
 import { autoPickup, PICKUPS } from '../src/systems/grange.js';
 import { registerNPC, placeNPC } from '../src/systems/social.js';
@@ -14,7 +14,7 @@ const start = (extra = {}) => makeGame({ state: { tools: {}, intro: { met: false
 
 test('nouvelle partie : aucun outil, arrivée en train, cabane et grange délabrées', () => {
   const S = defaultState();
-  assert.deepEqual(S.tools, {});
+  assert.deepEqual(S.tools, { hammer: 1 }, 'seulement le marteau');
   assert.equal(S.intro.arrived, false);
   assert.ok(isPlatform(Math.floor(S.x), Math.floor(S.y)), 'sur le quai de la gare');
   assert.equal(isRepaired(S, 'house'), false);
@@ -25,7 +25,6 @@ test('nouvelle partie : aucun outil, arrivée en train, cabane et grange délabr
 test('sans hache : on ne coupe pas, et pas d’indice précis sur l’emplacement', () => {
   const { g, S, toasts } = start({ sel: 'hand' });
   S.objs['30,20'] = { t: 'tree', k: 'oak', g: 3, hp: 3 };
-  assert.equal(smartTool(g, 30, 20), 'hand');
   S.x = 30.5; S.y = 21.5; S.dir = 1;
   act(g, 30, 20);
   assert.match(toasts().at(-1), /outil pour couper/);
@@ -124,12 +123,12 @@ import { LAYOUTS as LAY } from '../src/world/scenes.js';
 const ruined0 = () => ({ repair: { house: { wood: 0, stone: 0 }, grange: { wood: 0, stone: 0 } }, intro: { met: true, myst: false, arrived: true } });
 
 test('cabane délabrée : on ne peut pas entrer, on dépose bois et pierres jusqu’à remplir les jauges', () => {
-  const { g, S, toasts } = start({ ...ruined0(), inv: { wood: 30, stone: 3 } });
+  const { g, S, toasts } = start({ ...ruined0(), inv: { wood: 30, stone: 3 }, sel: 'hammer' });
   S.x = 5.5; S.y = 6.6;
   assert.equal(repairNear(S), 'house', 'la fenêtre des besoins s’affiche devant');
   assert.equal(act(g, 5, 4), 'repair', 'la porte ne s’ouvre pas : on dépose');
   assert.equal(S.scene, 'farm');
-  assert.deepEqual(S.repair.house, { wood: REPAIR_STEP, stone: 3 });
+  assert.deepEqual(S.repair.house, { wood: 1, stone: 1 }, 'un seul bois et une seule pierre par coup : c’est lent');
   assert.equal(S.inv.wood, 30 - REPAIR_STEP);
   while (S.inv.wood) act(g, 3, 2);
   assert.equal(act(g, 3, 2), 'missing'); assert.match(toasts().at(-1), /manque/);
@@ -141,7 +140,7 @@ test('cabane délabrée : on ne peut pas entrer, on dépose bois et pierres jusq
 });
 
 test('grange délabrée : fermée jusqu’à sa réparation', () => {
-  const { g, S } = start({ ...ruined0(), inv: {} });
+  const { g, S } = start({ ...ruined0(), inv: {}, sel: 'hammer' });
   assert.equal(act(g, 12, 4), 'missing');
   assert.equal(S.scene, 'farm');
   S.repair.grange = { ...REPAIRS.grange.need };
@@ -216,4 +215,10 @@ test('champignons : sans couteau, le héros préfère ne pas les cueillir à la 
   assert.equal(pick(g, 5, 5), false);
   assert.ok(S.foret.shrooms['5,5'], 'il reste par terre');
   assert.match(toasts().at(-1), /idée reçue/);
+});
+
+test('réparer demande le marteau', () => {
+  const { g, S } = start({ ...ruined0(), inv: { wood: 5, stone: 5 }, sel: 'hand' });
+  assert.equal(act(g, 3, 2), 'needHammer'); assert.equal(S.repair.house.wood, 0);
+  S.sel = 'hammer'; assert.equal(act(g, 3, 2), 'repair');
 });

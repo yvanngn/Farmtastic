@@ -44,7 +44,7 @@ import { consume } from './systems/player.js';
 import { ensureOrders } from './systems/market.js';
 import { ITEMS } from './data/items.js';
 import { updatePlayer } from './systems/movement.js';
-import { act, smartTool } from './systems/actions.js';
+import { act } from './systems/actions.js';
 import { tickTime } from './systems/time.js';
 import { wander } from './systems/animals.js';
 import { rainBoost } from './systems/farming.js';
@@ -175,7 +175,7 @@ function doAction() {
   const S = g.S;
   const ft = facingTile(S);
   if (findNPCAt(g, ft.tx, ft.ty)) { act(g, ft.tx, ft.ty); return; } // parler / offrir avant de manger
-  S.sel = smartTool(g, ft.tx, ft.ty);
+  // plus de choix automatique : on prend soi-même le bon outil dans la roue 🛠️
   if (S.sel === 'sword' && ['farm', 'wild'].includes(S.scene || 'farm')) {
     const en = g.enemies.reduce((b, e) => { const d = Math.hypot(e.x - S.x, e.y - S.y); return d < 1.8 && (!b || d < b.d) ? { e, d } : b; }, null);
     if (en) { attack(g, en.e); return; }

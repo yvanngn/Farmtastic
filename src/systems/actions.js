@@ -24,7 +24,7 @@ import { findNPCAt, talk, gift, hearts } from './social.js';
 import { add } from './inventory.js';
 import { TOOL_FOR } from './resources.js';
 
-const TOOL_IDS = ['hand', 'axe', 'pick', 'sickle', 'shovel', 'sword', 'rod'];
+const TOOL_IDS = ['hand', 'axe', 'pick', 'sickle', 'shovel', 'sword', 'rod', 'hammer'];
 const own = (S, t) => (hasTool(S, t) ? t : 'hand');
 // Choisit l'outil adapté à la cible. Un objet tenu (graine, foin…) est gardé, sauf devant un arbre/rocher/monstre.
 export function smartTool(g, tx, ty) {
@@ -97,7 +97,7 @@ function act0(g, tx, ty) {
   { const b = pickBush(g, tx, ty); if (b != null) return b ? 'berries' : 'empty'; }
   if (S.sel === 'campfire' && sc === 'farm') return placeFire(g, tx, ty) ? 'fire' : 'missing';
   if (S.sel === 'tent' && sc === 'farm' && !npc) return pitchTent(g, tx, ty) ? 'pitch' : 'missing';
-  { const rp = repairAt(S, tx, ty); if (rp) return contribute(g, rp) ? 'repair' : 'missing'; }
+  { const rp = repairAt(S, tx, ty); if (rp) { if (S.sel !== 'hammer') { g.bus.emit('sfx', 'denied'); g.bus.emit('toast', '🔨 Prends le marteau dans la roue des outils 🛠️ pour réparer.'); return 'needHammer'; } return contribute(g, rp) ? 'repair' : 'missing'; } }
   if (digTreasure(g, tx, ty)) return 'treasure';
   if (pickFlower(g, tx, ty)) return 'pick';
   { const N = natureAt(S, sc); if (N && N.rocks[key(tx, ty)]) return hitNature(g, tx, ty) ? 'hit' : 'none'; }

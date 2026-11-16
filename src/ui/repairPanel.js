@@ -16,7 +16,7 @@ export function createRepairPanel(g) {
         const v = Math.min(need, st[k] || 0), full = v >= need;
         return `<div class="rp-row"><span>${ICON[k]} ${NAME[k]}</span><div class="rp-bar"><i style="width:${v / need * 100}%"></i></div><span class="rp-n">${full ? '<em>✔</em>' : `${v}/${need}`}</span></div>`;
       }).join('')
-      + (done ? '' : `<small>Il faut ${R.need.wood} bois et ${R.need.stone} pierres sur toi. Reste appuyé sur le bâtiment pour les déposer.</small>`);
+      + (done ? '' : `<small>Il faut ${R.need.wood} bois et ${R.need.stone} pierres sur toi. Prends le marteau 🔨 (roue des outils) et reste appuyé sur le bâtiment.</small>`);
     el.classList.toggle('done', done); el.hidden = false;
   }
   return {
