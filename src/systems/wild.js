@@ -1,5 +1,6 @@
 // Zone de combat (Caverne sombre, la « mine ») : salles façon Zelda Game Boy, monstres par salle,
 // cochons qui tirent, cailloux à minerais. Logique pure : pas de DOM ni de hasard direct.
+import { ADMIN } from './admin.js';
 import { isSolid, key } from '../world/map.js';
 import { LAYOUTS } from '../world/scenes.js';
 import { add } from './inventory.js';
@@ -10,7 +11,7 @@ import { CFG } from '../config.js';
 import { MINING_GAIN, energyCost } from '../data/tools.js';
 
 export const roomOf = (x, y) => (Math.floor(y / ROOM_H) * ROOMS_X + Math.floor(x / ROOM_W));
-export const isOpen = S => CFG.CAVE_OPEN && (!!S.wildOpen || CFG.ACCES_TEST);
+export const isOpen = S => ADMIN.on || (CFG.CAVE_OPEN && (!!S.wildOpen || CFG.ACCES_TEST));
 
 // TEST : une épée posée devant le portail, à ramasser dès le début.
 export const TEST_SWORD = { x: 45, y: 18 };

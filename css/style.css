@@ -378,3 +378,4 @@ body:not([data-nrj="haut"]) #hEnBar, body:not([data-nrj="haut"]) #hud .lbl:first
 .pg-zone { position: absolute; top: 0; bottom: 0; background: linear-gradient(#ffe28a, #c9a330) }
 .pg-cur { position: absolute; top: -2px; bottom: -2px; width: 6px; border-radius: 3px; background: #fff; box-shadow: 0 0 6px #fff }
 #pgScore { min-height: 1.2em; text-align: center; font-size: 18px }
+body.admin #bSet::after { content: '🛠️'; position: absolute; font-size: 11px; transform: translate(10px, -12px); }

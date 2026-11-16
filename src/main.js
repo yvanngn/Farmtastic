@@ -9,7 +9,7 @@ import { createMenu } from './ui/menu.js';
 import { createCustomizer } from './ui/customize.js';
 import { createInput } from './ui/input.js';
 import { createAudio } from './audio/audio.js';
-import { createSettingsPanel } from './ui/settingsPanel.js';
+import { createSettingsPanel, adminSaved } from './ui/settingsPanel.js';
 import { $, toast } from './ui/dom.js';
 import { createControls } from './ui/controls.js';
 import { createWheel } from './ui/wheel.js';
@@ -46,6 +46,7 @@ import { ensureOrders } from './systems/market.js';
 import { ITEMS } from './data/items.js';
 import { updatePlayer } from './systems/movement.js';
 import { act } from './systems/actions.js';
+import { ADMIN, setAdmin } from './systems/admin.js';
 import { tickTime } from './systems/time.js';
 import { wander } from './systems/animals.js';
 import { rainBoost } from './systems/farming.js';
@@ -67,7 +68,8 @@ const cv = $('#game');
 const renderer = createRenderer(cv, g);
 let store = null; try { store = localStorage; } catch { /* stockage bloqué */ }
 const audio = createAudio(g, store);
-const settingsPanel = createSettingsPanel(audio);
+const settingsPanel = createSettingsPanel(audio, g);
+if (adminSaved()) { ADMIN.on = true; document.body.classList.add('admin'); }
 const wheel = createWheel(g, audio);
 const invGrid = createInventoryGrid(g, audio);
 const sellPanel = createSellPanel(g, audio);
@@ -205,7 +207,8 @@ $('#bSet').onclick = () => { audio.play('ui'); settingsPanel.open(); };
 $('#bMap').onclick = () => { audio.play('ui'); mapView.open(); };
 
 async function begin() {
-  if (CFG.ROD_TEST && !g.S.tools.rod) g.S.tools = { ...g.S.tools, rod: 1 };   // TEST : canne à pêche dès le début
+  if (!ADMIN.on && g.S.tools.rod && !g.S.rodFound) { const t = { ...g.S.tools }; delete t.rod; g.S.tools = t; }   // plus de canne de test
+  if (ADMIN.on) setAdmin(g, true);
   // le chemin vers le village doit rester libre (anciennes sauvegardes)
   for (const k in g.S.objs) { const [x, y] = k.split(',').map(Number); if (isPath(x, y) || isGate(x, y) || isLunaLot(x, y)) delete g.S.objs[k]; }
   for (const [x, y] of BUSHES) delete g.S.objs[x + ',' + y];   // les buissons à baies gardent leur place

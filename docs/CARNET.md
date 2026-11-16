@@ -315,3 +315,5 @@ Ordre convenu : 1 mort/clignotement ✅ · 2 tente ✅ · 3 recettes (feu), baie
 ## Séance 16/11/2026 — outils et bordures
 - Outils redessinés en grandes icônes détaillées (hache, pioche, marteau, pelle, épée, canne, faucille).
 - Bordures infranchissables avec décor : barrière en bois au nord de la ferme, falaise rocheuse à l'ouest, haies à l'est ; en ville, gros arbres et haies sur les bords (sauf les sorties).
+- Canne à pêche retirée du départ (source à définir) ; chemin de la plage barré (`S.seaOpen`, ouverture à définir).
+- Mode test (⚙ Réglages, code GEMINI, mémorisé sur l'appareil) : tous les outils, plage et caverne ouvertes, vitesse ×3, un appui ferme toute une discussion. Badge 🛠️ sur le bouton ⚙.

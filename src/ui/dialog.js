@@ -2,6 +2,7 @@
 // texte lisible, ▸ qui clignote. Clic / Espace / Entrée = suite ; Échap ou « Passer » = fermer.
 // Une question affiche ses réponses en boutons (touches 1, 2, 3) : il faut répondre.
 import { $ } from './dom.js';
+import { ADMIN } from '../systems/admin.js';
 
 export function createDialog(g, audio) {
   const box = $('#dlg'), nameEl = $('#dlgName'), textEl = $('#dlgText'), choicesEl = $('#dlgChoices');
@@ -30,13 +31,13 @@ export function createDialog(g, audio) {
     const b = e.target.closest('[data-c]');
     if (b) return pick(+b.dataset.c);
     if (cur && cur.choices) return; // il faut répondre
-    if (e.target.id === 'dlgSkip') close(); else next();
+    if (e.target.id === 'dlgSkip' || ADMIN.on) close(); else next();
   });
   addEventListener('keydown', e => {
     if (!cur) return;
     if (cur.choices) { const i = +e.key - 1; if (i >= 0 && i < cur.choices.length) { e.preventDefault(); e.stopImmediatePropagation(); pick(i); } else if (e.key === ' ' || e.key === 'Enter' || e.key === 'Escape') { e.preventDefault(); e.stopImmediatePropagation(); } return; }
     if (e.key === 'Escape') { e.preventDefault(); e.stopImmediatePropagation(); close(); }
-    else if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); e.stopImmediatePropagation(); next(); }
+    else if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); e.stopImmediatePropagation(); ADMIN.on ? close() : next(); }
   }, true);
   return { get isOpen() { return !!cur; } };
 }

@@ -3,6 +3,8 @@ import { $ } from './dom.js';
 import { setVolume, toggle } from '../audio/settings.js';
 import { ORIENTS, getOrient, setOrient, goFullscreen, exitFullscreen } from './screen.js';
 import { toast } from './dom.js';
+import { ADMIN, setAdmin, checkCode } from '../systems/admin.js';
+export const adminSaved = () => { try { return localStorage.getItem('ferme_admin') === '1'; } catch { return false; } };
 
 const CH = [
   { k: 'music', label: 'Musique', on: '🎵', off: '🔇' },
@@ -14,7 +16,7 @@ export const ZOOMS = { 9: 'Proche', 12: 'Normal', 15: 'Loin' };
 export const ZOOM_DEFAULT = 12;   // un peu plus large qu'avant (10)
 export function getZoom() { try { const v = +localStorage.getItem('ferme_zoom'); return ZOOMS[v] ? v : ZOOM_DEFAULT; } catch { return ZOOM_DEFAULT; } }
 function setZoom(v) { try { localStorage.setItem('ferme_zoom', v); } catch {} window.dispatchEvent(new Event('ferme-zoom')); }
-export function createSettingsPanel(audio) {
+export function createSettingsPanel(audio, g) {
   const body = $('#setBody');
   function render() {
     const s = audio.settings;
@@ -29,7 +31,10 @@ export function createSettingsPanel(audio) {
         <div class="row">${Object.entries(ORIENTS).map(([k, v]) => `<button data-orient="${k}" class="${getOrient() === k ? 'on' : ''}">${v}</button>`).join('')}</div>
         <div class="row"><button data-fs="1" class="primaire">⛶ Plein écran</button>${document.fullscreenElement ? '<button data-fs="0">Quitter</button>' : ''}</div>
         <div class="row"><span>🔍 Zoom</span>${Object.entries(ZOOMS).map(([k, v]) => `<button data-zoom="${k}" class="${getZoom() === +k ? 'on' : ''}">${v}</button>`).join('')}</div>
-        <small>Le verrouillage de l'orientation marche en plein écran sur Android. Sur iPhone : Partager → « Sur l'écran d'accueil ».</small></div>`;
+        <small>Le verrouillage de l'orientation marche en plein écran sur Android. Sur iPhone : Partager → « Sur l'écran d'accueil ».</small></div>
+      <div class="ecran"><b>🛠️ Mode test</b>
+        <div class="row">${ADMIN.on ? '<span>Activé : tous les outils et passages, vitesse ×3, un appui passe une discussion.</span><button data-admin="0">Désactiver</button>'
+          : '<input id="admCode" type="password" placeholder="Code" autocomplete="off" style="width:7em"><button data-admin="1">Activer</button>'}</div></div>`;
   }
   body.addEventListener('input', e => {
     const k = e.target.dataset.vol; if (!k) return;
@@ -44,6 +49,12 @@ export function createSettingsPanel(audio) {
     if (d.zoom) { setZoom(+d.zoom); audio.play('ui'); render(); return; }
     if (d.fs === '1') { toast(await goFullscreen()); render(); return; }
     if (d.fs === '0') { exitFullscreen(); setTimeout(render, 200); return; }
+    if (d.admin) {
+      const on = d.admin === '1';
+      if (on && !checkCode($('#admCode').value)) { toast('Code incorrect.'); return; }
+      setAdmin(g, on); try { localStorage.setItem('ferme_admin', on ? '1' : '0'); } catch {}
+      document.body.classList.toggle('admin', on); toast(on ? '🛠️ Mode test activé' : 'Mode test désactivé'); render(); return;
+    }
     const k = d.mute; if (!k) return;
     audio.update(s => toggle(s, k)); render(); audio.play('ui');
   });
