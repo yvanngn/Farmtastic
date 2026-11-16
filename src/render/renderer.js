@@ -71,7 +71,7 @@ function drawRainbow(c, fx, fy, minute, R) {
 import { buildGround, drawWaterShimmer, LIGHTS, drawSoil } from './ground.js';
 import { drawChar, drawTree, drawRock, drawCrop, drawAnimal, drawSlime, drawSwing, treeSprite, KIND_SPRITE } from './sprites.js';
 import { buildInterior } from './interiors.js';
-import { buildQuartier, buildTown, TOWN_LIGHTS } from './town.js';
+import { buildBiome, buildQuartier, buildTown, TOWN_LIGHTS } from './town.js';
 import { PICKUPS, isBroken } from '../systems/grange.js';
 import { buildWild, drawMob, drawZRock, drawShroom } from './wild.js';
 import { MUSHROOMS } from '../data/items.js';
@@ -202,7 +202,7 @@ let swing = null;
     const scene = S.scene || 'farm', outside = scene === 'farm', sky = outside || !!SCENES[scene].outdoor, SC = SCENES[scene];
     if (scene === 'house' && cacheScene === 'house' && cache !== interiors['house' + !!S.workbench + (S.bed !== false)]) cacheScene = ''; // établi réparé
     if (cacheSeason !== S.season || cacheScene !== scene) {
-      cache = outside ? farmGround() : scene === 'wild' ? (interiors['wild' + S.season] ||= buildWild(S.season)) : scene === 'foret' ? (interiors['foret' + S.season] ||= buildWild(S.season, 'foret')) : scene === 'town' ? (interiors['town' + S.season] ||= buildTown(S.season)) : scene === 'quartier' ? (interiors['quartier' + S.season] ||= buildQuartier(S.season)) : (scene === 'house' ? (interiors['house' + !!S.workbench + (S.bed !== false)] ||= buildInterior(scene, S)) : (interiors[scene] ||= buildInterior(scene, S)));
+      cache = outside ? farmGround() : scene === 'wild' ? (interiors['wild' + S.season] ||= buildWild(S.season)) : scene === 'foret' ? (interiors['foret' + S.season] ||= buildWild(S.season, 'foret')) : scene === 'town' ? (interiors['town' + S.season] ||= buildTown(S.season)) : scene === 'quartier' ? (interiors['quartier' + S.season] ||= buildQuartier(S.season)) : (scene === 'montagne' || scene === 'plage') ? (interiors[scene] ||= buildBiome(scene, S.season)) : (scene === 'house' ? (interiors['house' + !!S.workbench + (S.bed !== false)] ||= buildInterior(scene, S)) : (interiors[scene] ||= buildInterior(scene, S)));
       if (cacheSeason !== S.season) initWeather();
       cacheSeason = S.season; cacheScene = scene;
     }
@@ -300,6 +300,18 @@ let swing = null;
         } });
       }
     }
+    if (g.fishing) list.push({ z: 9996, d: () => { // ligne, bouchon, ombre du poisson qui tourne (façon Zelda) puis « ! »
+      const F = g.fishing, bx = F.x * T + 8, by = F.y * T + 8, hx = S.x * T + (S.dir === 2 ? -6 : 6), hy = S.y * T - 18;
+      const t = now / 1000, bob = F.phase === 'bite' ? 3 : Math.round(Math.sin(t * 3) * 1);
+      if (F.fish && F.phase === 'wait') { const left = Math.max(0, (F.bite - now) / 4000), ang = t * 1.6, rad = 6 + left * 22;   // l'ombre se rapproche en tournant
+        ctx.fillStyle = 'rgba(10,20,40,.35)'; ctx.beginPath(); ctx.ellipse(bx + Math.cos(ang) * rad, by + Math.sin(ang) * rad * .6, 6, 3, ang + Math.PI / 2, 0, 7); ctx.fill(); }
+      ctx.strokeStyle = 'rgba(240,240,250,.8)'; ctx.lineWidth = .6; ctx.beginPath(); ctx.moveTo(hx, hy); ctx.quadraticCurveTo((hx + bx) / 2, Math.min(hy, by) - 10, bx, by + bob); ctx.stroke();
+      ctx.fillStyle = 'rgba(255,255,255,.35)'; ctx.fillRect(bx - 4, by + 3, 8, 1);
+      ctx.fillStyle = '#e8402a'; ctx.fillRect(bx - 2, by - 2 + bob, 4, 3); ctx.fillStyle = '#ffffff'; ctx.fillRect(bx - 2, by + 1 + bob, 4, 2);
+      if (F.phase === 'bite') { const s = 1 + Math.sin(now / 60) * .15; ctx.save(); ctx.translate(S.x * T, S.y * T - 34); ctx.scale(s, s);
+        ctx.fillStyle = '#ffdf3a'; ctx.strokeStyle = '#6a3a12'; ctx.lineWidth = 1; ctx.beginPath(); ctx.arc(0, 0, 7, 0, 7); ctx.fill(); ctx.stroke();
+        ctx.fillStyle = '#6a3a12'; ctx.fillRect(-1, -5, 2, 6); ctx.fillRect(-1, 3, 2, 2); ctx.restore(); }
+    } });
     if (scene === 'farm' && S.tent) list.push({ z: S.tent.y + .9, d: () => { // tente du début
       const x = S.tent.x * T, y = S.tent.y * T;
       ctx.fillStyle = 'rgba(0,0,0,.28)'; ctx.fillRect(x - 3, y + 13, 22, 3);

@@ -16,6 +16,7 @@ export const CFG = {
   INV_SLOTS: 12,             // places du sac au départ
   INV_MAX: 36,               // places max après agrandissements
   BOARD_OPEN: false,         // panneau d'affichage vide au début (les demandes existent, gardées de côté)
+  ROD_TEST: true,            // TEST : canne à pêche donnée dès le début (normalement, pas dispo au début)
   CAVE_OPEN: false,          // la Caverne sombre est fermée pour l'instant (pas d'épée non plus)
   ACCES_TEST: false,          // TEST : portail des Caverne sombre ouvert dès le début + épée posée devant (mettre false pour le jeu normal)
   VERSION: 1,

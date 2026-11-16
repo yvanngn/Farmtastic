@@ -16,6 +16,7 @@ import { pickShroom } from './foret.js';
 import { repairAt, contribute, pickFieldTool } from './repair.js';
 import { pitchTent, tentAt, useTent } from './camp.js';
 import { pickJewel } from './igor.js';
+import { cast, hook, zoneAt } from './fishing.js';
 import { chestAt, placeChest } from './chests.js';
 import { fireAt, startCook, pickBush, placeFire } from './cooking.js';
 import { pickFlower, hitNature, natureAt, digTreasure } from './nature.js';
@@ -23,7 +24,7 @@ import { findNPCAt, talk, gift, hearts } from './social.js';
 import { add } from './inventory.js';
 import { TOOL_FOR } from './resources.js';
 
-const TOOL_IDS = ['hand', 'axe', 'pick', 'sickle', 'shovel', 'sword'];
+const TOOL_IDS = ['hand', 'axe', 'pick', 'sickle', 'shovel', 'sword', 'rod'];
 const own = (S, t) => (hasTool(S, t) ? t : 'hand');
 // Choisit l'outil adapté à la cible. Un objet tenu (graine, foin…) est gardé, sauf devant un arbre/rocher/monstre.
 export function smartTool(g, tx, ty) {
@@ -69,6 +70,8 @@ function knock(g, id) {
 }
 
 export function act(g, tx, ty) {
+  if (g.fishing) return hook(g) || 'fishing';   // pendant la pêche : ferrer / remonter
+  if (g.S.sel === 'rod' && zoneAt(g.S, tx, ty)) return cast(g, tx, ty) ? 'cast' : 'none';
   const r = act0(g, tx, ty);
   if (r === 'none' || r === false) {
     const t = examineText(g.S, tx, ty);
@@ -104,6 +107,7 @@ function act0(g, tx, ty) {
   if (d && !(sc === 'farm' && BUILDINGS[d.to] && !(S.built && S.built[d.to]))) { enterScene(g, d.to, d.spawn); return 'door'; }
   if (sc === 'grange') { const r = grangeAction(g, tx, ty); if (r !== 'none') return r; }
   if (sc === 'foret') { const r = pickShroom(g, tx, ty); return r ? 'pick' : r === false ? 'noknife' : 'none'; }
+  if (tileAt(sc, tx, ty) === 'G') { g.bus.emit('toast', '🧊 Une grotte gelée, bouchée par des éboulis et de la glace. Impossible d’entrer… pour l’instant.'); return 'locked'; }
   if (sc === 'wild' && tileAt(sc, tx, ty) === 'S') { g.bus.emit('sfx', 'denied'); g.bus.emit('toast', '⬇️ Un escalier s’enfonce vers l’étage 2… bloqué par des éboulis pour l’instant.'); return 'stairs'; }
   if (sc === 'wild') return S.wild && S.wild.rocks[key(tx, ty)] ? (hitZRock(g, tx, ty) ? 'hit' : 'none') : 'none';
   if (sc === 'town') { const ui = UI_TILES[tileAt(sc, tx, ty)]; if (ui) { g.bus.emit('sfx', 'ui'); g.bus.emit('open', ui); return ui; } return 'none'; }

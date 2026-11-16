@@ -22,6 +22,9 @@ import { placeNPC, findNPCAt, mystTick } from './systems/social.js';
 import { pickFieldTool } from './systems/repair.js';
 import { pickJewel } from './systems/igor.js';
 import { cookTick } from './systems/cooking.js';
+import { fishTick } from './systems/fishing.js';
+import { coldTick } from './systems/cold.js';
+import { createFishPanel } from './ui/fishPanel.js';
 import { nightTip } from './systems/camp.js';
 import { BUSHES } from './data/recipes.js';
 import { createRepairPanel } from './ui/repairPanel.js';
@@ -68,6 +71,7 @@ const wheel = createWheel(g, audio);
 const invGrid = createInventoryGrid(g, audio);
 const sellPanel = createSellPanel(g, audio);
 const chestPanel = createChestPanel(g, audio);
+createFishPanel(g, audio);
 const mapView = createMapView(g, renderer, audio);
 const board = createBoard(g, audio);
 const dialog = createDialog(g, audio);
@@ -199,6 +203,7 @@ $('#bSet').onclick = () => { audio.play('ui'); settingsPanel.open(); };
 $('#bMap').onclick = () => { audio.play('ui'); mapView.open(); };
 
 async function begin() {
+  if (CFG.ROD_TEST && !g.S.tools.rod) g.S.tools = { ...g.S.tools, rod: 1 };   // TEST : canne à pêche dès le début
   // le chemin vers le village doit rester libre (anciennes sauvegardes)
   for (const k in g.S.objs) { const [x, y] = k.split(',').map(Number); if (isPath(x, y) || isGate(x, y) || isLunaLot(x, y)) delete g.S.objs[k]; }
   for (const [x, y] of BUSHES) delete g.S.objs[x + ',' + y];   // les buissons à baies gardent leur place
@@ -227,14 +232,15 @@ function loop(now) {
   const dt = Math.min(0.05, (now - last) / 1000); last = now;
   if (started) {
     const arrivee = g.S.intro && ['wait', 'sleep', 'talk'].includes(g.S.intro.myst);   // sur le quai, jusqu'à la fin de l'accueil de Myst
-    if (g.talking || arrivee) { g.player.target = null; g.player.walkFrame = 0; }   // pendant un dialogue ou l'arrivée, on ne bouge pas
+    if (g.fishing) { g.player.target = null; g.player.walkFrame = 0; }   // on ne bouge pas en pêchant
+    else if (g.talking || arrivee) { g.player.target = null; g.player.walkFrame = 0; }   // pendant un dialogue ou l'arrivée, on ne bouge pas
     else updatePlayer(g, dt, input.keys, (tx, ty) => act(g, tx, ty));
     const wf = g.player.walkFrame; if (wf !== lastFrame && (wf === 1 || wf === 3)) audio.play('step'); lastFrame = wf;
     tickTime(g, dt * 1000);
     wander(g, dt);
     updateWild(g, dt); // les monstres ne vivent que dans les Caverne sombre
     autoPickup(g);
-    pickTestSword(g, Math.floor(g.S.x), Math.floor(g.S.y - .2)); pickFieldTool(g, Math.floor(g.S.x), Math.floor(g.S.y - .2)); pickJewel(g, Math.floor(g.S.x), Math.floor(g.S.y - .2)); mystTick(g); cookTick(g); nightTip(g);
+    pickTestSword(g, Math.floor(g.S.x), Math.floor(g.S.y - .2)); pickFieldTool(g, Math.floor(g.S.x), Math.floor(g.S.y - .2)); pickJewel(g, Math.floor(g.S.x), Math.floor(g.S.y - .2)); mystTick(g); cookTick(g); nightTip(g); fishTick(g, dt); coldTick(g, dt);
     ensureNature(g, g.S.scene || 'farm'); rainbowTick(g);
     pickFlower(g, Math.floor(g.S.x), Math.floor(g.S.y - .2)); digTreasure(g, Math.floor(g.S.x), Math.floor(g.S.y - .2));
     if (g.S.scene === 'foret') { ensureShrooms(g); pickShroom(g, Math.floor(g.S.x), Math.floor(g.S.y - .2)); }

@@ -208,3 +208,47 @@ export function buildQuartier(season) {
   for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) if (L[y][x] === 'T') g.drawImage(treeSprite(season, (x + y) % 4), x * T - 9, y * T - 28);
   return c;
 }
+
+// Montagne gelée et plage : sol par tuile (neige, sable, mer, lac gelé, sentier), sapins enneigés ou palmiers, grotte.
+export function buildBiome(name, season) {
+  const L = LAYOUTS[name], H = L.length, W = L[0].length;
+  const c = document.createElement('canvas'); c.width = W * T; c.height = H * T;
+  const g = c.getContext('2d'), r = rng(name === 'plage' ? 91 : 73);
+  const R = (x, y, w, h, col) => { g.fillStyle = col; g.fillRect(x, y, w, h); };
+  const pal = { n: ['#eef3f8', '#e2eaf2', '#f8fbff'], s: ['#ecd9a4', '#e4cf94', '#f2e2b4'], a: ['#d2bc84', '#c8b078', '#dac690'], '.': ['#b08a5a', '#9c7848', '#bc966a'], T: null, D: null };
+  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
+    const ch = L[y][x], px = x * T, py = y * T;
+    if (ch === 'w') {
+      const lac = name === 'montagne';
+      R(px, py, T, T, lac ? '#a8d4ec' : (y < 3 ? '#2f7ab8' : '#3f92cc'));
+      for (let k = 0; k < 3; k++) R(px + (r() * 12 | 0), py + (r() * 14 | 0), 4, 1, lac ? '#d8eef8' : '#7cc0ec');
+      if (lac && r() < .12) { R(px + 5, py + 5, 6, 5, '#2f6a9a'); R(px + 6, py + 6, 4, 3, '#4a8ac0'); }   // trou dans la glace
+      continue;
+    }
+    if (ch === 'G') { R(px, py, T, T, '#5a5560'); R(px + (r() * 10 | 0), py + (r() * 10 | 0), 5, 4, '#6e6a76'); R(px, py, T, 2, '#f4f8fc'); continue; }
+    const base = name === 'plage' ? (ch === '.' ? pal['.'] : ch === 'a' ? pal.a : pal.s) : (ch === '.' ? ['#c8d2dc', '#bcc6d2', '#d4dce4'] : pal.n);
+    for (let by = 0; by < T; by += 4) for (let bx = 0; bx < T; bx += 4) R(px + bx, py + by, 4, 4, base[r() * 3 | 0]);
+    if (name === 'plage' && ch === '.') { for (let k = 0; k < T; k += 4) R(px, py + k, T, 1, '#7a5a34'); }
+    if (name === 'plage' && ch === 's' && r() < .05) { R(px + 6, py + 7, 3, 2, '#f4b0b8'); R(px + 7, py + 6, 1, 1, '#fff'); }   // coquillage
+    if (name === 'montagne' && ch === 'n' && r() < .04) { R(px + 5, py + 8, 4, 3, '#9aa4b0'); R(px + 5, py + 8, 4, 1, '#ffffff'); }
+  }
+  if (name === 'plage') for (let x = 0; x < W * T; x += 3) R(x, 6 * T - 2 + Math.round(Math.sin(x / 9) * 2), 3, 3, '#ffffff');   // écume
+  if (name === 'montagne') { // entrée de la grotte, fermée par des éboulis
+    const gx = 28 * T, gy = 3 * T;
+    R(gx - 6, gy - 8, 2 * T + 12, T + 12, '#3a3640'); R(gx - 2, gy - 4, 2 * T + 4, T + 8, '#0c0a10');
+    for (const [a, b, w] of [[0, 10, 8], [10, 12, 9], [20, 9, 10], [5, 16, 7], [16, 17, 8]]) { R(gx + a - 2, gy + b, w, 6, '#7a7480'); R(gx + a - 2, gy + b, w, 1, '#a8a2ae'); }
+    for (let k = 0; k < 8; k++) R(gx - 4 + k * 5, gy - 8, 3, 3 + (k % 3) * 2, '#d8eef8');   // stalactites de glace
+  }
+  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) if (L[y][x] === 'T') {
+    const px = x * T, py = y * T;
+    if (name === 'plage') { // palmier
+      R(px + 7, py - 14, 3, 28, '#8a5a32'); for (let k = 0; k < 28; k += 4) R(px + 7, py - 14 + k, 3, 1, '#6a4426');
+      for (const [dx, dy, w] of [[-8, -18, 10], [7, -18, 10], [-6, -22, 9], [5, -22, 9], [0, -24, 4]]) R(px + 5 + dx, py + dy, w, 3, '#3f8a34');
+      R(px + 6, py - 16, 2, 2, '#6a4426'); R(px + 9, py - 15, 2, 2, '#6a4426');
+    } else { // sapin enneigé
+      R(px + 6, py + 8, 4, 8, '#5a3a22');
+      for (let i = 0; i < 4; i++) { const w = 6 + i * 4; R(px + 8 - w / 2, py - 16 + i * 6, w, 6, '#2c5f4a'); R(px + 8 - w / 2, py - 16 + i * 6, w, 2, '#f4f8fc'); }
+    }
+  }
+  return c;
+}

@@ -354,3 +354,18 @@ body[data-nrj="vert"] #nrjVert { display: block; position: fixed; right: calc(va
 body[data-nrj="arc"] #nrjArc.tremble { animation: trembleArc .3s ease-in-out infinite }
 @keyframes trembleArc { 0%, 100% { transform: rotate(-90deg) } 25% { transform: rotate(-93deg) translateX(1px) } 75% { transform: rotate(-87deg) translateX(-1px) } }
 body:not([data-nrj="haut"]) #hEnBar, body:not([data-nrj="haut"]) #hud .lbl:first-of-type { display: none }
+
+/* Combat de pêche */
+#fishFight { position: fixed; z-index: 40; right: calc(var(--sa-r) + 20px); top: 50%; transform: translateY(-50%); display: flex; gap: 8px; align-items: flex-end; padding: 12px; border-radius: 16px;
+  background: var(--verre-fort); box-shadow: 0 6px 20px rgba(0,0,0,.4); touch-action: none; user-select: none; flex-wrap: wrap; width: 110px; justify-content: center }
+#fishFight[hidden] { display: none }
+.ff-track { position: relative; width: 44px; height: min(52vh, 320px); border-radius: 12px; background: linear-gradient(#2f7ab8, #1c4a74); border: 3px solid #8a5a32; overflow: hidden }
+.ff-bar { position: absolute; left: 3px; right: 3px; border-radius: 8px; background: rgba(140,230,110,.55); border: 2px solid #8ce66e }
+.ff-bar.dedans { background: rgba(160,255,120,.8); box-shadow: 0 0 10px #8ce66e }
+.ff-fish { position: absolute; left: 50%; transform: translateX(-50%); font-size: 22px; filter: drop-shadow(0 2px 2px rgba(0,0,0,.5)) }
+.ff-prog { position: relative; width: 12px; height: min(52vh, 320px); border-radius: 6px; background: rgba(0,0,0,.4); overflow: hidden }
+.ff-prog i { position: absolute; left: 0; right: 0; bottom: 0; transition: height .1s }
+#fishFight small { width: 100%; text-align: center; color: #fff6e0; font-size: 11px }
+.fish-list { display: flex; flex-direction: column; gap: 6px; max-height: 56vh; overflow-y: auto }
+.fish-row { display: flex; gap: 10px; align-items: flex-start; padding: 8px; border-radius: 10px; background: rgba(0,0,0,.22) }
+.fish-row .fi { font-size: 26px } .fish-row small { display: block; opacity: .85 } .fish-row.inconnu { opacity: .6 }

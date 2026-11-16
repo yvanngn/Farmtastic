@@ -28,6 +28,7 @@ export const ITEMS = {
   berry_cooked: { n: 'Baies grillées', p: 6, i: '🍒', eat: { e: 5 } },
   igor_bijou: { n: 'Bijou d’Igor', p: 0, i: '💍', keep: true },
   chest: { n: 'Coffre', p: 0, i: '📦', keep: true },             // appris auprès d'Igor ; à poser plus tard
+  manteau: { n: 'Manteau d’hiver', p: 150, i: '🧥', keep: true, buy: 400 },   // protège du froid de la montagne (💡 vendu à l'étal du marché)
   backpack: { n: 'Sac à dos', p: 0, i: '🎒', keep: true },            // apporté du voyage
   tent: { n: 'Tente', p: 60, i: '⛺', keep: true, tent: true },        // à poser à côté de la cabane (💡 revente 60)
   ruby: { n: 'Rubis', p: 250, i: '♦️' },
@@ -55,7 +56,8 @@ export const TOOLS = [
   { id: 'pick', n: 'Pioche', i: '⛏️' },
   { id: 'sickle', n: 'Faucille', i: '🔪' },
   { id: 'shovel', n: 'Pelle', i: '🪏' },
-  { id: 'sword', n: 'Épée', i: '🗡️' }
+  { id: 'sword', n: 'Épée', i: '🗡️' },
+  { id: 'rod', n: 'Canne à pêche', i: '🎣' }
 ];
 
 // Fleurs sauvages (💡 espèces et prix) : 3 par saison, la 3e plus rare. Serviront aux potions et à l'alchimie.
@@ -74,3 +76,6 @@ Object.assign(ITEMS, {
   iron_ore: { n: 'Minerai de fer', p: 40, i: '⚫' },
   gold_ore: { n: "Minerai d'or", p: 100, i: '🟡' }
 });
+
+import { FISH } from './fish.js';
+for (const f of FISH) ITEMS[f.id] = { n: f.n, p: f.p, i: f.i, eat: { e: Math.round(f.p / 8) }, fishItem: true };

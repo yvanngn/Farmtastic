@@ -121,6 +121,7 @@ function buildTown() {
   pave(6, 5, 6, 9); pave(26, 5, 26, 9);   // halle et magasin → grande rue
   pave(7, 12, 7, 16); pave(30, 12, 30, 16); pave(4, 17, 4, 19); pave(28, 17, 28, 19); pave(15, 12, 15, 19);   // ruelles
   for (const [k, b] of Object.entries(TOWN_B)) put(k, b.x, b.y, b.w, b.h);
+  pave(16, 1, 17, 4); put('D', 16, 0); put('D', 17, 0);   // au nord : le chemin de la plage
   put('D', 0, 10); put('D', W - 1, 10); put('g', 0, 11); put('g', W - 1, 11);   // entrée ouest (ferme), sortie est (forêt)
   for (let y = 0; y < H; y++) for (const x of [0, W - 1]) if (y % 3 === 1 && m[y][x] === 'g') m[y][x] = 'T';
   for (let x = 0; x < W; x++) { if (x % 3 === 0 && m[0][x] === 'g') m[0][x] = 'T'; if (x % 3 === 1 && m[H - 1][x] === 'g') m[H - 1][x] = 'T'; }
@@ -131,6 +132,26 @@ function buildTown() {
   return m.map(r => r.join(''));
 }
 LAYOUTS.town = buildTown();
+// Montagne gelée (à l'est du quartier) : n neige, . sentier, T sapins enneigés, G grotte (on ne peut pas y entrer), w lac gelé (trous de pêche).
+LAYOUTS.montagne = (() => {
+  const W = 36, H = 24, m = Array.from({ length: H }, (_, y) => Array.from({ length: W }, (_, x) => (x === 0 || y === 0 || x === W - 1 || y === H - 1 ? 'T' : 'n')));
+  for (let x = 0; x < 30; x++) { m[8][x] = '.'; m[9][x] = '.'; } m[8][0] = 'D'; m[9][0] = 'D';
+  for (let y = 5; y < 8; y++) { m[y][28] = '.'; m[y][29] = '.'; }
+  for (let y = 1; y <= 4; y++) for (let x = 25; x <= 32; x++) m[y][x] = 'G';                 // paroi rocheuse et grotte
+  for (let y = 14; y <= 19; y++) for (let x = 7; x <= 16; x++) if (Math.hypot((x - 11.5) / 5, (y - 16.5) / 3) < 1) m[y][x] = 'w';   // lac gelé
+  for (let y = 10; y <= 14; y++) m[y][11] = '.';
+  for (const [x, y] of [[4, 3], [9, 4], [15, 2], [20, 5], [5, 12], [21, 13], [24, 18], [29, 15], [32, 20], [3, 18], [19, 20], [27, 11], [33, 7]]) m[y][x] = 'T';
+  return m.map(r => r.join(''));
+})();
+// Plage (au nord du centre-ville) : w mer, a sable mouillé, s sable, T palmiers, . passerelle de bois, D retour en ville.
+LAYOUTS.plage = (() => {
+  const W = 40, H = 20, m = Array.from({ length: H }, (_, y) => Array.from({ length: W }, (_, x) => (y < 6 ? 'w' : y < 8 ? 'a' : 's')));
+  for (let y = 6; y < H; y++) { m[y][0] = 'T'; m[y][W - 1] = 'T'; } for (let x = 0; x < W; x++) if (x < 19 || x > 20) m[H - 1][x] = 'T';
+  for (let y = 9; y < H; y++) { m[y][19] = '.'; m[y][20] = '.'; } m[H - 1][19] = 'D'; m[H - 1][20] = 'D';
+  for (let x = 30; x <= 33; x++) for (let y = 4; y <= 8; y++) m[y][x] = '.';                   // ponton qui avance dans la mer
+  for (const [x, y] of [[4, 11], [9, 15], [14, 10], [26, 12], [35, 15], [37, 10], [6, 17], [31, 17]]) m[y][x] = 'T';
+  return m.map(r => r.join(''));
+})();
 // Quartier : g herbe, . pavés, X maison (Luna x4-8, Franck x11-15, y4-6), T arbre, D sortie vers la ferme, b banc, f jardinière.
 // Quartier résidentiel (agrandi le 15/11) : une maison sur la 1re ligne (Luna), la clinique près de l'entrée,
 // deux maisons plus bas (Franck, Hailey), et tout en bas à gauche, à l'écart derrière des arbres, la vieille maison de Myst.
@@ -148,6 +169,7 @@ LAYOUTS.quartier = (() => {
   const Q = QUARTIER, W = Q.W, H = Q.H, m = Array.from({ length: H }, (_, y) => Array.from({ length: W }, (_, x) => (x === 0 || x === W - 1 || y === H - 1 || y === 0 ? 'T' : 'g')));
   for (const y of [8, 9, 17, 18]) for (let x = 1; x < W - 1; x++) m[y][x] = '.';   // deux rues
   for (let y = 0; y < 8; y++) m[y][22] = '.'; m[0][22] = 'D';                       // l'allée qui monte vers la ferme
+  m[8][W - 1] = 'D'; m[9][W - 1] = 'D';                                              // à l'est : la montagne gelée
   for (let y = 10; y < 17; y++) m[y][18] = '.';                                       // ruelle entre les deux rues
   for (const id of ['luna', 'clinique', 'franck', 'hailey', 'myst']) {
     const h = Q[id], rows = h.porch ? 4 : 3;
@@ -205,7 +227,7 @@ function buildForest() {
 LAYOUTS.foret = buildForest();
 // Forêt : entrée à l'ouest (depuis le centre-ville) et sentier qui la traverse jusqu'à la sortie est.
 LAYOUTS.foret = LAYOUTS.foret.map((r, y) => y === 9 ? 'D' + '.'.repeat(r.length - 2) + 'D' : r);
-export const SOLID_TILES = '#WDBKTPCHNYXMQUJAOVZFLfprEmnc';   // m n lits de la clinique, c bureau  // A = fauteuil (Franck) / marchand d'animaux (village)
+export const SOLID_TILES = '#WDBKTPCHNYXMQUJAOVZFLfprEmncwG';   // w eau (mer, lac), G grotte   // m n lits de la clinique, c bureau  // A = fauteuil (Franck) / marchand d'animaux (village)
 // Tuiles qui ouvrent une interface.
 export const UI_TILES = { M: 'market', Q: 'board', U: 'upgrades', J: 'carpenter', A: 'animals', O: 'bakery', V: 'butcher', Z: 'fishmonger' };
 
@@ -219,7 +241,9 @@ export const SCENES = {
     { x: 16, y: 35, to: 'quartier', spawn: { x: 22.5, y: 1.8 } }, { x: 15, y: 35, to: 'quartier', spawn: { x: 22.5, y: 1.8 } }, { x: 17, y: 35, to: 'quartier', spawn: { x: 22.5, y: 1.8 } },
     { x: 47, y: 5, to: 'town', spawn: { x: 1.6, y: 10.6 } }, { x: 47, y: 4, to: 'town', spawn: { x: 1.6, y: 10.6 } }, { x: 47, y: 6, to: 'town', spawn: { x: 1.6, y: 10.6 } }
   ] },
-  town: { W: 34, H: 32, outdoor: true, doors: [{ x: 0, y: 10, to: 'farm', spawn: { x: 45.6, y: 5.6 } }, { x: 33, y: 10, to: 'foret', spawn: { x: 1.6, y: 9.6 } }] },
+  montagne: { W: 36, H: 24, outdoor: true, cold: true, doors: [{ x: 0, y: 8, to: 'quartier', spawn: { x: 38.2, y: 8.6 } }, { x: 0, y: 9, to: 'quartier', spawn: { x: 38.2, y: 8.6 } }] },
+  plage: { W: 40, H: 20, outdoor: true, doors: [{ x: 19, y: 19, to: 'town', spawn: { x: 16.5, y: 1.6 } }, { x: 20, y: 19, to: 'town', spawn: { x: 16.5, y: 1.6 } }] },
+  town: { W: 34, H: 32, outdoor: true, doors: [{ x: 16, y: 0, to: 'plage', spawn: { x: 19.5, y: 18.2 } }, { x: 17, y: 0, to: 'plage', spawn: { x: 19.5, y: 18.2 } }, { x: 0, y: 10, to: 'farm', spawn: { x: 45.6, y: 5.6 } }, { x: 33, y: 10, to: 'foret', spawn: { x: 1.6, y: 9.6 } }] },
   house: { W: 12, H: 9, doors: [{ x: 5, y: 8, to: 'farm', spawn: { x: 5.5, y: 5.9 } }] },
   coop: { W: 10, H: 7, doors: [{ x: 4, y: 6, to: 'farm', spawn: { x: 24.5, y: 8.9 } }] },
   // Forêt : à l'est du centre-ville ; au-delà (est), la zone de la Caverne sombre (fermée pour l'instant).
@@ -231,7 +255,7 @@ export const SCENES = {
   hailey: { W: 9, H: 7, doors: [{ x: 4, y: 6, to: 'quartier', spawn: { x: 26.5, y: 15.8 } }] },
   luna: { W: 9, H: 7, doors: [{ x: 4, y: 6, to: 'quartier', spawn: { x: 8.5, y: 6.8 } }] },
   // Quartier résidentiel, au sud de la ferme : les maisons des habitants.
-  quartier: { W: 40, H: 31, outdoor: true, doors: [{ x: 22, y: 0, to: 'farm', spawn: { x: 16.5, y: 34.4 } }, { x: 8, y: 5, to: 'luna', spawn: { x: 4.5, y: 5.4 } }, { x: 10, y: 14, to: 'franck', spawn: { x: 4.5, y: 5.4 } }, { x: 28, y: 5, to: 'clinique', spawn: { x: 4.5, y: 5.4 } }, { x: 26, y: 14, to: 'hailey', spawn: { x: 4.5, y: 5.4 } }] },
+  quartier: { W: 40, H: 31, outdoor: true, doors: [{ x: 22, y: 0, to: 'farm', spawn: { x: 16.5, y: 34.4 } }, { x: 8, y: 5, to: 'luna', spawn: { x: 4.5, y: 5.4 } }, { x: 10, y: 14, to: 'franck', spawn: { x: 4.5, y: 5.4 } }, { x: 28, y: 5, to: 'clinique', spawn: { x: 4.5, y: 5.4 } }, { x: 26, y: 14, to: 'hailey', spawn: { x: 4.5, y: 5.4 } }, { x: 39, y: 8, to: 'montagne', spawn: { x: 1.6, y: 8.6 } }, { x: 39, y: 9, to: 'montagne', spawn: { x: 1.6, y: 8.6 } }] },
   pigsty: { W: 10, H: 7, doors: [{ x: 4, y: 6, to: 'farm', spawn: { x: 20.5, y: 8.9 } }] },
   barn: { W: 12, H: 8, doors: [{ x: 5, y: 7, to: 'farm', spawn: { x: 28.5, y: 8.9 } }] }
 };

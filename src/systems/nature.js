@@ -22,6 +22,7 @@ export function freeSpot(S, sc, x, y) {
   if (N && (N.flowers[k] || N.rocks[k])) return false;
   if (sc === 'farm') return freeForObj(x, y) && !(S.objs && S.objs[k]) && !(S.plots && S.plots[k]) && !(S.tilled && S.tilled[k]) && !isSolid({ ...S, scene: 'farm' }, x, y) && Math.hypot(x - S.x, y - S.y) > 2;
   const L = LAYOUTS[sc];
+  if ((sc === 'montagne' || sc === 'plage') && L && L[y]) return 'ns'.includes(L[y][x]) && Math.hypot(x - S.x, y - S.y) > 2;
   if (!L || !L[y] || L[y][x] !== '.') return false;
   if (sc === 'foret') return x > 0 && x < 27 && !(S.foret && S.foret.shrooms && S.foret.shrooms[k]);
   if (sc === 'wild') return !(S.wild && S.wild.rocks && S.wild.rocks[k]) && !(x < 4 && y < 7);

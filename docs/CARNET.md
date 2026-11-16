@@ -279,3 +279,10 @@ Ordre convenu : 1 mort/clignotement ✅ · 2 tente ✅ · 3 recettes (feu), baie
 - ✅ **Plan de la région cohérent** : en solo, seule ta ferme apparaît (les autres emplacements sont des bois) avec un chemin propre ; en multijoueur, les 4 fermes et la croix de chemins.
 - ✅ **Centre-ville réorganisé** (34 × 32) : bâtiments espacés avec pelouses et arbres, place de la fontaine, grande rue ouest-est, rue des commerces au sud, ruelles vers chaque porte, avenue jusqu'à la villa du maire (au fond) ; Manuel marche de la villa à la place par l'avenue.
 - ✅ Plan de la région : le centre-ville y est dessiné d'après la vraie disposition (rues, place, fontaine, commerces espacés, villa au fond, arbres).
+
+## Séance du 16/11/2026 (matin)
+- ✅ **Montagne gelée** (scène `montagne`, à l'est du quartier, sortie à droite de la 1re rue) : neige, sapins enneigés, lac gelé (pêche), paroi rocheuse et **grotte bouchée** (on ne peut pas entrer). Cailloux et **plus de filons** qu'ailleurs. **Froid** : sans **manteau d'hiver** (💡 400 🪙 à l'étal du marché), la vie baisse de 1 point par seconde (💡) ; à 0, K.O. (retour ferme, −10 %).
+- ✅ **Plage** (scène `plage`, au nord du centre-ville, par le chemin au nord de la place) : mer, sable, écume, palmiers, coquillages, passerelle et ponton.
+- ✅ **Pêche** (Zelda + Stardew) : canne à pêche 🎣 (donnée dès le début pour tester : `CFG.ROD_TEST`), viser l'eau (étang de la ferme, mer, lac gelé) ; l'ombre du poisson tourne autour du bouchon en se rapprochant, puis « ! » : toucher dans la seconde pour ferrer ; combat façon Stardew (rester appuyé pour faire monter la zone verte, garder le poisson dedans jusqu'à remplir la jauge). 12 poissons (💡) selon le lieu, la saison et l'heure. Si rien ne mord à cet endroit / cette heure, on le dit.
+- ✅ **Carnet de pêche** (menu, onglet 🐟 Poissons) : espèces prises (nombre, record de taille, prix, où, saisons, heures, 1re et dernière prise avec lieu et date) ; espèces inconnues en « ??? » avec un indice sur le lieu.
+- ✅ Plan de la région : plage au nord, montagne gelée à l'est du quartier. Correction : la carte ne plante plus quand on l'ouvre loin de la ferme (elle montre la région).

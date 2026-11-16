@@ -1,3 +1,4 @@
+import { FISH, ZONE_NAMES } from '../data/fish.js';
 import { deployTent } from '../systems/camp.js';
 // Menu : sac, fabrication, boutique, forge, marché, liens.
 import { $ } from './dom.js';
@@ -23,8 +24,8 @@ import { ITEMS as ALL_ITEMS } from '../data/items.js';
 import { slots, usedSlots, stackSize } from '../systems/inventory.js';
 import { canUpgrade, upgradeTool, miningLevel, nextXp, toolTier, hasTool } from '../systems/skills.js';
 
-const TABS = { sac: 'Sac', recettes: '🔥 Recettes', quests: 'Quêtes', forge: 'Forge', social: 'Liens' };
-const TITLES = { recettes: '🔥 Recettes', market: '🏪 Marché', upgrades: '🧰 Magasin d\'amélioration', carpenter: '🪚 Charpentier', workshop: '🛠️ Établi', animals: '🐾 Marchand d\'animaux', bakery: '🥖 Boulangerie', butcher: '🥩 Boucherie', fishmonger: '🐟 Poissonnerie' };
+const TABS = { sac: 'Sac', recettes: '🔥 Recettes', poissons: '🐟 Poissons', quests: 'Quêtes', forge: 'Forge', social: 'Liens' };
+const TITLES = { recettes: '🔥 Recettes', poissons: '🐟 Carnet de pêche', market: '🏪 Marché', upgrades: '🧰 Magasin d\'amélioration', carpenter: '🪚 Charpentier', workshop: '🛠️ Établi', animals: '🐾 Marchand d\'animaux', bakery: '🥖 Boulangerie', butcher: '🥩 Boucherie', fishmonger: '🐟 Poissonnerie' };
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 const it = id => ITEMS[id] || { n: id, i: '❔', p: 0 };
 
@@ -39,6 +40,15 @@ export function createMenu(g, opts) {
     bakery: S => `<p class="info">Pain frais et farine pour cuisiner.</p>${shopGrid(S, 'bakery')}`,
     butcher: S => `<p class="info">De la bonne viande pour vos futurs plats.</p>${shopGrid(S, 'butcher')}`,
     fishmonger: S => `<p class="info">Arrivage du jour.</p>${shopGrid(S, 'fishmonger')}`,
+    poissons(S) {
+      const L = S.fishLog || {}, got = FISH.filter(f => L[f.id]).length, SAI = ['Printemps', 'Été', 'Automne', 'Hiver'], hh = m => `${Math.floor(m / 60) % 24}h`;
+      const when = w => `${SAI[w.season]} j${w.day}, an ${w.year || 1}, ${hh(w.minute)} · ${ZONE_NAMES[w.zone] || w.zone}`;
+      return `<p class="info">Carnet de pêche : ${got}/${FISH.length} espèces.</p><div class="fish-list">` + FISH.map(f => { const e = L[f.id];
+        return e ? `<div class="fish-row"><span class="fi">${f.i}</span><div><b>${f.n}</b> <small>×${e.n} · record ${e.best} cm · ${f.p} 🪙</small>
+          <small>Où : ${f.zones.map(z => ZONE_NAMES[z]).join(', ')} · ${f.seasons.map(s => SAI[s]).join(', ')} · de ${hh(f.from)} à ${hh(f.to)}</small>
+          <small>1re prise : ${when(e.first)}${e.last && e.n > 1 ? ` · dernière : ${when(e.last)}` : ''}</small></div></div>`
+          : `<div class="fish-row inconnu"><span class="fi">❔</span><div><b>???</b> <small>On dit qu'il vit dans ${f.zones.map(z => ZONE_NAMES[z]).join(' ou ')}.</small></div></div>`; }).join('') + '</div>';
+    },
     recettes(S) {
       const known = (S.recipes || []).filter(id => HAND_RECIPES[id]);
       const cats = Object.keys(RECIPE_CATS).filter(c => known.some(id => HAND_RECIPES[id].cat === c));

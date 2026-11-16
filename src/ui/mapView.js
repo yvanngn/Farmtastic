@@ -90,7 +90,7 @@ export function createMapView(g, renderer, audio) {
       for (const f of [.04, .3, .45, .88, .95]) tree(x0 + w * f, y0 + h * .78, 1.4 * u, '#4f8a3a');
       ribbon(x0 + w * .55, y0 + h * .86, '🏘️ Quartier résidentiel', 'Luna · Franck · Hailey · Igor · Myst · clinique'); }
     // centre-ville : plan réduit de la vraie ville (34 × 32 cases) — pelouse, rues pavées, bâtiments espacés
-    { const x0 = X(.55), y0 = Y(.04), w = X(.75) - X(.55), h = Y(.48) - Y(.04), L = LAYOUTS.town, cw = w / L[0].length, ch = h / L.length;
+    { const x0 = X(.55), y0 = Y(.12), w = X(.75) - X(.55), h = Y(.5) - Y(.12), L = LAYOUTS.town, cw = w / L[0].length, ch = h / L.length;
       ctx.fillStyle = '#a8cc78'; ctx.beginPath(); ctx.roundRect(x0, y0, w, h, 2 * u); ctx.fill();
       for (let y = 0; y < L.length; y++) for (let x = 0; x < L[0].length; x++) if (L[y][x] === '.' || L[y][x] === 'D') F('#d2cbbd', x0 + x * cw, y0 + y * ch, cw + .5, ch + .5);
       const COL = { M: ['#e8c26a', '#a8432f'], U: ['#8a5a32', '#3e3a44'], J: ['#9a6a3c', '#7a3a22'], A: ['#9a6a3c', '#2f5a3a'], O: ['#c98a4a', '#e0a560'], V: ['#9a6a3c', '#a83a32'], Z: ['#9a6a3c', '#2f5a8a'], W: ['#f4efe4', '#b8432f'] };
@@ -103,8 +103,22 @@ export function createMapView(g, renderer, audio) {
       }
       for (let y = 0; y < L.length; y++) for (let x = 0; x < L[0].length; x++) if (L[y][x] === 'T') circ('#4f8a3a', x0 + (x + .5) * cw, y0 + (y + .5) * ch, cw * .6);
       ribbon(x0 + w / 2, y0 + h * .4, '🏙️ Centre-ville', 'commerces · place · villa de Manuel'); }
+    // plage au nord : mer, sable, palmiers
+    { const x0 = X(.5), y0 = Y(-.01), w = X(.95) - X(.5), h = Y(.1) - Y(-.01);
+      F('#3f92cc', x0, y0, w, h * .55); F('#ecd9a4', x0, y0 + h * .55, w, h * .45);
+      for (let x = x0; x < x0 + w; x += 1.5 * u) F('#ffffff', x, y0 + h * .53 + Math.sin(x / (2 * u)) * .4 * u, 1.2 * u, .5 * u);
+      for (const f of [.1, .3, .7, .9]) { F('#8a5a32', x0 + w * f, y0 + h * .55, .5 * u, h * .35); circ('#3f8a34', x0 + w * f, y0 + h * .55, 1.4 * u); }
+      road([[.655, .1], [.655, .12]]); ribbon(x0 + w / 2, y0 + h * .55, '🏖️ Plage', 'pêche en mer'); }
+    // montagne gelée à l'est du quartier : sommets enneigés, lac gelé, grotte
+    { const x0 = X(.52), y0 = Y(.6), w = X(.78) - X(.52), h = Y(.92) - Y(.6);
+      ctx.fillStyle = '#e6eef6'; ctx.beginPath(); ctx.roundRect(x0, y0, w, h, 2 * u); ctx.fill();
+      for (const [f, hh] of [[.2, .7], [.45, .9], [.75, .75]]) { ctx.fillStyle = '#8a94a4'; ctx.beginPath(); ctx.moveTo(x0 + w * (f - .18), y0 + h * .75); ctx.lineTo(x0 + w * f, y0 + h * (.75 - hh * .7)); ctx.lineTo(x0 + w * (f + .18), y0 + h * .75); ctx.fill();
+        ctx.fillStyle = '#ffffff'; ctx.beginPath(); ctx.moveTo(x0 + w * (f - .06), y0 + h * (.75 - hh * .7) + h * .17); ctx.lineTo(x0 + w * f, y0 + h * (.75 - hh * .7)); ctx.lineTo(x0 + w * (f + .06), y0 + h * (.75 - hh * .7) + h * .17); ctx.fill(); }
+      ctx.fillStyle = '#16141a'; ctx.beginPath(); ctx.arc(x0 + w * .75, y0 + h * .75, 1.6 * u, Math.PI, 0); ctx.fill();
+      ctx.fillStyle = '#a8d4ec'; ctx.beginPath(); ctx.ellipse(x0 + w * .3, y0 + h * .86, 3.5 * u, 1.4 * u, 0, 0, 7); ctx.fill();
+      road([[.48, .7], [.52, .7]]); ribbon(x0 + w / 2, y0 + h * .93, '🏔️ Montagne gelée', 'froid · filons · lac gelé'); }
     // forêt : sapins serrés et champignons
-    { const x0 = X(.79), y0 = Y(.02), w = X(.92) - X(.79), h = Y(.5) - Y(.02);
+    { const x0 = X(.79), y0 = Y(.12), w = X(.92) - X(.79), h = Y(.5) - Y(.12);
       ctx.fillStyle = '#5a9a46'; ctx.beginPath(); ctx.roundRect(x0, y0, w, h, 3 * u); ctx.fill();
       for (let k = 0; k < 26; k++) pine(x0 + w * (.1 + rnd() * .8), y0 + h * (.12 + rnd() * .82), 1.4 * u + rnd() * .6 * u);
       circ('#e8602a', x0 + w * .3, y0 + h * .55, .6 * u); circ('#8a5a32', x0 + w * .7, y0 + h * .35, .6 * u);
@@ -145,6 +159,7 @@ export function createMapView(g, renderer, audio) {
     for (const d of SCENES.farm.doors) if (!(S.built && d.to in S.built) || S.built[d.to]) dot(d.x + .5, d.y + .5, .3, '#e8c26a', '#3b2414');
     // joueur (à la porte s'il est à l'intérieur)
     const inside = S.scene && S.scene !== 'farm', door = inside && SCENES.farm.doors.find(d => d.to === S.scene);
+    if (inside && !door) { regionAuto(); raf = requestAnimationFrame(draw); return; }   // loin de la ferme (ville, plage…) : on montre la région
     const px = inside ? door.x + .5 : S.x, py = inside ? door.y + .9 : S.y, pulse = .38 + Math.sin(now / 200) * .08;
     dot(px, py, pulse, '#e5534b', '#fff');
     $('#mapLvl').textContent = '×' + LEVELS[li];
@@ -170,6 +185,7 @@ export function createMapView(g, renderer, audio) {
   cv.addEventListener('wheel', e => { e.preventDefault(); zoom(e.deltaY < 0 ? 1 : -1); }, { passive: false });
   $('#mapIn').onclick = () => zoom(1);
   $('#mapOut').onclick = () => zoom(-1);
+  function regionAuto() { if (!region) { region = true; $('#mapRegion').textContent = '🗺️ Ferme'; } }
   $('#mapMe').onclick = () => { const S = g.S, d = S.scene !== 'farm' && SCENES.farm.doors.find(x => x.to === S.scene); center = d ? { x: d.x, y: d.y } : { x: S.x, y: S.y }; clampCenter(); };
   $('#mapClose').onclick = () => close();
   $('#mapRegion').onclick = () => { region = !region; $('#mapRegion').textContent = region ? '🗺️ Ferme' : '🧭 Région'; audio && audio.play('ui'); };

@@ -125,6 +125,7 @@ export function toolIcon(id) {
 export function drawToolPix(c, id) { const f = TOOL_PIX[id]; if (f) f(c); }
 const TOOL_PIX = {
   axe: c => { c.fillStyle = '#7a4f2e'; c.fillRect(-1, -1, 2, 9); c.fillStyle = '#9aa0a8'; c.fillRect(-1, -10, 5, 4); c.fillStyle = '#d6dbe0'; c.fillRect(3, -10, 1, 4); c.fillStyle = '#7a4f2e'; c.fillRect(-1, -7, 2, 6); },
+  rod: c => { c.fillStyle = '#8a5a32'; c.fillRect(-1, -12, 1, 20); c.fillStyle = '#c99560'; c.fillRect(0, -12, 1, 14); c.fillStyle = '#3a3640'; c.fillRect(-3, 4, 3, 3); c.fillStyle = '#e8e8f0'; c.fillRect(0, -12, 4, 1); },
   pick: c => { c.fillStyle = '#7a4f2e'; c.fillRect(-1, -8, 2, 16); c.fillStyle = '#9aa0a8'; c.fillRect(-5, -10, 10, 2); c.fillRect(-6, -9, 2, 2); c.fillRect(4, -9, 2, 2); c.fillStyle = '#d6dbe0'; c.fillRect(-4, -10, 8, 1); },
   sickle: c => { // lame en croissant au bout d'un manche court
     c.fillStyle = '#7a4f2e'; c.fillRect(-1, -1, 2, 9); c.fillStyle = '#5b3a22'; c.fillRect(0, 2, 1, 6);
