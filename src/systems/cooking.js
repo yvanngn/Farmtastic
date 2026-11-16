@@ -2,6 +2,7 @@
 import { HAND_RECIPES, COOK, COOK_MS, BUSHES, BERRY_DAYS, BERRY_PICK, MAX_FIRES } from '../data/recipes.js';
 import { isSolid, isPath, key } from '../world/map.js';
 import { add, has, canAdd } from './inventory.js';
+import { gainJob } from './jobs.js';
 
 const dayNo = S => (S.year - 1) * 112 + S.season * 28 + S.day;
 export const knows = (S, id) => (S.recipes || []).includes(id);
@@ -12,6 +13,7 @@ export function craftHand(g, id) {
   if (!r || !canCraftHand(S, id)) { g.bus.emit('sfx', 'denied'); return false; }
   for (const [k, n] of Object.entries(r.in)) add(g, k, -n);
   add(g, r.out, r.q);
+  if (r.job) gainJob(g, r.job);
   g.bus.emit('sfx', 'craft'); g.bus.emit('toast', `Fabriqué : ${r.out === 'campfire' ? 'un feu de camp 🔥 (prends-le en main et pose-le)' : r.out === 'chest' ? 'un coffre 📦' : r.out}`);
   return true;
 }

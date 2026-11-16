@@ -321,6 +321,7 @@ Ordre convenu : 1 mort/clignotement ✅ · 2 tente ✅ · 3 recettes (feu), baie
 ## Séance 16/11/2026 (après-midi) — lots 1 à 4 demandés
 Problème repéré par l'utilisateur : énergie vide en 5-10 min, puis 10-15 min de journée sans rien à faire.
 - ✅ **Lot 1** : mini tuto à la 1re cueillette de baies (manger +1 ⚡, ou griller au feu +5 ⚡) ; rappel chaque soir à 18h (après le grand conseil du 1er soir) ; **pas couché à 1h → infirmerie** (réveil 8h, 10 % de frais, 50 % d'énergie). Remplace l'ancienne règle « 2h = nouvelle journée sans énergie ».
-- ⏳ Lot 2 : patrons dans les magasins, chaudron (50 🪙 chez le forgeron), louche, jauge de cuisson.
-- ⏳ Lot 3 : quête journalière du panneau dès le jour 2, puis quête du coffre le jour suivant.
-- ⏳ Lot 4 : métiers (forgeron, alchimiste, couturier, joaillier, cuisinier) et niveaux ; magasins = patrons + ingrédients de base.
+- ✅ **Lot 2** : Igor → sujet « Tu vends quoi ? » → boutique d'Igor (patron du chaudron 50 🪙, louche 💡 30 🪙). Chaudron (💡 20 pierres + 10 bois) posé sur la ferme (3 max). Louche en main, toucher, choisir le plat, rester appuyé : jauge pleine = prêt. Soupe de baies (4 baies → +20 ⚡) connue avec le chaudron.
+- ✅ **Lot 3** : quête du jour sur le panneau dès le jour 2 (1re : 💡 10 bois → 60 🪙 ; ensuite au hasard, 50-90 🪙). Quête « Un coffre pour ranger » (bijou d'Igor → recette → fabriquer le coffre) seulement à partir du jour 3.
+- ✅ **Lot 4** : métiers forgeron, alchimiste, couturier, joaillier, cuisinier (10 niveaux, onglet 🧑‍🔧 Métiers, 💡 15 XP par fabrication/plat). Magasins = patrons + ingrédients de base (la boulangerie ne vend plus pain ni croissant, seulement la farine). 💡 Patrons : bague de cuivre (Igor, joaillier), tisane fleurie et bonnet de laine (étal, alchimiste/couturier), pain (boulangerie), ragoût (boucherie), soupe de poisson (poissonnerie) au chaudron. Tout est débloqué pour l'instant.
+- ⏳ Pas encore de boutique propre pour l'alchimiste, le couturier et le joaillier (PNJ à décrire par l'utilisateur).

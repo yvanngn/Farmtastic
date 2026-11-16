@@ -16,7 +16,7 @@ export function defaultState() {
     social: {}, savedAt: 0,
     scene: 'farm', invSlots: CFG.INV_SLOTS, stackLvl: 0, rockQueue: [],
     village: { done: [], progress: 0 }, festival: null, caravan: { tokens: 0, unlocked: [] },
-    skills: { mining: { xp: 0 } },
+    skills: { mining: { xp: 0 } }, jobs: {},   // métiers { forgeron: { xp } … }
     tools: { hammer: 1 },            // seulement le marteau au départ (réparations) ; les autres outils se trouvent
     intro: { met: true, myst: 'wait', arrived: false },   // arrivée en train ; Myst attend sur le quai et accueille le joueur
     repair: { house: { wood: 0, stone: 0 }, grange: { wood: 0, stone: 0 } },   // cabane et grange délabrées au début

@@ -1,11 +1,20 @@
 // Patrons vendus dans les magasins : acheter un patron apprend une recette (onglet 🔥 Recettes).
 // 💡 prix et ingrédients proposés par Claude, sauf le chaudron (50 🪙 chez le forgeron, demande de l'utilisateur).
 export const PATTERNS = {
-  p_chaudron: { n: 'Patron du chaudron', recipe: 'chaudron', price: 50, shop: 'forge', job: 'forgeron' }
+  p_chaudron: { n: 'Patron du chaudron', recipe: 'chaudron', price: 50, shop: 'forge', job: 'forgeron' },
+  p_bague: { n: 'Patron : bague de cuivre', recipe: 'bague_cuivre', price: 120, shop: 'forge', job: 'joaillier' },
+  p_tisane: { n: 'Patron : tisane fleurie', recipe: 'tisane', price: 60, shop: 'stall', job: 'alchimiste' },
+  p_bonnet: { n: 'Patron : bonnet de laine', recipe: 'bonnet', price: 80, shop: 'stall', job: 'couturier' },
+  p_pain: { n: 'Patron : pain maison', recipe: 'pain', price: 40, shop: 'bakery', job: 'cuisinier', pot: true },
+  p_ragout: { n: 'Patron : ragoût', recipe: 'ragout', price: 90, shop: 'butcher', job: 'cuisinier', pot: true },
+  p_soupe_poisson: { n: 'Patron : soupe de poisson', recipe: 'soupe_poisson', price: 90, shop: 'fishmonger', job: 'cuisinier', pot: true }
 };
 // Plats du chaudron : on remue à la louche (rester appuyé) jusqu'à ce que la jauge soit pleine.
 export const POT_RECIPES = {
-  soupe_baies: { out: 'soupe_baies', q: 1, in: { berry: 4 }, job: 'cuisinier' }
+  soupe_baies: { out: 'soupe_baies', q: 1, in: { berry: 4 }, job: 'cuisinier', base: true },   // connue avec le chaudron
+  pain: { out: 'bread', q: 2, in: { flour: 2 }, job: 'cuisinier' },
+  ragout: { out: 'ragout', q: 1, in: { beef: 1, carrot: 1 }, job: 'cuisinier' },
+  soupe_poisson: { out: 'soupe_poisson', q: 1, in: { fish: 1, berry: 2 }, job: 'cuisinier' }
 };
 export const POT_STIR = 0.1;     // jauge gagnée par coup de louche (10 coups)
 export const MAX_POTS = 3;

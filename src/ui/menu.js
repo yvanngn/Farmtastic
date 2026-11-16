@@ -17,7 +17,9 @@ import { canRepairBench, repairBench } from '../systems/economy.js';
 import { WORKBENCH } from '../data/buildings.js';
 import { craftHand, canCraftHand } from '../systems/cooking.js';
 import { buyPattern, hasPattern } from '../systems/pots.js';
-import { PATTERNS } from '../data/patterns.js';
+import { PATTERNS, POT_RECIPES } from '../data/patterns.js';
+import { JOBS } from '../data/jobs.js';
+import { jobXp, jobLevel, jobNext } from '../systems/jobs.js';
 import { HAND_RECIPES, RECIPE_CATS } from '../data/recipes.js';
 import { build, canBuild, canBuyAnimal, homeCount, buy, buyAnimal, buyBag, bagCost, buyStack, stackCost, STACKS, canCraft, craft } from '../systems/economy.js';
 import { consume } from '../systems/player.js';
@@ -26,8 +28,8 @@ import { ITEMS as ALL_ITEMS } from '../data/items.js';
 import { slots, usedSlots, stackSize } from '../systems/inventory.js';
 import { canUpgrade, upgradeTool, miningLevel, nextXp, toolTier, hasTool } from '../systems/skills.js';
 
-const TABS = { sac: 'Sac', recettes: '🔥 Recettes', poissons: '🐟 Poissons', quests: 'Quêtes', forge: 'Forge', social: 'Liens' };
-const TITLES = { recettes: '🔥 Recettes', poissons: '🐟 Carnet de pêche', market: '🏪 Marché', upgrades: '🧰 Magasin d\'amélioration', carpenter: '🪚 Charpentier', workshop: '🛠️ Établi', animals: '🐾 Marchand d\'animaux', bakery: '🥖 Boulangerie', forge: '⚒️ Forge d’Igor', butcher: '🥩 Boucherie', fishmonger: '🐟 Poissonnerie' };
+const TABS = { sac: 'Sac', recettes: '🔥 Recettes', poissons: '🐟 Poissons', quests: 'Quêtes', metiers: '🧑‍🔧 Métiers', forge: 'Forge', social: 'Liens' };
+const TITLES = { recettes: '🔥 Recettes', poissons: '🐟 Carnet de pêche', market: '🏪 Marché', upgrades: '🧰 Magasin d\'amélioration', carpenter: '🪚 Charpentier', workshop: '🛠️ Établi', animals: '🐾 Marchand d\'animaux', bakery: '🥖 Boulangerie', igorShop: '⚒️ Boutique d’Igor', butcher: '🥩 Boucherie', fishmonger: '🐟 Poissonnerie' };
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 const it = id => ITEMS[id] || { n: id, i: '❔', p: 0 };
 
@@ -39,13 +41,13 @@ export function createMenu(g, opts) {
   const shopGrid = (S, id) => '<div class="grid">' + SHOPS[id].sells.filter(k => isUnlocked(S, k)).map(k => { const x = it(k);
     return card(`<div class="t">${x.i} <b>${x.n}</b></div><div>${x.buy} 🪙${x.eat ? ' · se mange' : ''}</div><div class="row" style="margin:0"><button data-buy="${k}" ${S.money >= x.buy ? '' : 'disabled'}>Acheter</button><button data-buy5="${k}" ${S.money >= x.buy * 5 ? '' : 'disabled'}>×5</button></div>`); }).join('') + '</div>';
   const patternGrid = (S, shop) => { const ps = Object.entries(PATTERNS).filter(([, p]) => p.shop === shop); if (!ps.length) return '';
-    return '<h3>📜 Patrons</h3><div class="grid">' + ps.map(([id, p]) => { const r = HAND_RECIPES[p.recipe], o = it(r.out), own = hasPattern(S, id);
-      return card(`<div class="t">📜 <b>${p.n}</b></div><div>${o.i} ${o.n} : ${Object.entries(r.in).map(([k, n]) => `${it(k).i}${n}`).join(' ')}</div><div>${p.price} 🪙</div>${own ? '<small>✅ Déjà appris</small>' : `<button data-pattern="${id}" ${S.money >= p.price ? '' : 'disabled'}>Acheter le patron</button>`}`); }).join('') + '</div>'; };
+    return '<h3>📜 Patrons</h3><div class="grid">' + ps.map(([id, p]) => { const r = p.pot ? POT_RECIPES[p.recipe] : HAND_RECIPES[p.recipe], o = it(r.out), own = hasPattern(S, id);
+      return card(`<div class="t">📜 <b>${p.n}</b></div><div>${o.i} ${o.n} : ${Object.entries(r.in).map(([k, n]) => `${it(k).i}${n}`).join(' ')}</div><div>${p.price} 🪙 · ${JOBS[p.job].i} ${JOBS[p.job].n}${p.pot ? ' · chaudron 🍲' : ''}</div>${own ? '<small>✅ Déjà appris</small>' : `<button data-pattern="${id}" ${S.money >= p.price ? '' : 'disabled'}>Acheter le patron</button>`}`); }).join('') + '</div>'; };
   const views = {
-    forge: S => `<p class="info">Patrons et outils du forgeron.</p>${patternGrid(S, 'forge')}${shopGrid(S, 'forge')}`,
-    bakery: S => `<p class="info">Pain frais et farine pour cuisiner.</p>${shopGrid(S, 'bakery')}`,
-    butcher: S => `<p class="info">De la bonne viande pour vos futurs plats.</p>${shopGrid(S, 'butcher')}`,
-    fishmonger: S => `<p class="info">Arrivage du jour.</p>${shopGrid(S, 'fishmonger')}`,
+    igorShop: S => `<p class="info">Patrons et outils du forgeron.</p>${patternGrid(S, 'forge')}${shopGrid(S, 'forge')}`,
+    bakery: S => `<p class="info">Farine et patrons : le pain se prépare au chaudron.</p>${patternGrid(S, 'bakery')}${shopGrid(S, 'bakery')}`,
+    butcher: S => `<p class="info">De la bonne viande pour vos futurs plats.</p>${patternGrid(S, 'butcher')}${shopGrid(S, 'butcher')}`,
+    fishmonger: S => `<p class="info">Arrivage du jour.</p>${patternGrid(S, 'fishmonger')}${shopGrid(S, 'fishmonger')}`,
     poissons(S) {
       const L = S.fishLog || {}, got = FISH.filter(f => L[f.id]).length, SAI = ['Printemps', 'Été', 'Automne', 'Hiver'], hh = m => `${Math.floor(m / 60) % 24}h`;
       const when = w => `${SAI[w.season]} j${w.day}, an ${w.year || 1}, ${hh(w.minute)} · ${ZONE_NAMES[w.zone] || w.zone}`;
@@ -115,7 +117,12 @@ export function createMenu(g, opts) {
     },
     market(S) {
       const players = opts.market ? '<div id="pm"><p class="info">Chargement…</p></div>' : '<p class="info">Hors ligne : le marché entre joueurs a besoin de la connexion.</p>';
-      return `<h3>${SHOPS.stall.i} ${SHOPS.stall.n}</h3>${shopGrid(S, 'stall')}<h3>👥 Entre joueurs</h3><p class="info">Vendez vos produits aux autres joueurs, ou achetez les leurs. Les demandes du village sont sur le panneau d'affichage, à côté.</p>${players}`;
+      return `<h3>${SHOPS.stall.i} ${SHOPS.stall.n}</h3>${patternGrid(S, 'stall')}${shopGrid(S, 'stall')}<h3>👥 Entre joueurs</h3><p class="info">Vendez vos produits aux autres joueurs, ou achetez les leurs. Les demandes du village sont sur le panneau d'affichage, à côté.</p>${players}`;
+    },
+    metiers(S) {
+      return '<p class="info">Tout le monde peut pratiquer tous les métiers. On gagne de l’expérience en fabriquant (patrons achetés dans les magasins) et en cuisinant au chaudron.</p><div class="grid">' + Object.entries(JOBS).map(([id, j]) => {
+        const xp = jobXp(S, id), l = jobLevel(xp), nx = jobNext(xp);
+        return card(`<div class="t">${j.i} <b>${j.n}</b></div><div>Niveau ${l}/10</div><div class="bar"><i style="width:${nx ? Math.min(100, xp / nx * 100) : 100}%"></i></div><small>${nx ? `${xp}/${nx} XP` : 'Niveau max'}</small>`); }).join('') + '</div>';
     },
     quests(S) {
       const dn = (S.year - 1) * 112 + S.season * 28 + S.day;

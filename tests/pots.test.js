@@ -20,3 +20,20 @@ test('lot 2 : patron du chaudron à 50 🪙, louche, jauge de cuisson', () => {
   let r; for (let i = 0; i < 10; i++) r = usePot(g, p);
   assert.equal(r, 'done'); assert.equal(S.inv.soupe_baies, 1); assert.equal(p.cook, null);
 });
+
+test('lot 4 : métiers — patrons et cuisine font monter les niveaux', async () => {
+  const { jobXp, jobLevel } = await import('../src/systems/jobs.js');
+  const { SHOPS } = await import('../src/data/shops.js');
+  const { g, S } = makeGame({ state: { scene: 'farm', money: 1000, x: 20.5, y: 20.5, inv: { stone: 20, wood: 10, flour: 2, louche: 1 } } });
+  buyPattern(g, 'p_chaudron'); craftHand(g, 'chaudron');
+  assert.equal(jobXp(S, 'forgeron'), 15);
+  S.sel = 'chaudron'; placePot(g, 21, 20); const p = potAt(S, 21, 20); S.sel = 'louche';
+  const said = []; g.bus.on('say', d => said.push(d));
+  assert.equal(usePot(g, p), 'missing', 'pain inconnu sans patron');
+  buyPattern(g, 'p_pain'); usePot(g, p); said.at(-1).onChoose(said.at(-1).choices.findIndex(c => /Pain/.test(c)));
+  for (let i = 0; i < 10; i++) usePot(g, p);
+  assert.equal(S.inv.bread, 2); assert.equal(jobXp(S, 'cuisinier'), 15);
+  for (let i = 0; i < 3; i++) (await import('../src/systems/jobs.js')).gainJob(g, 'cuisinier');
+  assert.equal(jobLevel(jobXp(S, 'cuisinier')), 2);
+  assert.deepEqual(SHOPS.bakery.sells, ['flour'], 'magasins : ingrédients de base seulement');
+});

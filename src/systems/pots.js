@@ -4,13 +4,16 @@ import { PATTERNS, POT_RECIPES, POT_STIR, MAX_POTS } from '../data/patterns.js';
 import { isSolid, isPath, key } from '../world/map.js';
 import { add, has, canAdd } from './inventory.js';
 import { ITEMS } from '../data/items.js';
+import { gainJob } from './jobs.js';
+export const knowsPot = (S, id) => !!POT_RECIPES[id].base ? (S.recipes || []).includes('chaudron') : (S.recipes || []).includes(id);
 
 export const hasPattern = (S, id) => (S.recipes || []).includes(PATTERNS[id].recipe);
 export function buyPattern(g, id) {
   const S = g.S, p = PATTERNS[id];
   if (!p || hasPattern(S, id) || S.money < p.price) { g.bus.emit('sfx', 'denied'); return false; }
-  S.money -= p.price; S.recipes = [...new Set([...(S.recipes || []), p.recipe])];
-  g.bus.emit('sfx', 'buy'); g.bus.emit('toast', `📜 Nouvelle recette : ${ITEMS[p.recipe] ? ITEMS[p.recipe].n : p.recipe} — onglet 🔥 Recettes`);
+  S.money -= p.price; if (p.recipe === 'chaudron') { /* la soupe de baies vient avec */ }
+  S.recipes = [...new Set([...(S.recipes || []), p.recipe])];
+  g.bus.emit('sfx', 'buy'); g.bus.emit('toast', `📜 Nouvelle recette : ${ITEMS[p.recipe] ? ITEMS[p.recipe].n : p.n.replace('Patron : ', '')} ${p.pot ? ' — à préparer au chaudron 🍲' : ' — onglet 🔥 Recettes'}`);
   g.bus.emit('inv');
   return true;
 }
@@ -31,7 +34,7 @@ export function placePot(g, x, y) {
 export const canCookPot = (S, id) => Object.entries(POT_RECIPES[id].in).every(([k, n]) => has(S, k, n));
 export function startPot(g, pot, id) {
   const S = g.S, r = POT_RECIPES[id];
-  if (!r || pot.cook || !canCookPot(S, id)) { g.bus.emit('sfx', 'denied'); return false; }
+  if (!r || pot.cook || !knowsPot(S, id) || !canCookPot(S, id)) { g.bus.emit('sfx', 'denied'); return false; }
   for (const [k, n] of Object.entries(r.in)) add(g, k, -n);
   pot.cook = { r: id, p: 0 };
   g.bus.emit('sfx', 'ui'); g.bus.emit('toast', '🥄 Remue ! Reste appuyé sur le chaudron jusqu’à ce que la jauge soit pleine.');
@@ -46,8 +49,8 @@ export function usePot(g, pot) {
     return 'need';
   }
   if (!pot.cook) {
-    const ids = Object.keys(POT_RECIPES).filter(id => canCookPot(S, id));
-    if (!ids.length) { g.bus.emit('toast', `🍲 Il manque des ingrédients. Ex. : ${Object.values(POT_RECIPES).map(r => Object.entries(r.in).map(([k, n]) => `${n} ${ITEMS[k].i}`).join(' + ') + ' → ' + ITEMS[r.out].i).join(', ')}`); return 'missing'; }
+    const known = Object.keys(POT_RECIPES).filter(id => knowsPot(S, id)), ids = known.filter(id => canCookPot(S, id));
+    if (!ids.length) { g.bus.emit('toast', `🍲 Il manque des ingrédients. Ex. : ${known.map(id => POT_RECIPES[id]).map(r => Object.entries(r.in).map(([k, n]) => `${n} ${ITEMS[k].i}`).join(' + ') + ' → ' + ITEMS[r.out].i).join(', ')}`); return 'missing'; }
     g.bus.emit('say', { name: 'Chaudron', color: '#ffdf8a', lines: ['Que préparer ?'], choices: [...ids.map(id => `${ITEMS[POT_RECIPES[id].out].i} ${ITEMS[POT_RECIPES[id].out].n}`), 'Rien.'],
       onChoose: i => { if (ids[i]) startPot(g, pot, ids[i]); } });
     return 'menu';
@@ -59,6 +62,6 @@ export function usePot(g, pot) {
   if (!canAdd(S, r.out, r.q)) { g.bus.emit('toast', 'Sac plein ! Le plat attend dans le chaudron.'); return 'full'; }
   add(g, r.out, r.q); pot.cook = null;
   g.bus.emit('sfx', 'collect'); g.bus.emit('pop', { t: `+${r.q} ${ITEMS[r.out].i}`, x: pot.x, y: pot.y });
-  g.bus.emit('potDone', { job: r.job, out: r.out });
+  gainJob(g, r.job);
   return 'done';
 }

@@ -236,7 +236,7 @@ export const IGOR = {
     { h: 4, t: "Je fais de bons outils. Mais ce que j'aimerais vraiment apprendre, c'est forger des armes." }
   ],
   topics: [{ t: 'Tu fais quoi, à la forge ?', lines: ['Des outils, surtout. Solides. Qui durent.'] },
-    { t: 'Tu vends quoi ?', lines: ['Des patrons, et de quoi bien travailler. Regarde.'], open: 'forge' }],
+    { t: 'Tu vends quoi ?', lines: ['Des patrons, et de quoi bien travailler. Regarde.'], open: 'igorShop' }],
   chat: ['La cheville tient le coup, aujourd’hui.', "Un bon outil, ça se respecte."],
   questions: []
 };

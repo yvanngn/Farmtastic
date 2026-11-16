@@ -29,6 +29,11 @@ export const ITEMS = {
   igor_bijou: { n: 'Bijou d’Igor', p: 0, i: '💍', keep: true },
   chaudron: { n: 'Chaudron', p: 0, i: '🍲', keep: true },        // à poser ; on y cuisine à la louche
   louche: { n: 'Louche', p: 10, i: '🥄', keep: true, buy: 30 },   // 💡 prix ; vendue à la forge
+  bague_cuivre: { n: 'Bague de cuivre', p: 90, i: '💍' },
+  tisane: { n: 'Tisane fleurie', p: 30, i: '🍵', eat: { e: 15, h: 10 } },
+  bonnet: { n: 'Bonnet de laine', p: 200, i: '🧢' },
+  ragout: { n: 'Ragoût', p: 160, i: '🍲', eat: { e: 60, h: 10 } },
+  soupe_poisson: { n: 'Soupe de poisson', p: 90, i: '🥣', eat: { e: 45 } },
   soupe_baies: { n: 'Soupe de baies', p: 25, i: '🥣', eat: { e: 20 } },
   chest: { n: 'Coffre', p: 0, i: '📦', keep: true },             // appris auprès d'Igor ; à poser plus tard
   manteau: { n: 'Manteau d’hiver', p: 150, i: '🧥', keep: true, buy: 400 },   // protège du froid de la montagne (💡 vendu à l'étal du marché)
