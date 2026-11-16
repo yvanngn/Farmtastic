@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { makeGame, seq } from './helpers.js';
+import { makeGame, seq, ramasse } from './helpers.js';
 import { ensureNature, pickFlower, hitNature, pickVein, rollRainbow, rainbowVisible, digTreasure, freeSpot } from '../src/systems/nature.js';
 import { act } from '../src/systems/actions.js';
 import { isSolid } from '../src/world/map.js';
@@ -41,7 +41,7 @@ test('filons : cuivre courant → or rare, et plus de coups de pioche que les ca
   S.nature = { foret: { day: S.year + '-' + S.season + '-' + S.day, flowers: {}, rocks: { '5,9': { t: 'vein', v: 'gold', hp: VEIN_HP } } } };
   assert.equal(isSolid(S, 5, 9), true);
   let hits = 0; while (S.nature.foret.rocks['5,9']) { assert.equal(act(g, 5, 9), 'hit'); hits++; }
-  assert.equal(hits, VEIN_HP);
+  assert.equal(hits, VEIN_HP); ramasse(g);
   assert.ok(S.inv.gold_ore >= 2);
 });
 

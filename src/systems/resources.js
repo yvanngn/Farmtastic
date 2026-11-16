@@ -4,7 +4,7 @@ import { CFG } from '../config.js';
 import { freeForObj, key, isForest, newTree, newRock } from '../world/map.js';
 import { TREE_KINDS, TREE_KIND_IDS, TREE_GROW_DAYS, ROCK_DAYS, STONE_YIELD, FOREST } from '../data/forest.js';
 import { MIN_PICK, MINING_GAIN, TIER_NAMES, energyCost } from '../data/tools.js';
-import { add } from './inventory.js';
+import { add, scatter } from './inventory.js';
 import { useEnergy } from './player.js';
 import { gainXp, toolTier, hasTool } from './skills.js';
 
@@ -39,12 +39,12 @@ export function hitObject(g, x, y) {
   if (o.hp <= 0) {
     delete S.objs[k];
     if (o.t === 'tree') {
-      const [a, b] = TREE_KINDS[treeKind(o, x, y)].wood, n = a + (g.rnd() * (b - a + 1) | 0); add(g, 'wood', n);
+      const [a, b] = TREE_KINDS[treeKind(o, x, y)].wood, n = a + (g.rnd() * (b - a + 1) | 0); scatter(g, 'wood', n, x, y);
       g.bus.emit('pop', { t: '+' + n + '🪵', x, y });
-      if (g.rnd() < 0.3) add(g, 'wheat_seed', 2);
+      if (g.rnd() < 0.3) scatter(g, 'wheat_seed', 2, x, y);
     } else {
       const n = o.t === 'boulder' ? 8 + (g.rnd() * 5 | 0) : STONE_YIELD[o.t];
-      add(g, 'stone', n);
+      scatter(g, 'stone', n, x, y);
       gainXp(g, 'mining', MINING_GAIN[o.t]);
       g.bus.emit('pop', { t: '+' + n + '🪨', x, y });
     }

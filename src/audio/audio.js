@@ -160,6 +160,10 @@ export function createAudio(g, storage) {
     feed: t => { for (let k = 0; k < 3; k++) burst(t + k * 0.1, 0.06, 'bandpass', 1500, 0.25, 3); },
     woof: t => { blip(t, 'sawtooth', 300, 0.09, 0.12, 180); burst(t, 0.08, 'bandpass', 600, 0.25, 2); blip(t + 0.14, 'sawtooth', 320, 0.08, 0.1, 190); },
     cluck: t => { blip(t, 'square', 720, 0.06, 0.08, 520); blip(t + 0.09, 'square', 820, 0.08, 0.08, 560); },
+    getWood: t => { blip(t, 'triangle', 330, 0.07, 0.22, 220); burst(t, 0.05, 'bandpass', 700, 0.2, 3); blip(t + 0.06, 'triangle', 440, 0.08, 0.15, 300); },   // toc boisé
+    getStone: t => { blip(t, 'square', 900, 0.03, 0.08, 600); burst(t, 0.06, 'highpass', 3000, 0.18); blip(t + 0.05, 'square', 700, 0.04, 0.06, 500); },   // cliquetis de cailloux
+    getOre: t => { blip(t, 'sine', hz(36), 0.35, 0.14); blip(t + 0.04, 'sine', hz(43), 0.4, 0.08); blip(t, 'triangle', hz(48), 0.15, 0.05); },   // tintement métallique
+    getFood: t => { blip(t, 'sine', 500, 0.06, 0.15, 900); blip(t + 0.07, 'sine', 700, 0.08, 0.12, 1100); },   // petit « pop » juteux
     collect: t => { blip(t, 'sine', hz(31), 0.4, 0.18); blip(t + 0.08, 'sine', hz(36), 0.5, 0.15); },
     hit: t => { burst(t, 0.12, 'highpass', 1200, 0.3); blip(t, 'sine', 220, 0.15, 0.4, 70); },
     hurt: t => blip(t, 'sawtooth', 320, 0.22, 0.15, 110),

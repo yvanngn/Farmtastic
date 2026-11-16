@@ -2,6 +2,8 @@ import { ITEMS } from '../data/items.js';
 // Sac à cases : chaque case contient au plus stackSize(S) unités d'un même objet.
 // 25 bois avec des piles de 10 = 3 cases. S.inv garde le total par objet.
 import { CFG } from '../config.js';
+import { isSolid } from '../world/map.js';
+import { SCENES } from '../world/scenes.js';
 
 export const STACKS = [10, 20, 30, 50, 99];           // taille des piles par niveau d'amélioration
 export const has = (S, id, n = 1) => (S.inv[id] || 0) >= n;
@@ -63,12 +65,40 @@ export function dropItem(g, id, n) {
 }
 export const dropsAt = (S, x, y) => (S.drops || []).filter(d => d.scene === (S.scene || 'farm') && d.x === x && d.y === y);
 
+// Ce qu'on casse (arbre, caillou, filon, buisson…) se répand par terre autour : on passe dessus pour ramasser.
+// Chaque unité saute sur une case libre voisine ; fx/fy/born servent à l'animation (vol en cloche).
+export const SCATTER_MS = 450;
+const AROUND = [[0, 0], [1, 0], [-1, 0], [0, 1], [0, -1], [1, 1], [-1, 1], [1, -1], [-1, -1]];
+export function scatter(g, id, n, x, y) {
+  const S = g.S, sc = S.scene || 'farm', W = (SCENES[sc] || {}).W || CFG.W, H = (SCENES[sc] || {}).H || CFG.H;
+  let spots = AROUND.map(([a, b]) => [x + a, y + b]).filter(([a, b]) => a >= 0 && b >= 0 && a < W && b < H && !isSolid(S, a, b));
+  if (!spots.length) { add(g, id, n); return 0; }
+  S.drops ||= [];
+  const born = g.now();
+  for (let i = 0; i < n; i++) {
+    const [a, b] = spots[Math.floor(g.rnd() * spots.length) % spots.length];
+    const same = S.drops.find(d => d.scene === sc && d.x === a && d.y === b && d.id === id);
+    if (same) { same.n++; same.born = born; same.fx = x; same.fy = y; }
+    else S.drops.push({ scene: sc, x: a, y: b, id, n: 1, fx: x, fy: y, born });
+  }
+  return n;
+}
+// Son du ramassage, selon le composant.
+export function pickSound(id) {
+  if (id === 'wood') return 'getWood';
+  if (id === 'stone') return 'getStone';
+  if (/_ore$|^ruby$|^emerald$/.test(id)) return 'getOre';
+  if (ITEMS[id] && ITEMS[id].eat) return 'getFood';
+  return 'collect';
+}
+
 // Ramasse ce qui rentre ; renvoie la liste des objets restés au sol (sac plein).
 export function pickDrops(g, x, y) {
   const S = g.S, left = [];
   for (const d of dropsAt(S, x, y)) {
+    if (d.born && g.now() - d.born < SCATTER_MS) continue;   // encore en l'air
     const k = Math.min(d.n, room(S, d.id));
-    if (k > 0) { S.inv[d.id] = (S.inv[d.id] || 0) + k; d.n -= k; g.bus.emit('sfx', 'collect'); g.bus.emit('inv'); }
+    if (k > 0) { add(g, d.id, k); d.n -= k; g.bus.emit('sfx', pickSound(d.id)); g.bus.emit('pop', { t: `+${k} ${ITEMS[d.id] ? ITEMS[d.id].i : ''}`, x, y }); }
     if (d.n > 0) left.push(d);
   }
   S.drops = (S.drops || []).filter(d => d.n > 0);

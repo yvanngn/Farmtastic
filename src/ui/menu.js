@@ -182,7 +182,8 @@ export function createMenu(g, opts) {
   };
   function render() {
     $('#tabs').innerHTML = Object.entries(TABS).map(([k, v]) => `<button data-t="${k}" class="${k === tab ? 'on' : ''}">${v}</button>`).join('');
-    $('#tabBody').innerHTML = views[tab](g.S);
+    const G = g.S.game, code = G && G.mode === 'multi' && G.code && !$('#tabs').hidden ? `<p class="info code-partie">👥 Code pour rejoindre la partie : <b>${esc(G.code)}</b></p>` : '';
+    $('#tabBody').innerHTML = code + views[tab](g.S);
     if (tab === 'market') renderPlayers();
   }
   $('#tabs').onclick = e => { const t = e.target.dataset.t; if (t) { tab = t; audio.play('ui'); render(); } };

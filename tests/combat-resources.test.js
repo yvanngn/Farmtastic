@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { makeGame, seq } from './helpers.js';
+import { makeGame, seq, ramasse } from './helpers.js';
 import { attack, updateEnemies, spawnEnemies } from '../src/systems/combat.js';
 import { hitObject } from '../src/systems/resources.js';
 import { useEnergy, consume } from '../src/systems/player.js';
@@ -38,7 +38,8 @@ test('arbre : hache obligatoire, 3 coups, bois récolté', () => {
   S.sel = 'axe';
   hitObject(g, 30, 20); hitObject(g, 30, 20); hitObject(g, 30, 20);
   assert.equal(S.objs['30,20'], undefined);
-  assert.equal(S.inv.wood, 5);
+  assert.ok(S.drops.some(d => d.id === 'wood'), 'le bois tombe par terre');
+  ramasse(g); assert.equal(S.inv.wood, 5);
   assert.equal(S.energy, 97, '1 énergie par coup');
 });
 
@@ -79,16 +80,16 @@ test('un arbre met 3 jours à pousser avant de donner du bois', () => {
   assert.match(toasts().at(-1), /sapin pousse encore \(3 j\)/);
   for (let d = 0; d < TREE_GROW_DAYS; d++) regrow(g);
   assert.equal(S.objs['40,10'].g, 3);
-  hitObject(g, 40, 10); hitObject(g, 40, 10); hitObject(g, 40, 10);
+  hitObject(g, 40, 10); hitObject(g, 40, 10); hitObject(g, 40, 10); ramasse(g);
   assert.ok(S.inv.wood >= 3, 'le sapin donne du bois');
 });
 
 test('pierres : la petite donne 1 pierre, la plus grosse 2', () => {
   const { g, S } = makeGame({ state: { sel: 'pick', inv: {}, tools: { axe: 1, pick: 3, sickle: 1, sword: 1 } } });
   S.objs['40,10'] = { t: 'rock', hp: 2 }; S.objs['41,10'] = { t: 'rock_big', hp: 3 };
-  hitObject(g, 40, 10);
+  hitObject(g, 40, 10); ramasse(g);
   assert.equal(S.inv.stone, 1);
-  hitObject(g, 41, 10);
+  hitObject(g, 41, 10); ramasse(g);
   assert.equal(S.inv.stone, 3);
 });
 
@@ -113,4 +114,16 @@ test('plus de coups pour le bois et les cailloux ; les pierres trop dures sont r
   assert.equal(newTree('oak').hp, 8); assert.equal(newRock(false).hp, 6); assert.equal(newRock(true).hp, 9);
   assert.ok(ROCK_HPS.boulder > ROCK_HPS.rock_big && TREE_HP > 3);
   assert.ok(MIN_PICK.boulder > 1, 'le gros rocher demande une meilleure pioche (dessiné plus foncé)');
+});
+
+test('21/11 : ce qu’on casse se répand au sol, on le ramasse en passant dessus (son par composant)', async () => {
+  const { pickDrops, pickSound, SCATTER_MS } = await import('../src/systems/inventory.js');
+  const { g, S, clock } = makeGame({ rnd: seq(0.9), state: { sel: 'axe', inv: {} } });
+  S.objs['30,20'] = { t: 'tree', hp: 1 }; hitObject(g, 30, 20);
+  assert.ok(!S.inv.wood, 'pas directement dans le sac');
+  const d = S.drops.find(x => x.id === 'wood'); assert.ok(Math.abs(d.x - 30) <= 1 && Math.abs(d.y - 20) <= 1, 'autour de l’arbre');
+  const sfx = []; g.bus.on('sfx', s => sfx.push(s));
+  pickDrops(g, d.x, d.y); assert.ok(!S.inv.wood, 'encore en l’air');
+  clock.t += SCATTER_MS; pickDrops(g, d.x, d.y); assert.ok(S.inv.wood > 0); assert.ok(sfx.includes('getWood'));
+  assert.equal(pickSound('stone'), 'getStone'); assert.equal(pickSound('gold_ore'), 'getOre'); assert.equal(pickSound('berry'), 'getFood');
 });

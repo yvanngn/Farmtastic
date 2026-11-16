@@ -5,7 +5,7 @@ import { key, freeForObj, isSolid } from '../world/map.js';
 import { CFG } from '../config.js';
 import { FLOWERS } from '../data/items.js';
 import { NATURE, VEINS, VEIN_HP, VEIN_ORE, ROCK_HP, P_RARE_FLOWER, P_MID_FLOWER, RAINBOW } from '../data/nature.js';
-import { add } from './inventory.js';
+import { add, scatter } from './inventory.js';
 import { useEnergy } from './player.js';
 import { gainXp, toolTier, hasTool } from './skills.js';
 import { MINING_GAIN, energyCost } from '../data/tools.js';
@@ -84,11 +84,11 @@ export function hitNature(g, x, y) {
   gainXp(g, 'mining', MINING_GAIN.hit);
   if (o.hp <= 0) {
     delete N.rocks[k];
-    add(g, 'stone', 1);
+    scatter(g, 'stone', 1, x, y);
     let txt = '+1🪨';
     if (o.t === 'vein') {
       const V = VEINS[o.v], n = VEIN_ORE[0] + (g.rnd() * (VEIN_ORE[1] - VEIN_ORE[0] + 1) | 0);
-      add(g, V.ore, n); gainXp(g, 'mining', 15); txt += ` +${n} ${V.n.replace('Filon', 'minerai')}`;
+      scatter(g, V.ore, n, x, y); gainXp(g, 'mining', 15); txt += ` +${n} ${V.n.replace('Filon', 'minerai')}`;
       if (o.v === 'gold') { g.bus.emit('sfx', 'levelup'); g.bus.emit('toast', "De l'or ! ✨"); }
     }
     g.bus.emit('pop', { t: txt, x, y });

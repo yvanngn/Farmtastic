@@ -1,7 +1,7 @@
 // Recettes connues (fabriquées n'importe où), feux de camp, cuisson et buissons à baies. Logique pure.
 import { HAND_RECIPES, COOK, COOK_MS, BUSHES, BERRY_DAYS, BERRY_PICK, MAX_FIRES } from '../data/recipes.js';
 import { isSolid, isPath, key } from '../world/map.js';
-import { add, has, canAdd } from './inventory.js';
+import { add, has, canAdd, scatter } from './inventory.js';
 import { gainJob } from './jobs.js';
 
 const dayNo = S => (S.year - 1) * 112 + S.season * 28 + S.day;
@@ -69,8 +69,7 @@ export function pickBush(g, x, y) {
   if (!bushRipe(S, x, y)) { g.bus.emit('toast', 'Plus de baies… elles repoussent en 2 jours 🌿'); return 0; }
   const n = BERRY_PICK[0] + (g.rnd() * (BERRY_PICK[1] - BERRY_PICK[0] + 1) | 0);
   const kind = bushKind(x, y);
-  if (!canAdd(S, kind, n)) { g.bus.emit('toast', 'Sac plein !'); return 0; }
-  add(g, kind, n); (S.bushes ||= {})[key(x, y)] = dayNo(S);
+  scatter(g, kind, n, x, y); (S.bushes ||= {})[key(x, y)] = dayNo(S);
   g.bus.emit('sfx', 'collect'); g.bus.emit('pop', { t: `+${n} ${kind === 'mure' ? '🍇' : '🫐'}`, x, y });
   const T = (S.tips ||= {});
   if (!T.berry) { T.berry = true; g.bus.emit('say', { name: 'Conseil', color: '#ffdf8a', lines: BERRY_TIP }); }

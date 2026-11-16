@@ -17,3 +17,10 @@ export function makeGame({ state = {}, rnd = seq(0.5), time = 1_000_000 } = {}) 
   return { g, S, clock, events, toasts: () => events.filter(e => e[0] === 'toast').map(e => e[1]),
     sounds: () => events.filter(e => e[0] === 'sfx').map(e => e[1]) };
 }
+
+// Ramasse tout ce qui est tombé au sol (bois, pierres, baies…) comme si le joueur passait dessus.
+export function ramasse(g) {
+  const S = g.S;
+  for (const d of S.drops || []) S.inv[d.id] = (S.inv[d.id] || 0) + d.n;
+  S.drops = [];
+}

@@ -3,7 +3,7 @@
 import { ADMIN } from './admin.js';
 import { isSolid, key } from '../world/map.js';
 import { LAYOUTS } from '../world/scenes.js';
-import { add } from './inventory.js';
+import { add, scatter } from './inventory.js';
 import { damage, useEnergy } from './player.js';
 import { gainXp, toolTier, hasTool } from './skills.js';
 import { ROOMS_X, ROOM_W, ROOM_H, MOBS, ROOM_MOBS, ZROCKS, ZROCK_COUNT, ZROCK_P3, ZROCK_P2, ORES, GATE } from '../data/wild.js';
@@ -68,9 +68,10 @@ export function hitZRock(g, x, y) {
   if (o.hp <= 0) {
     delete S.wild.rocks[k];
     const R = ZROCKS[o.t];
-    add(g, 'stone', R.stone); gainXp(g, 'mining', 5 * R.stone);
+    const gem = g.rnd() < R.ore;   // tiré avant la dispersion (qui utilise aussi le hasard)
+    scatter(g, 'stone', R.stone, x, y); gainXp(g, 'mining', 5 * R.stone);
     let txt = '+' + R.stone + '🪨';
-    if (g.rnd() < R.ore) { const ore = ORES[g.rnd() * ORES.length | 0]; add(g, ore, 1); txt += ore === 'ruby' ? ' ♦️' : ' 💚'; g.bus.emit('sfx', 'levelup'); g.bus.emit('toast', ore === 'ruby' ? 'Un rubis !' : 'Une émeraude !'); }
+    if (gem) { const ore = ORES[g.rnd() * ORES.length | 0]; scatter(g, ore, 1, x, y); txt += ore === 'ruby' ? ' ♦️' : ' 💚'; g.bus.emit('sfx', 'levelup'); g.bus.emit('toast', ore === 'ruby' ? 'Un rubis !' : 'Une émeraude !'); }
     g.bus.emit('pop', { t: txt, x, y });
   }
   return true;

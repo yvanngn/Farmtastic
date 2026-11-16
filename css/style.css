@@ -126,6 +126,7 @@ label { font-size: .85em; color: var(--doux) }
 .rond { width: calc(var(--act) * .62); height: calc(var(--act) * .62); font-size: calc(var(--act) * .28) }
 #bTools { right: calc(var(--act) * 1.08); bottom: calc(var(--act) * .12) }
 #bItems { right: calc(var(--act) * .2); bottom: calc(var(--act) * 1.06) }
+#bRecipes { right: calc(var(--act) * .95); bottom: calc(var(--act) * .88) }   /* entre les outils et le sac */
 #droite button.presse, #bAct:active { transform: scale(.92); box-shadow: 0 0 18px rgba(255,223,138,.6) }
 @media (hover: hover) and (pointer: fine) { #stick { display: none } }
 

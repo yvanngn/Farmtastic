@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { makeGame, seq } from './helpers.js';
+import { makeGame, seq, ramasse } from './helpers.js';
 import { add, canAdd, usedSlots, cellsOf, stackSize } from '../src/systems/inventory.js';
 import { level, gainXp, canUpgrade, upgradeTool, miningLevel } from '../src/systems/skills.js';
 import { hitObject } from '../src/systems/resources.js';
@@ -74,7 +74,7 @@ test('gros rocher : pioche Cuivre requise', () => {
   assert.match(toasts()[0], /Cuivre/);
   S.tools.pick = 2;
   hitObject(g, 40, 10); hitObject(g, 40, 10); hitObject(g, 40, 10);
-  assert.equal(S.objs['40,10'], undefined);
+  assert.equal(S.objs['40,10'], undefined); ramasse(g);
   assert.ok(S.inv.stone >= 8);
 });
 

@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { makeGame } from './helpers.js';
+import { makeGame, ramasse } from './helpers.js';
 import { defaultState } from '../src/core/state.js';
 import { act } from '../src/systems/actions.js';
 import { craftHand, cookTick, knows } from '../src/systems/cooking.js';
@@ -38,7 +38,7 @@ test('baies : +1 énergie crues, +5 cuites ; les buissons repoussent en 2 jours'
   consume(g, 'berry_cooked'); assert.equal(S.energy, 16);
   const [x, y] = BUSHES[0];
   assert.equal(isSolid(S, x, y), true);
-  assert.equal(act(g, x, y), 'berries'); assert.ok(S.inv.berry >= 2);
+  assert.equal(act(g, x, y), 'berries'); ramasse(g); assert.ok(S.inv.berry >= 2);
   assert.equal(act(g, x, y), 'empty');
   S.day += 2; assert.equal(act(g, x, y), 'berries');
 });
@@ -59,7 +59,7 @@ test('16/11 : mûres sur les ronces, soupe de baies à +50 ⚡, tuto de la vente
   const { ITEMS } = await import('../src/data/items.js');
   const { add } = await import('../src/systems/inventory.js');
   const { g, S } = (await import('./helpers.js')).makeGame({ state: { scene: 'farm', bushes: {}, tips: { berry: true }, inv: {} } });
-  const [x, y] = BUSHES.find(b => b[2] === 'mure'); assert.ok(pickBush(g, x, y) > 0); assert.ok(S.inv.mure > 0);
+  const [x, y] = BUSHES.find(b => b[2] === 'mure'); assert.ok(pickBush(g, x, y) > 0); (await import('./helpers.js')).ramasse(g); assert.ok(S.inv.mure > 0);
   assert.equal(ITEMS.soupe_baies.eat.e, 50);
   const said = []; g.bus.on('say', d => said.push(d));
   add(g, 'wood', 3); add(g, 'stone', 1);

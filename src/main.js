@@ -203,7 +203,17 @@ addEventListener('keydown', e => {
 
 $('#bSave').onclick = () => doSave(true);
 $('#bBag').onclick = () => { audio.play('ui'); menu.open(); };
-$('#bLook').onclick = () => { audio.play('ui'); custom.open(true, false); };
+$('#bRecipes').onclick = () => { audio.play('ui'); menu.open('recettes'); };
+// Revenir au menu principal : on sauvegarde, puis on recharge le jeu sur l'écran titre (tout repart proprement, multijoueur compris).
+g.bus.on('toTitle', () => {
+  if (!started) return;
+  g.bus.emit('say', { name: 'Menu principal', color: '#ffdf8a', lines: ['Sauvegarder et revenir au menu principal ?'], choices: ['Oui', 'Non'],
+    onChoose: async i => { if (i !== 0) return; await doSave(true); setTimeout(() => location.reload(), 300); } });
+});
+// Pas de clic droit ni de menu contextuel dans le jeu.
+addEventListener('contextmenu', e => e.preventDefault());
+addEventListener('pointerdown', e => { if (e.button === 2) { e.preventDefault(); e.stopImmediatePropagation(); } }, true);
+addEventListener('mousedown', e => { if (e.button === 2) e.preventDefault(); }, true);
 $('#bSet').onclick = () => { audio.play('ui'); settingsPanel.open(); };
 $('#bMap').onclick = () => { audio.play('ui'); mapView.open(); };
 
@@ -219,7 +229,7 @@ async function begin() {
     g.trainT = performance.now();
     setTimeout(() => g.bus.emit('say', { name: g.S.name, color: '#ffdf8a', lines: INTRO_LINES, onEnd: () => { g.S.intro.arrived = true; } }), 2600);
   }
-  started = true; custom.close(); hud.show(); renderer.initWeather(); ensureOrders(g);
+  started = true; g.inGame = true; custom.close(); hud.show(); renderer.initWeather(); ensureOrders(g);
   if (net.sb) { playerMarket = createPlayerMarket(net.sb, net.uid, g); await upsertProfile(net.sb, net.uid, g.S); if (game && game.mode === 'multi') { mp = createMultiplayer({ sb: net.sb, uid: net.uid, g, world: game.id }); mp.join(); } }
   doSave(false);
 }

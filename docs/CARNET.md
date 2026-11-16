@@ -344,3 +344,10 @@ Problème repéré par l'utilisateur : énergie vide en 5-10 min, puis 10-15 min
 
 ## Séance 16/11/2026 (13h50) — versions
 - ✅ Semver horodaté (`src/version.js`, affiché sur l'écran titre en bas à droite et dans ⚙ Réglages ; historique `docs/VERSIONS.md`). Départ **0.1.0**. Patch +1 à chaque publication (`node tools/version.mjs "note"`) ; **mineure et majeure seulement sur décision de l'utilisateur**.
+
+## Séance 16/11/2026 (20h40) — v0.1.1, ergonomie
+- ✅ Ce qu'on casse (arbre, caillou, filon, roche de la caverne, buisson) **se répand par terre** autour (vol en cloche ≈ 0,45 s) ; on **passe dessus** pour ramasser. Son par composant : bois (toc), pierre (cliquetis), minerai/gemme (tintement), nourriture (pop).
+- ✅ Bouton rond **🔥 Recettes** entre 🛠️ outils et 🎒 sac. Bouton **👕 apparence retiré** de la barre du haut.
+- ✅ ⚙ Réglages → **🏠 Revenir au menu principal** (sauvegarde, puis retour à l'écran titre).
+- ✅ Partie multijoueur : **code pour rejoindre** affiché en haut du 📜 Menu.
+- ✅ **Clic droit et menu contextuel désactivés**.

@@ -15,6 +15,7 @@ import { FIELD_TOOLS } from '../data/repairs.js';
 import { BUSHES } from '../data/recipes.js';
 import { bushRipe, cookProgress } from '../systems/cooking.js';
 import { ghostVisible } from '../systems/ghost.js';
+import { SCATTER_MS } from '../systems/inventory.js';
 import { GHOST } from '../data/npcs.js';
 // Buisson à baies (baies bleues quand il y en a).
 function drawBush(c, x, y, ripe, mure) {
@@ -376,10 +377,13 @@ let swing = null;
       ctx.save(); ctx.translate(x + 8, y + 10 + b); ctx.rotate(-.6); ctx.fillStyle = '#5a3a22'; ctx.fillRect(-1, 2, 2, 4); ctx.fillStyle = '#e8c26a'; ctx.fillRect(-3, 1, 6, 1); ctx.fillStyle = '#d6dbe0'; ctx.fillRect(-1, -11, 2, 12); ctx.fillStyle = '#fff'; ctx.fillRect(-1, -11, 1, 11); ctx.restore();
     } });
     for (const d of S.drops || []) if (d.scene === scene) list.push({ z: d.y + .4, d: () => {
-      const b = Math.round(Math.sin(now / 250 + d.x) * 1.5), it = ITEMS[d.id];
-      ctx.fillStyle = 'rgba(0,0,0,.25)'; ctx.fillRect(d.x * T + 3, d.y * T + 12, 10, 2);
-      ctx.font = '10px serif'; ctx.textAlign = 'center'; ctx.fillText(it ? it.i : '❔', d.x * T + 8, d.y * T + 10 + b); ctx.textAlign = 'start';
-      if (d.n > 1) { ctx.font = 'bold 6px Georgia'; ctx.fillStyle = '#fff6e0'; ctx.fillText(d.n, d.x * T + 11, d.y * T + 15); }
+      const it = ITEMS[d.id], age = d.born ? g.now() - d.born : 1e9;
+      // vol en cloche depuis l'objet cassé, puis petit rebond au sol
+      const k = Math.min(1, age / SCATTER_MS), fly = k < 1, ox = fly ? (d.fx + (d.x - d.fx) * k) : d.x, oy = fly ? (d.fy + (d.y - d.fy) * k) : d.y;
+      const b = fly ? -Math.round(Math.sin(k * Math.PI) * 10) : age < SCATTER_MS + 250 ? -Math.round(Math.sin((age - SCATTER_MS) / 250 * Math.PI) * 2) : Math.round(Math.sin(now / 250 + d.x) * 1.5);
+      ctx.fillStyle = 'rgba(0,0,0,.25)'; ctx.fillRect(ox * T + 3, oy * T + 12, 10, 2);
+      ctx.font = '10px serif'; ctx.textAlign = 'center'; ctx.fillText(it ? it.i : '❔', ox * T + 8, oy * T + 10 + b); ctx.textAlign = 'start';
+      if (d.n > 1 && !fly) { ctx.font = 'bold 6px Georgia'; ctx.fillStyle = '#fff6e0'; ctx.fillText(d.n, d.x * T + 11, d.y * T + 15); }
     } });
     if (scene === 'grange') {
       // outils au sol (avec un éclat) et passages encore fermés
