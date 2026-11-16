@@ -1,7 +1,8 @@
 // Recettes qu'on connaît et qu'on fabrique n'importe où (onglet « Recettes »). Au début : seulement le feu.
 export const HAND_RECIPES = {
   campfire: { out: 'campfire', q: 1, in: { wood: 5, stone: 2 }, cat: 'feu' },
-  chest: { out: 'chest', q: 1, in: { wood: 80, stone: 20 }, cat: 'rangement' }   // appris auprès d'Igor
+  chest: { out: 'chest', q: 1, in: { wood: 80, stone: 20 }, cat: 'rangement' },   // appris auprès d'Igor
+  chaudron: { out: 'chaudron', q: 1, in: { stone: 20, wood: 10 }, cat: 'feu', job: 'forgeron' }   // 💡 patron acheté à la forge
 };
 export const START_RECIPES = ['campfire'];
 // Onglets des recettes, par type d'objet (les autres types viendront avec les nouvelles recettes).

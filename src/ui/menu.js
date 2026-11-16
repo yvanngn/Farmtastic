@@ -16,6 +16,8 @@ import { isUnlocked } from '../systems/market.js';
 import { canRepairBench, repairBench } from '../systems/economy.js';
 import { WORKBENCH } from '../data/buildings.js';
 import { craftHand, canCraftHand } from '../systems/cooking.js';
+import { buyPattern, hasPattern } from '../systems/pots.js';
+import { PATTERNS } from '../data/patterns.js';
 import { HAND_RECIPES, RECIPE_CATS } from '../data/recipes.js';
 import { build, canBuild, canBuyAnimal, homeCount, buy, buyAnimal, buyBag, bagCost, buyStack, stackCost, STACKS, canCraft, craft } from '../systems/economy.js';
 import { consume } from '../systems/player.js';
@@ -25,7 +27,7 @@ import { slots, usedSlots, stackSize } from '../systems/inventory.js';
 import { canUpgrade, upgradeTool, miningLevel, nextXp, toolTier, hasTool } from '../systems/skills.js';
 
 const TABS = { sac: 'Sac', recettes: '🔥 Recettes', poissons: '🐟 Poissons', quests: 'Quêtes', forge: 'Forge', social: 'Liens' };
-const TITLES = { recettes: '🔥 Recettes', poissons: '🐟 Carnet de pêche', market: '🏪 Marché', upgrades: '🧰 Magasin d\'amélioration', carpenter: '🪚 Charpentier', workshop: '🛠️ Établi', animals: '🐾 Marchand d\'animaux', bakery: '🥖 Boulangerie', butcher: '🥩 Boucherie', fishmonger: '🐟 Poissonnerie' };
+const TITLES = { recettes: '🔥 Recettes', poissons: '🐟 Carnet de pêche', market: '🏪 Marché', upgrades: '🧰 Magasin d\'amélioration', carpenter: '🪚 Charpentier', workshop: '🛠️ Établi', animals: '🐾 Marchand d\'animaux', bakery: '🥖 Boulangerie', forge: '⚒️ Forge d’Igor', butcher: '🥩 Boucherie', fishmonger: '🐟 Poissonnerie' };
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 const it = id => ITEMS[id] || { n: id, i: '❔', p: 0 };
 
@@ -36,7 +38,11 @@ export function createMenu(g, opts) {
   // grille d'achat d'un commerce (×1 et ×5)
   const shopGrid = (S, id) => '<div class="grid">' + SHOPS[id].sells.filter(k => isUnlocked(S, k)).map(k => { const x = it(k);
     return card(`<div class="t">${x.i} <b>${x.n}</b></div><div>${x.buy} 🪙${x.eat ? ' · se mange' : ''}</div><div class="row" style="margin:0"><button data-buy="${k}" ${S.money >= x.buy ? '' : 'disabled'}>Acheter</button><button data-buy5="${k}" ${S.money >= x.buy * 5 ? '' : 'disabled'}>×5</button></div>`); }).join('') + '</div>';
+  const patternGrid = (S, shop) => { const ps = Object.entries(PATTERNS).filter(([, p]) => p.shop === shop); if (!ps.length) return '';
+    return '<h3>📜 Patrons</h3><div class="grid">' + ps.map(([id, p]) => { const r = HAND_RECIPES[p.recipe], o = it(r.out), own = hasPattern(S, id);
+      return card(`<div class="t">📜 <b>${p.n}</b></div><div>${o.i} ${o.n} : ${Object.entries(r.in).map(([k, n]) => `${it(k).i}${n}`).join(' ')}</div><div>${p.price} 🪙</div>${own ? '<small>✅ Déjà appris</small>' : `<button data-pattern="${id}" ${S.money >= p.price ? '' : 'disabled'}>Acheter le patron</button>`}`); }).join('') + '</div>'; };
   const views = {
+    forge: S => `<p class="info">Patrons et outils du forgeron.</p>${patternGrid(S, 'forge')}${shopGrid(S, 'forge')}`,
     bakery: S => `<p class="info">Pain frais et farine pour cuisiner.</p>${shopGrid(S, 'bakery')}`,
     butcher: S => `<p class="info">De la bonne viande pour vos futurs plats.</p>${shopGrid(S, 'butcher')}`,
     fishmonger: S => `<p class="info">Arrivage du jour.</p>${shopGrid(S, 'fishmonger')}`,
@@ -163,7 +169,7 @@ export function createMenu(g, opts) {
   }
 
   const handlers = {
-    use: id => consume(g, id), deploy: () => { if (deployTent(g)) $('#ovBag').classList.remove('on'); }, craft: i => craft(g, +i), hcraft: id => craftHand(g, id), rcat: c => { recCat = c; }, buy: id => buy(g, id), buy5: id => buy(g, id, 5), animal: id => buyAnimal(g, id),
+    use: id => consume(g, id), deploy: () => { if (deployTent(g)) $('#ovBag').classList.remove('on'); }, craft: i => craft(g, +i), hcraft: id => craftHand(g, id), rcat: c => { recCat = c; }, buy: id => buy(g, id), pattern: id => buyPattern(g, id), buy5: id => buy(g, id, 5), animal: id => buyAnimal(g, id),
     bag: () => buyBag(g), bench: () => repairBench(g), build: id => build(g, id), stack: () => buyStack(g), up: id => upgradeTool(g, id)
   };
   function render() {

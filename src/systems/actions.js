@@ -21,6 +21,7 @@ import { cast, hook, zoneAt } from './fishing.js';
 import { parcAt, ride, startGame, buyStall } from './parc.js';
 import { chestAt, placeChest } from './chests.js';
 import { fireAt, startCook, pickBush, placeFire } from './cooking.js';
+import { potAt, usePot, placePot } from './pots.js';
 import { pickFlower, hitNature, natureAt, digTreasure } from './nature.js';
 import { findNPCAt, talk, gift, hearts } from './social.js';
 import { add } from './inventory.js';
@@ -95,6 +96,8 @@ function act0(g, tx, ty) {
   if (tentAt(S, tx, ty)) return useTent(g) && 'tent';
   { const c = chestAt(S, tx, ty); if (c) { g.bus.emit('openChest', c); return 'chest'; } }
   if (S.sel === 'chest' && sc === 'farm') return placeChest(g, tx, ty) ? 'chestPlaced' : 'missing';
+  { const p = potAt(S, tx, ty); if (p) return usePot(g, p); }
+  if (S.sel === 'chaudron' && sc === 'farm') return placePot(g, tx, ty) ? 'pot' : 'missing';
   if (fireAt(S, tx, ty)) return startCook(g, tx, ty) ? 'cook' : 'fire';
   { const b = pickBush(g, tx, ty); if (b != null) return b ? 'berries' : 'empty'; }
   if (S.sel === 'campfire' && sc === 'farm') return placeFire(g, tx, ty) ? 'fire' : 'missing';

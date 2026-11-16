@@ -46,7 +46,7 @@ export function talk(g, id) {
   if (q) { say([q.q], { choices: q.a.map(a => a.t), onChoose: i => answer(g, id, q.id, i) }); return q.q; }
   // Comme dans Witch'rok : la réplique reste en tête, puis on choisit un sujet ou « Rien. »
   const topics = (n.topics || []).filter(tp => (tp.h || 0) <= hearts(r));
-  if (topics.length) say([line], { choices: [...topics.map(tp => tp.t), 'Rien.'], onChoose: i => { if (topics[i]) say(topics[i].lines); } });
+  if (topics.length) say([line], { choices: [...topics.map(tp => tp.t), 'Rien.'], onChoose: i => { const tp = topics[i]; if (!tp) return; if (tp.open) g.bus.emit('open', tp.open); else say(tp.lines); } });
   else say([line]);
   return line;
 }
