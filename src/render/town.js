@@ -121,6 +121,12 @@ export function buildTown(season) {
     R(ux + uw - 10, uy + 36, 8, 6, '#3a5a7a'); R(ux + uw - 9, uy + 37, 6, 2, '#6aa0c8');
   });
 
+  // bar d'Ed (x9-12, y13-15) : façade sombre, enseigne, tonneau et chope devant
+  shop(TOWN_B.R.x, TOWN_B.R.y, 4, '#5a2a3a', '#7a3a4a', 'BAR', (ux, uy, uw) => {
+    R(ux - 3, uy + 32, 10, 11, '#7a4f2e'); R(ux - 3, uy + 34, 10, 1, '#3a2a20'); R(ux - 3, uy + 39, 10, 1, '#3a2a20'); R(ux - 1, uy + 30, 6, 2, '#5b3a22');   // tonneau
+    R(ux + uw - 9, uy + 34, 6, 7, '#e8c26a'); R(ux + uw - 9, uy + 33, 6, 2, '#fff6e0'); R(ux + uw - 4, uy + 35, 2, 4, '#e8c26a');   // chope mousseuse
+    for (const k of [6, uw - 18]) { R(ux + k, uy + 9, 12, 1, '#ffd98a'); R(ux + k, uy + 20, 12, 1, '#ffd98a'); }   // vitres éclairées
+  });
   // fontaine (x11-13, y8-10)
   const fx = TOWN_B.F.x * T + 24, fy = TOWN_B.F.y * T + 24;
   disc(g, fx, fy + 2, 23, '#6f6a73'); disc(g, fx, fy, 22, '#9a958c'); disc(g, fx, fy, 18, '#3a7cc2'); disc(g, fx - 4, fy - 5, 6, '#6aa8e0');
@@ -177,7 +183,7 @@ export function buildQuartier(season) {
   drawFranckHouse(shift((Q.franck.x - 25) * T, (Q.franck.y - 29) * T));
   drawMystHouse(shift((Q.myst.x - 40) * T, (Q.myst.y - 1) * T));   // la maison de Myst, tout en bas à gauche, derrière les arbres
   // pancartes : qui habite là (à côté du perron)
-  for (const [id, name] of [['luna', 'LUNA'], ['franck', 'FRANCK'], ['hailey', 'HAILEY'], ['myst', 'MYST']]) {
+  for (const [id, name] of [['luna', 'LUNA'], ['franck', 'FRANCK'], ['hailey', 'HAILEY'], ['myst', 'MYST'], ['ed', 'FAMILLE ED']]) {
     const h = Q[id], rows = h.porch ? 4 : 3, sx = (h.door + 1) * T + 10, sy = (h.y + rows) * T + 2;
     R(sx - 1, sy + 4, 2, 10, '#5b3a22'); signBoard(R, sx, sy - 4, name);
   }
@@ -202,7 +208,19 @@ export function buildQuartier(season) {
     for (const wx of [x0 + 6, x0 + w - 18]) { R(wx, y0 + 8, 12, 11, '#6a4a3e'); R(wx + 1, y0 + 9, 10, 9, '#bfe3f5'); R(wx + 5, y0 + 9, 1, 9, '#6a4a3e'); R(wx - 1, y0 + 19, 14, 3, '#8a5a32'); R(wx, y0 + 17, 3, 2, '#f07ab0'); R(wx + 5, y0 + 17, 3, 2, '#f6d24a'); R(wx + 9, y0 + 17, 3, 2, '#f07ab0'); }
     R(x0 + T, y0 + 3 * T - 1, 16, 3, '#c2bdb4');
   }
-  { const x0 = QUARTIER.lot.x * T, y0 = QUARTIER.lot.y * T; R(x0, y0, 4 * T, 3 * T, 'rgba(120,84,48,.18)'); for (const px of [x0, x0 + 4 * T - 2]) R(px, y0, 2, 8, '#8a5a32'); R(x0 + 2 * T - 1, y0 + T, 2, 12, '#5b3a22'); R(x0 + 2 * T - 9, y0 + T - 6, 18, 9, '#3f2615'); R(x0 + 2 * T - 8, y0 + T - 5, 16, 7, '#e8c26a'); }
+  { // maison d'Ed, Suzie et Jade (x32-36, y12-14) : grande maison à étages, briques, deux rangées de fenêtres, toit d'ardoise
+    const h = QUARTIER.ed, x0 = h.x * T, y0 = h.y * T, w = h.w * T, top = y0 - 2 * T, bot = y0 + 3 * T;
+    R(x0 - 2, bot, w + 4, 3, 'rgba(20,12,8,.3)');
+    R(x0, top, w, bot - top, '#b8664a'); for (let y = top + 3; y < bot; y += 4) { R(x0, y, w, 1, '#9a523a'); for (let x = x0 + ((y / 4 | 0) % 2) * 4; x < x0 + w; x += 8) R(x, y - 3, 1, 3, '#9a523a'); }
+    R(x0, top + 2 * T + 6, w, 2, '#e8dcc8');   // bandeau entre les étages
+    for (let i = 0; i < 10; i++) R(x0 - 4 + (9 - i) * 2, top - 22 + i * 2, w + 8 - (9 - i) * 4, 2, i % 2 ? '#4a4e5a' : '#5e6470');   // toit
+    R(x0 - 4, top - 4, w + 8, 3, '#2e3038'); R(x0 + w - 14, top - 18, 6, 14, '#7a3a2a'); R(x0 + w - 15, top - 19, 8, 2, '#5a2a1e');   // cheminée
+    const win = (x, y) => { R(x, y, 12, 12, '#e8dcc8'); R(x + 1, y + 1, 10, 10, '#a8d0e8'); R(x + 6, y + 1, 1, 10, '#e8dcc8'); R(x + 1, y + 6, 10, 1, '#e8dcc8'); };
+    for (const k of [6, 2 * T - 6, w - 18]) win(x0 + k, top + 8);   // étage
+    win(x0 + 6, y0 + 10); win(x0 + w - 18, y0 + 10);   // rez-de-chaussée
+    const dx = (h.door) * T + 1; R(dx, y0 + 2 * T - 10, 14, 2 * T / 2 + 10, '#3b2414'); R(dx + 2, y0 + 2 * T - 8, 10, 2 * T / 2 + 8, '#6a4a7a'); R(dx + 9, y0 + 2 * T + 2, 2, 2, '#e8c26a');   // porte violette
+    R(x0 + 2 * T + 2, y0 + 2 * T + 6, 4, 6, '#e05a9a'); R(x0 + 3, y0 + 3 * T - 6, 10, 4, '#8a5a32'); R(x0 + 4, y0 + 3 * T - 8, 8, 2, '#5aa040');   // vélo d'enfant (rose) et jardinière
+  }
   for (const x0 of []) { R(x0, 4 * T, 4 * T, 3 * T, 'rgba(120,84,48,.18)'); for (const px of [x0, x0 + 4 * T - 2]) R(px, 4 * T, 2, 8, '#8a5a32'); R(x0 + 2 * T - 1, 5 * T, 2, 12, '#5b3a22'); R(x0 + 2 * T - 9, 5 * T - 6, 18, 9, '#3f2615'); R(x0 + 2 * T - 8, 5 * T - 5, 16, 7, '#e8c26a'); }
   // bancs et lampadaires le long de la rue
   for (const [x, yb] of [[3 * T, 10], [33 * T, 10], [20 * T, 19], [28 * T, 19]]) { const by = yb * T; R(x, by + 6, 22, 3, '#8a5a32'); R(x, by + 6, 22, 1, '#c99560'); R(x + 1, by + 9, 2, 3, '#5b3a22'); R(x + 19, by + 9, 2, 3, '#5b3a22'); } for (const x of []) { R(x, 10 * T + 6, 22, 3, '#8a5a32'); R(x, 10 * T + 6, 22, 1, '#c99560'); R(x + 1, 10 * T + 9, 2, 3, '#5b3a22'); R(x + 19, 10 * T + 9, 2, 3, '#5b3a22'); }

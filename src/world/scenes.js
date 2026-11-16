@@ -48,6 +48,36 @@ export const LAYOUTS = {
     '#.......#',
     '####D####'
   ],
+  // Bar d'Ed : comptoir (K), tonneaux (Z), tables (T), plante (P)
+  bar: [
+    '##########',
+    '#WWWWWWWW#',
+    '#KKKKK.ZZ#',
+    '#........#',
+    '#.TT..P..#',
+    '#........#',
+    '####D#####'
+  ],
+  // Maison d'Ed (rez-de-chaussée) : cuisine (K), table (T), fauteuil (A), escalier (e) vers l'étage
+  ed: [
+    '#########',
+    '#WWWWWWW#',
+    '#KK...Ae#',
+    '#.......#',
+    '#..TT..P#',
+    '#.......#',
+    '####D####'
+  ],
+  // Étage : chambre d'Ed et Suzie (B), chambre de Jade (m, petit lit), coffre à jouets (C), escalier (e)
+  ed_etage: [
+    '#########',
+    '#WWWWWWW#',
+    '#BB..m.e#',
+    '#BB..m..#',
+    '#.......#',
+    '#C......#',
+    '#########'
+  ],
   // Maison de Myst : sombre, bibliothèque (K), fauteuil (A), lit (B), plante (P) ; la pièce secrète viendra plus tard
   myst: [
     '#########',
@@ -115,9 +145,10 @@ export const TOWN_B = {
   M: { x: 3, y: 2, w: 7, h: 3 }, Q: { x: 12, y: 4, w: 3, h: 1 }, U: { x: 25, y: 2, w: 4, h: 3 },
   F: { x: 15, y: 6, w: 3, h: 3 }, J: { x: 3, y: 13, w: 4, h: 3 }, A: { x: 27, y: 13, w: 3, h: 3 },
   O: { x: 3, y: 20, w: 4, h: 3 }, V: { x: 13, y: 20, w: 4, h: 3 }, Z: { x: 26, y: 20, w: 4, h: 3 },
-  W: { x: 14, y: 26, w: 6, h: 4 }
+  W: { x: 14, y: 26, w: 6, h: 4 },
+  R: { x: 9, y: 13, w: 4, h: 3 }   // 16/11 : le bar d'Ed (porte x11)
 };
-export const TOWN_LAMPS = [[10, 8], [23, 8], [10, 12], [23, 12], [10, 25], [24, 25]];
+export const TOWN_LAMPS = [[10, 8], [23, 8], [8, 12], [23, 12], [10, 25], [24, 25]];
 function buildTown() {
   const W = 34, H = 32;
   const m = Array.from({ length: H }, () => Array(W).fill('g'));
@@ -127,7 +158,7 @@ function buildTown() {
   pave(12, 5, 21, 9);                     // place de la fontaine
   pave(2, 24, 31, 24);                    // rue des commerces
   pave(20, 12, 21, 30); pave(14, 30, 21, 30);   // avenue jusqu'à la villa
-  for (const k of 'MUJAOVZ') { const b = TOWN_B[k]; pave(b.x - 1, b.y + b.h, b.x + b.w, b.y + b.h); }   // trottoir devant chaque porte
+  for (const k of 'MUJAOVZR') { const b = TOWN_B[k]; pave(b.x - 1, b.y + b.h, b.x + b.w, b.y + b.h); }   // trottoir devant chaque porte
   pave(6, 5, 6, 9); pave(26, 5, 26, 9);   // halle et magasin → grande rue
   pave(7, 12, 7, 16); pave(30, 12, 30, 16); pave(4, 17, 4, 19); pave(28, 17, 28, 19); pave(15, 12, 15, 19);   // ruelles
   for (const [k, b] of Object.entries(TOWN_B)) put(k, b.x, b.y, b.w, b.h);
@@ -190,6 +221,7 @@ export const QUARTIER = {
   franck: { x: 8, y: 12, w: 5, door: 10 },
   hailey: { x: 25, y: 12, w: 4, door: 26 },
   myst: { x: 3, y: 23, w: 6, door: 5, porch: true },   // 3 rangées + un porche (rangée 4)
+  ed: { x: 32, y: 12, w: 5, door: 34 },   // 16/11 : maison à étages d'Ed, Suzie et Jade (ancien terrain libre)
   lot: { x: 32, y: 12 }
 };
 LAYOUTS.quartier = (() => {
@@ -198,7 +230,7 @@ LAYOUTS.quartier = (() => {
   for (let y = 0; y < 8; y++) m[y][22] = '.'; m[0][22] = 'D';                       // l'allée qui monte vers la ferme
   m[8][W - 1] = 'D'; m[9][W - 1] = 'D';                                              // à l'est : la montagne gelée
   for (let y = 10; y < 17; y++) m[y][18] = '.';                                       // ruelle entre les deux rues
-  for (const id of ['luna', 'clinique', 'franck', 'hailey', 'myst']) {
+  for (const id of ['luna', 'clinique', 'franck', 'hailey', 'myst', 'ed']) {
     const h = Q[id], rows = h.porch ? 4 : 3;
     for (let y = h.y; y < h.y + rows; y++) for (let x = h.x; x < h.x + h.w; x++) m[y][x] = 'X';
     const fy = h.y + rows; m[fy][h.door] = '.';                                       // perron devant la porte
@@ -206,11 +238,13 @@ LAYOUTS.quartier = (() => {
   }
   m[QUARTIER.luna.y + 4][QUARTIER.luna.door] = '.'; m[QUARTIER.clinique.y + 4][QUARTIER.clinique.door] = '.';
   m[QUARTIER.franck.y + 4][QUARTIER.franck.door] = '.'; m[QUARTIER.hailey.y + 4][QUARTIER.hailey.door] = '.';
+  m[QUARTIER.ed.y + 4][QUARTIER.ed.door] = '.';   // allée d'Ed jusqu'à la 2e rue
+  for (let y = QUARTIER.ed.y - 3; y < QUARTIER.ed.y; y++) for (let x = QUARTIER.ed.x; x < QUARTIER.ed.x + QUARTIER.ed.w; x++) if (m[y][x] === 'T') m[y][x] = 'g';   // rien devant le toit à étages
   // chemin de Myst : de sa porte (en bas), il longe le bas puis remonte jusqu'à la 2e rue
   const my = Q.myst; for (let x = my.door; x <= 14; x++) m[my.y + 5][x] = '.'; for (let y = 19; y <= my.y + 5; y++) m[y][14] = '.';
   for (let x = 1; x <= 12; x++) if (m[20][x] === 'g') m[20][x] = 'T';                 // rangée d'arbres : il vit à l'écart
   for (let y = 21; y < H - 1; y++) for (const x of [11, 12]) if (m[y][x] === 'g') m[y][x] = 'T';
-  for (const [x, y] of [[3, 11], [15, 11], [31, 6], [36, 11], [36, 20], [24, 22], [30, 25], [20, 26]]) if (m[y][x] === 'g') m[y][x] = 'T';
+  for (const [x, y] of [[3, 11], [15, 11], [31, 6], [38, 11], [36, 20], [24, 22], [30, 25], [20, 26]]) if (m[y][x] === 'g') m[y][x] = 'T';
   return m.map(r => r.join(''));
 })();
 // Caverne sombre, étage 1 : 5 × 3 salles de 10 × 8 séparées par des parois (T), passages de 2 cases,
@@ -256,7 +290,7 @@ LAYOUTS.foret = buildForest();
 LAYOUTS.foret = LAYOUTS.foret.map((r, y) => y === 0 ? r.slice(0, 27) + '.' + r.slice(28) : r);
 // Forêt : entrée à l'ouest (depuis le centre-ville) et sentier qui la traverse jusqu'à la sortie est.
 LAYOUTS.foret = LAYOUTS.foret.map((r, y) => y === 9 ? 'D' + '.'.repeat(r.length - 2) + 'D' : r);
-export const SOLID_TILES = '#WDBKTPCHNYXMQUJAOVZFLfprEmncwGRIxyzqjuh';   // h haie de bordure   // + attractions du parc (R I x y z q j u)   // w eau (mer, lac), G grotte   // m n lits de la clinique, c bureau  // A = fauteuil (Franck) / marchand d'animaux (village)
+export const SOLID_TILES = '#WDBKTPCHNYXMQUJAOVZFLfprEmncwGRIxyzqjuhe';   // e escalier (maison d'Ed)   // h haie de bordure   // + attractions du parc (R I x y z q j u)   // w eau (mer, lac), G grotte   // m n lits de la clinique, c bureau  // A = fauteuil (Franck) / marchand d'animaux (village)
 // Tuiles qui ouvrent une interface.
 export const UI_TILES = { M: 'market', Q: 'board', U: 'upgrades', J: 'carpenter', A: 'animals', O: 'bakery', V: 'butcher', Z: 'fishmonger' };
 
@@ -272,7 +306,7 @@ export const SCENES = {
   ] },
   montagne: { W: 36, H: 24, outdoor: true, cold: true, doors: [{ x: 0, y: 8, to: 'quartier', spawn: { x: 38.2, y: 8.6 } }, { x: 0, y: 9, to: 'quartier', spawn: { x: 38.2, y: 8.6 } }] },
   plage: { W: 40, H: 20, outdoor: true, doors: [{ x: 19, y: 19, to: 'town', spawn: { x: 16.5, y: 1.6 } }, { x: 20, y: 19, to: 'town', spawn: { x: 16.5, y: 1.6 } }] },
-  town: { W: 34, H: 32, outdoor: true, doors: [{ x: 16, y: 0, to: 'plage', spawn: { x: 19.5, y: 18.2 } }, { x: 17, y: 0, to: 'plage', spawn: { x: 19.5, y: 18.2 } }, { x: 0, y: 10, to: 'farm', spawn: { x: 45.6, y: 5.6 } }, { x: 33, y: 10, to: 'foret', spawn: { x: 1.6, y: 9.6 } }] },
+  town: { W: 34, H: 32, outdoor: true, doors: [{ x: 16, y: 0, to: 'plage', spawn: { x: 19.5, y: 18.2 } }, { x: 17, y: 0, to: 'plage', spawn: { x: 19.5, y: 18.2 } }, { x: 0, y: 10, to: 'farm', spawn: { x: 45.6, y: 5.6 } }, { x: 33, y: 10, to: 'foret', spawn: { x: 1.6, y: 9.6 } }, { x: 11, y: 15, to: 'bar', spawn: { x: 4.5, y: 5.4 } }] },
   house: { W: 12, H: 9, doors: [{ x: 5, y: 8, to: 'farm', spawn: { x: 5.5, y: 5.9 } }] },
   coop: { W: 10, H: 7, doors: [{ x: 4, y: 6, to: 'farm', spawn: { x: 24.5, y: 8.9 } }] },
   // Forêt : à l'est du centre-ville ; au-delà (est), la zone de la Caverne sombre (fermée pour l'instant).
@@ -283,10 +317,13 @@ export const SCENES = {
   franck: { W: 9, H: 7, doors: [{ x: 4, y: 6, to: 'quartier', spawn: { x: 10.5, y: 15.8 } }] },
   clinique: { W: 9, H: 7, doors: [{ x: 4, y: 6, to: 'quartier', spawn: { x: 28.5, y: 6.8 } }] },
   hailey: { W: 9, H: 7, doors: [{ x: 4, y: 6, to: 'quartier', spawn: { x: 26.5, y: 15.8 } }] },
+  bar: { W: 10, H: 7, doors: [{ x: 4, y: 6, to: 'town', spawn: { x: 11.5, y: 16.8 } }] },
+  ed: { W: 9, H: 7, doors: [{ x: 4, y: 6, to: 'quartier', spawn: { x: 34.5, y: 15.8 } }, { x: 7, y: 2, to: 'ed_etage', spawn: { x: 6.5, y: 2.8 } }] },
+  ed_etage: { W: 9, H: 7, doors: [{ x: 7, y: 2, to: 'ed', spawn: { x: 6.5, y: 3.4 } }] },
   myst: { W: 9, H: 7, doors: [{ x: 4, y: 6, to: 'quartier', spawn: { x: 5.5, y: 27.8 } }] },
   luna: { W: 9, H: 7, doors: [{ x: 4, y: 6, to: 'quartier', spawn: { x: 8.5, y: 6.8 } }] },
   // Quartier résidentiel, au sud de la ferme : les maisons des habitants.
-  quartier: { W: 40, H: 31, outdoor: true, doors: [{ x: 22, y: 0, to: 'farm', spawn: { x: 16.5, y: 34.4 } }, { x: 8, y: 5, to: 'luna', spawn: { x: 4.5, y: 5.4 } }, { x: 10, y: 14, to: 'franck', spawn: { x: 4.5, y: 5.4 } }, { x: 28, y: 5, to: 'clinique', spawn: { x: 4.5, y: 5.4 } }, { x: 26, y: 14, to: 'hailey', spawn: { x: 4.5, y: 5.4 } }, { x: 5, y: 26, to: 'myst', spawn: { x: 4.5, y: 5.4 } }, { x: 39, y: 8, to: 'montagne', spawn: { x: 1.6, y: 8.6 } }, { x: 39, y: 9, to: 'montagne', spawn: { x: 1.6, y: 8.6 } }] },
+  quartier: { W: 40, H: 31, outdoor: true, doors: [{ x: 22, y: 0, to: 'farm', spawn: { x: 16.5, y: 34.4 } }, { x: 8, y: 5, to: 'luna', spawn: { x: 4.5, y: 5.4 } }, { x: 10, y: 14, to: 'franck', spawn: { x: 4.5, y: 5.4 } }, { x: 28, y: 5, to: 'clinique', spawn: { x: 4.5, y: 5.4 } }, { x: 26, y: 14, to: 'hailey', spawn: { x: 4.5, y: 5.4 } }, { x: 5, y: 26, to: 'myst', spawn: { x: 4.5, y: 5.4 } }, { x: 34, y: 14, to: 'ed', spawn: { x: 4.5, y: 5.4 } }, { x: 39, y: 8, to: 'montagne', spawn: { x: 1.6, y: 8.6 } }, { x: 39, y: 9, to: 'montagne', spawn: { x: 1.6, y: 8.6 } }] },
   pigsty: { W: 10, H: 7, doors: [{ x: 4, y: 6, to: 'farm', spawn: { x: 20.5, y: 8.9 } }] },
   barn: { W: 12, H: 8, doors: [{ x: 5, y: 7, to: 'farm', spawn: { x: 28.5, y: 8.9 } }] }
 };

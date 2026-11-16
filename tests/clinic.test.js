@@ -12,8 +12,8 @@ import { SCENES, LAYOUTS } from '../src/world/scenes.js';
 
 const fresh = st => makeGame({ state: { repair: { house: { wood: 0, stone: 0 }, grange: { wood: 0, stone: 0 } }, intro: { met: true, myst: false, arrived: true }, bed: false, tent: null, inv: { tent: 1 }, tools: {}, ...st } });
 
-test('énergie à 0 : réveil à la clinique, 10 % de frais', () => {
-  const { g, S } = makeGame({ state: { energy: 3, money: 1000, scene: 'farm' } });
+test('énergie à 0 : réveil à la clinique, 10 % de frais (Hailey au travail)', () => {
+  const { g, S } = makeGame({ state: { energy: 3, money: 1000, scene: 'farm', day: 2, minute: 600 } });
   const said = []; g.bus.on('clinic', d => said.push(d));
   assert.equal(useEnergy(g, 3), true);
   assert.equal(S.scene, 'clinique'); assert.equal(S.money, 900); assert.ok(S.energy > 0);
@@ -56,13 +56,13 @@ test('Hailey travaille à la clinique du quartier de 7h à 23h', () => {
   assert.ok(HAILEY.story.some(s => /burn-out/.test(s.t)), 'son histoire va jusqu’au burn-out');
 });
 
-test('lot 1 : pas couché à 1h → infirmerie le matin, 10 % de frais', async () => {
+test('lot 1 : pas couché à 1h → infirmerie le matin ; la nuit, Hailey double le tarif (20 %)', async () => {
   const { tickTime } = await import('../src/systems/time.js');
   const { CFG } = await import('../src/config.js');
   const { g, S } = fresh({});
   S.money = 1000; S.minute = CFG.BED_LIMIT - 1; const d = S.day;
   tickTime(g, CFG.MS_PER_MIN);
-  assert.equal(S.scene, 'clinique'); assert.equal(S.money, 900); assert.equal(S.day, d + 1); assert.equal(S.minute, CFG.DAY_START + 120);
+  assert.equal(S.scene, 'clinique'); assert.equal(S.money, 800); assert.equal(S.day, d + 1); assert.equal(S.minute, CFG.DAY_START + 120);
 });
 
 test('lot 1 : rappel de 18h chaque soir après le premier conseil', async () => {
@@ -72,4 +72,13 @@ test('lot 1 : rappel de 18h chaque soir après le premier conseil', async () => 
   (S.quests ||= {}).debut = { nuit: true };
   S.minute = CFG.SLEEP_FROM - 1; tickTime(g, CFG.MS_PER_MIN);
   assert.ok(t.some(m => /18h/.test(m)));
+});
+
+test('16/11 : Hailey appelée pendant son jour de repos → tarif doublé et réplique dédiée', async () => {
+  const { toClinic, haileyOff } = await import('../src/systems/clinic.js');
+  const { g, S } = makeGame({ state: { money: 1000, day: 7, minute: 600 } });
+  const ev = []; g.bus.on('clinic', d => ev.push(d));
+  assert.equal(haileyOff(S), 'repos');
+  toClinic(g); assert.equal(S.money, 800); assert.equal(ev[0].off, 'repos');
+  S.day = 8; S.minute = 600; assert.equal(haileyOff(S), null, 'au travail : tarif normal');
 });

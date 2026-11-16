@@ -93,7 +93,7 @@ export function createMapView(g, renderer, audio) {
     { const x0 = X(.55), y0 = Y(.12), w = X(.75) - X(.55), h = Y(.5) - Y(.12), L = LAYOUTS.town, cw = w / L[0].length, ch = h / L.length;
       ctx.fillStyle = '#a8cc78'; ctx.beginPath(); ctx.roundRect(x0, y0, w, h, 2 * u); ctx.fill();
       for (let y = 0; y < L.length; y++) for (let x = 0; x < L[0].length; x++) if (L[y][x] === '.' || L[y][x] === 'D') F('#d2cbbd', x0 + x * cw, y0 + y * ch, cw + .5, ch + .5);
-      const COL = { M: ['#e8c26a', '#a8432f'], U: ['#8a5a32', '#3e3a44'], J: ['#9a6a3c', '#7a3a22'], A: ['#9a6a3c', '#2f5a3a'], O: ['#c98a4a', '#e0a560'], V: ['#9a6a3c', '#a83a32'], Z: ['#9a6a3c', '#2f5a8a'], W: ['#f4efe4', '#b8432f'] };
+      const COL = { R: ['#5a2a3a', '#7a3a4a'], M: ['#e8c26a', '#a8432f'], U: ['#8a5a32', '#3e3a44'], J: ['#9a6a3c', '#7a3a22'], A: ['#9a6a3c', '#2f5a3a'], O: ['#c98a4a', '#e0a560'], V: ['#9a6a3c', '#a83a32'], Z: ['#9a6a3c', '#2f5a8a'], W: ['#f4efe4', '#b8432f'] };
       for (const [k, b] of Object.entries(TOWN_B)) {
         const bx = x0 + b.x * cw, by = y0 + b.y * ch, bw = b.w * cw, bh = b.h * ch;
         if (k === 'F') { circ('#7fb6d9', bx + bw / 2, by + bh / 2, bw * .45); circ('#bfe3f5', bx + bw / 2, by + bh / 2, bw * .2); continue; }

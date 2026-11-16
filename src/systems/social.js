@@ -107,6 +107,7 @@ export function routinePlace(n, S) {
 export function placeNPC(n, S, OUT_FROM, OUT_TO) {
   if (n.mystic) return placeMyst(n, S);
   if (n.routine) { const p = n.places[routinePlace(n, S)]; n.scene = p.scene; n.x = p.x; n.y = p.y; n.walking = false; faceP(n, S); return; }
+  if (n.stay) { n.scene = n.home; Object.assign(n, n.inside); n.walking = false; faceP(n, S); return; }   // reste chez lui (Suzie, Jade)
   if (n.worker) { // au travail de longues heures, sinon introuvable
     const w = n.worker, on = S.minute >= w.from && S.minute < w.to;
     n.scene = on ? w.scene : (n.home || 'none'); Object.assign(n, on ? w.at : (n.inside || w.at)); n.walking = false; n.dir = 0;

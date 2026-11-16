@@ -28,8 +28,8 @@ import { ITEMS as ALL_ITEMS } from '../data/items.js';
 import { slots, usedSlots, stackSize } from '../systems/inventory.js';
 import { canUpgrade, upgradeTool, miningLevel, nextXp, toolTier, hasTool } from '../systems/skills.js';
 
-const TABS = { sac: 'Sac', recettes: '🔥 Recettes', poissons: '🐟 Poissons', quests: 'Quêtes', metiers: '🧑‍🔧 Métiers', forge: 'Forge', social: 'Liens' };
-const TITLES = { recettes: '🔥 Recettes', poissons: '🐟 Carnet de pêche', market: '🏪 Marché', upgrades: '🧰 Magasin d\'amélioration', carpenter: '🪚 Charpentier', workshop: '🛠️ Établi', animals: '🐾 Marchand d\'animaux', bakery: '🥖 Boulangerie', igorShop: '⚒️ Boutique d’Igor', butcher: '🥩 Boucherie', fishmonger: '🐟 Poissonnerie' };
+const TABS = { sac: 'Sac', recettes: '📜 Recettes', poissons: '🐟 Poissons', quests: 'Quêtes', metiers: '🧑‍🔧 Métiers', forge: 'Forge', social: 'Liens' };
+const TITLES = { recettes: '📜 Recettes', poissons: '🐟 Carnet de pêche', market: '🏪 Marché', upgrades: '🧰 Magasin d\'amélioration', carpenter: '🪚 Charpentier', workshop: '🛠️ Établi', animals: '🐾 Marchand d\'animaux', bakery: '🥖 Boulangerie', igorShop: '⚒️ Boutique d’Igor', butcher: '🥩 Boucherie', fishmonger: '🐟 Poissonnerie' };
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 const it = id => ITEMS[id] || { n: id, i: '❔', p: 0 };
 

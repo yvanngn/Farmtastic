@@ -1,5 +1,5 @@
 // soon: true = patron pas encore disponible (affiché « Bientôt »). Seul le chaudron est en vente pour l'instant.
-// Patrons vendus dans les magasins : acheter un patron apprend une recette (onglet 🔥 Recettes).
+// Patrons vendus dans les magasins : acheter un patron apprend une recette (onglet 📜 Recettes).
 // 💡 prix et ingrédients proposés par Claude, sauf le chaudron (50 🪙 chez le forgeron, demande de l'utilisateur).
 export const PATTERNS = {
   p_chaudron: { n: 'Patron du chaudron', recipe: 'chaudron', price: 50, shop: 'forge', job: 'forgeron' },
@@ -12,8 +12,8 @@ export const PATTERNS = {
 };
 // Plats du chaudron : on remue à la louche (rester appuyé) jusqu'à ce que la jauge soit pleine.
 export const POT_RECIPES = {
-  soupe_baies: { out: 'soupe_baies', q: 1, in: { berry: 4 }, job: 'cuisinier', base: true },   // connue avec le chaudron (+45 ⚡)
-  soupe_mures: { out: 'soupe_mures', q: 1, in: { mure: 3 }, job: 'cuisinier', base: true },   // 💡 les mûres font aussi la soupe
+  confiture_baies: { out: 'confiture_baies', q: 1, in: { berry: 4 }, job: 'cuisinier', base: true },   // connue avec le chaudron (+45 ⚡)
+  confiture_mures: { out: 'confiture_mures', q: 1, in: { mure: 3 }, job: 'cuisinier', base: true },   // 💡 3 mûres
   pain: { out: 'bread', q: 2, in: { flour: 2 }, job: 'cuisinier' },
   ragout: { out: 'ragout', q: 1, in: { beef: 1, carrot: 1 }, job: 'cuisinier' },
   soupe_poisson: { out: 'soupe_poisson', q: 1, in: { fish: 1, berry: 2 }, job: 'cuisinier' }

@@ -90,7 +90,7 @@ function wireBus() {
   g.bus.on('scene', () => { g.enemies.length = 0; });
   g.bus.on('openChest', c => chestPanel.open(c));
   g.bus.on('showMap', () => { mapView.open(); toast('🗺️ Le plan est toujours là : bouton 🗺️ en haut à droite (ou touche M).'); });
-  g.bus.on('clinic', () => { const h = NPCS.hailey; setTimeout(() => g.bus.emit('say', { name: h.name, color: h.color, voice: h.voice, lines: h.clinic }), 600); });
+  g.bus.on('clinic', e => { const h = NPCS.hailey, lines = e && e.off === 'repos' ? h.clinicRepos : e && e.off === 'nuit' ? h.clinicNuit : h.clinic; setTimeout(() => g.bus.emit('say', { name: h.name, color: h.color, voice: h.voice, lines }), 600); });
   g.bus.on('open', what => what === 'board' ? board.open() : what === 'sell' ? sellPanel.open() : menu.open(what, true));
 }
 wireBus();

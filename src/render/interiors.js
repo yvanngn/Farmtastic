@@ -15,6 +15,9 @@ const THEME = {
   clinique: { floor: '#dfe6e4', seam: '#c4cecb', wall: '#eef4f2', wallD: '#d6e2de', trim: '#5aa8a0', beam: '#3a4a48' },
   hailey: { floor: '#c8a47a', seam: '#a8845a', wall: '#f2dce0', wallD: '#e2c4ca', trim: '#7cc8c0', beam: '#4a3a3e' },
   myst: { floor: '#4a3a3a', seam: '#3a2c2c', wall: '#3e3848', wallD: '#2e2a36', trim: '#8a7ab0', beam: '#1c181c' },
+  bar: { floor: '#6a4428', seam: '#4e3018', wall: '#7a3a4a', wallD: '#5a2a3a', trim: '#e8c26a', beam: '#2a1a14' },
+  ed: { floor: '#b07a48', seam: '#8a5a32', wall: '#e8d8b8', wallD: '#d4c09c', trim: '#6a4a7a', beam: '#3a2a20' },
+  ed_etage: { floor: '#c49a6a', seam: '#a07850', wall: '#f0d8e4', wallD: '#dcc0cc', trim: '#6a4a7a', beam: '#3a2a20' },
   barn: { floor: '#d4b870', seam: '#b0944c', wall: '#b8452f', wallD: '#93321f', trim: '#f0e6d0', beam: '#4a2c18' }
 };
 
@@ -84,6 +87,8 @@ export function buildInterior(name, S = {}) {
     G: ([x, y, w, h]) => { R(x + 2, y + 2, w - 4, h - 4, '#6e4a2e'); R(x + 4, y + 4, w - 8, h - 8, '#7d5636'); for (const [a, b] of [[6, 6], [w - 14, 9], [12, h - 10]]) { R(x + a, y + b, 6, 2, '#8f6642'); R(x + a + 1, y + b, 3, 1, '#a07650'); } },
     Y: ([x, y, w, h]) => { R(x + 1, y + 3, w - 2, h - 4, '#c9a330'); R(x + 1, y + 3, w - 2, 3, '#f5dd7a'); for (let k = x + 2; k < x + w - 2; k += 3) R(k, y + 6, 1, h - 8, '#a8862a'); R(x + 1, y + h - 2, w - 2, 1, '#7a5f1e'); },
     m: bedC, n: bedC,
+    Z: ([x, y, w, h]) => { for (let k = 0; k < w; k += T) { R(x + k + 2, y + 2, 12, 13, '#7a4f2e'); R(x + k + 2, y + 4, 12, 1, '#3a2a20'); R(x + k + 2, y + 11, 12, 1, '#3a2a20'); R(x + k + 6, y + 7, 4, 2, '#c99560'); } },   // tonneaux (bar)
+    e: ([x, y, w, h]) => { for (let k = 0; k < 4; k++) { R(x + 1, y + 2 + k * 3, w - 2, 3, k % 2 ? '#8a5a32' : '#a8774a'); R(x + 1, y + 2 + k * 3, w - 2, 1, '#c99560'); } R(x + w - 3, y, 2, h, '#5b3a22'); },   // escalier
     c: ([x, y, w, h]) => { R(x, y + 4, w, h - 6, '#e6ece9'); R(x, y + 4, w, 2, '#ffffff'); R(x, y + h - 3, w, 2, '#9aa8a4'); R(x + 4, y - 2, 10, 8, '#3a4a48'); R(x + 5, y - 1, 8, 5, '#8fd0e8'); R(x + 18, y + 2, 7, 4, '#ffffff'); R(x + 19, y + 3, 5, 1, '#9aa8a4'); },
     N: ([x, y, w, h]) => { R(x + 1, y + 2, w - 2, h - 4, '#5a3a22'); for (let k = 0; k < h - 6; k += 8) { disc(g, x + 8, y + 8 + k, 5, '#c9a64e'); disc(g, x + 8, y + 8 + k, 3, '#8a6a2e'); } }
   };

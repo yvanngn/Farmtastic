@@ -218,6 +218,17 @@ export const HAILEY = {
     "Je vous ai gardé(e) un moment ici. Il faut dormir la nuit, d'accord ? Votre corps n'est pas une machine.",
     "Pour les soins, il y a des frais, je suis désolée… ce n'est pas moi qui fixe les tarifs."
   ],
+  // 16/11 : appelée en dehors de ses heures, elle soigne quand même, mais le tarif est doublé (🆕)
+  clinicRepos: [
+    "Ah, vous vous réveillez… Vous savez qu'aujourd'hui, c'était mon jour de repos ?",
+    "On m'a appelée en urgence. Je ne pouvais pas vous laisser comme ça.",
+    "Mais en dehors de mes heures, le tarif est doublé. Je suis désolée."
+  ],
+  clinicNuit: [
+    "Vous vous réveillez enfin. On m'a tirée du lit en pleine nuit pour vous, vous savez ?",
+    "Il faut dormir, la nuit. Vous, et moi aussi d'ailleurs…",
+    "Les soins de nuit, c'est le tarif double. Ce n'est pas moi qui l'ai décidé."
+  ],
   questions: []
 };
 
@@ -260,7 +271,45 @@ export const INTRO_LINES = [
   "J'ai toujours rêvé de construire ma propre maison. Alors, quand j'ai vu l'annonce qui disait que cette cabane abandonnée était offerte à la personne qui voulait s'en occuper…",
   "Il paraît que peu de gens sont venus essayer, à cause de la fameuse rumeur comme quoi la ferme serait hantée !",
 ];
-export const NPCS = { luna: LUNA, chef: CHEF, franck: FRANCK, myst: MYST, hailey: HAILEY, igor: IGOR };
+// Ed, le barman (décrit par l'utilisateur le 16/11) : ancien chauffeur routier, devenu barman parce qu'il aime le contact
+// des gens. Rêve d'ouvrir un jour un magasin en ville (future quête). Marié à Suzie, papa de Jade. Répliques 🆕 à valider.
+export const ED = {
+  id: 'ed', name: 'Ed', de: 'de lui', color: '#e0a84a', voice: 'voiceChef',
+  look: { body: 'h', bottom: 'pant', skin: '#e8b48c', hair: 0, hairC: '#5a3a22', shirt: '#3a6a9a', pants: '#3a3a44' },   // 💡 chemise de routier
+  home: 'ed', inside: { x: 3.5, y: 4.6 }, worker: { scene: 'bar', at: { x: 3.5, y: 3.7 }, from: 660, to: 1410 },   // 💡 au bar de 11 h à 23 h 30
+  traits: ['Barman', 'Ancien chauffeur routier', 'Aime le contact des gens', 'Rêve d’ouvrir un magasin en ville', 'Mari de Suzie, papa de Jade'],
+  taste: { adore: [], aime: ['berry_cooked', 'confiture_baies'], naime: ['slime'], deteste: [] },   // 💡 en attendant les boissons
+  story: [
+    { h: 0, t: "Bienvenue au bar ! Moi c'est Ed. Installe-toi, c'est la maison." },
+    { h: 1, t: "Avant, je conduisais des camions. Des milliers de kilomètres, tout seul dans la cabine." },
+    { h: 2, t: "Ce qui me manquait, c'était les gens. Alors j'ai posé le camion et j'ai ouvert ce bar." }
+  ],
+  topics: [
+    { t: 'Tu as besoin d’aide ?', lines: ["Toujours ! Il me faut de quoi servir : de l'alcool, des jus, des boissons…", "Si un jour tu sais en fabriquer, je t'achète tout. Promis."] },
+    { t: 'Ta famille ?', lines: ["Suzie, ma femme, et notre petite Jade. On habite la grande maison au bout du quartier."] }
+  ],
+  chat: ["Qu'est-ce que je te sers ? …Ah, c'est vrai, la carte est encore vide.", "Un jour, j'aurai mon magasin en ville. Tu verras.", "Un bon bar, c'est un endroit où on se sent attendu."],
+  questions: []
+};
+// Suzie (femme d'Ed) et Jade (leur enfant) : histoire à écrire plus tard (voir le carnet). Elles restent à la maison pour l'instant.
+export const SUZIE = {
+  id: 'suzie', name: 'Suzie', de: "d'elle", color: '#d88ab0', voice: 'voiceLuna',
+  look: { body: 'f', bottom: 'skirt', skin: '#f1c7a5', hair: 3, hairC: '#c0402a', shirt: '#e8c04a', pants: '#a03a3a' },
+  home: 'ed', stay: true, inside: { x: 2.5, y: 3.6 },
+  traits: ['Femme d’Ed', 'Maman de Jade'], taste: {},
+  chat: ["Bonjour ! Vous connaissez mon mari, Ed ? Il passe ses journées au bar.", "Jade joue en haut. Elle a toujours mille idées."],
+  questions: []
+};
+export const JADE = {
+  id: 'jade', name: 'Jade', de: "d'elle", color: '#8ad0a0', voice: 'voiceLuna',
+  look: { body: 'f', bottom: 'skirt', skin: '#f1c7a5', hair: 5, hairC: '#c0402a', shirt: '#e07ab0', pants: '#4a7a4a' },
+  home: 'ed_etage', stay: true, inside: { x: 3.5, y: 4.6 },
+  traits: ['Fille d’Ed et Suzie'], taste: {},
+  chat: ["T'es qui, toi ? Moi c'est Jade !", "Papa, il dit qu'un jour il aura un magasin. Avec plein de bonbons dedans."],
+  questions: []
+};
+
+export const NPCS = { luna: LUNA, chef: CHEF, franck: FRANCK, myst: MYST, hailey: HAILEY, igor: IGOR, ed: ED, suzie: SUZIE, jade: JADE };
 // Luna est dehors de 8 h à 19 h, chez elle le reste du temps.
 export const OUT_FROM = 480, OUT_TO = 1140;
 

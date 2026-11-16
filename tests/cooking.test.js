@@ -53,14 +53,14 @@ test('lot 1 : mini tuto à la première cueillette de baies', async () => {
   S.bushes = {}; pickBush(g, x, y); assert.equal(said.length, 1, 'une seule fois');
 });
 
-test('16/11 : mûres sur les ronces, soupe de baies à +50 ⚡, tuto de la vente au 1er bois', async () => {
+test('16/11 : mûres sur les ronces, confiture de baies à +45 ⚡, tuto de la vente au 1er bois', async () => {
   const { pickBush } = await import('../src/systems/cooking.js');
   const { BUSHES } = await import('../src/data/recipes.js');
   const { ITEMS } = await import('../src/data/items.js');
   const { add } = await import('../src/systems/inventory.js');
   const { g, S } = (await import('./helpers.js')).makeGame({ state: { scene: 'farm', bushes: {}, tips: { berry: true }, inv: {} } });
   const [x, y] = BUSHES.find(b => b[2] === 'mure'); assert.ok(pickBush(g, x, y) > 0); (await import('./helpers.js')).ramasse(g); assert.ok(S.inv.mure > 0);
-  assert.equal(ITEMS.soupe_baies.eat.e, 45);
+  assert.equal(ITEMS.confiture_baies.eat.e, 45);
   const said = []; g.bus.on('say', d => said.push(d));
   add(g, 'wood', 3); add(g, 'stone', 1);
   assert.equal(said.length, 1); assert.ok(said[0].lines.some(l => /bac de vente/.test(l)));

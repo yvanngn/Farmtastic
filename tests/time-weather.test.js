@@ -11,11 +11,11 @@ test('le temps avance d’une minute toutes les MS_PER_MIN', () => {
   assert.equal(S.minute, 370);
 });
 
-test('pas couché à 1h : nouvelle journée à l’infirmerie, 10 % de frais', () => {
+test('pas couché à 1h : nouvelle journée à l’infirmerie, tarif de nuit (20 %)', () => {
   const { g, S, toasts } = makeGame({ state: { minute: CFG.BED_LIMIT - 1, money: 100, energy: 30 } });
   tickTime(g, CFG.MS_PER_MIN);
   assert.equal(S.day, 2);
-  assert.equal(S.money, 90);
+  assert.equal(S.money, 80);
   assert.equal(S.scene, 'clinique');
   assert.match(toasts()[0], /aucune énergie/);
 });

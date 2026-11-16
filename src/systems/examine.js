@@ -27,10 +27,10 @@ export function examineText(S, tx, ty) {
     if (t === 'T') return K.treeTown;
     if (t !== 'X') return null;
     const Q = QUARTIER, inH = h => tx >= h.x && tx < h.x + h.w && ty >= h.y && ty < h.y + (h.porch ? 4 : 3);
-    if (inH(Q.myst)) return E.myst; if (inH(Q.clinique)) return E.clinic; if (inH(Q.hailey)) return E.hailey; if (inH(Q.luna)) return E.luna;
+    if (inH(Q.ed)) return E.ed; if (inH(Q.myst)) return E.myst; if (inH(Q.clinique)) return E.clinic; if (inH(Q.hailey)) return E.hailey; if (inH(Q.luna)) return E.luna;
     return S.social && S.social.franck && S.social.franck.points >= 750 ? E.franckOpen : E.franck;
   }
-  if (sc === 'town') return t === 'W' ? K.villa : t === 'T' ? K.treeTown : t === 'L' ? (S.village && S.village.done.includes('lampadaires') ? K.Lon : K.L) : K[t] || null;
+  if (sc === 'town') return t === 'R' ? K.bar : t === 'W' ? K.villa : t === 'T' ? K.treeTown : t === 'L' ? (S.village && S.village.done.includes('lampadaires') ? K.Lon : K.L) : K[t] || null;
   if (sc === 'foret') return t === 'T' ? K.treeForest : null;   // 'T' = arbre dehors, pas la table des intérieurs
   if (['montagne', 'plage', 'parc'].includes(sc) && t === 'T') return K.treeTown;
   if (sc === 'wild') return t === 'T' ? K.treeWild : t === '#' ? K.rockWild : null;

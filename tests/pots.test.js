@@ -18,7 +18,7 @@ test('lot 2 : patron du chaudron à 50 🪙, louche, jauge de cuisson', () => {
   assert.equal(usePot(g, p), 'menu'); said.at(-1).onChoose(0);
   assert.equal(S.inv.berry || 0, 0);
   let r; for (let i = 0; i < 10; i++) r = usePot(g, p);
-  assert.equal(r, 'done'); assert.equal(S.inv.soupe_baies, 1); assert.equal(p.cook, null);
+  assert.equal(r, 'done'); assert.equal(S.inv.confiture_baies, 1); assert.equal(p.cook, null);
 });
 
 test('lot 4 : métiers — patrons et cuisine font monter les niveaux', async () => {

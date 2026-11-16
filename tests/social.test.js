@@ -225,3 +225,16 @@ test('16/11 : routine de Hailey — clinique le jour, déjeuner variable, repos 
   assert.ok(lunch.size >= 2, 'le déjeuner change selon le jour');
   assert.equal(at(7, 600), 'maison', 'jour de repos : grasse matinée'); assert.equal(at(7, 900), 'foret');
 });
+
+test('16/11 : le bar d’Ed au centre-ville et la maison à étages de sa famille', async () => {
+  const { registerNPC: reg } = await import('../src/systems/social.js');
+  const { ED, SUZIE, JADE } = await import('../src/data/npcs.js');
+  const { g, S } = makeGame({ state: { minute: 900, scene: 'town' } });
+  reg(g, ED); reg(g, SUZIE); reg(g, JADE);
+  placeNPC(g.npcs.ed, S, OUT_FROM, OUT_TO); assert.equal(g.npcs.ed.scene, 'bar', 'Ed travaille au bar l’après-midi');
+  placeNPC(g.npcs.jade, S, OUT_FROM, OUT_TO); assert.equal(g.npcs.jade.scene, 'ed_etage');
+  assert.equal(act(g, 11, 15), 'door'); assert.equal(S.scene, 'bar');
+  S.scene = 'quartier'; assert.equal(act(g, 34, 14), 'door'); assert.equal(S.scene, 'ed');
+  assert.equal(act(g, 7, 2), 'door'); assert.equal(S.scene, 'ed_etage', 'l’escalier mène à l’étage');
+  S.minute = 1430; placeNPC(g.npcs.ed, S, OUT_FROM, OUT_TO); assert.equal(g.npcs.ed.scene, 'ed', 'le soir, chez lui');
+});

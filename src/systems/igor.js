@@ -23,7 +23,7 @@ export function igorTalk(g, n) {
     S.recipes = [...new Set([...(S.recipes || []), 'chest'])];
     const r = S.social[n.id]; if (r) r.points += 120;
     say(n.thanks);
-    g.bus.emit('toast', '📦 Nouvelle recette : le coffre (80 bois + 20 pierres) — onglet 🔥 Recettes');
+    g.bus.emit('toast', '📦 Nouvelle recette : le coffre (80 bois + 20 pierres) — onglet 📜 Recettes');
     return true;
   }
   if (!q.asked) { q.asked = true; say(n.lost); return true; }

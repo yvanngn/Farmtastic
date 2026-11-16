@@ -58,7 +58,7 @@ export const cookProgress = g => g.cooking ? Math.min(1, (g.now() - g.cooking.t0
 export const BERRY_TIP = [
   '🫐 Des baies ! Mange-les (sac → Manger) : +1 ⚡ chacune (les mûres : +2 ⚡).',
   '🔥 Ou jette-les au feu de camp : grillées, elles rendent bien plus (+5 ⚡). Tiens-les en main et touche le feu.',
-  '🍲 Et avec un chaudron, 4 baies font une soupe : +45 ⚡ !'
+  '🍯 Et avec un chaudron, 4 baies font une confiture : +45 ⚡ !'
 ];
 export const bushAt = (S, x, y) => (S.scene || 'farm') === 'farm' && BUSHES.some(([a, b]) => a === x && b === y);
 const bushKind = (x, y) => (BUSHES.find(([a, b]) => a === x && b === y) || [])[2] === 'mure' ? 'mure' : 'berry';

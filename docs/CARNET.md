@@ -391,3 +391,25 @@ Principe : une journée type en étapes « à partir de telle heure → tel lieu
 | 18 h 30 → | chez elle |
 
 Remarque : si le joueur s'effondre pendant son jour de repos ou la nuit, il se réveille quand même à la clinique soigné par Hailey (à revoir si on veut être cohérent).
+
+## Séance 16/11/2026 (21h15) — v0.1.4
+- ✅ Baies et mûres au chaudron : **confitures** 🍯 (+45 ⚡) au lieu de soupes ; les vieilles sauvegardes convertissent leurs soupes en confitures.
+- ✅ Bouton des recettes : icône **📜 parchemin** (onglet « 📜 Recettes »). ⚠️ Le bouton 📜 Menu du haut a la même icône : à changer si ça prête à confusion.
+- ✅ **Hailey hors de ses heures** (jour de repos ou nuit, y compris « pas couché à 1 h ») : elle soigne quand même, le dit (« c'était mon jour de repos » / « on m'a tirée du lit ») et **double le tarif (20 %)**.
+- ✅ **Bar d'Ed** au centre-ville (au nord de la rue des commerces, à l'est du charpentier) : intérieur avec comptoir, tonneaux, table. Ed y travaille de 11 h à 23 h 30 (💡), sinon il est chez lui.
+- ✅ **Maison d'Ed, Suzie et Jade** au quartier (sur l'ancien « terrain libre », en face de chez Hailey) : grande maison en briques à étages, porte violette, vélo rose ; **rez-de-chaussée** (cuisine, table, fauteuil, escalier) et **étage** (chambre des parents, chambre de Jade, coffre à jouets).
+
+## Ed le barman et sa famille (16/11, décrits par l'utilisateur)
+- **Ed** : barman. Ancien **chauffeur routier**, il a choisi d'être barman parce qu'il **aime le contact des gens**.
+- On pourra l'**aider en lui fournissant de l'alcool et des boissons** (il en parle dans le sujet « Tu as besoin d'aide ? »).
+- Il rêve d'**ouvrir un jour un magasin en ville** → sûrement une **quête**.
+- Marié à **Suzie**, papa de **Jade**. Ils vivent dans la maison à étages du quartier.
+
+### À compléter (par l'utilisateur)
+- [ ] Histoire d'Ed (ses années de route, pourquoi ce village, ses goûts).
+- [ ] Histoire et personnalité de **Suzie** (métier ? caractère ? routine ?). Pour l'instant elle reste au rez-de-chaussée.
+- [ ] Histoire et personnalité de **Jade** (âge ? caractère ? routine, école ?). Pour l'instant elle reste dans sa chambre. ⚠️ Le moteur n'a pas encore de silhouette d'enfant : elle a la taille d'un adulte.
+- [ ] Quelles **boissons et alcools** fabriquer pour Ed (métier alchimiste ? cuisinier ? nouvel atelier ?), et ce qu'il donne en échange.
+- [ ] La **quête du magasin d'Ed** : quel magasin, où en ville, quelles étapes.
+- [ ] Goûts (cadeaux aimés / détestés) d'Ed, Suzie et Jade.
+- [ ] Routines quotidiennes d'Ed, Suzie et Jade (sur le modèle de Hailey).
