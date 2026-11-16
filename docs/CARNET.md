@@ -317,3 +317,10 @@ Ordre convenu : 1 mort/clignotement ✅ · 2 tente ✅ · 3 recettes (feu), baie
 - Bordures infranchissables avec décor : barrière en bois au nord de la ferme, falaise rocheuse à l'ouest, haies à l'est ; en ville, gros arbres et haies sur les bords (sauf les sorties).
 - Canne à pêche retirée du départ (source à définir) ; chemin de la plage barré (`S.seaOpen`, ouverture à définir).
 - Mode test (⚙ Réglages, code GEMINI, mémorisé sur l'appareil) : tous les outils, plage et caverne ouvertes, vitesse ×3, un appui ferme toute une discussion. Badge 🛠️ sur le bouton ⚙.
+
+## Séance 16/11/2026 (après-midi) — lots 1 à 4 demandés
+Problème repéré par l'utilisateur : énergie vide en 5-10 min, puis 10-15 min de journée sans rien à faire.
+- ✅ **Lot 1** : mini tuto à la 1re cueillette de baies (manger +1 ⚡, ou griller au feu +5 ⚡) ; rappel chaque soir à 18h (après le grand conseil du 1er soir) ; **pas couché à 1h → infirmerie** (réveil 8h, 10 % de frais, 50 % d'énergie). Remplace l'ancienne règle « 2h = nouvelle journée sans énergie ».
+- ⏳ Lot 2 : patrons dans les magasins, chaudron (50 🪙 chez le forgeron), louche, jauge de cuisson.
+- ⏳ Lot 3 : quête journalière du panneau dès le jour 2, puis quête du coffre le jour suivant.
+- ⏳ Lot 4 : métiers (forgeron, alchimiste, couturier, joaillier, cuisinier) et niveaux ; magasins = patrons + ingrédients de base.

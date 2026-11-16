@@ -69,7 +69,7 @@ export function deployTent(g) {
 export const NIGHT_TIP = [
   '🌙 Il est 18h : la nuit tombe.',
   'Dors sous ta tente pour récupérer ton énergie (touche la tente → Dormir).',
-  "Si tu ne dors pas, tu ne récupères rien le lendemain. Et si ton énergie tombe à 0, tu t'effondres : réveil à la clinique, avec 10 % de frais !"
+  "Si tu ne dors pas, tu ne récupères rien le lendemain. Et si tu n'es pas couché(e) à 1h, ou si ton énergie tombe à 0, tu t'effondres : réveil à la clinique, avec 10 % de frais !"
 ];
 export function nightTip(g) {
   const S = g.S, q = ((S.quests ||= {}).debut ||= {});

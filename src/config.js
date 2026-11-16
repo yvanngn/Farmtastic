@@ -11,7 +11,8 @@ export const CFG = {
   MS_PER_MIN: 1000,          // 1 min de jeu = 1 s réelle (une journée ≈ 20 min)
   DAY_START: 360,            // 6h00
   DAY_END: 1560,             // 2h00 : évanouissement
-  SLEEP_FROM: 1080,          // dormir possible dès 18h
+  SLEEP_FROM: 1080,
+  BED_LIMIT: 1500,           // 1h00 : pas couché → infirmerie (frais 10 %)          // dormir possible dès 18h
   NIGHT_FROM: 1200,          // monstres dès 20h
   INV_SLOTS: 12,             // places du sac au départ
   INV_MAX: 36,               // places max après agrandissements

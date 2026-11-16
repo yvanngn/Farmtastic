@@ -55,3 +55,21 @@ test('Hailey travaille à la clinique du quartier de 7h à 23h', () => {
   assert.equal(LAYOUTS.quartier[5].slice(27, 31), 'XXXX');
   assert.ok(HAILEY.story.some(s => /burn-out/.test(s.t)), 'son histoire va jusqu’au burn-out');
 });
+
+test('lot 1 : pas couché à 1h → infirmerie le matin, 10 % de frais', async () => {
+  const { tickTime } = await import('../src/systems/time.js');
+  const { CFG } = await import('../src/config.js');
+  const { g, S } = fresh({});
+  S.money = 1000; S.minute = CFG.BED_LIMIT - 1; const d = S.day;
+  tickTime(g, CFG.MS_PER_MIN);
+  assert.equal(S.scene, 'clinique'); assert.equal(S.money, 900); assert.equal(S.day, d + 1); assert.equal(S.minute, CFG.DAY_START + 120);
+});
+
+test('lot 1 : rappel de 18h chaque soir après le premier conseil', async () => {
+  const { tickTime } = await import('../src/systems/time.js');
+  const { CFG } = await import('../src/config.js');
+  const { g, S } = fresh({}); const t = []; g.bus.on('toast', m => t.push(m));
+  (S.quests ||= {}).debut = { nuit: true };
+  S.minute = CFG.SLEEP_FROM - 1; tickTime(g, CFG.MS_PER_MIN);
+  assert.ok(t.some(m => /18h/.test(m)));
+});

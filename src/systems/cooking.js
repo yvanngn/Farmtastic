@@ -53,6 +53,10 @@ export function cookTick(g) {
 export const cookProgress = g => g.cooking ? Math.min(1, (g.now() - g.cooking.t0) / COOK_MS) : 0;
 
 // Buissons à baies.
+export const BERRY_TIP = [
+  '🫐 Des baies ! Mange-les (sac → Manger) : +1 ⚡ chacune.',
+  '🔥 Ou jette-les au feu de camp : grillées, elles rendent bien plus (+5 ⚡). Tiens-les en main et touche le feu.'
+];
 export const bushAt = (S, x, y) => (S.scene || 'farm') === 'farm' && BUSHES.some(([a, b]) => a === x && b === y);
 export const bushRipe = (S, x, y) => { const d = (S.bushes || {})[key(x, y)]; return d == null || dayNo(S) - d >= BERRY_DAYS; };
 export function pickBush(g, x, y) {
@@ -63,5 +67,7 @@ export function pickBush(g, x, y) {
   if (!canAdd(S, 'berry', n)) { g.bus.emit('toast', 'Sac plein !'); return 0; }
   add(g, 'berry', n); (S.bushes ||= {})[key(x, y)] = dayNo(S);
   g.bus.emit('sfx', 'collect'); g.bus.emit('pop', { t: `+${n} 🫐`, x, y });
+  const T = (S.tips ||= {});
+  if (!T.berry) { T.berry = true; g.bus.emit('say', { name: 'Conseil', color: '#ffdf8a', lines: BERRY_TIP }); }
   return n;
 }

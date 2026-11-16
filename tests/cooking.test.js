@@ -42,3 +42,13 @@ test('baies : +1 énergie crues, +5 cuites ; les buissons repoussent en 2 jours'
   assert.equal(act(g, x, y), 'empty');
   S.day += 2; assert.equal(act(g, x, y), 'berries');
 });
+
+test('lot 1 : mini tuto à la première cueillette de baies', async () => {
+  const { pickBush } = await import('../src/systems/cooking.js');
+  const { BUSHES } = await import('../src/data/recipes.js');
+  const { g, S } = (await import('./helpers.js')).makeGame({ state: { scene: 'farm', bushes: {} } });
+  const said = []; g.bus.on('say', d => said.push(d));
+  const [x, y] = BUSHES[0]; pickBush(g, x, y);
+  assert.equal(said.length, 1); assert.ok(said[0].lines.some(l => /feu/.test(l)));
+  S.bushes = {}; pickBush(g, x, y); assert.equal(said.length, 1, 'une seule fois');
+});

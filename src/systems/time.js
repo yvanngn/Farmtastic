@@ -6,13 +6,15 @@ import { rollRainbow } from './nature.js';
 import { animalsNewDay } from './animals.js';
 import { socialNewDay } from './social.js';
 import { regrow } from './resources.js';
+import { toClinic } from './clinic.js';
 
 export function tickTime(g, dtMs) {
   g.timeAcc += dtMs;
   while (g.timeAcc >= CFG.MS_PER_MIN) {
     g.timeAcc -= CFG.MS_PER_MIN;
     g.S.minute++;
-    if (g.S.minute >= CFG.DAY_END) { newDay(g, false); return; }
+    if (g.S.minute === CFG.SLEEP_FROM) remind18(g);
+    if (g.S.minute >= CFG.BED_LIMIT) { newDay(g, false); toClinic(g, 'nuit'); return; }
   }
 }
 
@@ -45,4 +47,12 @@ export function sleep(g) {
 export function fmtTime(m) {
   const h = Math.floor(m / 60) % 24, mm = m % 60;
   return String(h).padStart(2, '0') + ':' + String(mm - mm % 10).padStart(2, '0');
+}
+
+// Rappel de 18h, chaque soir après le premier conseil.
+export function remind18(g) {
+  const S = g.S, q = (S.quests || {}).debut || {};
+  if (!q.nuit) return false;   // le premier soir, c'est le grand conseil (nightTip)
+  g.bus.emit('toast', '🌙 18h : pense à aller dormir bientôt. Pas couché(e) à 1h → infirmerie (10 % de frais) !');
+  return true;
 }
