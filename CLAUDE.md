@@ -14,3 +14,8 @@
 - Discussions comme dans Witch'rok : la réplique du jour reste en tête, puis le choix des sujets du PNJ (`topics`) et « Rien. ».
 - Mémoire du projet : `docs/CARNET.md` (le lire en début de séance, le compléter à la fin).
 - `index.html` (GitHub Pages) est **généré** depuis `play.html` (claude.ai) : après toute modification de `play.html`, lancer `node tools/build-index.mjs` (un test vérifie qu'ils sont synchronisés).
+
+## Versions (règle de l'utilisateur)
+- Semver horodaté dans `src/version.js`, affiché sur l'écran titre et dans ⚙ Réglages ; historique dans `docs/VERSIONS.md`.
+- **À chaque publication** : `node tools/version.mjs "courte note"` (patch +1, date et heure de Paris), puis `node tools/build-index.mjs`, publier, committer.
+- **Mineure / majeure : jamais de moi-même**, seulement quand l'utilisateur le demande (`node tools/version.mjs minor` / `major`).

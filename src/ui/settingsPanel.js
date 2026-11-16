@@ -16,6 +16,7 @@ export const ZOOMS = { 9: 'Proche', 12: 'Normal', 15: 'Loin' };
 export const ZOOM_DEFAULT = 12;   // un peu plus large qu'avant (10)
 export function getZoom() { try { const v = +localStorage.getItem('ferme_zoom'); return ZOOMS[v] ? v : ZOOM_DEFAULT; } catch { return ZOOM_DEFAULT; } }
 function setZoom(v) { try { localStorage.setItem('ferme_zoom', v); } catch {} window.dispatchEvent(new Event('ferme-zoom')); }
+import { versionLabel } from '../version.js';
 export function createSettingsPanel(audio, g) {
   const body = $('#setBody');
   function render() {
@@ -27,6 +28,7 @@ export function createSettingsPanel(audio, g) {
         <input id="vol-${c.k}" type="range" min="0" max="100" value="${Math.round(s[c.k].vol * 100)}" data-vol="${c.k}">
         <span class="pct">${s[c.k].on ? Math.round(s[c.k].vol * 100) : 0} %</span>
       </div>`).join('') + `
+      <p class="info" style="text-align:center;opacity:.7">Farm'tastic ${versionLabel()}</p>
       <div class="ecran"><b>📱 Écran</b>
         <div class="row">${Object.entries(ORIENTS).map(([k, v]) => `<button data-orient="${k}" class="${getOrient() === k ? 'on' : ''}">${v}</button>`).join('')}</div>
         <div class="row"><button data-fs="1" class="primaire">⛶ Plein écran</button>${document.fullscreenElement ? '<button data-fs="0">Quitter</button>' : ''}</div>

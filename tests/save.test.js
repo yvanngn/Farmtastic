@@ -94,3 +94,9 @@ test('effacer une partie solo : retirée de la liste, l’autre reste', async ()
   const calls = []; await deleteOnlineGame({ rpc: async (fn, a) => { calls.push([fn, a]); return { data: null }; } }, 'g9');
   assert.deepEqual(calls[0], ['ferme_delete_game', { p_game: 'g9' }]);
 });
+
+test('version : semver horodaté lisible', async () => {
+  const { VERSION, versionLabel } = await import('../src/version.js');
+  assert.match(`${VERSION.major}.${VERSION.minor}.${VERSION.patch}`, /^\d+\.\d+\.\d+$/);
+  assert.match(versionLabel(), /^v\d+\.\d+\.\d+ · \d\d\/\d\d\/\d{4} \d\d:\d\d$/);
+});

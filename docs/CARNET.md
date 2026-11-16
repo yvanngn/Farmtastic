@@ -341,3 +341,6 @@ Problème repéré par l'utilisateur : énergie vide en 5-10 min, puis 10-15 min
 - ✅ Quête « Premiers pas » : étapes **« Faire la cuisine »** (patron du chaudron chez Igor → chaudron → une soupe) et **« Rafistoler la grange »**.
 - ✅ **Tuto de la vente** la 1re fois qu'on ramasse du bois ou de la pierre (bac de vente à côté de la cabane).
 - ⚠️ Avec le chaudron, ≈ 350 ⚡ par jour possibles : à surveiller (voir `docs/PARCOURS.md`).
+
+## Séance 16/11/2026 (13h50) — versions
+- ✅ Semver horodaté (`src/version.js`, affiché sur l'écran titre en bas à droite et dans ⚙ Réglages ; historique `docs/VERSIONS.md`). Départ **0.1.0**. Patch +1 à chaque publication (`node tools/version.mjs "note"`) ; **mineure et majeure seulement sur décision de l'utilisateur**.

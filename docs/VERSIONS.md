@@ -1,0 +1,5 @@
+# Versions de Farm'tastic
+
+Semver horodaté (heure de Paris). Patch automatique à chaque publication ; mineure et majeure sur décision de l'utilisateur.
+
+- **0.1.0** — 2026-11-16 13:50 — Système de versions

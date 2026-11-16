@@ -1,3 +1,4 @@
+import { versionLabel } from '../version.js';
 // Écran titre façon Witch'rok : décor de ferme animé dessiné par le code,
 // titre lumineux qui apparaît (flou → net) puis flotte, « Toucher pour commencer », menu de jeu.
 import { $ } from './dom.js';
@@ -17,6 +18,8 @@ const BH = 144; // hauteur de la scène ; en portrait le ciel s'allonge au-dessu
 const SKY = ['#3b3f8c', '#4f56a6', '#6a6fbc', '#8a86c8', '#b293c6', '#d9a2b8', '#f2b7a0', '#ffcf9a', '#ffe0a8'];
 
 export function createTitle({ audio, onContinue, onNew, onGames = () => {}, onSettings }) {
+  { const ov = document.getElementById('ovTitle'); if (ov && !ov.querySelector('.version')) { const v = document.createElement('div'); v.className = 'version'; v.textContent = versionLabel();
+    v.style.cssText = 'position:absolute;right:10px;bottom:calc(8px + env(safe-area-inset-bottom,0px));font:12px Nunito,sans-serif;color:#fff;opacity:.75;text-shadow:0 1px 2px #000;pointer-events:none'; ov.appendChild(v); } }
   const ov = $('#ovTitle'), cv = $('#titleCv'), ctx = cv.getContext('2d');
   let W = 256, H = BH, hasSave = false, many = false, phase = 'tap';
   const pollen = Array.from({ length: 46 }, (_, i) => ({ x: (i * 97) % 400, y: (i * 53) % H, s: 3 + (i % 5), p: i * 1.7 }));
