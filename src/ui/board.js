@@ -4,6 +4,7 @@ import { CFG } from '../config.js';
 import { $ } from './dom.js';
 import { ITEMS } from '../data/items.js';
 import { KINDS, PROJECTS, FESTIVAL_GOAL, FESTIVALS, UNLOCKS } from '../data/requests.js';
+import { dailyQuest, deliverDaily } from '../systems/daily.js';
 import { ensureOrders, fulfillOrder, discardOrder, timeLeft, fmtDelay, currentProject, unlock } from '../systems/market.js';
 
 export function createBoard(g, audio) {
@@ -20,7 +21,9 @@ export function createBoard(g, audio) {
       <div class="jauge" style="--k:${KINDS.fete.color}"><b>🎉 ${FESTIVALS[S.season]}</b>${bar(F.pts, FESTIVAL_GOAL, KINDS.fete.color)}<small>${F.done ? 'Tout est prêt ✔' : `${F.pts}/${FESTIVAL_GOAL} objets avant la fin de la saison`}</small></div>
       <div class="jauge" style="--k:${KINDS.caravane.color}"><b>🐪 Caravane : ${S.caravan.tokens} jeton(s)</b><small>À échanger plus bas contre des graines, des animaux et des outils.</small></div>
     </div>`;
-    if (!CFG.BOARD_OPEN && !slots.length) { body.innerHTML = '<p class="info">📌 Le panneau est vide pour l’instant. Repasse plus tard !</p>'; return; }
+    const dq = dailyQuest(g), dH = dq ? `<h3>📌 Quête du jour</h3><div class="grid affiches"><div class="card affiche" style="--k:#4fb07a"><span class="pastille">📌</span><div class="t">${it(dq.item).i} ${dq.qty} × ${it(dq.item).n}</div><div><b>${dq.reward} 🪙</b></div>`
+      + (dq.done ? '<small>✅ Faite ! Nouvelle quête demain.</small>' : `<button data-daily="1" ${(S.inv[dq.item] || 0) >= dq.qty ? 'class="primaire"' : 'disabled'}>Livrer (${S.inv[dq.item] || 0}/${dq.qty})</button>`) + '</div></div>' : '';
+    if (!CFG.BOARD_OPEN && !slots.length) { body.innerHTML = dH || '<p class="info">📌 Le panneau est vide pour l’instant. Repasse demain !</p>'; return; }
     const cards = '<div class="grid affiches">' + slots.map(s => {
       const o = s.order;
       if (!o) return `<div class="card affiche vide"><div class="t">📌 Emplacement libre</div><small>Nouvelle demande dans</small><b class="delai">${fmtDelay(timeLeft(g, s))}</b></div>`;
@@ -35,11 +38,12 @@ export function createBoard(g, audio) {
       return `<div class="card" style="border-color:${KINDS.caravane.color}"><div class="t">${u.i} <b>${u.n}</b></div><small>${u.kind}</small>`
         + (has ? '<div>Débloqué ✔</div>' : `<div>${u.cost} jeton(s)</div><button data-unlock="${u.id}" ${S.caravan.tokens >= u.cost ? '' : 'disabled'}>Échanger</button>`) + '</div>';
     }).join('') + '</div>';
-    body.innerHTML = legend + gauges + cards + caravan;
+    body.innerHTML = dH + legend + gauges + cards + caravan;
   }
   body.addEventListener('click', e => {
     const d = e.target.dataset;
-    if (d.give) fulfillOrder(g, d.give);
+    if (d.daily) deliverDaily(g);
+    else if (d.give) fulfillOrder(g, d.give);
     else if (d.drop) { discardOrder(g, d.drop); audio.play('ui'); }
     else if (d.unlock) unlock(g, d.unlock);
     else return;

@@ -118,7 +118,8 @@ export function createMenu(g, opts) {
       return `<h3>${SHOPS.stall.i} ${SHOPS.stall.n}</h3>${shopGrid(S, 'stall')}<h3>👥 Entre joueurs</h3><p class="info">Vendez vos produits aux autres joueurs, ou achetez les leurs. Les demandes du village sont sur le panneau d'affichage, à côté.</p>${players}`;
     },
     quests(S) {
-      return Object.keys(QUESTS).map(id => {
+      const dn = (S.year - 1) * 112 + S.season * 28 + S.day;
+      return Object.keys(QUESTS).filter(id => dn >= (QUESTS[id].from || 0) || S.quests?.[id]).map(id => {
         const { q, done, cur } = questProgress(S, id);
         return card(`<div class="t" style="font-size:1.1em">${q.i} <b>${q.n}</b></div><ol class="etapes">` + q.steps.map((st, i) =>
           `<li class="${done[i] ? 'fait' : i === cur ? 'encours' : 'avenir'}">${done[i] ? '✔ ' : i === cur ? '▸ ' : ''}${i <= cur || done[i] ? esc(st.t) : '???'}${st.locked && !done[i] && i === cur ? ' <small>(bientôt)</small>' : ''}</li>`).join('') + '</ol>');

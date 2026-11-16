@@ -1,6 +1,8 @@
 // Quête d'Igor : il a perdu son bijou (« ici ou près de la cabane ») ; il est derrière la cabane.
 // En le lui rendant, il nous apprend à fabriquer des coffres.
 import { add } from './inventory.js';
+import { CHEST_QUEST_FROM } from '../data/daily.js';
+import { dayNo } from './daily.js';
 
 export const JEWEL = { x: 4, y: 0 };   // derrière la cabane
 export const igorQ = S => ((S.quests ||= {}).igor ||= {});
@@ -15,7 +17,7 @@ export function pickJewel(g, x, y) {
 // Parler à Igor : demande le bijou, rappel, ou remerciements (+ recette du coffre). Renvoie true si la quête a parlé.
 export function igorTalk(g, n) {
   const S = g.S, q = igorQ(S), say = (lines, extra) => g.bus.emit('say', { name: n.name, color: n.color, voice: n.voice, lines, ...extra });
-  if (q.done) return false;
+  if (q.done || (!q.asked && dayNo(S) < CHEST_QUEST_FROM)) return false;   // la quête du coffre commence au 3e jour
   if ((S.inv.igor_bijou || 0) > 0) {
     add(g, 'igor_bijou', -1); q.done = true;
     S.recipes = [...new Set([...(S.recipes || []), 'chest'])];

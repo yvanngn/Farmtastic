@@ -184,7 +184,7 @@ test('Igor le forgeron : il cherche son bijou (derrière la cabane) et nous appr
   const { talk: tk, registerNPC: reg } = await import('../src/systems/social.js');
   const { questProgress } = await import('../src/systems/quests.js');
   const { HAND_RECIPES } = await import('../src/data/recipes.js');
-  const { g, S } = makeGame({ state: { minute: 600, scene: 'quartier', recipes: ['campfire'], inv: {} } });
+  const { g, S } = makeGame({ state: { minute: 600, day: 3, scene: 'quartier', recipes: ['campfire'], inv: {} } });
   reg(g, IGOR); placeNPC(g.npcs.igor, S, OUT_FROM, OUT_TO);
   assert.equal(g.npcs.igor.scene, 'quartier', 'il traîne dans le quartier');
   const said = []; g.bus.on('say', d => said.push(d));
@@ -211,4 +211,13 @@ test('Manuel sort de sa villa à 8h et marche jusqu’à la place (et rentre le 
   assert.ok(mid < 26 && mid > 12.6, 'il est en chemin');
   S.minute = OUT_FROM + 60; placeNPC(n, S, OUT_FROM, OUT_TO); assert.deepEqual([n.x, n.y], [C.day.x, C.day.y]); assert.ok(!n.walking);
   S.minute = OUT_TO + 20; placeNPC(n, S, OUT_FROM, OUT_TO); assert.ok(n.walking && n.y > 12.6, 'le soir, il rentre');
+});
+
+test('lot 3 : quête du coffre d’Igor pas avant le 3e jour', async () => {
+  const { talk: tk, registerNPC: reg } = await import('../src/systems/social.js');
+  const { IGOR } = await import('../src/data/npcs.js');
+  const { g, S } = makeGame({ state: { minute: 600, day: 2, scene: 'quartier', inv: {} } });
+  reg(g, IGOR); placeNPC(g.npcs.igor, S, OUT_FROM, OUT_TO);
+  tk(g, 'igor'); assert.ok(!S.quests?.igor?.asked, 'pas de bijou le 2e jour');
+  S.day = 3; S.social.igor.talked = false; tk(g, 'igor'); assert.ok(S.quests.igor.asked);
 });
