@@ -29,7 +29,9 @@ export const QUESTS = {
       { id: 'nuit', t: 'Dès 18h il fait nuit : dormir sous la tente (sinon pas d’énergie le lendemain ; à 0 d’énergie, clinique et 10 % de frais)', done: S => !!S.quests?.debut?.dormi || isRepaired(S, 'house') },
       { id: 'outils', t: 'Trouver la pioche (contre la grange) et un outil pour couper les arbres', done: S => !!(S.tools?.pick && S.tools?.axe) },
       { id: 'feu', t: 'Faire un feu de camp (🔥 Recettes : 5 bois + 2 cailloux)', done: S => (S.fires || []).length > 0 || (S.inv?.campfire || 0) > 0 || isRepaired(S, 'house') },
-      { id: 'cabane', t: 'Rafistoler la cabane : 100 bois et 50 pierres', done: S => isRepaired(S, 'house') }
+      { id: 'cabane', t: 'Rafistoler la cabane : 80 bois et 30 pierres', done: S => isRepaired(S, 'house') },
+      { id: 'cuisine', t: 'Faire la cuisine : acheter le patron du chaudron chez Igor (« Tu vends quoi ? »), le fabriquer et préparer une soupe de baies', done: S => !!S.quests?.debut?.cuisine },
+      { id: 'grange', t: 'Rafistoler la grange (100 bois et 60 pierres) : la pelle est dedans, pour bêcher et planter', done: S => isRepaired(S, 'grange') }
     ]
   },
   franck: {

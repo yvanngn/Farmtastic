@@ -56,19 +56,22 @@ export const cookProgress = g => g.cooking ? Math.min(1, (g.now() - g.cooking.t0
 
 // Buissons à baies.
 export const BERRY_TIP = [
-  '🫐 Des baies ! Mange-les (sac → Manger) : +1 ⚡ chacune.',
-  '🔥 Ou jette-les au feu de camp : grillées, elles rendent bien plus (+5 ⚡). Tiens-les en main et touche le feu.'
+  '🫐 Des baies ! Mange-les (sac → Manger) : +1 ⚡ chacune (les mûres : +2 ⚡).',
+  '🔥 Ou jette-les au feu de camp : grillées, elles rendent bien plus (+5 ⚡). Tiens-les en main et touche le feu.',
+  '🍲 Et avec un chaudron, 4 baies font une soupe : +50 ⚡ !'
 ];
 export const bushAt = (S, x, y) => (S.scene || 'farm') === 'farm' && BUSHES.some(([a, b]) => a === x && b === y);
+const bushKind = (x, y) => (BUSHES.find(([a, b]) => a === x && b === y) || [])[2] === 'mure' ? 'mure' : 'berry';
 export const bushRipe = (S, x, y) => { const d = (S.bushes || {})[key(x, y)]; return d == null || dayNo(S) - d >= BERRY_DAYS; };
 export function pickBush(g, x, y) {
   const S = g.S;
   if (!bushAt(S, x, y)) return null;
   if (!bushRipe(S, x, y)) { g.bus.emit('toast', 'Plus de baies… elles repoussent en 2 jours 🌿'); return 0; }
   const n = BERRY_PICK[0] + (g.rnd() * (BERRY_PICK[1] - BERRY_PICK[0] + 1) | 0);
-  if (!canAdd(S, 'berry', n)) { g.bus.emit('toast', 'Sac plein !'); return 0; }
-  add(g, 'berry', n); (S.bushes ||= {})[key(x, y)] = dayNo(S);
-  g.bus.emit('sfx', 'collect'); g.bus.emit('pop', { t: `+${n} 🫐`, x, y });
+  const kind = bushKind(x, y);
+  if (!canAdd(S, kind, n)) { g.bus.emit('toast', 'Sac plein !'); return 0; }
+  add(g, kind, n); (S.bushes ||= {})[key(x, y)] = dayNo(S);
+  g.bus.emit('sfx', 'collect'); g.bus.emit('pop', { t: `+${n} ${kind === 'mure' ? '🍇' : '🫐'}`, x, y });
   const T = (S.tips ||= {});
   if (!T.berry) { T.berry = true; g.bus.emit('say', { name: 'Conseil', color: '#ffdf8a', lines: BERRY_TIP }); }
   return n;

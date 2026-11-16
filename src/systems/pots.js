@@ -62,6 +62,6 @@ export function usePot(g, pot) {
   if (!canAdd(S, r.out, r.q)) { g.bus.emit('toast', 'Sac plein ! Le plat attend dans le chaudron.'); return 'full'; }
   add(g, r.out, r.q); pot.cook = null;
   g.bus.emit('sfx', 'collect'); g.bus.emit('pop', { t: `+${r.q} ${ITEMS[r.out].i}`, x: pot.x, y: pot.y });
-  gainJob(g, r.job);
+  gainJob(g, r.job); ((S.quests ||= {}).debut ||= {}).cuisine = true;
   return 'done';
 }

@@ -334,3 +334,10 @@ Problème repéré par l'utilisateur : énergie vide en 5-10 min, puis 10-15 min
 - 💡 Les bruits arrivent à partir de 22h ; l'esprit est sur la ferme (case 22,14), visible la nuit seulement ; il disparaît à moins de 2 cases. Une nuit où l'on dort avant 22h est sautée (la suite vient la nuit suivante).
 - ⏳ Objet pour lui parler : à déterminer. Piste de l'utilisateur : un **lanceur à neutrons** façon Ghostbusters, disponible à un certain niveau (lequel ? quel métier ?).
 - Pensées du héros 🆕 dans `docs/DIALOGUES.md` (54 🆕 au total).
+
+## Séance 16/11/2026 (14h) — équilibrage du début
+- ✅ Soupe de baies **+50 ⚡** ; cabane **80 bois + 30 pierres** ; grange (avec la pelle) **100 bois + 60 pierres**.
+- ✅ Plus de baies : 11 buissons (au lieu de 8), 2 à 4 baies. **Mûres** sur 5 ronces (💡 +2 ⚡ crues, +6 grillées, soupe de mûres : 3 mûres → +50 ⚡). 💡 emplacements.
+- ✅ Quête « Premiers pas » : étapes **« Faire la cuisine »** (patron du chaudron chez Igor → chaudron → une soupe) et **« Rafistoler la grange »**.
+- ✅ **Tuto de la vente** la 1re fois qu'on ramasse du bois ou de la pierre (bac de vente à côté de la cabane).
+- ⚠️ Avec le chaudron, ≈ 350 ⚡ par jour possibles : à surveiller (voir `docs/PARCOURS.md`).

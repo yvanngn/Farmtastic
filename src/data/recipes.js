@@ -11,11 +11,13 @@ export const START_RECIPES = ['campfire'];
 // Onglets des recettes, par type d'objet (les autres types viendront avec les nouvelles recettes).
 export const RECIPE_CATS = { feu: '🔥 Feu et cuisine', rangement: '📦 Rangement', outils: '🛠️ Outils', armes: '⚔️ Armes', bijoux: '💍 Bijoux', potions: '⚗️ Potions', couture: '🧵 Couture', deco: '🪴 Décoration' };
 // Cuisson au feu de camp : objet en main → objet cuit, en 5 secondes.
-export const COOK = { berry: 'berry_cooked' };
+export const COOK = { berry: 'berry_cooked', mure: 'mure_grillee' };
 export const COOK_MS = 5000;
 // Buissons à baies de la ferme (fixes) : les baies repoussent tous les 2 jours.
-export const BUSHES = [[8, 16], [12, 17], [4, 27], [11, 34], [13, 29], [21, 22], [26, 17], [6, 15]];
-export const BERRY_DAYS = 2, BERRY_PICK = [2, 3];
+// 3e valeur : 'mure' = ronce à mûres (sinon baies). 16/11 : plus de buissons et des mûres (demande de l'utilisateur, 💡 emplacements).
+export const BUSHES = [[8, 16], [12, 17], [4, 27], [11, 34], [13, 29], [21, 22], [26, 17], [6, 15], [18, 26], [29, 22], [31, 15],
+  [14, 32, 'mure'], [27, 32, 'mure'], [20, 30, 'mure'], [33, 27, 'mure'], [6, 22, 'mure']];
+export const BERRY_DAYS = 2, BERRY_PICK = [2, 4];
 export const MAX_FIRES = 3;
 export const RECIPES = [
   { out: 'hay', q: 3, in: { wheat: 1 } },

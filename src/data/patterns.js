@@ -12,7 +12,8 @@ export const PATTERNS = {
 };
 // Plats du chaudron : on remue à la louche (rester appuyé) jusqu'à ce que la jauge soit pleine.
 export const POT_RECIPES = {
-  soupe_baies: { out: 'soupe_baies', q: 1, in: { berry: 4 }, job: 'cuisinier', base: true },   // connue avec le chaudron
+  soupe_baies: { out: 'soupe_baies', q: 1, in: { berry: 4 }, job: 'cuisinier', base: true },   // connue avec le chaudron (+50 ⚡)
+  soupe_mures: { out: 'soupe_mures', q: 1, in: { mure: 3 }, job: 'cuisinier', base: true },   // 💡 les mûres font aussi la soupe
   pain: { out: 'bread', q: 2, in: { flour: 2 }, job: 'cuisinier' },
   ragout: { out: 'ragout', q: 1, in: { beef: 1, carrot: 1 }, job: 'cuisinier' },
   soupe_poisson: { out: 'soupe_poisson', q: 1, in: { fish: 1, berry: 2 }, job: 'cuisinier' }

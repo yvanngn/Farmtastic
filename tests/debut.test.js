@@ -135,7 +135,7 @@ test('cabane délabrée : on ne peut pas entrer, on dépose bois et pierres jusq
   S.inv.wood = 200; S.inv.stone = 200;
   while (!isRepaired(S, 'house')) assert.equal(act(g, 3, 2), 'repair');
   assert.deepEqual(S.repair.house, REPAIRS.house.need, 'jamais plus que nécessaire');
-  assert.equal(S.inv.wood, 200 - (100 - 30));
+  assert.equal(S.inv.wood, 200 - (REPAIRS.house.need.wood - 30));
   assert.equal(act(g, 5, 4), 'door', 'on peut entrer');
 });
 

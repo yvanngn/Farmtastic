@@ -17,12 +17,12 @@ import { bushRipe, cookProgress } from '../systems/cooking.js';
 import { ghostVisible } from '../systems/ghost.js';
 import { GHOST } from '../data/npcs.js';
 // Buisson à baies (baies bleues quand il y en a).
-function drawBush(c, x, y, ripe) {
+function drawBush(c, x, y, ripe, mure) {
   const px = x * T, py = y * T;
   c.fillStyle = 'rgba(0,0,0,.25)'; c.fillRect(px + 1, py + 12, 14, 3);
   c.fillStyle = '#2f6a2a'; c.fillRect(px + 1, py + 5, 14, 9); c.fillRect(px + 3, py + 2, 10, 3);
   c.fillStyle = '#4a9a3a'; c.fillRect(px + 3, py + 4, 5, 4); c.fillRect(px + 9, py + 6, 4, 3); c.fillStyle = '#68b84c'; c.fillRect(px + 4, py + 4, 2, 1);
-  if (ripe) for (const [a, b] of [[3, 7], [7, 5], [11, 8], [5, 11], [10, 11], [13, 6]]) { c.fillStyle = '#3a4ad0'; c.fillRect(px + a, py + b, 2, 2); c.fillStyle = '#9aa8ff'; c.fillRect(px + a, py + b, 1, 1); }
+  if (ripe) for (const [a, b] of [[3, 7], [7, 5], [11, 8], [5, 11], [10, 11], [13, 6]]) { c.fillStyle = mure ? '#3a1a3a' : '#3a4ad0'; c.fillRect(px + a, py + b, 2, 2); c.fillStyle = mure ? '#8a4a8a' : '#9aa8ff'; c.fillRect(px + a, py + b, 1, 1); }
 }
 // Coffre en bois cerclé de fer, posé au sol.
 function drawChest(c, x, y) {
@@ -299,7 +299,7 @@ let swing = null;
       ctx.save(); ctx.translate(x + 8, y + 11 + b); ctx.rotate(-.5); drawToolPix(ctx, t.tool); ctx.restore();
     } });
     if (scene === 'farm') {
-      for (const [x, y] of BUSHES) if (x >= x0 && x <= x1 && y >= y0 && y <= y1) list.push({ z: y + .8, d: () => drawBush(ctx, x, y, bushRipe(S, x, y)) });
+      for (const [x, y, k] of BUSHES) if (x >= x0 && x <= x1 && y >= y0 && y <= y1) list.push({ z: y + .8, d: () => drawBush(ctx, x, y, bushRipe(S, x, y), k === 'mure') });
       for (const ch of S.chests || []) list.push({ z: ch.y + .8, d: () => drawChest(ctx, ch.x, ch.y) });
       for (const f of S.fires || []) list.push({ z: f.y + .7, d: () => drawFire(ctx, f.x, f.y, now) });
       if (ghostVisible(S)) list.push({ z: GHOST.y + .9, d: () => drawGhost(ctx, GHOST.x, GHOST.y, now) });

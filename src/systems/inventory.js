@@ -20,12 +20,21 @@ export function room(S, id) {
 export const canAdd = (S, id, n = 1) => room(S, id) >= n;
 
 // Renvoie la quantité réellement ajoutée (peut être partielle si le sac est plein).
+export const SELL_TIP = [
+  '💰 Tu peux vendre ce que tu ramasses dans le bac de vente, juste à côté de la cabane.',
+  'Touche le bac : choisis chaque objet et sa quantité (−, +, Tout), puis vends. Le total s’affiche avant.',
+  'Garde quand même du bois et des pierres : il en faut pour réparer la cabane !'
+];
 export function add(g, id, n = 1) {
   const S = g.S;
   if (n > 0) {
     const k = Math.min(n, room(S, id));
     if (k <= 0) { dropItem(g, id, n); g.bus.emit('toast', 'Sac plein 🎒 : posé au sol'); g.bus.emit('sfx', 'denied'); return 0; }
     S.inv[id] = (S.inv[id] || 0) + k;
+    if ((id === 'wood' || id === 'stone') && !(S.tips ||= {}).sell) {   // tuto de la vente, la 1re fois
+      S.tips.sell = true;
+      g.bus.emit('say', { name: 'Conseil', color: '#ffdf8a', lines: SELL_TIP });
+    }
     if (k < n) { dropItem(g, id, n - k); g.bus.emit('toast', 'Sac plein : ' + (n - k) + ' posé(s) au sol'); }
     g.bus.emit('inv');
     return k;

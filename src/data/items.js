@@ -26,6 +26,8 @@ export const ITEMS = {
   campfire: { n: 'Feu de camp', p: 0, i: '🔥', keep: true },           // à poser par terre ; on y cuit en tenant l'aliment 5 s
   berry: { n: 'Baies', p: 2, i: '🫐', eat: { e: 1 } },
   berry_cooked: { n: 'Baies grillées', p: 6, i: '🍒', eat: { e: 5 } },
+  mure: { n: 'Mûres', p: 3, i: '🫐', eat: { e: 2 } },                     // 💡 un peu plus nourrissantes que les baies
+  mure_grillee: { n: 'Mûres grillées', p: 8, i: '🍇', eat: { e: 6 } },
   igor_bijou: { n: 'Bijou d’Igor', p: 0, i: '💍', keep: true },
   chaudron: { n: 'Chaudron', p: 0, i: '🍲', keep: true },        // à poser ; on y cuisine à la louche
   louche: { n: 'Louche', p: 10, i: '🥄', keep: true, buy: 30 },   // 💡 prix ; vendue à la forge
@@ -34,7 +36,8 @@ export const ITEMS = {
   bonnet: { n: 'Bonnet de laine', p: 200, i: '🧢' },
   ragout: { n: 'Ragoût', p: 160, i: '🍲', eat: { e: 60, h: 10 } },
   soupe_poisson: { n: 'Soupe de poisson', p: 90, i: '🥣', eat: { e: 45 } },
-  soupe_baies: { n: 'Soupe de baies', p: 25, i: '🥣', eat: { e: 20 } },
+  soupe_mures: { n: 'Soupe de mûres', p: 30, i: '🥣', eat: { e: 50 } },
+  soupe_baies: { n: 'Soupe de baies', p: 25, i: '🥣', eat: { e: 50 } },
   chest: { n: 'Coffre', p: 0, i: '📦', keep: true },             // appris auprès d'Igor ; à poser plus tard
   manteau: { n: 'Manteau d’hiver', p: 150, i: '🧥', keep: true, buy: 400 },   // protège du froid de la montagne (💡 vendu à l'étal du marché)
   barbe_papa: { n: 'Barbe à papa', p: 5, i: '🍭', eat: { e: 8 } },
