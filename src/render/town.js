@@ -142,18 +142,7 @@ export function buildTown(season) {
   for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) if (L[y][x] === 'T') g.drawImage(treeSprite(season, (x + y) % 4), x * T - 9, y * T - 28);
   // panneau vers la forêt, près de la sortie est
   R(32 * T + 7, 8 * T + 6, 2, 12, '#5b3a22'); signBoard(R, 30 * T + 10, 8 * T + 2, 'FORÊT →');
-  // villa de Manuel, le maire (x9-14, y22-25) : grande maison blanche, toit de tuiles, colonnes, haie taillée
-  { const x0 = TOWN_B.W.x * T, x1 = (TOWN_B.W.x + 6) * T, top = TOWN_B.W.y * T, bot = (TOWN_B.W.y + 4) * T;
-    R(x0 - 6, top - 4, x1 - x0 + 12, bot - top + 8, '#3e7a34'); R(x0 - 4, top - 2, x1 - x0 + 8, bot - top + 4, '#5a9a46');   // haie
-    R(x0, top + 22, x1 - x0, bot - top - 22, '#f4efe4'); for (let y = top + 26; y < bot; y += 6) R(x0, y, x1 - x0, 1, '#ddd6c8');
-    for (let i = 0; i < 8; i++) { const ins = Math.max(0, 12 - i * 2); R(x0 - 4 + ins, top + i * 3, x1 - x0 + 8 - ins * 2, 3, i % 2 ? '#b8432f' : '#c8553e'); }
-    R(x0 - 5, top + 22, x1 - x0 + 10, 3, '#6b2a1e');
-    for (const wx of [x0 + 8, x0 + 26, x1 - 34, x1 - 16]) { R(wx, top + 32, 10, 14, '#c8c0b0'); R(wx + 1, top + 33, 8, 12, '#7fb6d9'); R(wx + 1, top + 33, 8, 3, '#a9d3ec'); R(wx - 2, top + 32, 2, 14, '#3e5a7a'); R(wx + 10, top + 32, 2, 14, '#3e5a7a'); }
-    const dx = (TOWN_B.W.x + 3) * T - 9; R(dx - 6, top + 26, 30, 4, '#e8e2d4');
-    for (const cx of [dx - 5, dx + 20]) { R(cx, top + 30, 3, bot - top - 32, '#ffffff'); R(cx + 2, top + 30, 1, bot - top - 32, '#d8d2c4'); }
-    R(dx, top + 40, 18, bot - top - 40, '#5a2e18'); R(dx + 1, top + 41, 8, bot - top - 42, '#7a4426'); R(dx + 9, top + 41, 8, bot - top - 42, '#7a4426'); R(dx + 7, top + 52, 2, 2, '#f2cf73'); R(dx + 10, top + 52, 2, 2, '#f2cf73');
-    R(dx - 4, bot - 2, 26, 3, '#c2bdb4');
-    for (const fx of [x0 + 4, x1 - 8]) { R(fx, bot - 8, 6, 6, '#8a5a32'); R(fx + 1, bot - 11, 4, 4, '#f07ab0'); } }
+  // (villa du Maire effacée le 17/11 : Manu vit dans son ranch)
   drawHedges(R, LAYOUTS.town);   // haies de bordure
   return c;
 }
@@ -240,7 +229,7 @@ export function buildBiome(name, season) {
     const ch = L[y][x], px = x * T, py = y * T;
     if (ch === 'w') {
       const lac = name === 'montagne';
-      R(px, py, T, T, lac ? '#a8d4ec' : (y < 3 ? '#2f7ab8' : '#3f92cc'));
+      R(px, py, T, T, lac ? '#a8d4ec' : (y > H - 4 ? '#2f7ab8' : '#3f92cc'));
       for (let k = 0; k < 3; k++) R(px + (r() * 12 | 0), py + (r() * 14 | 0), 4, 1, lac ? '#d8eef8' : '#7cc0ec');
       if (lac && r() < .12) { R(px + 5, py + 5, 6, 5, '#2f6a9a'); R(px + 6, py + 6, 4, 3, '#4a8ac0'); }   // trou dans la glace
       continue;
@@ -252,7 +241,7 @@ export function buildBiome(name, season) {
     if (name === 'plage' && ch === 's' && r() < .05) { R(px + 6, py + 7, 3, 2, '#f4b0b8'); R(px + 7, py + 6, 1, 1, '#fff'); }   // coquillage
     if (name === 'montagne' && ch === 'n' && r() < .04) { R(px + 5, py + 8, 4, 3, '#9aa4b0'); R(px + 5, py + 8, 4, 1, '#ffffff'); }
   }
-  if (name === 'plage') for (let x = 0; x < W * T; x += 3) R(x, 6 * T - 2 + Math.round(Math.sin(x / 9) * 2), 3, 3, '#ffffff');   // écume
+  if (name === 'plage') { const sea = L.findIndex(row => row.includes('w')); for (let x = 0; x < W * T; x += 3) R(x, sea * T - 1 + Math.round(Math.sin(x / 9) * 2), 3, 3, '#ffffff'); }   // écume (la mer est au sud)
   if (name === 'montagne') { // entrée de la grotte, fermée par des éboulis
     const gx = 28 * T, gy = 3 * T;
     R(gx - 6, gy - 8, 2 * T + 12, T + 12, '#3a3640'); R(gx - 2, gy - 4, 2 * T + 4, T + 8, '#0c0a10');
@@ -303,7 +292,7 @@ export function buildParc(season) {
     R(x + 14, y + 29, 2, 2, '#1a1420'); R(x + 18, y + 29, 2, 2, '#1a1420'); signBoard(R, x + w / 2, y - 6, 'FRISSONS'); }
   { const [x, y, w, h] = box('u'); R(x, y + 10, w, h - 10, '#f4b0c8'); for (let i = 0; i < w; i += 6) R(x + i, y + 4, 3, 7, '#f07ab0'), R(x + i + 3, y + 4, 3, 7, '#fff'); R(x + 6, y - 2, 8, 6, '#ffd0e8'); R(x + 9, y + 4, 1, 6, '#c9a330'); }
   for (let k = 0; k < W * T; k += 12) { R(k, 8 * T + 2 + Math.round(Math.sin(k / 30) * 3), 2, 2, ['#f2c832', '#e8402a', '#3a8ae0', '#4ab04a'][(k / 12 | 0) % 4]); }   // guirlande
-  signBoard(R, 17 * T, 21 * T, 'FARM-LAND');
+  signBoard(R, 17 * T, 21 * T, 'FÊTE FORAINE');
   for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) if (L[y][x] === 'T') g.drawImage(treeSprite(season, (x + y) % 4), x * T - 9, y * T - 28);
   return c;
 }

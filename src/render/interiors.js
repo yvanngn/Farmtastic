@@ -15,6 +15,7 @@ const THEME = {
   clinique: { floor: '#dfe6e4', seam: '#c4cecb', wall: '#eef4f2', wallD: '#d6e2de', trim: '#5aa8a0', beam: '#3a4a48' },
   hailey: { floor: '#c8a47a', seam: '#a8845a', wall: '#f2dce0', wallD: '#e2c4ca', trim: '#7cc8c0', beam: '#4a3a3e' },
   myst: { floor: '#4a3a3a', seam: '#3a2c2c', wall: '#3e3848', wallD: '#2e2a36', trim: '#8a7ab0', beam: '#1c181c' },
+  ranch_maison: { floor: '#8a5a32', seam: '#6a4426', wall: '#c49060', wallD: '#a8774a', trim: '#a8432f', beam: '#3a2a20' },
   bar: { floor: '#6a4428', seam: '#4e3018', wall: '#7a3a4a', wallD: '#5a2a3a', trim: '#e8c26a', beam: '#2a1a14' },
   ed: { floor: '#b07a48', seam: '#8a5a32', wall: '#e8d8b8', wallD: '#d4c09c', trim: '#6a4a7a', beam: '#3a2a20' },
   ed_etage: { floor: '#c49a6a', seam: '#a07850', wall: '#f0d8e4', wallD: '#dcc0cc', trim: '#6a4a7a', beam: '#3a2a20' },

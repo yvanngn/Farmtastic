@@ -78,6 +78,16 @@ export const LAYOUTS = {
     '#C......#',
     '#########'
   ],
+  // Maison du Maire au ranch : bureau (K), fauteuil (A), lit (B), plante (P), table (T)
+  ranch_maison: [
+    '#########',
+    '#WWWWWWW#',
+    '#KK..A.B#',
+    '#......B#',
+    '#P.TT...#',
+    '#.......#',
+    '####D####'
+  ],
   // Maison de Myst : sombre, bibliothèque (K), fauteuil (A), lit (B), plante (P) ; la pièce secrète viendra plus tard
   myst: [
     '#########',
@@ -145,7 +155,6 @@ export const TOWN_B = {
   M: { x: 3, y: 2, w: 7, h: 3 }, Q: { x: 12, y: 4, w: 3, h: 1 }, U: { x: 25, y: 2, w: 4, h: 3 },
   F: { x: 15, y: 6, w: 3, h: 3 }, J: { x: 3, y: 13, w: 4, h: 3 }, A: { x: 27, y: 13, w: 3, h: 3 },
   O: { x: 3, y: 20, w: 4, h: 3 }, V: { x: 13, y: 20, w: 4, h: 3 }, Z: { x: 26, y: 20, w: 4, h: 3 },
-  W: { x: 14, y: 26, w: 6, h: 4 },
   R: { x: 9, y: 13, w: 4, h: 3 }   // 16/11 : le bar d'Ed (porte x11)
 };
 export const TOWN_LAMPS = [[10, 8], [23, 8], [8, 12], [23, 12], [10, 25], [24, 25]];
@@ -157,15 +166,15 @@ function buildTown() {
   pave(0, 10, W - 1, 11);                 // grande rue (ouest → est)
   pave(12, 5, 21, 9);                     // place de la fontaine
   pave(2, 24, 31, 24);                    // rue des commerces
-  pave(20, 12, 21, 30); pave(14, 30, 21, 30);   // avenue jusqu'à la villa
+  pave(20, 12, 21, 30);   // avenue jusqu'à la sortie sud (pont → station balnéaire) ; la villa du Maire est effacée (il vit au ranch)
   for (const k of 'MUJAOVZR') { const b = TOWN_B[k]; pave(b.x - 1, b.y + b.h, b.x + b.w, b.y + b.h); }   // trottoir devant chaque porte
   pave(6, 5, 6, 9); pave(26, 5, 26, 9);   // halle et magasin → grande rue
   pave(7, 12, 7, 16); pave(30, 12, 30, 16); pave(4, 17, 4, 19); pave(28, 17, 28, 19); pave(15, 12, 15, 19);   // ruelles
   for (const [k, b] of Object.entries(TOWN_B)) put(k, b.x, b.y, b.w, b.h);
-  pave(16, 1, 17, 4); put('D', 16, 0); put('D', 17, 0);   // au nord : le chemin de la plage
-  put('D', 0, 10); put('D', W - 1, 10); put('g', 0, 11); put('g', W - 1, 11);   // entrée ouest (ferme), sortie est (forêt)
+  put('D', 20, H - 1); put('D', 21, H - 1);   // au sud : le pont vers la station balnéaire
+  put('g', 0, 10); put('D', W - 1, 10); put('g', 0, 11); put('g', W - 1, 11);   // Farmwest : à l'est le pont vers le rond-point ; l'ouest (gare) s'ouvrira au lot 3
   for (let y = 0; y < H; y++) for (const x of [0, W - 1]) if (m[y][x] === 'g' || (m[y][x] === '.' && y !== 10)) m[y][x] = y % 3 === 1 ? 'T' : 'h';   // bordures : arbres et haies
-  for (let x = 0; x < W; x++) for (const y of [0, H - 1]) if (m[y][x] === 'g') m[y][x] = x % 3 === 0 ? 'T' : 'h';
+  for (let x = 0; x < W; x++) for (const y of [0, H - 1]) if (m[y][x] === 'g' || (m[y][x] === '.' && m[y][x] !== 'D')) m[y][x] = x % 3 === 0 ? 'T' : 'h';
   for (const [x, y] of [[9, 3], [23, 3], [10, 15], [24, 15], [9, 21], [23, 21], [8, 28], [26, 28], [12, 14], [18, 16]]) if (m[y][x] === 'g') m[y][x] = 'T';
   for (const [x, y] of TOWN_LAMPS) put('L', x, y);
   for (const [x, y] of [[13, 5], [19, 5], [12, 9], [20, 9]]) put('b', x, y);
@@ -203,12 +212,13 @@ LAYOUTS.montagne = (() => {
 })();
 // Plage (au nord du centre-ville) : w mer, a sable mouillé, s sable, T palmiers, . passerelle de bois, D retour en ville.
 LAYOUTS.plage = (() => {
+  // Farmwest : station balnéaire au sud du centre-ville → on arrive par le nord, la mer est au sud (plan d'avant retourné)
   const W = 40, H = 20, m = Array.from({ length: H }, (_, y) => Array.from({ length: W }, (_, x) => (y < 6 ? 'w' : y < 8 ? 'a' : 's')));
   for (let y = 6; y < H; y++) { m[y][0] = 'T'; m[y][W - 1] = 'T'; } for (let x = 0; x < W; x++) if (x < 19 || x > 20) m[H - 1][x] = 'T';
   for (let y = 9; y < H; y++) { m[y][19] = '.'; m[y][20] = '.'; } m[H - 1][19] = 'D'; m[H - 1][20] = 'D';
   for (let x = 30; x <= 33; x++) for (let y = 4; y <= 8; y++) m[y][x] = '.';                   // ponton qui avance dans la mer
   for (const [x, y] of [[4, 11], [9, 15], [14, 10], [26, 12], [35, 15], [37, 10], [6, 17], [31, 17]]) m[y][x] = 'T';
-  return m.map(r => r.join(''));
+  return m.reverse().map(r => r.join(''));
 })();
 // Quartier : g herbe, . pavés, X maison (Luna x4-8, Franck x11-15, y4-6), T arbre, D sortie vers la ferme, b banc, f jardinière.
 // Quartier résidentiel (agrandi le 15/11) : une maison sur la 1re ligne (Luna), la clinique près de l'entrée,
@@ -302,6 +312,7 @@ LAYOUTS.rondpoint = (() => {
   for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) { const d = Math.hypot(x - 12.5, y - 8.5); if (d < 4.6 && d > 2.2) m[y][x] = '.'; if (d <= 2.2) m[y][x] = 'F'; }
   for (const [x, y] of [[3, 3], [6, 2], [20, 3], [22, 13], [4, 14], [18, 15], [8, 13], [21, 6]]) m[y][x] = 'T';
   for (const [x, y] of [[11, 2], [15, 6], [16, 11], [9, 12]]) m[y][x] = 'P';
+  for (let y = 0; y < H; y++) { m[y][3] = m[y][4] = (y === 8 || y === 9) ? '=' : 'w'; }   // la rivière et son pont en bois (vers le centre-ville)
   border(m, [[12, 0], [13, 0], [12, H - 1], [13, H - 1], [0, 8], [0, 9], [W - 1, 8], [W - 1, 9]]);
   return m.map(r => r.join(''));
 })();
@@ -316,7 +327,8 @@ LAYOUTS.ranch = (() => {
   m[10][15] = '.'; m[10][16] = '.';   // portail de l'enclos
   for (let y = 11; y <= 18; y++) for (let x = 6; x <= 24; x++) if (m[y][x] === 's') m[y][x] = 'g';
   for (const [x, y] of [[2, 8], [12, 4], [28, 3], [2, 15], [28, 19], [11, 7]]) m[y][x] = 'T';
-  border(m, [[15, 0], [16, 0], [W - 1, 15], [W - 1, 16]]);
+  for (let y = 20; y < H; y++) { m[y][15] = '.'; m[y][16] = '.'; }   // chemin vers la fête foraine (sud)
+  border(m, [[15, 0], [16, 0], [W - 1, 15], [W - 1, 16], [15, H - 1], [16, H - 1]]);
   return m.map(r => r.join(''));
 })();
 // Zone portuaire (36 × 20) : entrepôts, quai en planches, pontons dans la mer
@@ -345,26 +357,29 @@ export const SCENES = {
     { x: 28, y: 7, to: 'barn', spawn: { x: 5.5, y: 6.4 } },
     { x: 12, y: 4, to: 'grange', spawn: { x: 5.5, y: 5.2 } },
     { x: 16, y: 35, to: 'rondpoint', spawn: { x: 13, y: 1.8 } }, { x: 15, y: 35, to: 'rondpoint', spawn: { x: 13, y: 1.8 } }, { x: 17, y: 35, to: 'rondpoint', spawn: { x: 13, y: 1.8 } },   // Farmwest : au sud des fermes, le rond-point
-    { x: 47, y: 5, to: 'town', spawn: { x: 1.6, y: 10.6 } }, { x: 47, y: 4, to: 'town', spawn: { x: 1.6, y: 10.6 } }, { x: 47, y: 6, to: 'town', spawn: { x: 1.6, y: 10.6 } }
+    { x: 47, y: 5, to: 'foret', spawn: { x: 1.6, y: 9.6 } }, { x: 47, y: 4, to: 'foret', spawn: { x: 1.6, y: 9.6 } }, { x: 47, y: 6, to: 'foret', spawn: { x: 1.6, y: 9.6 } }   // Farmwest : à l'est des fermes, la forêt
   ] },
   // Farmwest (lot 2) : rond-point (carrefour), ranch du Maire, zone portuaire
   rondpoint: { W: 26, H: 18, outdoor: true, doors: [
     { x: 12, y: 0, to: 'farm', spawn: { x: 16.5, y: 33.8 } }, { x: 13, y: 0, to: 'farm', spawn: { x: 16.5, y: 33.8 } },
-    { x: 0, y: 8, to: 'town', spawn: { x: 1.6, y: 10.6 } }, { x: 0, y: 9, to: 'town', spawn: { x: 1.6, y: 10.6 } },
+    { x: 0, y: 8, to: 'town', spawn: { x: 32.2, y: 10.6 } }, { x: 0, y: 9, to: 'town', spawn: { x: 32.2, y: 10.6 } },
     { x: 25, y: 8, to: 'quartier', spawn: { x: 22.5, y: 1.8 } }, { x: 25, y: 9, to: 'quartier', spawn: { x: 22.5, y: 1.8 } },
     { x: 12, y: 17, to: 'ranch', spawn: { x: 16, y: 1.8 } }, { x: 13, y: 17, to: 'ranch', spawn: { x: 16, y: 1.8 } }] },
   ranch: { W: 32, H: 22, outdoor: true, doors: [
     { x: 15, y: 0, to: 'rondpoint', spawn: { x: 13, y: 15.8 } }, { x: 16, y: 0, to: 'rondpoint', spawn: { x: 13, y: 15.8 } },
-    { x: 31, y: 15, to: 'port', spawn: { x: 1.6, y: 7 } }, { x: 31, y: 16, to: 'port', spawn: { x: 1.6, y: 7 } }] },
+    { x: 31, y: 15, to: 'port', spawn: { x: 1.6, y: 7 } }, { x: 31, y: 16, to: 'port', spawn: { x: 1.6, y: 7 } },
+    { x: 15, y: 21, to: 'parc', spawn: { x: 16.5, y: 22.2 } }, { x: 16, y: 21, to: 'parc', spawn: { x: 16.5, y: 22.2 } },   // au sud : la fête foraine
+    { x: 6, y: 5, to: 'ranch_maison', spawn: { x: 4.5, y: 5.4 } }, { x: 7, y: 5, to: 'ranch_maison', spawn: { x: 4.5, y: 5.4 } }] },
+  ranch_maison: { W: 9, H: 7, doors: [{ x: 4, y: 6, to: 'ranch', spawn: { x: 7, y: 6.8 } }] },
   port: { W: 36, H: 20, outdoor: true, doors: [{ x: 0, y: 6, to: 'ranch', spawn: { x: 29.4, y: 16 } }, { x: 0, y: 7, to: 'ranch', spawn: { x: 29.4, y: 16 } }] },
   montagne: { W: 36, H: 24, outdoor: true, cold: true, doors: [{ x: 0, y: 8, to: 'quartier', spawn: { x: 38.2, y: 8.6 } }, { x: 0, y: 9, to: 'quartier', spawn: { x: 38.2, y: 8.6 } }] },
-  plage: { W: 40, H: 20, outdoor: true, doors: [{ x: 19, y: 19, to: 'town', spawn: { x: 16.5, y: 1.6 } }, { x: 20, y: 19, to: 'town', spawn: { x: 16.5, y: 1.6 } }] },
-  town: { W: 34, H: 32, outdoor: true, doors: [{ x: 16, y: 0, to: 'plage', spawn: { x: 19.5, y: 18.2 } }, { x: 17, y: 0, to: 'plage', spawn: { x: 19.5, y: 18.2 } }, { x: 0, y: 10, to: 'rondpoint', spawn: { x: 1.6, y: 9 } }, { x: 33, y: 10, to: 'foret', spawn: { x: 1.6, y: 9.6 } }, { x: 11, y: 15, to: 'bar', spawn: { x: 4.5, y: 5.4 } }] },
+  plage: { W: 40, H: 20, outdoor: true, doors: [{ x: 19, y: 0, to: 'town', spawn: { x: 20.5, y: 29.8 } }, { x: 20, y: 0, to: 'town', spawn: { x: 20.5, y: 29.8 } }] },
+  town: { W: 34, H: 32, outdoor: true, doors: [{ x: 20, y: 31, to: 'plage', spawn: { x: 19.5, y: 1.8 } }, { x: 21, y: 31, to: 'plage', spawn: { x: 20.5, y: 1.8 } }, { x: 33, y: 10, to: 'rondpoint', spawn: { x: 1.6, y: 9 } }, { x: 11, y: 15, to: 'bar', spawn: { x: 4.5, y: 5.4 } }] },
   house: { W: 12, H: 9, doors: [{ x: 5, y: 8, to: 'farm', spawn: { x: 5.5, y: 5.9 } }] },
   coop: { W: 10, H: 7, doors: [{ x: 4, y: 6, to: 'farm', spawn: { x: 24.5, y: 8.9 } }] },
   // Forêt : à l'est du centre-ville ; au-delà (est), la zone de la Caverne sombre (fermée pour l'instant).
-  parc: { W: 34, H: 24, outdoor: true, hidden: true, doors: [{ x: 16, y: 23, to: 'foret', spawn: { x: 27.5, y: 1.4 } }, { x: 17, y: 23, to: 'foret', spawn: { x: 27.5, y: 1.4 } }] },
-  foret: { W: 30, H: 18, outdoor: true, doors: [{ x: 27, y: 0, to: 'parc', spawn: { x: 16.5, y: 22.2 } }, { x: 0, y: 9, to: 'town', spawn: { x: 32.2, y: 10.6 } }, { x: 29, y: 9, to: 'wild', spawn: { x: 1.6, y: 4.5 } }] },
+  parc: { W: 34, H: 24, outdoor: true, doors: [{ x: 16, y: 23, to: 'ranch', spawn: { x: 16, y: 19.8 } }, { x: 17, y: 23, to: 'ranch', spawn: { x: 16, y: 19.8 } }] },
+  foret: { W: 30, H: 18, outdoor: true, doors: [{ x: 0, y: 9, to: 'farm', spawn: { x: 45.6, y: 5.6 } }, { x: 29, y: 9, to: 'wild', spawn: { x: 1.6, y: 4.5 } }] },
   wild: { W: 50, H: 24, dark: true, cave: true, rooms: { w: 10, h: 8 }, doors: [{ x: 0, y: 4, to: 'foret', spawn: { x: 28.2, y: 9.6 } }] },
   grange: { W: 22, H: 11, dark: true, doors: [{ x: 5, y: 6, to: 'farm', spawn: { x: 12.5, y: 5.6 } }] },
   franck: { W: 9, H: 7, doors: [{ x: 4, y: 6, to: 'quartier', spawn: { x: 10.5, y: 15.8 } }] },

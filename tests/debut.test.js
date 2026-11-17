@@ -167,11 +167,11 @@ test('Myst attend sur le quai, vient parler après les pensées du héros (plan,
   assert.ok(LAY.quartier[24].slice(3, 9) === 'XXXXXX' && LAY.quartier[20][4] === 'T', 'sa maison est tout en bas à gauche, à l’écart derrière une rangée d’arbres');
   assert.equal(MYST.look.tall && MYST.look.coat, true, 'grand, long manteau');
 });
-test('gare à l’ouest : quai, chemin vers la ferme et le village ; la villa du maire au sud de la ville', () => {
+test('gare à l’ouest : quai et chemin vers la ferme ; plus de villa en ville (le Maire vit au ranch)', () => {
   assert.ok(isStation(2, 15) && isPlatform(1, 20));
   assert.equal(isSolid({ scene: 'farm' }, 0, 20), true, 'la voie ferrée');
   for (let x = 3; x <= 16; x++) assert.equal(ground(x, 20), 'path');
-  assert.ok(LAY.town.slice(21).some(r => r.includes('W')), 'villa au sud de la place');
+  assert.ok(!LAY.town.some(r => r.includes('W')), 'villa effacée');
 });
 
 test('vieilles sauvegardes : cabane et grange déjà debout', () => {
@@ -198,11 +198,12 @@ test('Farmwest : ferme → rond-point → zone résidentielle, où habitent Luna
   assert.equal(SCENES.farm.doors.some(d => d.to === 'luna' || d.to === 'franck'), false, 'plus de maisons d’habitants sur la ferme');
 });
 
-test('le centre-ville est à droite : la route de l’est y mène', () => {
+test('Farmwest 2d : la route de l’est mène à la forêt ; le centre-ville est à l’ouest du rond-point', () => {
   const { g, S } = start();
   for (let x = 2; x <= 46; x++) assert.equal(ground(x, 5), 'path');
-  assert.equal(act(g, 47, 5), 'door'); assert.equal(S.scene, 'town');
-  assert.ok(SCENES.town.doors.some(d => d.x === 0 && d.to === 'rondpoint'), 'à l’ouest du centre-ville : le rond-point');
+  assert.equal(act(g, 47, 5), 'door'); assert.equal(S.scene, 'foret');
+  assert.ok(SCENES.town.doors.some(d => d.x === 33 && d.to === 'rondpoint'), 'à l’est du centre-ville : le pont vers le rond-point');
+  assert.ok(SCENES.rondpoint.doors.some(d => d.x === 0 && d.to === 'town'));
 });
 
 test('la route de l’est va jusqu’au bord de la ferme (on voit qu’elle continue)', () => {
@@ -228,15 +229,15 @@ test('mode test : outils, caverne, vitesse ; plage ouverte, pas de canne sinon',
   const { ADMIN, setAdmin, checkCode } = await import('../src/systems/admin.js');
   const { act } = await import('../src/systems/actions.js');
   const { isOpen } = await import('../src/systems/wild.js');
-  const { g } = makeGame({ state: { scene: 'town', x: 16.5, y: 1.5 } });
+  const { g } = makeGame({ state: { scene: 'town', x: 20.5, y: 30.5 } });
   assert.ok(!g.S.tools.rod);
-  assert.equal(act(g, 16, 0), 'door', 'la plage est ouverte'); g.S.scene = 'town';
+  assert.equal(act(g, 20, 31), 'door', 'la plage est ouverte (au sud du centre-ville)'); g.S.scene = 'town';
   assert.ok(!checkCode('x') && checkCode(' gemini '));
   setAdmin(g, true);
   try {
     assert.ok(g.S.tools.rod && g.S.tools.sword && g.S.tools.axe);
     assert.ok(isOpen(g.S));
-    assert.equal(act(g, 16, 0), 'door');
+    assert.equal(act(g, 20, 31), 'door');
   } finally { ADMIN.on = false; }
 });
 
@@ -252,4 +253,13 @@ test('Farmwest lot 2 : rond-point, ranch du Maire et port reliés', () => {
   assert.equal(act(g, 0, 6), 'door'); assert.equal(S.scene, 'ranch');
   assert.equal(act(g, 15, 0), 'door'); assert.equal(S.scene, 'rondpoint');
   assert.equal(act(g, 12, 0), 'door'); assert.equal(S.scene, 'farm');
+});
+
+test('Farmwest 2d : plage au sud (mer en bas), rivière et pont au rond-point, maison du Maire au ranch', () => {
+  const P = LAY.plage; assert.ok(P[P.length - 1].includes('w') && !P[0].includes('w'), 'la mer est au sud');
+  const { g, S } = start({ minute: 600 });
+  S.scene = 'town'; assert.equal(act(g, 20, 31), 'door'); assert.equal(S.scene, 'plage');
+  assert.equal(act(g, 19, 0), 'door'); assert.equal(S.scene, 'town');
+  S.scene = 'rondpoint'; assert.ok(isSolid(S, 3, 4), 'la rivière'); assert.ok(!isSolid(S, 3, 8), 'le pont');
+  S.scene = 'ranch'; assert.equal(act(g, 6, 5), 'door'); assert.equal(S.scene, 'ranch_maison');
 });

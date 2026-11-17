@@ -476,3 +476,7 @@ Chaque ligne = un lot indépendant, à demander quand il y a des crédits.
 - ✅ Carte de la région redessinée comme `docs/carte-region-farmwest.jpg` (fermes au nord, rond-point au centre, centre-ville dans la boucle de la rivière, zone résidentielle, ranch du Maire, fête foraine et station balnéaire au sud, port au sud-est, forêt, montagne, caverne sombre).
 - ✅ Nouvelles zones : **rond-point** (fontaine, panneaux FERMES / RÉSIDENCES / RANCH / CENTRE-VILLE), **ranch du Maire** (maison, grange rouge, enclos, 3 chevaux, abreuvoir), **zone portuaire** (3 entrepôts, quai, 3 pontons, voiliers). Sortie sud de la ferme → rond-point ; rond-point → centre-ville, zone résidentielle, ranch ; ranch → port.
 - ⏳ Lot 2d (voir roadmap) : finir d'aligner les liaisons sur l'image (plage, fête foraine, route de l'est, rivière).
+
+## Séance 17/11/2026 (14h30) — Farmwest, lot 2d (v0.1.9)
+- ✅ Décisions : le **Maire vit dans son ranch** (maison avec intérieur, porte sous la véranda) ; **villa du centre-ville effacée**. ⏳ Ajouté à la roadmap : **personnaliser les vêtements de style western** (7e bis).
+- ✅ Liaisons comme sur la carte : ferme → forêt (est) ; centre-ville ↔ rond-point par un pont sur la rivière ; station balnéaire au sud du centre-ville (mer au sud) ; fête foraine au sud du ranch (plus cachée) ; entrée ouest du centre-ville fermée jusqu'à la gare (lot 3).

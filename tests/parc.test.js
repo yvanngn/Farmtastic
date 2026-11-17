@@ -7,11 +7,10 @@ import { SCENES, LAYOUTS, PARC_B } from '../src/world/scenes.js';
 
 const tileOf = k => [PARC_B[k].x, PARC_B[k].y];
 
-test('parc d’attractions caché : trouée secrète en haut de la forêt, pas de panneau', () => {
-  assert.ok(SCENES.parc.hidden);
-  const d = SCENES.foret.doors.find(x => x.to === 'parc'); assert.ok(d);
-  assert.equal(LAYOUTS.foret[d.y][d.x], '.', 'une trouée entre les arbres');
-  const { g, S } = makeGame({ state: { scene: 'foret' } });
+test('Farmwest 2d : la fête foraine est au sud du ranch du Maire', () => {
+  assert.ok(!SCENES.foret.doors.some(x => x.to === 'parc'), 'plus de trouée dans la forêt');
+  const d = SCENES.ranch.doors.find(x => x.to === 'parc'); assert.ok(d);
+  const { g, S } = makeGame({ state: { scene: 'ranch' } });
   assert.equal(act(g, d.x, d.y), 'door'); assert.equal(S.scene, 'parc');
 });
 

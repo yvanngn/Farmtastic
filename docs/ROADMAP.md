@@ -49,9 +49,10 @@ Zones de l'image → scènes du jeu :
 - [x] 2b. Le **rond-point** devient le carrefour : fermes au nord, centre-ville à l'ouest, zone résidentielle à l'est, ranch au sud (v0.1.8).
 - [x] 2c. Nouvelles zones jouables (encore vides de PNJ) : **rond-point** (fontaine, panneaux), **ranch du Maire** (maison « MAIRE », grange, enclos à chevaux, abreuvoir), **zone portuaire** (entrepôts, quai, pontons, voiliers) (v0.1.8).
 - [x] Le « chef du village » devient **le Maire, Manu (Manuel)** partout.
-- [ ] 2d. Reste à aligner sur l'image (petits lots) : la route de l'est de la ferme mène encore directement au centre-ville ; la plage est encore au nord du centre-ville ; la fête foraine (panneau « FARM-LAND ») est encore cachée derrière la forêt au lieu d'être sur la plage ; la montagne s'ouvre depuis la zone résidentielle ; la rivière n'existe pas encore dans les scènes.
+- [x] 2d. Liaisons alignées sur l'image (v0.1.9) : ferme → **forêt** à l'est ; centre-ville ↔ rond-point par un **pont sur la rivière** (à l'est du centre-ville) ; **station balnéaire au sud** du centre-ville (plage retournée : mer au sud) ; **fête foraine** au sud du ranch (panneau « FÊTE FORAINE », plus de trouée secrète dans la forêt). L'entrée ouest du centre-ville est fermée en attendant la gare du lot 3.
+- [ ] 2e. Plus tard : la rivière autour du centre-ville dans la scène du centre-ville elle-même, la montagne à rattacher par la route de l'est (aujourd'hui depuis la zone résidentielle), le port relié à la plage.
 - Le tunnel de l'ouest reste tel quel pour l'instant (décision du 17/11).
-- ❓ Le Maire vit-il au ranch (nouvelle maison) ou garde-t-il sa villa du centre-ville ? Pour l'instant : ranch dessiné, villa gardée, Manuel passe ses journées sur la place.
+- [x] Le Maire **vit dans son ranch** (maison avec intérieur) ; la **villa du centre-ville est effacée** (décision du 17/11). Il passe toujours ses journées sur la place.
 
 ## Lot 3 — Nouveau début de partie
 - [ ] Arrivée en **locomotive** (train à vapeur qui entre en gare, fumée, sifflet).
@@ -90,6 +91,7 @@ La liste détaillée est dans `docs/CARNET.md`, section « Chantier graphique ni
 - [ ] 7c. Bâtiments western (saloon, banque, shérif, magasins en planches avec auvents).
 - [ ] 7d. Arbres et forêts denses, cactus, rochers.
 - [ ] 7e. Personnages et animaux redessinés (chapeaux de cow-boy, bottes…).
+- [ ] 7e bis. **Personnalisation des vêtements de style western** (demande du 17/11) : chapeaux (cow-boy, melon…), bandanas, gilets, chemises à carreaux, jambières, bottes à éperons, robes de saloon ; dans l'écran de création et dans 👕 plus tard.
 - [ ] 7f. Intérieurs, icônes d'objets en pixel art, interface en bois / affiche.
 - [ ] 7g. Lumière, ombres et ambiance (poussière, couchers de soleil).
 

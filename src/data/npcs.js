@@ -64,9 +64,8 @@ export const LUNA = {
 export const CHEF = {
   id: 'chef', name: 'Manuel', title: 'Maire', color: '#e8c26a', voice: 'voiceChef', de: 'de lui',
   look: { body: 'h', bottom: 'pant', skin: '#e2b48c', hair: 0, hairC: '#b8b4ae', shirt: '#7a4a2a', pants: '#3a3a4a' },
-  home: null, day: { x: 18.5, y: 8.6 },   // il habite sa villa, au sud de la place
+  home: 'ranch_maison', inside: { x: 3.5, y: 4.6 }, outScene: 'town', day: { x: 18.5, y: 8.6 },   // 17/11 : il vit dans son ranch, passe ses journées sur la place
   // trajet villa → place (le matin) et retour (le soir), à pied : porte de la villa, allée est, place
-  commute: [{ x: 16.5, y: 30.5 }, { x: 20.5, y: 30.5 }, { x: 20.5, y: 11.5 }, { x: 18.5, y: 11.5 }, { x: 18.5, y: 8.6 }], commuteMin: 40,
   walks: [{ scene: 'foret', from: 780, to: 840, every: 3, at: { x: 18.5, y: 13.5 } }],  // promenade digestive, un jour sur trois, 13 h – 14 h (💡)
   traits: ['Maire élu à l\'unanimité', 'Surnommé Manu', 'Propriétaire du ranch du Maire', 'Dit aimer ses villageois', 'En secret : impôts élevés, bon temps et vacances'],
   taste: { adore: [], aime: ['bread', 'egg'], naime: [], deteste: ['slime'] },
