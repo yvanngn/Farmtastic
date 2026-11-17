@@ -25,8 +25,11 @@ export function pixText(R, text, cx, y, col) {
   }
 }
 // Enseigne en bois : cadre sombre, fond doré, texte pixel ; s'élargit selon le texte.
+// Les enseignes cuites dans le décor sont aussi notées ici, pour que le rendu réécrive leur texte net, à la résolution de l'écran.
+export const SIGN_SINK = { list: null };
 export function signBoard(R, cx, y, text, minW = 0) {
   const w = Math.max(minW, pixTextWidth(text) + 8);
+  if (SIGN_SINK.list) SIGN_SINK.list.push({ x: Math.round(cx - w / 2), y, w, h: 10, text: String(text) });
   R(Math.round(cx - w / 2), y, w, 10, '#3f2615'); R(Math.round(cx - w / 2) + 1, y + 1, w - 2, 8, '#e8c26a');
   R(Math.round(cx - w / 2) + 1, y + 1, w - 2, 1, '#f6dc94');
   pixText(R, text, cx, y + 3, '#3b2414');

@@ -87,7 +87,7 @@ export function harmonize(cv, colored = false) {
       if (n) { d[i] = r / n * .42; d[i + 1] = gg / n * .38; d[i + 2] = b / n * .36; }   // teinte chaude, un peu brune
     }
   }
-  const BAYER = [-4, 1, 4, -1];   // tramage 2 × 2 léger : des transitions douces au lieu d'aplats en escalier
+  const BAYER = [0, 0, 0, 0];   // tramage retiré (17/11) : il brouillait les textes et donnait du grain partout   // tramage 2 × 2 léger : des transitions douces au lieu d'aplats en escalier
   for (let i = 0, n = 0; i < d.length; i += 4, n++) if (d[i + 3]) { const x = n % W, y = n / W | 0, o = BAYER[(x & 1) + 2 * (y & 1)], p = nearest(Math.max(0, Math.min(255, d[i] + o)), Math.max(0, Math.min(255, d[i + 1] + o)), Math.max(0, Math.min(255, d[i + 2] + o))); d[i] = p[0]; d[i + 1] = p[1]; d[i + 2] = p[2]; }
   g.putImageData(img, 0, 0); cv.__pal = true;
   return cv;

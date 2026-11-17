@@ -1,4 +1,4 @@
-import { paintGrass, paintOchre, paintRoad, paintPlanks, softEdge, OCHRE, paintRiver, paintBridge, paintCliff, autotile, ROAD, canopy, dress, roofFor } from './terrain.js';
+import { paintGrass, paintOchre, paintRoad, paintPlanks, softEdge, OCHRE, paintRiver, paintBridge, paintCliff, autotile, ROAD, canopy, dress, roofFor, softPatches } from './terrain.js';
 // Centre du village pré-rendu : place pavée, halle du marché, panneau d'affichage,
 // fontaine, lampadaires, bancs, jardinières et arbres. Reconstruit à chaque saison.
 import { CFG } from '../config.js';
@@ -47,6 +47,7 @@ export function buildTown(season) {
       R(sx + 1, sy + 1, 6, 6, ['#bcb5ac', '#b3aca2', '#c6c0b7'][r() * 3 | 0]); R(sx + 1, sy + 6, 6, 1, '#8f887f'); R(sx + 1, sy + 1, 6, 1, '#d4cec6');
     }
   }
+  softPatches(g, W, H, (x, y) => 'gTE'.includes((L[y] || '')[x] || '-') ? 'ocre' : null, { ocre: OCHRE[season] || OCHRE[0] });
   // lot 11a : bords propres entre terre ocre et rues (coins arrondis)
   { const isB = (a, b) => 'MUJAOVZRYE'.includes((L[b] || '')[a] || ''), plank = (x, y) => isB(x, y - 1) || isB(x - 1, y - 1) || isB(x + 1, y - 1);
     autotile(g, W, H, (x, y) => { const ch = (L[y] || '')[x]; if (ch == null) return null; if ('gTE'.includes(ch)) return 'ocre'; if (ch === '.' && !plank(x, y) && !(x >= 12 && x <= 21 && y >= 5 && y <= 9)) return 'rue'; return null; }, { rue: 1, ocre: 2 }, { ocre: shade(OCHRE[season] || OCHRE[0], 1) }); }
@@ -99,7 +100,7 @@ export function buildTown(season) {
     const ux = x0 * T, uy = y0 * T, uw = w * T, top = uy - 28 - (opt.tall || 0);
     const wall = opt.wall || '#9a6a3c', wallD = shade(wall, 0.82), wallL = shade(wall, 1.12), OUT = shade(wall, 0.42);   // lot 11e : contour coloré (teinte du mur), plus de noir
     // ombre portée au sol
-    g.fillStyle = 'rgba(40,20,10,.22)'; g.fillRect(ux + 4, uy + 46, uw, 4);
+    g.fillStyle = 'rgba(40,20,10,.22)'; g.fillRect(ux + 4, uy + 46, uw, 4); g.fillRect(ux + uw, top + 14, 5, uy + 50 - top - 14);   // ombre portée (soleil en haut à gauche)
     // toit à deux pans qui dépasse derrière la fausse façade
     for (let i = 0; i < 6; i++) R(ux + 6 + i, top + 12 - i * 2, uw - 12 - i * 2, 2, i % 2 ? shade(trim, 0.7) : shade(trim, 0.8));
     // fausse façade : silhouette en gradins
@@ -119,19 +120,24 @@ export function buildTown(season) {
     signBoard(R, ux + uw / 2, top + 20, sign);
     // fenêtres de l'étage
     if (!opt.balcony) for (const wx of (w > 3 ? [ux + 7, ux + uw - 19] : [ux + uw / 2 - 6])) {
-      R(wx - 1, top + 27, 14, 12, OUT); R(wx, top + 28, 12, 10, '#6a90a8'); R(wx, top + 28, 12, 3, '#9cc4d8');
-      R(wx + 5, top + 28, 2, 10, wallD); R(wx - 2, top + 38, 16, 2, trim);
+      R(wx - 3, top + 26, 3, 14, shade(trim, .85)); R(wx + 12, top + 26, 3, 14, shade(trim, .85)); for (let k = 0; k < 14; k += 3) { R(wx - 3, top + 26 + k, 3, 1, shade(trim, .65)); R(wx + 12, top + 26 + k, 3, 1, shade(trim, .65)); }   // volets
+      R(wx - 1, top + 27, 14, 12, OUT); R(wx, top + 28, 12, 10, '#6a90a8'); R(wx, top + 28, 12, 3, '#9cc4d8'); R(wx + 1, top + 29, 3, 1, '#e8f4fc');
+      R(wx + 5, top + 28, 2, 10, wallD); R(wx, top + 32, 12, 1, wallD);   // croisillons
+      R(wx + 1, top + 28, 2, 6, '#e8d4ac'); R(wx + 9, top + 28, 2, 6, '#e8d4ac');   // rideaux
+      R(wx - 2, top + 38, 16, 2, trim); R(wx - 1, top + 36, 14, 2, '#7a4f2e'); for (const [fx, fc] of [[0, '#f07ab0'], [4, '#f6d24a'], [8, '#ffffff'], [11, '#e0402a']]) { R(wx + fx, top + 34, 2, 2, fc); R(wx + fx, top + 36, 1, 1, '#4a7a2a'); }   // jardinière fleurie
     }
     // auvent en planches sur poteaux, au-dessus du trottoir
     const ay = uy + 10;
     R(ux - 4, ay, uw + 8, 6, OUT); R(ux - 3, ay + 1, uw + 6, 4, shade(trim2, 0.95));
     for (let k = 0; k < uw + 6; k += 4) R(ux - 3 + k, ay + 1, 1, 4, shade(trim2, 0.7));
     R(ux - 3, ay + 1, uw + 6, 1, shade(trim2, 1.25));
-    for (const px of [ux - 2, ux + uw - 1]) { R(px, ay + 6, 3, 40 - 6, OUT); R(px + 1, ay + 6, 1, 34, '#8a5a32'); }
+    for (const px of [ux - 2, ux + uw - 1]) { R(px, ay + 6, 3, 40 - 6, OUT); R(px + 1, ay + 6, 1, 34, '#8a5a32'); R(px + 3, ay + 8, 2, 32, 'rgba(30,15,5,.25)'); }
+    R(ux - 3, ay + 6, uw + 6, 3, 'rgba(30,15,5,.28)');   // ombre de l'auvent sur la façade
     // rez-de-chaussée : vitrines et porte
     const dx = ux + uw / 2 - 8;
     if (opt.door) opt.door(dx, uy); else { R(dx - 1, uy + 19, 18, 28, OUT); R(dx, uy + 20, 16, 26, '#5b3a22'); R(dx + 2, uy + 22, 5, 10, '#7a4f2e'); R(dx + 9, uy + 22, 5, 10, '#7a4f2e'); R(dx + 12, uy + 33, 2, 2, '#e8c26a'); }
-    const win = (wx, ww) => { R(wx - 1, uy + 20, ww + 2, 15, OUT); R(wx, uy + 21, ww, 13, '#ffd98a'); R(wx, uy + 21, ww, 4, '#fff0c0'); R(wx + (ww >> 1), uy + 21, 1, 13, OUT); R(wx - 2, uy + 34, ww + 4, 2, wallD); };
+    const win = (wx, ww) => { R(wx - 1, uy + 20, ww + 2, 15, OUT); R(wx, uy + 21, ww, 13, '#ffd98a'); R(wx, uy + 21, ww, 4, '#fff0c0'); R(wx + (ww >> 1), uy + 21, 1, 13, OUT); R(wx, uy + 27, ww, 1, OUT); R(wx + 1, uy + 22, 2, 2, '#ffffff');   // vitrine à croisillons, reflet
+      R(wx - 2, uy + 34, ww + 4, 2, wallD); R(wx - 2, uy + 36, ww + 4, 1, 'rgba(30,15,5,.35)'); };
     if (uw - 16 > 34) { win(ux + 4, 13); win(ux + uw - 17, 13); } else win(ux + 3, 9);
     deco(ux, uy, uw, top);
   }
@@ -236,6 +242,7 @@ export function buildQuartier(season) {
     paintGrass(R, r, px, py, x, y, B, season);
     if (r() < .02) { const col = ['#ffffff', '#f5e050', '#f07ab0'][r() * 3 | 0]; R(px + 7, py + 7, 3, 1, col); R(px + 8, py + 6, 1, 3, col); }
   }
+  softPatches(g, W, H, (x, y) => 'gTk'.includes((L[y] || '')[x] || '-') ? 'herbe' : null, { herbe: B });
   // lot 11a : herbe ↔ allées, coins arrondis
   autotile(g, W, H, (x, y) => { const ch = (L[y] || '')[x]; return ch == null ? null : ch === '.' || ch === 'D' ? 'allee' : 'gTk'.includes(ch) ? 'herbe' : null; }, { allee: 1, herbe: 2 }, { herbe: shade(B, .97) });
   // haies et boîtes aux lettres devant chaque maison, bordure de trottoir

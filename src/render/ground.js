@@ -5,7 +5,7 @@ import { ground, isFence, isPond, rng, isHedge } from '../world/map.js';
 import { shade, disc } from './pixel.js';
 import { BUILDINGS } from '../data/buildings.js';
 import { signBoard } from './pixfont.js';
-import { autotile, paintRiver, roofFor, roofGable } from './terrain.js';
+import { autotile, paintRiver, roofFor, roofGable, softPatches } from './terrain.js';
 const T = CFG.T;
 
 export const GRASS = ['#86ae46', '#9aac44', '#b2a048', '#e4ecef'];   // Farmwest (7a) : herbe plus chaude et sèche (voir terrain.js)
@@ -38,7 +38,7 @@ export function buildGround(season, built = {}, fixed = { house: true, grange: t
     }
     // herbe (16/11, essai « façon Stardew ») : grandes nappes de tons qui varient doucement d'une case à l'autre,
     // puis une multitude de petits brins (ombre en bas, pointe claire), quelques touffes plus denses et des trèfles.
-    const wave = Math.sin(x * .55) + Math.cos(y * .47) + Math.sin((x + y) * .23) * 1.4, base = shade(B, 1 + wave * .028);
+    const base = B;   // (17/11 : teinte unie, nappes rondes ajoutées après)
     R(px, py, T, T, base);
     if (r() < .35) { const cx = px + 3 + (r() * 10 | 0), cy = py + 3 + (r() * 10 | 0), dk = shade(base, .93); R(cx - 3, cy - 1, 7, 3, dk); R(cx - 2, cy - 2, 5, 5, dk); }   // nappe sombre
     for (let k = 0; k < 13; k++) {
@@ -61,6 +61,7 @@ export function buildGround(season, built = {}, fixed = { house: true, grange: t
     if (water(x, y + 1)) R(px, py + T - 2, T, 2, '#d8c38a');
   }
 
+  softPatches(g, CFG.W, CFG.H, (x, y) => x < 0 || y < 0 || x >= CFG.W || y >= CFG.H ? null : ground(x, y) === 'grass' ? 'herbe' : null, { herbe: B });   // nappes de ton rondes
   // lot 11a : bords propres herbe ↔ chemins (coins arrondis)
   autotile(g, CFG.W, CFG.H, (x, y) => x < 0 || y < 0 || x >= CFG.W || y >= CFG.H ? null : (t => t === 'path' ? 'chemin' : t === 'water' ? null : 'herbe')(ground(x, y)), { chemin: 1, herbe: 2 }, { herbe: shade(B, .98) });
   // clôtures

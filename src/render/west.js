@@ -4,7 +4,7 @@ import { CFG } from '../config.js';
 import { LAYOUTS } from '../world/scenes.js';
 import { rng } from '../world/map.js';
 import { shade, disc } from './pixel.js';
-import { autotile, canopy, paintRiver, dress, roofFor } from './terrain.js';
+import { autotile, canopy, paintRiver, dress, roofFor, softPatches } from './terrain.js';
 import { GRASS } from './ground.js';
 import { treeSprite, pineSprite, cactusSprite, pebbleSprite } from './sprites.js';
 
@@ -43,7 +43,7 @@ export function buildWest(name, season) {
       continue;
     }
     // terre ocre : variations douces, cailloux, touffes sèches
-    const wave = Math.sin(x * .5) + Math.cos(y * .43), base = shade(SAND, 1 + wave * .03);
+    const base = SAND;   // (17/11 : teinte unie, nappes rondes après)
     R(px, py, T, T, base);
     for (let k = 0; k < 6; k++) R(px + (r() * 16 | 0), py + (r() * 16 | 0), 1, 1, shade(base, r() < .5 ? .88 : 1.08));
     if (ch === 's' && r() < .12) { const sx = px + 3 + (r() * 9 | 0), sy = py + 5 + (r() * 7 | 0); R(sx, sy, 1, 3, '#9a7a3a'); R(sx + 2, sy - 1, 1, 4, '#b8923e'); R(sx + 4, sy, 1, 3, '#9a7a3a'); }
@@ -53,6 +53,7 @@ export function buildWest(name, season) {
       for (let k = 0; k < 5; k++) R(px + (r() * 15 | 0), py + (r() * 15 | 0), 2, 1, r() < .5 ? '#d4b47a' : '#f4e0b4');
     }
   }
+  softPatches(g, W, H, (x, y) => { const ch = (L[y] || '')[x]; return ch === 's' || ch === 'T' ? 'ocre' : ch === 'g' ? 'herbe' : null; }, { ocre: SAND, herbe: GR });
   // lot 11a : bords propres herbe ↔ terre ocre ↔ chemins (coins arrondis)
   autotile(g, W, H, (x, y) => { const ch = (L[y] || '')[x]; return ch == null ? null : ch === '.' || ch === 'D' || ch === 'F' ? 'chemin' : ch === 's' || ch === 'T' ? 'ocre' : ch === 'g' ? 'herbe' : null; }, { chemin: 1, ocre: 2, herbe: 3 }, { ocre: SAND, herbe: GR });
   // 2. fontaine du rond-point (disque de pierre, eau, jet)

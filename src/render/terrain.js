@@ -11,7 +11,7 @@ export const ROAD = '#e2c48a', ROAD_D = '#c8a46a', ROAD_L = '#f0dcae';     // ch
 export const PLANK = '#a8774a', PLANK_D = '#7a5232', PLANK_L = '#c99560';   // planches (trottoirs, quais)
 
 // Variation douce d'une case à l'autre : de grandes nappes de tons, sans damier.
-const wave = (x, y) => Math.sin(x * .55) + Math.cos(y * .47) + Math.sin((x + y) * .23) * 1.4;
+const wave = (x, y) => 0 * (Math.sin(x * .55) + Math.cos(y * .47) + Math.sin((x + y) * .23) * 1.4);   // (17/11 : plus de teinte par case → plus de plaques carrées ; voir softPatches)
 
 // Herbe en brins : nappe de ton, brins fins (ombre en bas, pointe claire), touffes et trèfles.
 export function paintGrass(R, r, px, py, x, y, B, season = 0) {
@@ -199,3 +199,17 @@ export function roofGable(R, x, y, w, h, base, lucarne = true) {
   R(x - 4, y + h, w + 8, 2, 'rgba(20,12,8,.28)');
 }
 export const roofFor = (R, x, y, w, h, base) => w >= 72 ? roofSlab(R, x, y, w, h, base) : roofGable(R, x, y, w, h, base);
+
+// ---------- Sols plus doux (17/11) ----------
+// Nappes de ton rondes et irrégulières (au lieu d'une teinte par case, qui faisait des carrés), posées à cheval sur
+// plusieurs cases, puis petits détails : cailloux, touffes. À appeler après les sols, avant autotile.
+export function softPatches(g, W, H, mat, base) {
+  const R = (x, y, w, h, c) => { g.fillStyle = c; g.fillRect(x, y, w, h); };
+  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
+    const m = mat(x, y), B = m && base[m]; if (!B) continue;
+    if (hash(x, y, 91) < .3) {   // nappe : disque déformé, 2 tons
+      const cx = x * T + (hash(x, y, 92) * 16 | 0), cy = y * T + (hash(x, y, 93) * 16 | 0), rad = 5 + (hash(x, y, 94) * 6 | 0), dark = hash(x, y, 95) < .55, col = shade(B, dark ? .93 : 1.05);
+      for (let j = -rad; j <= rad; j++) { const w = Math.floor(Math.sqrt(rad * rad - j * j) * (1 + .25 * Math.sin(j * 1.3 + x))); const yy = cy + Math.round(j * .7); if (mat(Math.floor((cx) / T), Math.floor(yy / T)) === m) R(cx - w, yy, 2 * w + 1, 1, col); }
+    }
+  }
+}

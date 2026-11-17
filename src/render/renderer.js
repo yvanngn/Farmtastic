@@ -134,23 +134,56 @@ function drawLoco(c, t, now, hero, leave = 0) {
   for (let k = 0; k < 5; k++) { const ph = (now / 600 + k * .2) % 1, py = y0 + 10 - ph * 40, sz = 5 + ph * 10; c.fillStyle = `rgba(235,235,235,${(1 - ph) * .55 * puff})`; c.fillRect(Math.round(x + 14 - sz / 2 + Math.sin(k * 2 + now / 400) * 4), Math.round(py), Math.round(sz), Math.round(sz)); }
 }
 // Farmwest : diligence tirée par deux chevaux, cocher en chapeau sur le siège ; roues qui tournent.
-function drawCoach(c, wx, wy, now) {
-  const x = Math.round(wx * 16), y = Math.round(wy * 16), R = (a, b, w, h, col) => { c.fillStyle = col; c.fillRect(x + a, y + b, w, h); }, trot = Math.round(Math.sin(now / 90)), spin = (now / 120 | 0) % 2;
-  R(-30, 6, 76, 4, 'rgba(30,15,5,.3)');
-  for (const hx of [22, 32]) { R(hx, -8 + trot, 12, 8, '#6a4426'); R(hx + 9, -14 + trot, 4, 8, '#6a4426'); R(hx + 10, -16 + trot, 6, 4, '#6a4426'); R(hx + 8, -15 + trot, 2, 8, '#3a2a20'); for (const lx of [1, 9]) R(hx + lx, 0, 2, 6 - (spin ? trot : -trot), '#4a2e1a'); }   // chevaux
-  R(14, -6, 12, 1, '#3a2a20');   // timon
-  R(-26, -26, 40, 26, '#7a3a2a'); R(-26, -26, 40, 3, '#5a2a1e'); R(-28, -28, 44, 3, '#3a2a20');   // caisse
-  R(-22, -20, 12, 10, '#ffd98a'); R(-6, -20, 12, 10, '#ffd98a'); R(-16, -20, 1, 10, '#5a2a1e'); R(0, -20, 1, 10, '#5a2a1e');   // fenêtres
-  R(-20, -18, 4, 6, '#3a2a20'); R(-4, -18, 4, 6, '#3a2a20');   // silhouettes (le héros et Myst)
-  R(-26, -4, 40, 2, '#e8c26a');
-  for (const wxx of [-22, 6]) { R(wxx - 1, -4, 12, 12, '#3a2a20'); R(wxx + 1, -2, 8, 8, '#a8774a'); R(wxx + 4, spin ? -2 : 1, 2, spin ? 8 : 2, '#3a2a20'); R(wxx + (spin ? 1 : 4), 1, spin ? 8 : 2, 2, '#3a2a20'); }   // roues
-  R(12, -20, 8, 8, '#5b3a22'); R(13, -28 + trot, 6, 7, '#e8b48c'); R(10, -31 + trot, 12, 2, '#5a3a22'); R(12, -35 + trot, 8, 4, '#5a3a22');   // cocher au chapeau
+function drawCoach(c, wx, wy, now) {   // diligence détaillée (vue de 3/4, vers la droite) : caisse laquée, bagages, roues à rayons, deux chevaux, cocher
+  const X = Math.round(wx * 16), Y = Math.round(wy * 16), R = (a, b, w, h, col) => { c.fillStyle = col; c.fillRect(X + a, Y + b, w, h); };
+  const trot = now / 110, k1 = Math.round(Math.sin(trot)), k2 = Math.round(Math.sin(trot + Math.PI)), ang = now / 140;
+  const O = '#2a1610';
+  // ombre au sol
+  c.fillStyle = 'rgba(30,15,5,.3)'; c.beginPath(); c.ellipse(X + 8, Y + 9, 46, 5, 0, 0, 7); c.fill();
+  // ---- chevaux (le second décalé derrière)
+  const horse = (hx, hy, coat, mane, k, kb) => {
+    R(hx - 1, hy - 9 + k, 18, 9, O); R(hx, hy - 8 + k, 16, 7, coat); R(hx, hy - 8 + k, 16, 2, shade(coat, 1.2)); R(hx, hy - 3 + k, 16, 2, shade(coat, .8));   // corps
+    R(hx + 13, hy - 15 + k, 6, 8, O); R(hx + 14, hy - 14 + k, 4, 7, coat); R(hx + 16, hy - 16 + k, 7, 5, O); R(hx + 17, hy - 15 + k, 5, 3, coat); R(hx + 21, hy - 14 + k, 1, 1, '#1a1010');   // cou, tête
+    R(hx + 18, hy - 15 + k, 1, 1, '#ffffff'); R(hx + 14, hy - 17 + k, 2, 2, coat);   // œil, oreille
+    R(hx + 12, hy - 16 + k, 3, 9, mane); R(hx - 2, hy - 7 + k, 2, 6, mane); R(hx - 3, hy - 3 + k, 2, 4, mane);   // crinière, queue
+    R(hx + 3, hy - 8 + k, 10, 1, '#8a2a1a'); R(hx + 8, hy - 9 + k, 1, 7, '#8a2a1a');   // harnais
+    for (const [lx, a] of [[1, kb], [4, -kb], [11, -kb], [14, kb]]) { R(hx + lx, hy - 2 + k, 2, 7 - Math.max(0, a), shade(coat, .75)); R(hx + lx, hy + 4 - Math.max(0, a), 2, 1, '#1a1010'); }   // pattes et sabots
+  };
+  horse(24, 0, '#5a3a22', '#2a1a10', k2, k1);
+  R(14, -6, 28, 1, '#3a2414');   // timon
+  horse(30, 3, '#8a5a32', '#3a2414', k1, k2);
+  // ---- caisse de la diligence
+  R(-30, -30, 44, 30, O);
+  R(-29, -29, 42, 28, '#8a2a20'); R(-29, -29, 42, 3, '#a83a2a'); R(-29, -4, 42, 3, '#5a1a14');   // laque rouge, reflet en haut, ombre en bas
+  R(-29, -29, 2, 28, '#b84a3a'); R(11, -29, 2, 28, '#5a1a14');
+  R(-30, -31, 44, 3, O); R(-32, -33, 48, 3, '#3a2414'); R(-32, -34, 48, 1, '#6a4426');   // toit
+  R(-28, -40, 38, 7, '#6a4426'); R(-28, -40, 38, 1, '#8a5a32'); for (let k = -26; k < 10; k += 6) R(k, -40, 1, 7, '#3a2414');   // bagages sur le toit
+  R(-20, -44, 12, 5, '#a8774a'); R(-20, -44, 12, 1, '#c99560'); R(-15, -44, 2, 5, '#5a3a22'); R(-4, -43, 10, 4, '#3e5a7a'); R(-4, -43, 10, 1, '#5a7a9a');   // malle et sac
+  R(-29, -15, 42, 2, '#e8c26a'); R(-29, -26, 42, 1, '#e8c26a');   // filets dorés
+  for (const wxx of [-25, 0]) { R(wxx, -24, 11, 9, '#e8c26a'); R(wxx + 1, -23, 9, 7, '#ffe8a8'); R(wxx + 1, -23, 2, 7, '#c84a3a'); R(wxx + 8, -23, 2, 7, '#c84a3a'); R(wxx + 4, -21, 3, 5, '#3a2a20'); }   // fenêtres, rideaux, voyageurs
+  R(-13, -24, 11, 22, '#5a1a14'); R(-12, -23, 9, 20, '#9a3226'); R(-4, -13, 2, 2, '#f2c832');   // porte et poignée
+  R(-34, -24, 4, 6, '#3a2414'); R(-33, -23, 2, 3, '#ffd98a'); R(14, -24, 4, 6, '#3a2414'); R(15, -23, 2, 3, '#ffd98a');   // lanternes
+  // banc du cocher et cocher (chapeau, foulard, rênes)
+  R(13, -20, 10, 3, '#5a3a22'); R(13, -17, 2, 10, '#3a2414');
+  R(15, -29, 7, 9, '#3e5a7a'); R(15, -29, 2, 9, '#5a7a9a'); R(16, -35, 6, 6, '#e8b48c'); R(20, -33, 1, 1, '#2a2030'); R(16, -30, 6, 2, '#c0392b');
+  R(13, -37, 12, 2, '#5a3a22'); R(15, -41, 8, 4, '#6a4426'); R(15, -38, 8, 1, '#3a2414');   // chapeau
+  c.strokeStyle = '#3a2414'; c.lineWidth = 1; c.beginPath(); c.moveTo(X + 21, Y - 24); c.lineTo(X + 40, Y - 12 + k1); c.stroke();   // rênes
+  // ---- roues à rayons qui tournent (arrière grande, avant petite), ressorts
+  R(-26, -2, 36, 2, '#3a2414');
+  const wheel = (cx, cy, rad) => {
+    c.fillStyle = O; c.beginPath(); c.arc(X + cx, Y + cy, rad + 1, 0, 7); c.fill(); c.fillStyle = '#a8774a'; c.beginPath(); c.arc(X + cx, Y + cy, rad, 0, 7); c.fill();
+    c.fillStyle = O; c.beginPath(); c.arc(X + cx, Y + cy, rad - 2, 0, 7); c.fill(); c.fillStyle = 'rgba(0,0,0,0)';
+    c.strokeStyle = '#c99560'; c.lineWidth = 1.2; c.beginPath(); for (let k = 0; k < 8; k++) { const a = ang + k * Math.PI / 4; c.moveTo(X + cx, Y + cy); c.lineTo(X + cx + Math.cos(a) * (rad - 2), Y + cy + Math.sin(a) * (rad - 2)); } c.stroke();
+    c.fillStyle = '#e8c26a'; c.beginPath(); c.arc(X + cx, Y + cy, 2, 0, 7); c.fill();
+  };
+  wheel(-20, 1, 9); wheel(6, 3, 7);
 }
 import { SCENES } from '../world/scenes.js';
 import { ANIMALS } from '../data/animals.js';
 import { ITEMS } from '../data/items.js';
 import { darkness, timeTint, sunShadow } from '../systems/weather.js';
-import { SHADOW, harmonize } from './pixel.js';
+import { SHADOW, harmonize, shade } from './pixel.js';
+import { SIGN_SINK } from './pixfont.js';
 const T = CFG.T;
 const MAX_FX = 160;
 // Torches des tunnels (px).
@@ -225,7 +258,7 @@ let swing = null;
       worldFx.push({ k: 'dust', x: g.S.x * T + (Math.random() * 4 - 2), y: g.S.y * T + 1, life: .45 });
     lastStep = P.walkFrame;
     // lucioles la nuit (printemps / été, temps sec)
-    const S = g.S, fireflies = (S.scene || 'farm') === 'farm' && darkness(S) > .3 && S.season < 2 && S.weather !== 'rain' && S.weather !== 'storm';
+    const S = g.S, fireflies = !!(SCENES[S.scene || 'farm'] || {}).outdoor && darkness(S) > .3 && S.season < 2 && S.weather !== 'rain' && S.weather !== 'storm';
     if (fireflies && worldFx.filter(f => f.k === 'fly').length < 14)
       worldFx.push({ k: 'fly', x: (S.x + (Math.random() - .5) * 18) * T, y: (S.y + (Math.random() - .5) * 12) * T, ph: Math.random() * 6, life: 6 + Math.random() * 6 });
     if (swing) { swing.p += dt / (['axe', 'pick'].includes(swing.tool) ? CFG.HIT_MS / 1000 * .9 : .36);   /* hache et pioche : geste plus lent, calé sur le délai entre deux coups */ if (swing.p >= 1) swing = null; }
@@ -266,7 +299,9 @@ let swing = null;
     if (scene === 'foret') syncForest(S);
     if (cacheSeason !== S.season || cacheScene !== scene || (scene === 'foret' && cacheForest !== forestKey)) {   // lot 11 : nouveau labyrinthe
       cacheForest = forestKey;
+      SIGN_SINK.list = [];
       cache = outside ? farmGround() : scene === 'wild' ? (interiors['wild' + S.season] ||= buildWild(S.season)) : scene === 'foret' ? (interiors['foret' + forestKey + ':' + S.season] ||= buildWild(S.season, 'foret')) : scene === 'town' ? (interiors['town' + S.season] ||= buildTown(S.season)) : scene === 'quartier' ? (interiors['quartier' + S.season] ||= buildQuartier(S.season)) : (scene === 'montagne' || scene === 'plage') ? (interiors[scene] ||= buildBiome(scene, S.season)) : scene === 'parc' ? (interiors['parc' + S.season] ||= buildParc(S.season)) : (scene === 'rondpoint' || scene === 'ranch' || scene === 'port' || scene === 'gare') ? (interiors[scene + S.season] ||= buildWest(scene, S.season)) : (scene === 'resto' ? (interiors['resto' + !!(S.resto && S.resto.oven)] ||= buildInterior(scene, S)) : scene === 'house' ? (interiors['house' + !!S.workbench + (S.bed !== false)] ||= buildInterior(scene, S)) : (interiors[scene] ||= buildInterior(scene, S)));
+      if (!cache.__signs) cache.__signs = SIGN_SINK.list; SIGN_SINK.list = null;   // enseignes de ce décor
       if (cacheSeason !== S.season) initWeather();
       cacheSeason = S.season; cacheScene = scene;
     }
@@ -284,6 +319,19 @@ let swing = null;
     ctx.imageSmoothingEnabled = false;
     if (!cache.__pal) harmonize(cache, scene !== 'wild' && scene !== 'grange');   // lot 11g : palette unique + contours colorés (une fois par décor)
     ctx.drawImage(cache, 0, 0);
+    if (cache.__signs && cache.__signs.length) {   // enseignes réécrites nettes, à la résolution de l'écran (lisibles à tout zoom)
+      ctx.save(); ctx.setTransform(1, 0, 0, 1, 0, 0);
+      for (const sg of cache.__signs) {
+        const sx = Math.round((sg.x - camX) * scale), sy = Math.round((sg.y - camY) * scale), sw = Math.round(sg.w * scale), sh = Math.round(sg.h * scale);
+        if (sx > cv.width || sy > cv.height || sx + sw < 0 || sy + sh < 0) continue;
+        ctx.fillStyle = '#3f2615'; ctx.fillRect(sx, sy, sw, sh); ctx.fillStyle = '#e8c26a'; ctx.fillRect(sx + scale, sy + scale, sw - 2 * scale, sh - 2 * scale);
+        ctx.fillStyle = '#f6dc94'; ctx.fillRect(sx + scale, sy + scale, sw - 2 * scale, scale);
+        let fs = Math.floor(sh * .62); ctx.font = `700 ${fs}px "Pixelify Sans", "Trebuchet MS", sans-serif`;
+        while (fs > 6 && ctx.measureText(sg.text).width > sw - 3 * scale) { fs--; ctx.font = `700 ${fs}px "Pixelify Sans", "Trebuchet MS", sans-serif`; }
+        ctx.fillStyle = '#3b2414'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(sg.text, sx + sw / 2, sy + sh / 2 + scale * .3);
+      }
+      ctx.restore(); ctx.textAlign = 'start'; ctx.textBaseline = 'alphabetic';
+    }
     const x0 = Math.max(0, (cam.x / T | 0) - 2), y0 = Math.max(0, (cam.y / T | 0) - 1);
     const x1 = Math.min(SC.W - 1, ((cam.x + vw) / T | 0) + 2), y1 = Math.min(SC.H - 1, ((cam.y + vh) / T | 0) + 3);
     if (outside) drawWaterShimmer(ctx, x0, y0, x1, y1, now);
@@ -496,6 +544,11 @@ let swing = null;
     const dark = sky ? Math.min(.7, darkness(S) * 1.15) : SC.dark ? .62 : 0;
     const LIGHTS_HERE = scene === 'grange' ? GRANGE_LIGHTS : outside ? LIGHTS.filter((l, i) => i !== 1 || (S.built && S.built.coop)) : scene === 'town' ? TOWN_LIGHTS : scene === 'wild' ? CAVE_LIGHTS : [];
     if (!sky) { ctx.fillStyle = 'rgba(255,180,100,.07)'; ctx.fillRect(0, 0, cv.width, cv.height); }
+    if (sky && dark < .25 && (S.weather === 'sun' || !S.weather)) {   // ambiance : lumière chaude venue d'en haut à gauche, ombres de nuages qui passent
+      const lg = ctx.createLinearGradient(0, 0, cv.width * .8, cv.height); lg.addColorStop(0, 'rgba(255,236,180,.13)'); lg.addColorStop(.55, 'rgba(255,236,180,0)'); ctx.fillStyle = lg; ctx.fillRect(0, 0, cv.width, cv.height);
+      ctx.fillStyle = 'rgba(20,30,50,.07)';
+      for (let k = 0; k < 3; k++) { const cw = cv.width * (.5 + k * .15), cx = ((now / (90 + k * 30) + k * 900) % (cv.width + cw * 2)) - cw, cy = cv.height * (.2 + k * .3); ctx.beginPath(); ctx.ellipse(cx, cy, cw * .5, cw * .22, -.2, 0, 7); ctx.ellipse(cx + cw * .3, cy + cw * .05, cw * .35, cw * .18, -.2, 0, 7); ctx.fill(); }
+    }
     if (sky) { const [tr, tg, tb, ta] = timeTint(S.minute, S.weather); if (ta > .005) { ctx.fillStyle = `rgba(${tr},${tg},${tb},${ta})`; ctx.fillRect(0, 0, cv.width, cv.height); } }   // 7g : matin doré, soir orangé
     if (sky && S.weather !== 'rain' && S.weather !== 'storm' && dark < .35) {   // 7g : ombres de nuages qui glissent sur le sol
       const ca = S.weather === 'cloud' ? .13 : .07, drift = now / 1000 * 6;
