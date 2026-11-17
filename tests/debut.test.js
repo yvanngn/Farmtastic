@@ -358,3 +358,14 @@ test('7e : marche en 8 images (héros qui descend du train)', async () => {
   assert.ok(seen.size >= 6, 'au moins 6 images différentes : ' + seen.size);
   assert.ok([...seen].every(f => f >= 1 && f <= 8));
 });
+
+test('intro : « Passer l’intro » mène directement devant la ferme (première ferme libre)', async () => {
+  const { introTick, introActive, skipIntro, FARM_DROP } = await import('../src/systems/intro.js');
+  const g = createGame({ state: defaultState(), rnd: () => .5, now: () => 0 });
+  introTick(g, .1); assert.ok(introActive(g.S));
+  g.others = { x: { farmLot: 0, name: 'Bob' } };
+  assert.equal(skipIntro(g), true);
+  assert.equal(introActive(g.S), false); assert.equal(g.S.scene, 'farm'); assert.equal(g.S.farmLot, 1, 'ferme 0 prise → la 1');
+  assert.equal(g.S.x, FARM_DROP.x); assert.equal(g.introHidden, false); assert.equal(g.ride, null);
+  assert.equal(skipIntro(g), false, 'rien à passer ensuite');
+});

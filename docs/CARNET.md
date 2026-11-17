@@ -69,6 +69,7 @@ Légende : ✅ fait · ⏳ à faire · ❓ question pour l'utilisateur · 💡 i
 - ❓ **Vente** : les commerces ne rachètent rien, tout se vend au bac de la ferme — à revoir ?
 - ❓ **Énergie** : avec la tente à 100 % et les confitures à +45 ⚡ (≈ 400 ⚡ / jour possibles), est-ce trop ? (à vérifier en jouant)
 - ❓ **Mode en ligne** : SQL `supabase_ferme.sql` + « Anonymous sign-ins » à faire côté Supabase, puis tester ; visiter la ferme d'un autre joueur (objets non partagés).
+- ❓ **Passer l'intro** en multijoueur : on prend la première ferme libre (💡) — ou faut-il quand même choisir ?
 - ❓ **Lot 8** : qu'est-ce qui se débloque à quel niveau ? affichage de l'XP ?
 
 ## 4. Décidé, à faire dans un lot ultérieur
@@ -97,7 +98,7 @@ Principe : étapes « à partir de telle heure → tel lieu », avec variantes s
 - **Repos (jours 7, 14, 21, 28)** : grasse matinée ; 14 h-17 h balade en forêt ; 17 h-18 h 30 devant chez elle ; puis chez elle.
 
 ## 7. Chantier graphique « niveau Stardew » (lot 7, liste à faire petit à petit)
-Fait : sol de la ferme (v0.1.5) ; **7a** palette Far West et sols (centre-ville ocre, rues à ornières, trottoirs en planches, herbe en brins partout) et **7b** falaise, rivière et ponts autour du centre-ville (v0.1.14). **7c** bâtiments western et **7d** arbres, cactus, rochers (v0.1.15) ; **7e** personnages et animaux, **7f** intérieurs, icônes, interface en bois (v0.1.16). Suite : 7e bis vêtements, 7g lumière.
+Fait : sol de la ferme (v0.1.5) ; **7a** palette Far West et sols (centre-ville ocre, rues à ornières, trottoirs en planches, herbe en brins partout) et **7b** falaise, rivière et ponts autour du centre-ville (v0.1.14). **7c** bâtiments western et **7d** arbres, cactus, rochers (v0.1.15) ; **7e** personnages et animaux, **7f** intérieurs, icônes, interface en bois (v0.1.16) ; **7e bis** tenue western et **7g** lumière (v0.1.17). **Lot 7 terminé.** Suite : lot 8 (XP et niveaux).
 - **Sols et décors** : même herbe partout ; transitions douces herbe ↔ terre ↔ pavés ↔ sable ↔ eau ; pavés variés ; eau animée (reflets, écume, nénuphars) ; herbe qui ondule ; saisons plus marquées.
 - **Personnages** : sprites plus détaillés avec contour ; marche en 8 images ; animations d'outils ; portraits dans les dialogues ; enfant et personnes âgées ; animaux animés ; **vêtements western**.
 - **Objets et bâtiments** : arbres plus volumineux qui tombent ; contours sombres ; façades détaillées, fumée des cheminées ; intérieurs meublés pièce par pièce ; icônes en pixel art à la place des émojis.
@@ -110,10 +111,11 @@ Fait : sol de la ferme (v0.1.5) ; **7a** palette Far West et sols (centre-ville 
 - ❌ Arrivée sur le quai de la ferme (→ gare + diligence) ; ❌ parc d'attractions caché derrière la forêt (→ fête foraine au sud du ranch).
 - ❌ Hache dans la grange puis parmi les arbres (→ au pied du grand arbre) ; ❌ indice précis sur la hache.
 - ❌ Soupes de baies (→ confitures) ; ❌ amende si on ne dort pas (→ clinique à 1 h, frais 10 % / 20 % hors service) ; ❌ tente à 50 % (→ 100 %).
+- ❌ Bouton « Passer » des dialogues (17/11 : ▸ quand il y a une suite, comme Witch'rok).
 - ❌ Roue des objets (→ sac en cases) ; ❌ roue des outils en bouton (→ barre d'outils en bas, roue sur Tab) ; ❌ bouton 👕 apparence.
 - ❌ Piles de 99 dès le départ (→ 10 par case) ; ❌ « on entre chez un habitant à 5 cœurs » (→ toutes les maisons ouvertes).
 
 ## 9. Historique (une ligne par séance ; détail dans Git et `docs/VERSIONS.md`)
 - 15/11 : écran titre, inventaire, arbres et pierres, charpentier, commerces, Luna, panneau d'affichage, début sans outils, champ, zone de combat, Franck, établi, discussions façon Witch'rok, objets au sol, mode en ligne préparé.
 - 16/11 : lots 1-4 (tuto des baies, rappel 18 h, clinique à 1 h, patrons, chaudron, quête du jour, métiers), Ghostbuster, équilibrage, versions, objets qui tombent, forêt coupable, maisons ouvertes, Hailey (routine), Ed et sa famille, barre d'outils, essai d'herbe façon Stardew.
-- 17/11 : **Farmwest** — renommage, lot 1 ambiance western, lot 2 nouvelle carte (rond-point, ranch, port, liaisons), lot 3 nouveau début (gare, diligence, choix de la ferme), lot 4 quêtes principales (grand arbre, outils uniques, plus de bijou), lot 5 restaurant et couteau (cueillette à la jauge), lot 6 charpentier Harry Fordson, Remy Gusto ; carnet nettoyé ; lots 7a-7b (sols Far West, falaise, rivière, ponts) ; lots 7c-7d (façades western, saloon, shérif, arbres, cactus, rochers) ; arrivée dans le train ; lots 7e-7f (marche en 8 images, chapeaux, icônes pixel art, interface en bois).
+- 17/11 : **Farmwest** — renommage, lot 1 ambiance western, lot 2 nouvelle carte (rond-point, ranch, port, liaisons), lot 3 nouveau début (gare, diligence, choix de la ferme), lot 4 quêtes principales (grand arbre, outils uniques, plus de bijou), lot 5 restaurant et couteau (cueillette à la jauge), lot 6 charpentier Harry Fordson, Remy Gusto ; carnet nettoyé ; lots 7a-7b (sols Far West, falaise, rivière, ponts) ; lots 7c-7d (façades western, saloon, shérif, arbres, cactus, rochers) ; arrivée dans le train ; lots 7e-7f (marche en 8 images, chapeaux, icônes pixel art, interface en bois) ; intro accélérable / passable, plus de « Passer » dans les dialogues (▸ seulement s'il y a une suite) ; lots 7e bis et 7g.

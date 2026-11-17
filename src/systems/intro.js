@@ -89,6 +89,14 @@ export function chooseFarm(g, i) {
   myst(g, INTRO_MYST.fin, () => finishIntro(g));
   return true;
 }
+// Passer toute l'intro : on arrive directement devant sa ferme (la première libre si on n'a pas encore choisi).
+export function skipIntro(g) {
+  const S = g.S;
+  if (!introActive(S)) return false;
+  g.introWait = false; g.introHidden = false; g.ride = null;
+  if (S.farmLot == null || S.intro.step !== 'fin') { const taken = takenLots(g), lot = FARM_LOTS.find(l => taken[l.id] == null); S.farmLot = lot ? lot.id : 0; }
+  return finishIntro(g);
+}
 export function finishIntro(g) {
   const S = g.S, I = S.intro;
   I.step = 'done'; I.arrived = true; I.myst = 'done';

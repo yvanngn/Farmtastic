@@ -162,7 +162,8 @@ function drawTrain(c, t) {
 import { SCENES } from '../world/scenes.js';
 import { ANIMALS } from '../data/animals.js';
 import { ITEMS } from '../data/items.js';
-import { darkness } from '../systems/weather.js';
+import { darkness, timeTint, sunShadow } from '../systems/weather.js';
+import { SHADOW } from './pixel.js';
 const T = CFG.T;
 const MAX_FX = 160;
 // Torches des tunnels (px).
@@ -214,7 +215,10 @@ let swing = null;
     const w = g.S.weather, n = w === 'rain' ? 140 : w === 'storm' ? 220 : w === 'snow' ? 110 : 0;
     for (let i = 0; i < n; i++) screenFx.push(drop(w === 'snow', true));
     if (g.S.season === 2) for (let i = 0; i < 14; i++) screenFx.push(leaf(true));
+    if (g.S.season === 0 && n === 0) for (let i = 0; i < 10; i++) screenFx.push({ ...leaf(true), col: ['#f8b8d0', '#ffffff', '#f4a0c0'][i % 3] });   // 7g : pétales au printemps
+    if (n === 0 && g.S.season !== 3) for (let i = 0; i < 16; i++) screenFx.push(mote(true));   // 7g : poussière dorée qui flotte
   }
+  const mote = anywhere => ({ k: 'mote', x: Math.random() * cv.width, y: anywhere ? Math.random() * cv.height : cv.height + 5, ph: Math.random() * 6, sp: 6 + Math.random() * 10 });
   const drop = (snow, anywhere) => ({ k: snow ? 'snow' : 'rain', x: Math.random() * (cv.width + 200), y: anywhere ? Math.random() * cv.height : -20, end: cv.height * (.2 + Math.random() * .8) });
   const leaf = anywhere => ({ k: 'leaf', x: Math.random() * cv.width, y: anywhere ? Math.random() * cv.height : -10, ph: Math.random() * 6, col: ['#e08a2a', '#c25e1d', '#eea13a'][Math.random() * 3 | 0] });
 
@@ -224,6 +228,7 @@ let swing = null;
       const p = screenFx[i];
       if (p.k === 'rain') { p.y += 620 * dt * u; p.x -= 140 * dt * u; if (p.y > p.end) { screenFx.push({ k: 'splash', x: p.x, y: p.y, life: .18 }); Object.assign(p, drop(false, false)); } }
       else if (p.k === 'snow') { p.y += 38 * dt * u; p.x += Math.sin(p.y / 40) * .6 * u; if (p.y > cv.height) Object.assign(p, drop(true, false)); }
+      else if (p.k === 'mote') { p.ph += dt; p.y -= p.sp * dt * u; p.x += Math.sin(p.ph) * 8 * dt * u + 6 * dt * u; if (p.y < -5 || p.x > cv.width + 5) Object.assign(p, mote(false), { x: Math.random() * cv.width }); }
       else if (p.k === 'leaf') { p.ph += dt * 2; p.y += 30 * dt * u; p.x += (Math.sin(p.ph) * 40 + 20) * dt * u; if (p.y > cv.height || p.x > cv.width + 10) Object.assign(p, leaf(false)); }
       else if (p.k === 'splash') { p.life -= dt; if (p.life <= 0) screenFx.splice(i, 1); }
     }
@@ -269,6 +274,7 @@ let swing = null;
   function render(now) {
     const S = g.S;
     const scene = S.scene || 'farm', outside = scene === 'farm', sky = outside || !!SCENES[scene].outdoor, SC = SCENES[scene];
+    { const sh = sky ? sunShadow(S.minute) : { dx: 0, sx: 1 }; SHADOW.dx = sh.dx; SHADOW.sx = sh.sx; }   // 7g : ombres selon l'heure
     if (scene === 'house' && cacheScene === 'house' && cache !== interiors['house' + !!S.workbench + (S.bed !== false)]) cacheScene = ''; // établi réparé
     if (cacheSeason !== S.season || cacheScene !== scene) {
       cache = outside ? farmGround() : scene === 'wild' ? (interiors['wild' + S.season] ||= buildWild(S.season)) : scene === 'foret' ? (interiors['foret' + S.season] ||= buildWild(S.season, 'foret')) : scene === 'town' ? (interiors['town' + S.season] ||= buildTown(S.season)) : scene === 'quartier' ? (interiors['quartier' + S.season] ||= buildQuartier(S.season)) : (scene === 'montagne' || scene === 'plage') ? (interiors[scene] ||= buildBiome(scene, S.season)) : scene === 'parc' ? (interiors['parc' + S.season] ||= buildParc(S.season)) : (scene === 'rondpoint' || scene === 'ranch' || scene === 'port' || scene === 'gare') ? (interiors[scene + S.season] ||= buildWest(scene, S.season)) : (scene === 'resto' ? (interiors['resto' + !!(S.resto && S.resto.oven)] ||= buildInterior(scene, S)) : scene === 'house' ? (interiors['house' + !!S.workbench + (S.bed !== false)] ||= buildInterior(scene, S)) : (interiors[scene] ||= buildInterior(scene, S)));
@@ -491,7 +497,18 @@ let swing = null;
     const dark = sky ? Math.min(.7, darkness(S) * 1.15) : SC.dark ? .62 : 0;
     const LIGHTS_HERE = scene === 'grange' ? GRANGE_LIGHTS : outside ? LIGHTS.filter((l, i) => i !== 1 || (S.built && S.built.coop)) : scene === 'town' ? TOWN_LIGHTS : scene === 'wild' ? CAVE_LIGHTS : [];
     if (!sky) { ctx.fillStyle = 'rgba(255,180,100,.07)'; ctx.fillRect(0, 0, cv.width, cv.height); }
-    if (sky && S.minute > 1020 && S.minute < 1170) { ctx.fillStyle = `rgba(255,140,60,${.12 * Math.sin((S.minute - 1020) / 150 * Math.PI)})`; ctx.fillRect(0, 0, cv.width, cv.height); }
+    if (sky) { const [tr, tg, tb, ta] = timeTint(S.minute, S.weather); if (ta > .005) { ctx.fillStyle = `rgba(${tr},${tg},${tb},${ta})`; ctx.fillRect(0, 0, cv.width, cv.height); } }   // 7g : matin doré, soir orangé
+    if (sky && S.weather !== 'rain' && S.weather !== 'storm' && dark < .35) {   // 7g : ombres de nuages qui glissent sur le sol
+      const ca = S.weather === 'cloud' ? .13 : .07, drift = now / 1000 * 6;
+      for (let k = 0; k < 3; k++) {
+        const vw = cv.width / scale + 300, wx = camX - 150 + ((k * 211 + drift) % vw), wy = camY + ((k * 137) % 160) + 20;
+        const [sx, sy] = toScreen(wx, wy), rx = (70 + k * 22) * scale, ry = (34 + k * 9) * scale;
+        if (sx + rx < 0 || sx - rx > cv.width) continue;
+        const gr = ctx.createRadialGradient(sx, sy, 0, sx, sy, rx);
+        gr.addColorStop(0, `rgba(20,25,40,${ca})`); gr.addColorStop(.6, `rgba(20,25,40,${ca * .6})`); gr.addColorStop(1, 'rgba(20,25,40,0)');
+        ctx.save(); ctx.translate(sx, sy); ctx.scale(1, ry / rx); ctx.translate(-sx, -sy); ctx.fillStyle = gr; ctx.fillRect(sx - rx, sy - rx, rx * 2, rx * 2); ctx.restore();
+      }
+    }
     if (sky && (S.weather === 'rain' || S.weather === 'storm')) { ctx.fillStyle = 'rgba(70,95,160,.14)'; ctx.fillRect(0, 0, cv.width, cv.height); }
     if (sky && S.weather === 'snow') { ctx.fillStyle = 'rgba(200,220,255,.08)'; ctx.fillRect(0, 0, cv.width, cv.height); }
     if (dark > .02) {
@@ -533,11 +550,12 @@ let swing = null;
       else if (p.k === 'snow') { ctx.fillStyle = '#fff'; ctx.fillRect(p.x, p.y, 2 * px, 2 * px); }
       else if (p.k === 'splash') { ctx.fillStyle = `rgba(200,220,255,${p.life * 4})`; ctx.fillRect(p.x - 2 * px, p.y, px, px); ctx.fillRect(p.x + 2 * px, p.y, px, px); ctx.fillRect(p.x, p.y - px, px, px); }
       else if (p.k === 'leaf') { ctx.fillStyle = p.col; ctx.fillRect(p.x, p.y, 3 * px, 2 * px); }
+      else if (p.k === 'mote' && dark < .3) { ctx.fillStyle = `rgba(255,226,150,${.25 + .25 * Math.sin(p.ph * 3)})`; ctx.fillRect(p.x, p.y, px, px); }
     }
     ctx.drawImage(vignette, 0, 0);
     // transition de changement de zone : un cercle s'ouvre sur le héros, avec un liseré doré
     if (trans) {
-      const t = Math.min(1, (now - trans) / TRANS_MS), e = t * t * (3 - 2 * t) * t;
+      const t = Math.max(0, Math.min(1, (now - trans) / TRANS_MS)), e = t * t * (3 - 2 * t) * t;
       if (t >= 1) trans = 0;
       else {
         const [hx, hy] = toScreen(S.x * T, S.y * T - 8), R = Math.hypot(cv.width, cv.height) * e + 2;

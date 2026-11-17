@@ -17,7 +17,8 @@ function rawChar(c, L, d, f, blink, noArm = false) {   // noArm : le bras qui ti
   const r = (x, y, w, h, col) => { c.fillStyle = col; c.fillRect(2 + x, 2 + y, w, h); };
   const S = hex6(L.skin), Sd = shade(S, .82), Sh = hex6(L.shirt), Shd = shade(Sh, .76), Shl = shade(Sh, 1.18);
   const P = hex6(L.pants), Pd = shade(P, .72), H = hex6(L.hairC), Hl = shade(H, 1.35), Hd = shade(H, .72);
-  const fem = L.body === 'f', skirt = L.bottom === 'skirt', LIPS = '#d0606e';
+  const fem = L.body === 'f', robe = L.bottom === 'robe', skirt = L.bottom === 'skirt' || robe, LIPS = '#d0606e';
+  const CHAPS = '#8a5a32', SPUR = '#e8c26a';
   const bob = (f === 1 || f === 3) ? -1 : 0, st = L.hair, long = st === 1;
   let up = (x, y, w, h, col) => r(x, y + bob, w, h, col);
 
@@ -28,11 +29,12 @@ function rawChar(c, L, d, f, blink, noArm = false) {   // noArm : le bras qui ti
     const seg = (x, y, len, ang, w, col) => { for (let k = 0; k <= len; k += .5) r(Math.round(x + Math.sin(ang) * k), Math.round(y + Math.cos(ang) * k), w, 1, col); return [x + Math.sin(ang) * len, y + Math.cos(ang) * len]; };
     const leg = (p, dark) => {   // cuisse + tibia, le genou plie quand la jambe revient vers l'avant ; botte au sol
       const a1 = walking ? Math.sin(p) * .7 : 0, a2 = a1 - (walking ? Math.max(0, -Math.cos(p)) * .7 : 0), lift = walking && -Math.cos(p) > .3 ? 1 : 0;
-      const legC = skirt ? (dark ? Sd : S) : (dark ? Pd : P), boot = dark ? shade(SHOE, .82) : SHOE;
+      const legC = skirt ? (dark ? Sd : S) : L.chaps ? (dark ? shade(CHAPS, .8) : CHAPS) : (dark ? Pd : P), boot = dark ? shade(SHOE, .82) : SHOE;
       const [kx, ky] = seg(5, 13 + pb, 2.5, a1, 2, legC);
       const fx = Math.round(kx + Math.sin(a2) * 2);
       seg(kx, ky, 2, a2, 2, legC);
       r(fx, 17 - lift, 2, 1, boot); r(fx, 18 - lift, 3, 1, boot); r(fx, 18 - lift, 1, 1, shade(boot, .7));   // botte : tige et talon
+      if (L.spurs) r(fx - 1, 18 - lift, 1, 1, SPUR);   // éperon
     };
     const arm = (sign, dark) => {   // bras opposés aux jambes, avant-bras légèrement plié, main couleur peau
       const a = walking ? sign * Math.sin(ph) * (sign < 0 ? .6 : .55) : 0, col = dark ? shade(Sh, .6) : shade(Sh, .72);
@@ -43,8 +45,9 @@ function rawChar(c, L, d, f, blink, noArm = false) {   // noArm : le bras qui ti
     const lag = walking ? Math.round(Math.sin(2 * ph - 1) * .8) : 0;   // cheveux longs et queue suivent avec un léger retard
     if (long && !L.hat) upw(2 - lag, 4, 2, 6, Hd);
     arm(1, true); leg(ph + Math.PI, true); leg(ph, false);
-    if (skirt) { upw(3, 13, 6, 3, P); upw(2, 15, 8, 1, Pd); }
+    if (skirt) { upw(3, 13, 6, 3, P); upw(2, 15, 8, 1, Pd); if (robe) { upw(2, 15, 8, 2, P); upw(1, 17, 9, 1, '#f4ead2'); upw(2, 13, 1, 4, Pd); } }
     upw(3, 9, 6, 5, Sh); upw(3, 9, 1, 5, Shd); upw(8, 9, 1, 4, Shl); if (!skirt) upw(3, 13, 6, 1, Pd);
+    if (L.plaid) { upw(3, 10, 6, 1, Shd); upw(3, 12, 6, 1, Shd); upw(5, 9, 1, 5, Shd); upw(7, 9, 1, 5, Shd); }
     if (L.coat) { upw(3, 9, 6, 9, Sh); upw(3, 9, 1, 9, Shd); upw(8, 9, 1, 8, Shl); upw(5, 13, 1, 5, Shd); }  // long manteau
     if (L.vest) { upw(3, 9, 3, 5, L.vest); upw(3, 9, 1, 5, shade(L.vest, .75)); }
     if (L.bandana) upw(6, 9, 3, 1, L.bandana);
@@ -67,12 +70,15 @@ function rawChar(c, L, d, f, blink, noArm = false) {   // noArm : le bras qui ti
     r(3, 16 - l1, 2, 2, S); r(7, 16 - l2, 2, 2, Sd);
     r(3, 18 - l1, 3, 1, SHOE); r(6, 18 - l2, 3, 1, SHOE);
     up(2, 13, 8, 2, P); up(1, 15, 10, 1, Pd); up(2, 13, 1, 2, shade(P, 1.15));
+    if (robe) { up(1, 15, 10, 2, P); up(0, 17, 12, 1, '#f4ead2'); for (let k = 1; k < 11; k += 3) up(k, 15, 1, 2, Pd); }   // robe de saloon à volant
   } else {
-    r(3, 14 - l1, 3, 3, P); r(6, 14 - l2, 3, 3, Pd);
+    r(3, 14 - l1, 3, 3, L.chaps ? CHAPS : P); r(6, 14 - l2, 3, 3, L.chaps ? shade(CHAPS, .85) : Pd); if (L.chaps) { r(3, 14 - l1, 1, 3, '#c99560'); r(8, 14 - l2, 1, 3, '#c99560'); }
     r(3, 17 - l1, 3, 2, SHOE); r(6, 17 - l2, 3, 2, shade(SHOE, .85)); r(3, 17 - l1, 3, 1, shade(SHOE, 1.3)); r(6, 17 - l2, 3, 1, SHOE);   // bottes (7e)
+    if (L.spurs) { r(2, 18 - l1, 1, 1, SPUR); r(9, 18 - l2, 1, 1, SPUR); }
   }
   const tw = fem ? 1 : 0; // taille plus fine
   up(2 + tw, 9, 8 - tw * 2, 5, Sh); up(2, 9, 8, 2, Sh); up(2, 9, 1, 2, Shl); up(2 + tw, 11, 1, 3, Shl); up(9 - tw, 9, 1, 5, Shd);
+  if (L.plaid) { up(2, 10, 8, 1, Shd); up(2, 12, 8, 1, Shd); for (const k of [4, 7]) up(k, 9, 1, 5, Shd); }   // chemise à carreaux
   if (!skirt) up(2, 13, 8, 1, Pd);
   if (L.coat) { up(2, 9, 8, 9, Sh); up(2, 9, 1, 9, Shl); up(9, 9, 1, 9, Shd); if (d === 0) { up(5, 10, 2, 8, Shd); up(5, 9, 2, 1, S); } }  // long manteau, fermé
   if (d === 0) { up(5, 9, 2, 1, S); if (fem) up(4, 9, 4, 1, S); }
@@ -112,7 +118,7 @@ function rawChar(c, L, d, f, blink, noArm = false) {   // noArm : le bras qui ti
 }
 
 function charSprite(L, d, f, blink, noArm = false) {
-  const k = (noArm ? 'n' : 'c') + L.body + L.bottom + L.skin + L.hair + L.hairC + L.shirt + L.pants + (L.sad ? 's' : '') + (L.coat ? 'k' : '') + (L.hat || '') + (L.vest || '') + (L.bandana || '') + d + f + blink;
+  const k = (noArm ? 'n' : 'c') + L.body + L.bottom + L.skin + L.hair + L.hairC + L.shirt + L.pants + (L.sad ? 's' : '') + (L.coat ? 'k' : '') + (L.hat || '') + (L.vest || '') + (L.bandana || '') + (L.plaid ? 'p' : '') + (L.chaps ? 'j' : '') + (L.spurs ? 'e' : '') + d + f + blink;
   return cache(k, () => {
     const s = canvas(16, 23), c = s.getContext('2d');
     if (d === 2) { c.translate(16, 0); c.scale(-1, 1); }

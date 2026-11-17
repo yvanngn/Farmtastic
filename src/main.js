@@ -17,7 +17,7 @@ import { createMapView } from './ui/mapView.js';
 import { createBoard } from './ui/board.js';
 import { createTitle } from './ui/title.js';
 import { createHotbar } from './ui/hotbar.js';
-import { introTick, introActive } from './systems/intro.js';
+import { introTick, introActive, skipIntro } from './systems/intro.js';
 import { createDialog } from './ui/dialog.js';
 import { NPCS, OUT_FROM, OUT_TO, INTRO_LINES } from './data/npcs.js';
 import { placeNPC, findNPCAt, mystTick } from './systems/social.js';
@@ -173,11 +173,11 @@ const title = createTitle({
   onSettings() { settingsPanel.open(); }
 });
 const repairPanel = createRepairPanel(g);
-const input = createInput(cv, g, renderer, { isActive: () => started && !custom.isOpen() && !title.isOpen() && !dialog.isOpen, onMenu: () => menu.open() });
+const input = createInput(cv, g, renderer, { isActive: () => started && !custom.isOpen() && !title.isOpen() && !dialog.isOpen && !introActive(g.S), onMenu: () => menu.open() });
 
 // Bouton d'action : agit sur la tuile en face (ou frappe l'ennemi le plus proche avec l'épée).
 function doAction() {
-  if (!started || dialog.isOpen) return;
+  if (!started || dialog.isOpen || introActive(g.S)) return;
   const S = g.S;
   const ft = facingTile(S);
   if (findNPCAt(g, ft.tx, ft.ty)) { act(g, ft.tx, ft.ty); return; } // parler / offrir avant de manger
@@ -194,7 +194,7 @@ const controls = createControls(g, input, { onAct: doAction, onTools: () => whee
 const hotbar = createHotbar(g, audio);
 const hud = createHud(g, controls);
 addEventListener('keydown', e => {
-  if (!started || custom.isOpen() || title.isOpen() || dialog.isOpen || e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') return;
+  if (!started || introActive(g.S) || custom.isOpen() || title.isOpen() || dialog.isOpen || e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') return;
   const k = e.key.toLowerCase();
   if (k === ' ') { e.preventDefault(); doAction(); }
   else if (/^[1-8]$/.test(k)) { e.preventDefault(); hotbar.pick(+k - 1); }   // barre d'outils
@@ -205,6 +205,10 @@ addEventListener('keydown', e => {
 });
 
 $('#bSave').onclick = () => doSave(true);
+// Intro : ⏩ maintenir pour accélérer, ⏭ passer jusqu'à la ferme
+{ const f = $('#bIntroFast'), on = v => { g.introFast = v; f.classList.toggle('on', v); };
+  f.addEventListener('pointerdown', e => { e.preventDefault(); on(true); }); for (const ev of ['pointerup', 'pointerleave', 'pointercancel']) f.addEventListener(ev, () => on(false));
+  $('#bIntroSkip').onclick = () => { if (!introActive(g.S)) return; audio.play('ui'); on(false); dialog.reset(); skipIntro(g); }; }
 $('#bBag').onclick = () => { audio.play('ui'); menu.open(); };
 $('#bRecipes').onclick = () => { audio.play('ui'); menu.open('recettes', true); };   // seulement les recettes (le menu complet reste en haut)
 // Revenir au menu principal : on sauvegarde, puis on recharge le jeu sur l'écran titre (tout repart proprement, multijoueur compris).
@@ -251,7 +255,8 @@ function loop(now) {
   const dt = Math.min(0.05, (now - last) / 1000); last = now;
   if (started) {
     const arrivee = (g.S.intro && ['wait', 'sleep', 'talk'].includes(g.S.intro.myst)) || introActive(g.S);   // Farmwest : pendant le nouveau début aussi
-    if (introActive(g.S)) introTick(g, dt);   // sur le quai, jusqu'à la fin de l'accueil de Myst
+    const inIntro = introActive(g.S); document.body.classList.toggle('intro', inIntro);   // pendant l'intro : seulement la bulle et ⏩ / ⏭
+    if (inIntro) { introTick(g, dt * (g.introFast ? 6 : 1)); if (g.introFast) dialog.fastTick(); }   // ⏩ maintenu : tout va 6 fois plus vite
     if (g.fishing || g.parcGame) { g.player.target = null; g.player.walkFrame = 0; }   // on ne bouge pas en pêchant
     else if (g.talking || arrivee) { g.player.target = null; g.player.walkFrame = 0; }   // pendant un dialogue ou l'arrivée, on ne bouge pas
     else updatePlayer(g, dt, input.keys, (tx, ty) => act(g, tx, ty));

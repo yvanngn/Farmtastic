@@ -1,6 +1,6 @@
 // Écran de personnalisation du personnage.
 import { $ } from './dom.js';
-import { LOOK_OPTS, HAIR_NAMES, BODY_NAMES, BOTTOM_NAMES } from '../data/look.js';
+import { LOOK_OPTS, HAIR_NAMES, BODY_NAMES, BOTTOM_NAMES, WEST_OPTS, HAT_NAMES, YESNO } from '../data/look.js';
 import { drawChar } from '../render/sprites.js';
 import { GRASS } from '../render/ground.js';
 
@@ -18,11 +18,25 @@ export function createCustomizer({ getLook, getName, onStart, onContinue, onBack
       : `<button class="${L[k] === v ? 'on' : ''}" data-k="${k}" data-v="${v}">${labels[v] ?? labels[i]}</button>`).join('') + '</div></div>';
     $('#lookOpts').innerHTML = sec('Silhouette', 'body', LOOK_OPTS.body, BODY_NAMES) + sec('Peau', 'skin', LOOK_OPTS.skin, 1)
       + sec('Coiffure', 'hair', LOOK_OPTS.hair, HAIR_NAMES) + sec('Cheveux', 'hairC', LOOK_OPTS.hairC, 1)
-      + sec('Haut', 'shirt', LOOK_OPTS.shirt, 1) + sec('Bas', 'bottom', LOOK_OPTS.bottom, BOTTOM_NAMES) + sec('Couleur du bas', 'pants', LOOK_OPTS.pants, 1);
+      + sec('Haut', 'shirt', LOOK_OPTS.shirt, 1) + sec('Bas', 'bottom', LOOK_OPTS.bottom, BOTTOM_NAMES) + sec('Couleur du bas', 'pants', LOOK_OPTS.pants, 1)
+      // 7e bis : tenue western
+      + '<div class="sous-titre" style="margin-top:10px">🤠 Tenue western</div>'
+      + sec('Chapeau', 'hat', WEST_OPTS.hat, HAT_NAMES) + opt('Gilet', 'vest') + opt('Bandana', 'bandana')
+      + yn('Chemise', 'plaid') + yn('Jambes', 'chaps') + yn('Bottes', 'spurs');
+  }
+  // couleur facultative : « Aucun » puis le nuancier
+  function opt(title, k) {
+    const L = getLook(), cur = L[k] || '';
+    return `<div style="margin-top:8px"><b>${title}</b><div class="row"><button class="${cur ? '' : 'on'}" data-k="${k}" data-v="">Aucun</button>`
+      + WEST_OPTS[k].filter(Boolean).map(v => `<div class="chip ${cur === v ? 'sel' : ''}" style="background:${v}" data-k="${k}" data-v="${v}"></div>`).join('') + '</div></div>';
+  }
+  function yn(title, k) {
+    const L = getLook();
+    return `<div style="margin-top:8px"><b>${title}</b><div class="row">` + YESNO[k].map((t, i) => `<button class="${!!L[k] === !!i ? 'on' : ''}" data-k="${k}" data-b="${i}">${t}</button>`).join('') + '</div></div>';
   }
   $('#lookOpts').onclick = e => {
-    const { k, v } = e.target.dataset; if (!k) return;
-    getLook()[k] = k === 'hair' ? +v : v; buildOpts();
+    const { k, v, b } = e.target.dataset; if (!k) return;
+    getLook()[k] = b != null ? b === '1' : k === 'hair' ? +v : v; buildOpts();
   };
   $('#rotL').onclick = () => { dir = ROT_L[dir]; };
   $('#rotR').onclick = () => { dir = ROT_R[dir]; };

@@ -50,8 +50,10 @@ export function makeCache(max = 300) {
 }
 
 // Ombre ovale au sol.
+// 7g : décalage des ombres selon l'heure (posé par le moteur de rendu à chaque image)
+export const SHADOW = { dx: 0, sx: 1 };
 export function groundShadow(c, cx, cy, rx, ry, a = 0.28) {
-  c.fillStyle = `rgba(20,12,8,${a})`;
+  c.fillStyle = `rgba(20,12,8,${a})`; cx += SHADOW.dx; rx = Math.round(rx * SHADOW.sx);
   for (let dy = -ry; dy <= ry; dy++) {
     const w = Math.round(rx * Math.sqrt(1 - (dy * dy) / (ry * ry)));
     c.fillRect(cx - w, cy + dy, w * 2, 1);

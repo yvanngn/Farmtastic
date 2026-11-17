@@ -54,3 +54,12 @@ test('nuit et orage assombrissent', () => {
   assert.ok(darkness({ minute: 1400, weather: 'storm' }) > 0.5);
   assert.equal(fmtTime(1385), '23:00');
 });
+
+test('7g : lumière dorée le matin, orangée le soir, rien la nuit ; ombres vers l’ouest le matin, vers l’est le soir', async () => {
+  const { timeTint, sunShadow } = await import('../src/systems/weather.js');
+  const m = timeTint(390), soir = timeTint(1060), nuit = timeTint(1300);
+  assert.ok(m[3] > .08 && m[1] > m[2], 'matin doré'); assert.ok(soir[3] > .1 && soir[0] > soir[2], 'soir orangé'); assert.equal(nuit[3], 0);
+  assert.ok(timeTint(390, 'rain')[3] < m[3], 'moins fort sous la pluie');
+  assert.ok(sunShadow(400).dx < 0 && sunShadow(1100).dx > 0 && sunShadow(765).dx === 0);
+  assert.ok(sunShadow(400).sx > 1, 'ombres longues le matin');
+});

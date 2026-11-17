@@ -59,6 +59,7 @@ Réponses de l'utilisateur : un **cocher** conduit la diligence (peut-être un P
 - [x] Nouvelle scène **Gare** (à l'ouest du centre-ville) : voie ferrée, quai en planches, gare « FARMWEST » avec horloge, bancs.
 - [x] Une **locomotive à vapeur** entre en gare (fumée, sifflet) ; pensées du héros.
 - [x] **Myst** accueille le héros sur le quai.
+- [x] (v0.1.17) Pendant l'intro : bouton **⏩ maintenir pour accélérer** (×6), bouton **⏭ Passer l'intro** (direct devant la ferme, la première libre) ; plus rien d'autre de cliquable (barre d'outils, sac, touches) que la bulle de dialogue.
 - [x] (v0.1.16) Le héros **arrive dans le train** (visible à la fenêtre du wagon), pense pendant que le train est à quai, puis **descend sur le quai** où l'attend Myst.
 - [x] **Diligence** (deux chevaux, cocher au chapeau, roues qui tournent) : traversée du centre-ville d'ouest en est ; Myst raconte la légende, puis la diligence **s'arrête devant chaque bâtiment le temps de son explication** (charpentier et halle, saloon, place et fontaine, magasin d'outils et marchand d'animaux, pont) ; elle passe le pont et entre au rond-point.
 - [x] Au **rond-point**, Myst fait **choisir une des 4 fermes** (en multijoueur, une ferme prise par un autre joueur est indiquée et refusée).
@@ -102,9 +103,9 @@ La liste détaillée est dans `docs/CARNET.md`, section « Chantier graphique ni
 - [x] 7c. Bâtiments western (v0.1.15) : **fausses façades en planches** à gradins et corniche, **auvent sur poteaux** au-dessus du trottoir, contours sombres, ombre au sol ; **saloon** plus haut avec balcon, rideaux rouges et **portes battantes** ; nouveau **bureau du shérif** (décor : étoile, barreaux, avis de recherche) au sud-ouest.
 - [x] 7d. Arbres, cactus, rochers (v0.1.15) : chênes plus volumineux (lumière en haut à gauche, ombre en dessous) ; rochers avec reflets, facettes et mousse ; **cactus saguaro** (fleur au printemps, neige l'hiver) et cailloux ocre à la gare, au rond-point et au ranch.
 - [x] 7e. Personnages et animaux (v0.1.16) : **marche de profil en 8 images** (cuisse + tibia, genoux qui plient, bras opposés, rebond, cheveux qui suivent) ; **bottes** pour tous ; chapeaux western (**cowboy**, **melon**, paille), **gilets** et **bandanas** ; 💡 Manu (chapeau, gilet, bandana), Harry (chapeau, chemise rouge, bandana), Myst (melon), Ed (gilet) ; **Jade en taille enfant** ; pattes des animaux et de la poule qui bougent, bandana du chien.
-- [ ] 7e bis. **Personnalisation des vêtements de style western** (demande du 17/11) : chapeaux (cow-boy, melon…), bandanas, gilets, chemises à carreaux, jambières, bottes à éperons, robes de saloon ; dans l'écran de création et dans 👕 plus tard.
+- [x] 7e bis. **Tenue western** dans l'écran de création (v0.1.17) : chapeau (cow-boy, melon, paille), gilet et bandana (6 couleurs ou aucun), chemise à carreaux, jambières en cuir, bottes à éperons, **robe de saloon** à volant. ⏳ À changer en cours de partie (👕) plus tard.
 - [x] 7f. Intérieurs, icônes, interface (v0.1.16) : **parquet en lames décalées**, tableaux western et étagères aux murs, ombre des meubles ; **icônes pixel art** pour ~110 objets (bois, pierre, graines, récoltes, champignons, fleurs, poissons, minerais, gemmes, bocaux, plats…) à la place des émojis ; **interface en planches de bois** (cadres, boutons en bois, titres en police western), **cartes et dialogues sur parchemin**.
-- [ ] 7g. Lumière, ombres et ambiance (poussière, couchers de soleil).
+- [x] 7g. Lumière et ambiance (v0.1.17) : **lumière dorée le matin**, chaude en journée, **orangée puis rose le soir** (atténuée par les nuages et la pluie) ; **ombres portées qui tournent avec le soleil** (longues vers l'ouest le matin, vers l'est le soir) ; **ombres de nuages** qui glissent ; **poussière dorée** qui flotte, **pétales** au printemps.
 
 ---
 
