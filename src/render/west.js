@@ -4,7 +4,7 @@ import { CFG } from '../config.js';
 import { LAYOUTS } from '../world/scenes.js';
 import { rng } from '../world/map.js';
 import { shade, disc } from './pixel.js';
-import { autotile, canopy, paintRiver, dress } from './terrain.js';
+import { autotile, canopy, paintRiver, dress, roofFor } from './terrain.js';
 import { GRASS } from './ground.js';
 import { treeSprite, pineSprite, cactusSprite, pebbleSprite } from './sprites.js';
 
@@ -75,7 +75,7 @@ export function buildWest(name, season) {
       let xe = x; while (at(xe + 1, y) === ch) xe++; let ye = y; while (at(x, ye + 1) === ch) ye++; out.push([x, y, xe, ye]); }
     return out; };
   const planks = (x, y, w, h, wall, dark) => { R(x, y, w, h, wall); for (let k = 3; k < h; k += 4) R(x, y + k, w, 1, dark); for (let k = 0; k < w; k += 9) R(x + k, y, 1, h, shade(wall, .9)); };
-  const roof = (x, y, w, h, col) => { for (let k = 0; k < h; k++) R(x - 3 + k, y + k, w + 6 - k * 2, 1, k % 3 === 0 ? shade(col, .8) : col); R(x - 3, y + h, w + 6, 2, shade(col, .6)); };
+  const roof = (x, y, w, h, col) => roofFor(R, x, y, w, h, col);   // (avant : pan qui rétrécissait vers le bas, à l'envers)
   const win = (x, y) => { R(x, y, 10, 9, '#5b3a22'); R(x + 1, y + 1, 8, 7, '#ffd98a'); R(x + 5, y + 1, 1, 7, '#5b3a22'); R(x + 1, y + 4, 8, 1, '#5b3a22'); };
   for (const [x0, y0, x1, y1] of block('H')) {   // maison du ranch : véranda, toit rouge
     const px = x0 * T, py = y0 * T, w = (x1 - x0 + 1) * T, h = (y1 - y0 + 1) * T;

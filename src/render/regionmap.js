@@ -4,7 +4,7 @@
 // Une fois par saison (cache). Le DOM n'est utilisé que pour créer le canvas.
 import { rng } from '../world/map.js';
 import { shade, disc } from './pixel.js';
-import { paintGrass, paintOchre, paintRoad, paintRiver, paintBridge, paintCliff, paintPlanks, autotile, WEST_GRASS } from './terrain.js';
+import { paintGrass, paintOchre, paintRoad, paintRiver, paintBridge, paintCliff, paintPlanks, autotile, roofFor, WEST_GRASS } from './terrain.js';
 import { treeSprite, pineSprite, cactusSprite } from './sprites.js';
 import { FARM_LOTS } from '../data/buildings.js';
 
@@ -75,14 +75,11 @@ function house(g, x, y, w, h, wall, roof, opt = {}) {   // bâtiment en 3/4 : to
   R(x + 2, y + h, w, 3, 'rgba(40,20,10,.3)');                       // ombre portée
   R(x, y + rh, w, h - rh, wall); R(x, y + rh, 1, h - rh, shade(wall, 1.15)); R(x + w - 2, y + rh, 2, h - rh, shade(wall, .78));
   for (let k = y + rh + 3; k < y + h; k += 3) R(x + 1, k, w - 3, 1, shade(wall, .9));   // planches
-  R(x - 2, y + 2, w + 4, rh, roof); R(x - 2, y + 2, w + 4, 2, lt); R(x - 2, y + rh, w + 4, 2, dk);   // toit
-  for (let k = y + 6; k < y + rh; k += 3) R(x - 1, k, w + 2, 1, dk);   // rangées de bardeaux
-  if (opt.peak) { g.fillStyle = roof; g.beginPath(); g.moveTo(x - 2, y + 3); g.lineTo(x + w / 2, y - 4); g.lineTo(x + w + 2, y + 3); g.fill(); R(x + w / 2 - 1, y - 3, 2, 3, lt); }
+  roofFor(R, x, y + 2 - (opt.peak ? 6 : 0), w, rh + (opt.peak ? 6 : 0), roof);   // toit refait (pan ou pignon)
   const dw = Math.max(3, w / 5 | 0); R(x + w / 2 - dw / 2, y + h - 6, dw, 6, '#3a2414'); R(x + w / 2 - dw / 2, y + h - 6, dw, 1, '#6a4426');
   if (w >= 12) for (const fx of [x + 2, x + w - 6]) { R(fx, y + rh + 3, 4, 3, '#ffd98a'); R(fx, y + rh + 3, 4, 1, '#3a2a20'); }
   if (opt.sign) { R(x + w / 2 - 6, y + rh - 3, 12, 4, '#e8d4ac'); R(x + w / 2 - 5, y + rh - 2, 10, 1, '#5b3a22'); }
   if (opt.chimney) { R(x + w - 6, y - 2, 3, 6, '#7a4a3a'); R(x + w - 6, y - 2, 3, 1, '#a86a52'); }
-  g.strokeStyle = shade(roof, .5); g.lineWidth = 1; g.strokeRect(x - 1.5, y + 2.5, w + 3, rh - 1);
 }
 function mountain(g, cx, base, w, hgt, season) {   // montagne en 3/4 : versant éclairé à gauche, ombre à droite, neige au sommet
   const top = base - hgt, tri = (pts, col) => { g.fillStyle = col; g.beginPath(); pts.forEach(([a, b], i) => i ? g.lineTo(a, b) : g.moveTo(a, b)); g.closePath(); g.fill(); };

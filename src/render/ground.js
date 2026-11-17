@@ -5,7 +5,7 @@ import { ground, isFence, isPond, rng, isHedge } from '../world/map.js';
 import { shade, disc } from './pixel.js';
 import { BUILDINGS } from '../data/buildings.js';
 import { signBoard } from './pixfont.js';
-import { autotile, paintRiver } from './terrain.js';
+import { autotile, paintRiver, roofFor, roofGable } from './terrain.js';
 const T = CFG.T;
 
 export const GRASS = ['#86ae46', '#9aac44', '#b2a048', '#e4ecef'];   // Farmwest (7a) : herbe plus chaude et sèche (voir terrain.js)
@@ -116,12 +116,7 @@ function drawHouse(g, R) {
   R(x0, wallTop, 2, wallBot - wallTop, '#a46a3c'); R(x1 - 2, wallTop, 2, wallBot - wallTop, '#8a552d');
   R(x0, wallBot - 3, x1 - x0, 3, '#7e5634');
   // toit en bardeaux
-  for (let i = 0, y = 10; y < wallTop; i++, y += 4) {
-    const inset = Math.max(0, 14 - i * 2), lx = x0 - 6 + inset, w = x1 - x0 + 12 - inset * 2;
-    R(lx, y, w, 4, '#b8432f'); R(lx, y, w, 1, '#d4614a');
-    for (let sx = lx + (i % 2 ? 3 : 0); sx < lx + w; sx += 6) R(sx, y + 1, 1, 3, '#8a2e22');
-  }
-  R(x0 - 7, wallTop - 2, x1 - x0 + 14, 3, '#6b2a1e');
+  roofFor(R, x0, 8, x1 - x0, wallTop - 8, '#b8432f');
   // cheminée
   R(92, 2, 9, 14, '#7d7680'); R(92, 2, 9, 2, '#a29ca6'); R(92, 7, 9, 1, '#5a545e'); R(95, 11, 1, 3, '#5a545e');
   // fenêtre + jardinière
@@ -230,7 +225,7 @@ function drawGrange(R) {
   R(x0 - 2, bot, x1 - x0 + 4, 3, 'rgba(20,12,8,.3)');
   R(x0, top, x1 - x0, bot - top, '#8a7a68'); for (let x = x0; x < x1; x += 5) R(x, top, 1, bot - top, '#6e604f');
   R(x0, top, x1 - x0, 2, '#a8987f');
-  for (let i = 0; i < 10; i++) { const inset = i * 3; R(x0 - 4 + inset, top - i * 2 - 2, x1 - x0 + 8 - inset * 2, 2, i % 2 ? '#5a4a3e' : '#6e5c4c'); }
+  roofFor(R, x0, top - 22, x1 - x0, 22, '#6e5c4c');
   R(x0 + 3, top + 10, 6, 5, '#3b3028'); R(x0 + 4, top + 11, 4, 3, '#22201e');
   const dx = 12 * T; R(dx - 1, top + 14, 18, bot - top - 14, '#3b3028'); R(dx + 1, top + 16, 14, bot - top - 16, '#0e0c0c');
   R(dx + 11, top + 16, 5, bot - top - 16, '#7a6a58'); R(dx + 12, top + 18, 1, bot - top - 20, '#5a4e40');
@@ -244,11 +239,7 @@ export function drawFranckHouse(R) {
   R(x0 - 2, bot, x1 - x0 + 4, 3, 'rgba(20,12,8,.3)');
   R(x0, top, x1 - x0, bot - top, '#b8bcc4'); for (let y = top + 4; y < bot; y += 5) R(x0, y, x1 - x0, 1, '#9ca0aa');
   R(x0, bot - 3, x1 - x0, 3, '#7e828c');
-  for (let i = 0, y = top - 26; y < top; i++, y += 4) {
-    const inset = Math.max(0, 12 - i * 2), lx = x0 - 6 + inset, w = x1 - x0 + 12 - inset * 2;
-    R(lx, y, w, 4, '#3e5a7a'); R(lx, y, w, 1, '#5a7a9a'); for (let sx = lx + (i % 2 ? 3 : 0); sx < lx + w; sx += 6) R(sx, y + 1, 1, 3, '#2a4058');
-  }
-  R(x0 - 7, top - 2, x1 - x0 + 14, 3, '#2a3a4e');
+  roofFor(R, x0, top - 26, x1 - x0, 26, '#3e5a7a');
   R(x0 + 6, top + 6, 14, 12, '#e8e4dc'); R(x0 + 8, top + 8, 10, 8, '#3a3a4a');
   const dx = 27 * T; R(dx, top + 8, 16, bot - top - 8, '#2a3a4e'); R(dx + 2, top + 10, 12, bot - top - 10, '#4a5f7a'); R(dx + 11, top + 22, 2, 2, '#c9c2b0');
   R(dx - 2, bot, 20, 3, '#9a958c');
@@ -262,11 +253,7 @@ export function drawLunaHouse(R) {
   R(x0 - 2, bot, x1 - x0 + 4, 3, 'rgba(20,12,8,.3)');
   R(x0, top, x1 - x0, bot - top, '#e8d8c0'); for (let y = top + 4; y < bot; y += 5) R(x0, y, x1 - x0, 1, '#cdb898');
   R(x0, top, 2, bot - top, '#d4c2a4'); R(x1 - 2, top, 2, bot - top, '#b8a482'); R(x0, bot - 3, x1 - x0, 3, '#9a8466');
-  for (let i = 0, y = top - 26; y < top; i++, y += 4) {
-    const inset = Math.max(0, 12 - i * 2), lx = x0 - 6 + inset, w = x1 - x0 + 12 - inset * 2;
-    R(lx, y, w, 4, '#7a5a9a'); R(lx, y, w, 1, '#9a7aba'); for (let sx = lx + (i % 2 ? 3 : 0); sx < lx + w; sx += 6) R(sx, y + 1, 1, 3, '#5a3a7a');
-  }
-  R(x0 - 7, top - 2, x1 - x0 + 14, 3, '#4a2c5a');
+  roofFor(R, x0, top - 26, x1 - x0, 26, '#7a5a9a');
   R(x0 + 6, top + 6, 14, 12, '#f4ead8'); R(x0 + 8, top + 8, 10, 8, '#ffd98a'); R(x0 + 12, top + 8, 1, 8, '#f4ead8'); R(x0 + 8, top + 11, 10, 1, '#f4ead8');
   R(x0 + 5, top + 18, 16, 3, '#8a5a32'); for (const [fx, col] of [[7, '#c9a0ff'], [11, '#ffffff'], [15, '#c9a0ff']]) R(x0 + fx, top + 16, 2, 2, col);
   const dx = 20 * T; R(dx, top + 8, 16, bot - top - 8, '#4a2c5a'); R(dx + 2, top + 10, 12, bot - top - 10, '#7a5a9a'); R(dx + 11, top + 22, 2, 2, '#f2cf73');
@@ -313,7 +300,7 @@ function drawBarn(R) {
   R(x, y + 30, w, 3, 'rgba(20,12,8,.3)');
   R(x, y + 10, w, 20, '#b8452f'); for (let i = 0; i < w; i += 4) R(x + i, y + 10, 1, 20, '#93321f');
   R(x, y + 28, w, 2, '#f0e6d0');
-  for (let i = 0; i < 10; i++) { const inset = i < 4 ? i : 4 + (i - 4) * 3; R(x - 3 + inset, y + 10 - i, w + 6 - inset * 2, 1, i % 2 ? '#5a3a2a' : '#6e4a36'); }
+  roofGable(R, x, y - 8, w, 18, '#6e4a36', false);
   R(x + 22, y + 15, 22, 15, '#f0e6d0'); R(x + 23, y + 16, 20, 14, '#6e2a1f');
   for (let k = 0; k < 14; k++) { R(x + 23 + k * 1.4, y + 16 + k, 2, 1, '#f0e6d0'); R(x + 42 - k * 1.4, y + 16 + k, 2, 1, '#f0e6d0'); }
   R(x + 4, y + 15, 10, 8, '#f0e6d0'); R(x + 5, y + 16, 8, 6, '#7fb6d9'); R(x + 9, y + 16, 1, 6, '#f0e6d0');

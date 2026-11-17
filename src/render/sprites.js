@@ -2,7 +2,7 @@
 import { CFG } from '../config.js';
 import { CROPS } from '../data/crops.js';
 import { cropProgress } from '../systems/farming.js';
-import { shade, disc, canvas, outline, makeCache, groundShadow, hex6 } from './pixel.js';
+import { shade, disc, canvas, outline, makeCache, groundShadow, hex6, harmonize } from './pixel.js';
 import { rng } from '../world/map.js';
 const T = CFG.T;
 const cache = makeCache(400);
@@ -10,146 +10,126 @@ const SHOE = '#4a2e1e', EYE = '#2a1d18';
 export const WALK_N = 8;   // marche : cycle de 8 images (walkFrame 1..8, 0 = à l'arrêt)
 const f4 = f => f ? [1, 2, 3, 0][(f - 1) >> 1] : 0;   // face / dos : 4 poses tirées des 8 images
 
-/* ---------------- Personnage (16×23, contour inclus) ---------------- */
-// L.body : 'h' | 'f' ; L.bottom : 'pant' | 'skirt' ; L.hair : 0 court, 1 long, 2 épis, 3 chignon, 4 queue, 5 couettes.
-function rawChar(c, L, d, f, blink, noArm = false) {   // noArm : le bras qui tient l'outil est dessiné à part (coup d'outil)
-  if (d !== 3) f = f4(f);   // face / dos : 4 poses
-  const r = (x, y, w, h, col) => { c.fillStyle = col; c.fillRect(2 + x, 2 + y, w, h); };
-  const S = hex6(L.skin), Sd = shade(S, .82), Sh = hex6(L.shirt), Shd = shade(Sh, .76), Shl = shade(Sh, 1.18);
-  const P = hex6(L.pants), Pd = shade(P, .72), H = hex6(L.hairC), Hl = shade(H, 1.35), Hd = shade(H, .72);
-  const fem = L.body === 'f', robe = L.bottom === 'robe', skirt = L.bottom === 'skirt' || robe, LIPS = '#d0606e';
-  const CHAPS = '#8a5a32', SPUR = '#e8c26a';
-  const bob = (f === 1 || f === 3) ? -1 : 0, st = L.hair, long = st === 1;
-  let up = (x, y, w, h, col) => r(x, y + bob, w, h, col);
-
-  if (d === 3) { // profil droit (le gauche = miroir) — Farmwest 7e : marche en 8 images (skill animation-marche-pixel)
-    const ph = f ? (f - 1) / WALK_N * Math.PI * 2 : 0, walking = !!f;
-    const pb = walking && Math.abs(Math.sin(ph)) > .7 ? 1 : 0;   // rebond : le corps descend quand les jambes sont écartées
-    const upw = (x, y, w, h, col) => r(x, y + pb, w, h, col);
-    const seg = (x, y, len, ang, w, col) => { for (let k = 0; k <= len; k += .5) r(Math.round(x + Math.sin(ang) * k), Math.round(y + Math.cos(ang) * k), w, 1, col); return [x + Math.sin(ang) * len, y + Math.cos(ang) * len]; };
-    const leg = (p, dark) => {   // cuisse + tibia, le genou plie quand la jambe revient vers l'avant ; botte au sol
-      const a1 = walking ? Math.sin(p) * .7 : 0, a2 = a1 - (walking ? Math.max(0, -Math.cos(p)) * .7 : 0), lift = walking && -Math.cos(p) > .3 ? 1 : 0;
-      const legC = skirt ? (dark ? Sd : S) : L.chaps ? (dark ? shade(CHAPS, .8) : CHAPS) : (dark ? Pd : P), boot = dark ? shade(SHOE, .82) : SHOE;
-      const [kx, ky] = seg(5, 13 + pb, 2.5, a1, 2, legC);
-      const fx = Math.round(kx + Math.sin(a2) * 2);
-      seg(kx, ky, 2, a2, 2, legC);
-      r(fx, 17 - lift, 2, 1, boot); r(fx, 18 - lift, 3, 1, boot); r(fx, 18 - lift, 1, 1, shade(boot, .7));   // botte : tige et talon
-      if (L.spurs) r(fx - 1, 18 - lift, 1, 1, SPUR);   // éperon
-    };
-    const arm = (sign, dark) => {   // bras opposés aux jambes, avant-bras légèrement plié, main couleur peau
-      const a = walking ? sign * Math.sin(ph) * (sign < 0 ? .6 : .55) : 0, col = dark ? shade(Sh, .6) : shade(Sh, .72);
-      const [ex, ey] = seg(5, 10 + pb, 2, a, 2, col);
-      const [hx, hy] = seg(ex, ey, 1.5, a * .6 + .15, 2, col);
-      if (!noArm || dark) r(Math.round(hx), Math.round(hy) + 1, 2, 1, S);
-    };
-    const lag = walking ? Math.round(Math.sin(2 * ph - 1) * .8) : 0;   // cheveux longs et queue suivent avec un léger retard
-    if (long && !L.hat) upw(2 - lag, 4, 2, 6, Hd);
-    arm(1, true); leg(ph + Math.PI, true); leg(ph, false);
-    if (skirt) { upw(3, 13, 6, 3, P); upw(2, 15, 8, 1, Pd); if (robe) { upw(2, 15, 8, 2, P); upw(1, 17, 9, 1, '#f4ead2'); upw(2, 13, 1, 4, Pd); } }
-    upw(3, 9, 6, 5, Sh); upw(3, 9, 1, 5, Shd); upw(8, 9, 1, 4, Shl); if (!skirt) upw(3, 13, 6, 1, Pd);
-    if (L.plaid) { upw(3, 10, 6, 1, Shd); upw(3, 12, 6, 1, Shd); upw(5, 9, 1, 5, Shd); upw(7, 9, 1, 5, Shd); }
-    if (L.coat) { upw(3, 9, 6, 9, Sh); upw(3, 9, 1, 9, Shd); upw(8, 9, 1, 8, Shl); upw(5, 13, 1, 5, Shd); }  // long manteau
-    if (L.vest) { upw(3, 9, 3, 5, L.vest); upw(3, 9, 1, 5, shade(L.vest, .75)); }
-    if (L.bandana) upw(6, 9, 3, 1, L.bandana);
-    if (!noArm) arm(-1, false);
-    up = upw; // la tête suit le rebond
-    up(3, 2, 7, 7, S); up(3, 8, 7, 1, Sd); up(10, 5, 1, 1, S); up(5, 5, 1, 2, Sd);
-    up(8, blink ? 6 : 5, 1, blink ? 1 : 2, EYE); up(8, 7, 2, 1, fem ? LIPS : shade(S, .7));
-    if (fem && !blink) up(9, 4, 1, 1, EYE);
-    if (st === 3) { up(3, 1, 7, 2, H); up(1, 2, 3, 3, H); up(4, 1, 3, 1, Hl); return; }
-    up(3, 1, 7, 3, H); up(5, 1, 3, 1, Hl);
-    if (st === 4) { up(3, 1, 3, 4, H); up(1 - lag, 3, 2, 7, H); up(1 - lag, 3, 1, 7, Hd); return; }
-    if (st === 5) { up(3, 1, 3, 4, H); up(3, 4, 2, 6, H); up(3, 8, 2, 1, '#e8c26a'); return; }
-    up(3, 1, 3, long ? 9 : 5, H); up(3, 4, 1, long ? 6 : 2, Hd);
-    if (st === 2) { up(4, 0, 1, 1, H); up(7, 0, 1, 1, H); up(9, 1, 1, 1, H); }
-    return;
-  }
-  // face (0) / dos (1)
-  const l1 = f === 1 ? 1 : 0, l2 = f === 3 ? 1 : 0;
-  if (skirt) {
-    r(3, 16 - l1, 2, 2, S); r(7, 16 - l2, 2, 2, Sd);
-    r(3, 18 - l1, 3, 1, SHOE); r(6, 18 - l2, 3, 1, SHOE);
-    up(2, 13, 8, 2, P); up(1, 15, 10, 1, Pd); up(2, 13, 1, 2, shade(P, 1.15));
-    if (robe) { up(1, 15, 10, 2, P); up(0, 17, 12, 1, '#f4ead2'); for (let k = 1; k < 11; k += 3) up(k, 15, 1, 2, Pd); }   // robe de saloon à volant
-  } else {
-    r(3, 14 - l1, 3, 3, L.chaps ? CHAPS : P); r(6, 14 - l2, 3, 3, L.chaps ? shade(CHAPS, .85) : Pd); if (L.chaps) { r(3, 14 - l1, 1, 3, '#c99560'); r(8, 14 - l2, 1, 3, '#c99560'); }
-    r(3, 17 - l1, 3, 2, SHOE); r(6, 17 - l2, 3, 2, shade(SHOE, .85)); r(3, 17 - l1, 3, 1, shade(SHOE, 1.3)); r(6, 17 - l2, 3, 1, SHOE);   // bottes (7e)
-    if (L.spurs) { r(2, 18 - l1, 1, 1, SPUR); r(9, 18 - l2, 1, 1, SPUR); }
-  }
-  const tw = fem ? 1 : 0; // taille plus fine
-  up(2 + tw, 9, 8 - tw * 2, 5, Sh); up(2, 9, 8, 2, Sh); up(2, 9, 1, 2, Shl); up(2 + tw, 11, 1, 3, Shl); up(9 - tw, 9, 1, 5, Shd);
-  if (L.plaid) { up(2, 10, 8, 1, Shd); up(2, 12, 8, 1, Shd); for (const k of [4, 7]) up(k, 9, 1, 5, Shd); }   // chemise à carreaux
-  if (!skirt) up(2, 13, 8, 1, Pd);
-  if (L.coat) { up(2, 9, 8, 9, Sh); up(2, 9, 1, 9, Shl); up(9, 9, 1, 9, Shd); if (d === 0) { up(5, 10, 2, 8, Shd); up(5, 9, 2, 1, S); } }  // long manteau, fermé
-  if (d === 0) { up(5, 9, 2, 1, S); if (fem) up(4, 9, 4, 1, S); }
-  if (L.vest) { up(2, 9, 3, 5, L.vest); up(7, 9, 3, 5, L.vest); if (d === 1) up(2, 9, 8, 5, L.vest); up(2, 9, 1, 5, shade(L.vest, 1.15)); }
-  if (L.bandana && d === 0) { up(3, 9, 6, 1, L.bandana); up(5, 10, 2, 1, L.bandana); }
-  up(1, 10 + l2, 1, 4, Shd); up(1, 14 + l2, 1, 1, S); if (!noArm) { up(10, 10 + l1, 1, 4, Shd); up(10, 14 + l1, 1, 1, S); }
-  up(2, 2, 8, 7, S); up(9, 3, 1, 5, Sd); up(2, 8, 8, 1, Sd);
-  if (d === 0) {
-    if (blink) { up(3, 6, 2, 1, EYE); up(7, 6, 2, 1, EYE); }
-    else { up(4, 5, 1, 2, EYE); up(7, 5, 1, 2, EYE); up(4, 5, 1, 1, '#fff8'); if (fem) { up(3, 4, 1, 1, EYE); up(8, 4, 1, 1, EYE); } }
-    if (L.sad) { // air triste : sourcils tombants, bouche vers le bas, pas de joues roses
-      up(3, 4, 2, 1, Hd); up(7, 4, 2, 1, Hd); up(4, 3, 1, 1, Hd); up(7, 3, 1, 1, Hd);
-      up(5, 7, 2, 1, shade(S, .65)); up(4, 8, 1, 1, shade(S, .7)); up(7, 8, 1, 1, shade(S, .7));
-    } else { up(5, 7, 2, 1, fem ? LIPS : shade(S, .7)); up(3, 7, 1, 1, '#ff6a6a66'); up(8, 7, 1, 1, '#ff6a6a66'); }
-  }
-  if (st === 3) {
-    up(2, 1, 8, 2, H); up(4, -1, 4, 2, H); up(5, -1, 2, 1, Hl);
-    if (d === 1) { up(2, 1, 8, 6, H); up(3, 2, 2, 1, Hl); }
-    return;
-  }
-  up(2, 1, 8, 3, H); up(3, 1, 3, 1, Hl);
-  if (st === 2) { up(2, 0, 1, 1, H); up(5, 0, 2, 1, H); up(9, 0, 1, 1, H); up(5, 0, 1, 1, Hl); }
-  if (st === 4) { // queue de cheval
-    if (d === 1) { up(2, 1, 8, 6, H); up(3, 2, 2, 3, Hl); up(5, 7, 2, 6, H); up(5, 7, 2, 1, '#e8c26a'); }
-    else { up(2, 3, 1, 2, H); up(9, 3, 1, 2, H); up(10, 4, 1, 5, Hd); }
-    return;
-  }
-  if (st === 5) { // couettes
-    if (d === 1) { up(2, 1, 8, 6, H); up(3, 2, 2, 3, Hl); }
-    else { up(2, 3, 1, 2, H); up(9, 3, 1, 2, H); }
-    up(-1, 4, 2, 6, H); up(11, 4, 2, 6, H); up(-1, 4, 2, 1, '#e8c26a'); up(11, 4, 2, 1, '#e8c26a'); up(-1, 9, 1, 1, Hd); up(12, 9, 1, 1, Hd);
-    return;
-  }
-  if (d === 1) { up(2, 1, 8, long ? 10 : 6, H); up(3, 2, 2, long ? 6 : 3, Hl); up(8, 2, 1, long ? 8 : 4, Hd); }
-  else if (long) { up(1, 3, 2, 7, H); up(9, 3, 2, 7, H); up(1, 3, 1, 7, Hd); up(10, 3, 1, 7, Hd); }
-  else { up(2, 3, 1, 2, H); up(9, 3, 1, 2, H); }
+/* ---------------- Personnage façon Stardew (16 × 31, contour coloré inclus : canvas 18 × 33) ---------------- */
+// Grosse tête (10 × 10), yeux avec du blanc, 3 tons par couleur (lumière en haut à gauche), contour brun.
+// L.body : 'h' | 'f' ; L.bottom : 'pant' | 'skirt' | 'robe' ; L.hair : 0 court, 1 long, 2 épis, 3 chignon, 4 queue, 5 couettes.
+// d : 0 face, 1 dos, 3 profil droit (2 = miroir) ; f : 0 à l'arrêt, 1..8 marche.
+function rawChar(c, L, d, f, blink, noArm = false) {
+  const r = (x, y, w, h, col) => { c.fillStyle = col; c.fillRect(1 + x, 1 + y, w, h); };
+  const S = hex6(L.skin), Sd = shade(S, .84), Sh = hex6(L.shirt), Shd = shade(Sh, .74), Shl = shade(Sh, 1.2);
+  const P = hex6(L.pants), Pd = shade(P, .72), Pl = shade(P, 1.18), H = hex6(L.hairC), Hl = shade(H, 1.4), Hd = shade(H, .7);
+  const fem = L.body === 'f', robe = L.bottom === 'robe', skirt = L.bottom === 'skirt' || robe, st = L.hair, long = st === 1;
+  const CH = '#8a5a32', SP = '#e8c26a', B = SHOE, Bl = shade(SHOE, 1.4), LIPS = '#c8586a', BLUSH = '#f0907a';
+  const walking = !!f, ph = walking ? (f - 1) / WALK_N * Math.PI * 2 : 0;
+  const bob = walking && Math.abs(Math.sin(ph)) > .7 ? 1 : 0;   // le corps descend quand les jambes sont écartées
+  const u = (x, y, w, h, col) => r(x, y + bob, w, h, col);
+  // ----- jambes et pieds
+  const legs = () => {
+    if (d === 3) {
+      const leg = (p, dark) => { const sw = walking ? Math.round(Math.sin(p) * 2) : 0, lift = walking && -Math.cos(p) > .3 ? 1 : 0, col = skirt ? (dark ? Sd : S) : L.chaps ? (dark ? shade(CH, .8) : CH) : (dark ? Pd : P);
+        r(6 + sw, 22 + bob, 3, 5 - lift, col); r(6 + sw, 27 - lift, 4, 2, dark ? shade(B, .8) : B); r(6 + sw, 27 - lift, 4, 1, Bl); if (L.spurs) r(5 + sw, 28 - lift, 1, 1, SP); };
+      leg(ph + Math.PI, true); leg(ph, false); return;
+    }
+    const g4 = walking ? [1, 2, 3, 0][(f - 1) >> 1] : 0, l1 = g4 === 1 ? 1 : 0, l2 = g4 === 3 ? 1 : 0;
+    if (skirt) { r(5, 25 - l1, 2, 2, S); r(9, 25 - l2, 2, 2, Sd); r(4, 27 - l1, 3, 2, B); r(9, 27 - l2, 3, 2, B); r(4, 27 - l1, 3, 1, Bl); return; }
+    const LC = L.chaps ? CH : P;
+    r(4, 22, 4, 5 - l1, LC); r(8, 22, 4, 5 - l2, L.chaps ? shade(CH, .85) : Pd); r(4, 22, 1, 5 - l1, L.chaps ? '#c99560' : Pl); r(7, 23, 1, 4 - l1, Pd);
+    r(3, 27 - l1, 5, 2, B); r(8, 27 - l2, 5, 2, shade(B, .85)); r(3, 27 - l1, 5, 1, Bl); r(8, 27 - l2, 5, 1, B);   // bottes
+    if (L.spurs) { r(2, 28 - l1, 1, 1, SP); r(13, 28 - l2, 1, 1, SP); }
+  };
+  // ----- buste, bras
+  const body = () => {
+    if (d === 3) {
+      const a = walking ? Math.round(Math.sin(ph + Math.PI) * 2) : 0;
+      if (!noArm) { /* bras arrière */ }
+      u(5, 13, 6, 9, Sh); u(5, 13, 1, 9, Shl); u(10, 13, 1, 9, Shd);
+      if (L.plaid) { u(5, 15, 6, 1, Shd); u(5, 18, 6, 1, Shd); u(7, 13, 1, 9, Shd); }
+      if (L.coat) { u(4, 13, 7, 13, Sh); u(4, 13, 1, 13, Shl); u(10, 13, 1, 13, Shd); }
+      if (L.vest) { u(5, 13, 3, 8, L.vest); u(5, 13, 1, 8, shade(L.vest, 1.15)); }
+      if (L.bandana) u(8, 13, 3, 2, L.bandana);
+      if (skirt) { u(4, 20, 8, 4, P); u(3, 23, 10, 2, Pd); u(4, 20, 1, 4, Pl); if (robe) { u(3, 24, 10, 2, P); u(3, 26, 10, 1, '#f4ead2'); } }
+      else u(5, 21, 6, 1, Pd);
+      if (!noArm) { u(7 + a, 14, 2, 6, Shd); u(7 + a, 20, 2, 2, S); }   // bras qui balance
+      return;
+    }
+    const g4 = walking ? [1, 2, 3, 0][(f - 1) >> 1] : 0, s1 = g4 === 1 ? 1 : g4 === 3 ? -1 : 0, tw = fem ? 1 : 0;
+    u(3, 13, 10, 9, Sh); u(3 + tw, 19, 1, 3, Sh); u(3, 13, 1, 7, Shl); u(4, 13, 3, 1, Shl); u(11, 14, 2, 8, Shd);
+    if (fem) { u(3, 19, 1, 3, Sh); }
+    if (L.plaid) { for (const y of [15, 18]) u(3, y, 10, 1, Shd); for (const x of [6, 9]) u(x, 13, 1, 9, Shd); }
+    if (d === 0) { u(6, 13, 4, 1, S); u(7, 14, 2, 1, S); }   // col ouvert
+    if (L.coat) { u(2, 13, 12, 14, Sh); u(2, 13, 1, 14, Shl); u(12, 13, 2, 14, Shd); if (d === 0) { u(7, 14, 2, 13, Shd); u(6, 13, 4, 1, S); } }
+    if (L.vest) { const V = L.vest; if (d === 1) u(3, 13, 10, 8, V); else { u(3, 13, 3, 8, V); u(10, 13, 3, 8, V); } u(3, 13, 1, 8, shade(V, 1.15)); }
+    if (L.bandana && d === 0) { u(5, 13, 6, 2, L.bandana); u(7, 15, 2, 1, L.bandana); }
+    if (skirt) { u(3, 20, 10, 3, P); u(2, 23, 12, 2, Pd); u(3, 20, 1, 3, Pl); if (robe) { u(2, 24, 12, 2, P); u(1, 26, 14, 1, '#f4ead2'); for (let k = 2; k < 14; k += 3) u(k, 24, 1, 2, Pd); } }
+    else u(3, 21, 10, 1, Pd);   // ceinture
+    u(1, 14 + s1, 2, 6, Shd); u(1, 14 + s1, 1, 5, Sh); u(1, 20 + s1, 2, 2, S);                // bras gauche
+    if (!noArm) { u(13, 14 - s1, 2, 6, Shd); u(14, 14 - s1, 1, 5, shade(Shd, .85)); u(13, 20 - s1, 2, 2, Sd); }   // bras droit
+  };
+  // ----- tête
+  const head = () => {
+    if (d === 3) {
+      u(4, 2, 9, 10, S); u(5, 1, 7, 1, S); u(12, 4, 1, 7, Sd); u(5, 11, 7, 1, Sd); u(13, 7, 1, 2, S);   // nez
+      if (blink) u(10, 8, 2, 1, EYE); else { u(10, 6, 1, 3, EYE); u(11, 6, 1, 2, '#ffffff'); }
+      u(11, 10, 2, 1, fem ? LIPS : shade(S, .7)); if (!L.sad) u(9, 9, 1, 1, BLUSH);
+      // cheveux (derrière et dessus)
+      u(4, 0, 8, 3, H); u(3, 1, 3, 9, H); u(4, 3, 3, 4, H); u(6, 0, 4, 1, Hl); u(3, 2, 1, 6, Hd);
+      if (long) u(2, 4, 3, 11, H); if (st === 4) { u(1, 3, 3, 9, H); u(1, 4, 1, 7, Hd); u(2, 3, 2, 1, '#e8c26a'); }
+      if (st === 5) { u(2, 6, 2, 7, H); u(2, 6, 2, 1, '#e8c26a'); } if (st === 3) { u(1, -1, 5, 4, H); u(2, -1, 2, 1, Hl); }
+      if (st === 2) { u(5, -1, 1, 1, H); u(8, -1, 1, 1, H); u(11, 0, 1, 1, H); }
+      return;
+    }
+    u(3, 2, 10, 10, S); u(4, 1, 8, 1, S); u(4, 12, 8, 1, Sd); u(12, 3, 1, 9, Sd); u(3, 11, 1, 1, Sd);
+    u(7, 12, 2, 1, Sd);   // cou
+    if (d === 0) {
+      if (blink) { u(5, 8, 2, 1, EYE); u(9, 8, 2, 1, EYE); }
+      else { u(5, 6, 1, 3, '#ffffff'); u(6, 6, 1, 3, EYE); u(9, 6, 1, 3, EYE); u(10, 6, 1, 3, '#ffffff'); u(6, 6, 1, 1, '#5a4a6a'); u(9, 6, 1, 1, '#5a4a6a'); if (fem) { u(5, 5, 2, 1, EYE); u(9, 5, 2, 1, EYE); } }
+      if (L.sad) { u(5, 4, 2, 1, Hd); u(9, 4, 2, 1, Hd); u(7, 10, 2, 1, shade(S, .62)); u(6, 11, 1, 1, shade(S, .7)); u(9, 11, 1, 1, shade(S, .7)); }
+      else { u(7, 10, 2, 1, fem ? LIPS : shade(S, .66)); u(4, 9, 1, 1, BLUSH); u(11, 9, 1, 1, BLUSH); }
+    }
+    // cheveux
+    if (d === 1) { u(3, 0, 10, 11, H); u(4, 1, 3, 2, Hl); u(11, 2, 2, 9, Hd); if (long) u(3, 11, 10, 5, H); if (st === 4) { u(7, 10, 3, 7, H); u(7, 10, 3, 1, '#e8c26a'); } if (st === 3) { u(6, -2, 4, 3, H); u(7, -2, 2, 1, Hl); } if (st === 5) { u(0, 5, 2, 8, H); u(14, 5, 2, 8, H); } return; }
+    u(3, 0, 10, 3, H); u(2, 2, 2, 6, H); u(12, 2, 2, 6, H); u(4, 3, 3, 1, H); u(9, 3, 3, 1, H); u(7, 3, 2, 2, H);   // frange
+    u(5, 0, 4, 1, Hl); u(4, 1, 2, 1, Hl); u(13, 3, 1, 5, Hd);
+    if (long) { u(1, 5, 3, 11, H); u(12, 5, 3, 11, H); u(1, 5, 1, 11, Hd); u(14, 5, 1, 11, Hd); }
+    if (st === 2) { u(4, -1, 1, 1, H); u(7, -1, 2, 1, H); u(11, -1, 1, 1, H); }
+    if (st === 3) { u(6, -2, 4, 3, H); u(7, -2, 2, 1, Hl); }
+    if (st === 4) { u(13, 4, 2, 8, H); u(14, 4, 1, 8, Hd); }
+    if (st === 5) { u(0, 5, 2, 8, H); u(14, 5, 2, 8, H); u(0, 5, 2, 1, '#e8c26a'); u(14, 5, 2, 1, '#e8c26a'); }
+  };
+  legs(); body(); head();
 }
 
 function charSprite(L, d, f, blink, noArm = false) {
   const k = (noArm ? 'n' : 'c') + L.body + L.bottom + L.skin + L.hair + L.hairC + L.shirt + L.pants + (L.sad ? 's' : '') + (L.coat ? 'k' : '') + (L.hat || '') + (L.vest || '') + (L.bandana || '') + (L.plaid ? 'p' : '') + (L.chaps ? 'j' : '') + (L.spurs ? 'e' : '') + d + f + blink;
   return cache(k, () => {
-    const s = canvas(16, 23), c = s.getContext('2d');
-    if (d === 2) { c.translate(16, 0); c.scale(-1, 1); }
+    const s = canvas(18, 33), c = s.getContext('2d');
+    if (d === 2) { c.translate(18, 0); c.scale(-1, 1); }
     rawChar(c, L, d === 2 ? 3 : d, f, blink, noArm);
     if (L.hat) drawHat(c, L, d === 2 ? 3 : d, f);
-    return outline(s);
+    return outline(s, shade(hex6(L.hairC || '#5a3a22'), .45));   // contour coloré (teinte des cheveux, jamais noir)
   });
 }
 
 // Farmwest (7e) : chapeaux western — 'cowboy' (bords relevés, ruban), 'melon' (rond, noir), 'paille'.
 export const HATS = { cowboy: ['#8a5a32', '#6a4426', '#3a2a20'], melon: ['#2a2630', '#1a1820', '#8a2a2a'], paille: ['#e6c870', '#c9a84a', '#a83a2a'] };
 function drawHat(c, L, d, f) {
-  const [A, B, rib] = HATS[L.hat] || HATS.cowboy, r = (x, y, w, h, col) => { c.fillStyle = col; c.fillRect(2 + x, 2 + y, w, h); };
-  let by;
-  if (d === 3) { const ph = f ? (f - 1) / WALK_N * Math.PI * 2 : 0; by = f && Math.abs(Math.sin(ph)) > .7 ? 1 : 0; }
-  else { const g = f4(f); by = (g === 1 || g === 3) ? -1 : 0; }
-  if (L.hat === 'melon') { r(2, 1 + by, 9, 1, A); r(3, -2 + by, 7, 3, A); r(4, -3 + by, 5, 1, A); r(3, 0 + by, 7, 1, rib); r(4, -2 + by, 2, 1, shade(A, 1.6)); return; }
-  if (d === 3) { r(1, 1 + by, 11, 1, B); r(1, 0 + by, 1, 1, B); r(11, 0 + by, 1, 1, B); r(3, -2 + by, 7, 3, A); r(5, -3 + by, 3, 1, A); r(3, 0 + by, 7, 1, rib); r(4, -2 + by, 2, 1, shade(A, 1.3)); return; }
-  r(0, 1 + by, 12, 1, B); r(0, 0 + by, 1, 1, B); r(11, 0 + by, 1, 1, B); r(2, -2 + by, 8, 3, A); r(3, -3 + by, 2, 1, A); r(7, -3 + by, 2, 1, A); r(2, 0 + by, 8, 1, rib); r(3, -2 + by, 2, 1, shade(A, 1.3));
+  const [A, Bc, rib] = HATS[L.hat] || HATS.cowboy, r = (x, y, w, h, col) => { c.fillStyle = col; c.fillRect(1 + x, 1 + y, w, h); };
+  const ph = f ? (f - 1) / WALK_N * Math.PI * 2 : 0, by = f && Math.abs(Math.sin(ph)) > .7 ? 1 : 0;
+  if (L.hat === 'melon') { r(2, 2 + by, 12, 1, A); r(4, -2 + by, 8, 4, A); r(5, -3 + by, 6, 1, A); r(4, 1 + by, 8, 1, rib); r(5, -2 + by, 2, 1, shade(A, 1.7)); return; }
+  if (d === 3) { r(1, 2 + by, 14, 1, Bc); r(1, 1 + by, 1, 1, Bc); r(14, 1 + by, 1, 1, Bc); r(4, -2 + by, 9, 4, A); r(6, -3 + by, 5, 1, A); r(4, 1 + by, 9, 1, rib); r(5, -2 + by, 2, 1, shade(A, 1.3)); return; }
+  r(0, 2 + by, 16, 1, Bc); r(0, 1 + by, 1, 1, Bc); r(15, 1 + by, 1, 1, Bc); r(3, -2 + by, 10, 4, A); r(4, -3 + by, 3, 1, A); r(9, -3 + by, 3, 1, A); r(3, 1 + by, 10, 1, rib); r(4, -2 + by, 2, 1, shade(A, 1.3));
 }
-// ox, oy : coin haut-gauche du personnage 12×20. t : horloge pour le clignement.
+// ox, oy : coin haut-gauche de l'ancien gabarit 12 × 20 (les pieds en oy + 18). t : horloge pour le clignement.
 export function drawChar(c, ox, oy, L, d, f, t = 0, noArm = false) {
-  groundShadow(c, ox + 6, oy + 20, 5, 2);
-  const blink = (t % 4200) < 130, spr = charSprite(L, d, f || 0, blink, noArm);
-  if (L.kid) { // enfant (7e) : plus petit — tête entière, buste et jambes raccourcis
-    c.drawImage(spr, 0, 0, spr.width, 12, ox - 2, oy + 3, spr.width, 12);
-    c.drawImage(spr, 0, 15, spr.width, spr.height - 15, ox - 2, oy + 15, spr.width, spr.height - 15);
-  } else if (L.tall) { // grand : le buste est allongé de 3 pixels
-    c.drawImage(spr, 0, 0, spr.width, 14, ox - 2, oy - 5, spr.width, 14);
-    c.drawImage(spr, 0, 11, spr.width, spr.height - 11, ox - 2, oy + 9, spr.width, spr.height - 11);
-  } else c.drawImage(spr, ox - 2, oy - 2);
+  groundShadow(c, ox + 6, oy + 19, 6, 2);
+  const blink = (t % 4200) < 130, spr = charSprite(L, d, f || 0, blink, noArm), x = ox - 3, y = oy - 12;
+  if (L.kid) {   // enfant : tête entière, buste et jambes raccourcis
+    c.drawImage(spr, 0, 0, 18, 15, x, y + 6, 18, 15);
+    c.drawImage(spr, 0, 20, 18, 13, x, y + 20, 18, 13);
+  } else if (L.tall) {   // grand : buste allongé de 3 pixels
+    c.drawImage(spr, 0, 0, 18, 20, x, y - 3, 18, 20);
+    c.drawImage(spr, 0, 17, 18, 16, x, y + 17, 18, 16);
+  } else c.drawImage(spr, x, y);
 }
 
 /* ---------------- Icônes pixel des outils (roues, bouton d'action) ---------------- */
@@ -448,7 +428,7 @@ function chickenSprite(flip, st = 0) {   // 7e : pattes et aile qui bougent en m
 export function drawChicken(c, a, now) {
   const px = Math.round(a.x * T), py = Math.round(a.y * T + (a.moving ? Math.sin(now / 80) : 0));
   groundShadow(c, px, py + 5, 5, 2);
-  c.drawImage(chickenSprite(!!a.f, a.moving ? (now / 120 | 0) % 2 : 0), px - 7, py - 8);
+  { const im = aniSprite('chicken', !!a.f, a.moving ? (now / 120 | 0) % 2 : 0); c.drawImage(im, px - (im.width >> 1), py + 6 - im.height); }
   if (a.produced) { bubble(c, px, py - 14); c.fillStyle = '#fdf6e3'; c.fillRect(px - 2, py - 18, 4, 5); c.fillRect(px - 1, py - 19, 2, 1); }
   if (a.heart > 0) { const hy = py - 14 - (1 - a.heart) * 8; c.fillStyle = '#ff5a7a'; c.fillRect(px - 3, hy, 2, 2); c.fillRect(px + 1, hy, 2, 2); c.fillRect(px - 3, hy + 1, 6, 2); c.fillRect(px - 2, hy + 3, 4, 1); c.fillRect(px - 1, hy + 4, 2, 1); }
 }
@@ -493,50 +473,50 @@ export function drawJelly(c, px, py, col, now, seed, hit, speed = 180) {
 }
 
 /* ---------------- Lapin, mouton, chat ---------------- */
-function animalSprite(type, flip, sit, st = 0) {   // 7e : st = pas (pattes qui alternent en marchant)
-  return cache('a' + type + flip + sit + st, () => {
-    const fw = st ? 1 : 0, bw = st ? -1 : 0;
-    const s = canvas(18, 16), c = s.getContext('2d');
-    if (flip) { c.translate(18, 0); c.scale(-1, 1); }
-    const R = (a, b, w, h, col) => { c.fillStyle = col; c.fillRect(a, b, w, h); };
-    if (type === 'rabbit') {
-      R(4, 8, 8, 5, '#e9e2d6'); R(4, 12, 8, 1, '#c9bfae'); R(3, 9, 2, 3, '#f5f0e8');
-      R(10, 5, 5, 5, '#e9e2d6'); R(11, 0, 2, 6, '#e9e2d6'); R(13, 1, 2, 5, '#d6cbb9'); R(11, 1, 1, 4, '#f2b8c6');
-      R(13, 7, 1, 1, '#2a1d18'); R(15, 8, 1, 1, '#f08aa0'); R(5 + bw, 13, 2, 1, '#c9bfae'); R(9 + fw, 13, 2, 1, '#c9bfae'); R(4, 8, 4, 1, '#fffaf2');
-    } else if (type === 'sheep') {
-      for (const [x, y, r] of [[6, 8, 4], [10, 7, 4], [8, 10, 4], [4, 10, 3], [12, 10, 3]]) disc(c, x, y, r, '#f4f1ea');
-      disc(c, 7, 7, 2, '#ffffff'); disc(c, 11, 11, 2, '#dcd6ca');
-      R(13, 6, 4, 5, '#3b3440'); R(13, 6, 4, 1, '#f4f1ea'); R(15, 8, 1, 1, '#f5f0e8'); R(12, 6, 1, 2, '#3b3440');
-      R(5 + bw, 13, 2, 2, '#3b3440'); R(10 + fw, 13, 2, 2, '#3b3440'); R(7 - fw, 13, 1, 2, '#2a242e');
-    } else if (type === 'dog') { // chien beige aux oreilles tombantes
-      const c = '#c99560', d = '#8a5a32', l = '#e8c08a';
-      if (sit) { R(5, 7, 7, 7, c); R(6, 8, 4, 5, l); R(3, 12, 3, 2, c); R(2, 9, 2, 3, c); }
-      else { R(3, 7, 10, 5, c); R(4, 8, 7, 2, l); R(4 + bw, 12, 2, 3, d); R(10 + fw, 12, 2, 3, d); R(1, 5 - fw, 2, 3, c); R(1, 4 - fw, 1, 2, d); }
-      R(11, 9, 4, 2, '#a8302b'); R(12, 11, 2, 1, '#a8302b');   // bandana western
-      R(11, 3, 6, 6, c); R(16, 6, 2, 2, '#3a2a20'); R(11, 3, 2, 5, d); R(14, 5, 1, 1, '#2a1d18'); R(13, 9, 3, 1, '#f08aa0');
-    } else if (type === 'pig') {
-      const p = '#f2a7b4', d = '#d98394', l = '#ffc8d2';
-      R(2, 7, 11, 6, p); R(3, 6, 9, 1, p); R(2, 12, 11, 1, d); R(3, 7, 6, 2, l);
-      R(12, 6, 5, 6, p); R(16, 8, 2, 3, d); R(16, 9, 1, 1, '#8a4a58'); R(14, 7, 1, 1, '#2a1d18'); R(12, 5, 2, 2, d); R(15, 5, 1, 2, d);
-      R(1, 8, 1, 2, d); R(0, 7, 1, 1, d);
-      R(3 + bw, 13, 2, 2, d); R(6 + fw, 13, 2, 2, d); R(9 + bw, 13, 2, 2, d); R(12 + fw, 12, 2, 2, d);
-    } else { // chat roux tigré
-      const o = '#e08a3a', d = '#b8642a';
-      if (sit) { R(5, 7, 7, 7, o); R(6, 8, 1, 5, d); R(8, 8, 1, 5, d); R(3, 12, 3, 2, o); R(2, 10, 2, 3, o); }
-      else { R(3, 8, 10, 4, o); R(5, 8, 1, 4, d); R(8, 8, 1, 4, d); R(4 + bw, 12, 2, 2, o); R(10 + fw, 12, 2, 2, o); R(1, 5 - fw, 2, 4, o); R(2, 4, 1, 2, d); }
-      R(11, 4, 5, 5, o); R(11, 3, 1, 2, o); R(15, 3, 1, 2, o); R(12, 4, 1, 1, '#f2b8a0'); R(14, 4, 1, 1, '#f2b8a0');
-      R(12, 6, 1, 1, '#2a6a2a'); R(14, 6, 1, 1, '#2a6a2a'); R(13, 7, 1, 1, '#f08aa0'); R(16, 7, 2, 1, '#fff8'); R(11, 8, 5, 1, '#f5e2c8');
-    }
-    return outline(s, '#3a2a20');
+// Animaux façon Stardew (dessinés en pixels, tête à gauche ; retournés selon le sens de marche) : 3 tons, contour coloré.
+const ANI = {
+  chicken: { pal: { o: '#6a4a3a', W: '#fffaf0', w: '#e8dccc', g: '#c8b8a6', R: '#e0402a', Y: '#f2b030', e: '#2a2030', l: '#e89a30' }, rows: [
+    '......oRo.......', '.....oRRRo......', '.....oWWWWo.....', '...ooWeWWWo.....', '..oYYWWWWWo.....', '...ooRWWWWo..ooo',
+    '.....oWWWWWooWWo', '....oWWWWWWWWWwo', '...oWWWWWWWWWwwo', '...oWWwwwWWWwwo.', '...oWWwggwWwwwo.', '....owwwwwwwwo..', '.....oooooooo...'],
+    legs: [['.......l..l.....', '......ll.ll.....'], ['......l...l.....', '.....ll...ll....']] },
+  pig: { pal: { o: '#6e3a3a', P: '#f0a8a8', p: '#d08484', q: '#ffd4d4', n: '#e68c8c', N: '#8a4a4a', e: '#2a2030' }, rows: [
+    '....oo..............', '...oPPo..oooooooo...', '..oPPPPooqqqqqqqqo..', '.onnPePPPqPPPPPPPPo.', 'onNnPPPPPPPPPPPPPPo.',
+    'onnnPPPPPPPPPPPPPPpo', '.onnPPPPPPPPPPPPPppo', '..oPPPPPPPPPPPPPppo.', '..opPPPPPPPPPPPpppo.', '...oppppppppppppoo..'],
+    legs: [['...opo.opo..opo.opo.', '...ooo.ooo..ooo.ooo.'], ['..opo..opo...opo.opo', '..ooo..ooo...ooo.ooo']] },
+  sheep: { pal: { o: '#4a3a3a', W: '#f6f2ea', V: '#d6cec2', f: '#3a3036', e: '#f2e8d0' }, rows: [
+    '.......ooo.ooo.oo...', '.....ooWWWoWWWoWWo..', '..oooWWWVWWWVWWWVWo.', '.offfoWWWWWWWWWWWWWo', 'offefoWVWWWVWWWWVWWo',
+    'offfffWWWWWWWWWWWWVo', '.offfoWWWVWWWWVWWWWo', '..ooooWWWWWWWWWWWWo.', '.....oVWWWVWWWVWWo..', '......ooooooooooo...'],
+    legs: [['......ofo.ofo.ofo.ofo', '......ooo.ooo.ooo.ooo'], ['.....ofo..ofo..ofo.of', '.....ooo..ooo..ooo.oo']] },
+  rabbit: { pal: { o: '#7a6a5a', W: '#f4efe6', w: '#ddd4c6', k: '#f2b8c6', e: '#2a2030', n: '#f08aa0' }, rows: [
+    '...oo.oo........', '..oWkoWko.......', '..oWkoWko.......', '..oWWoWWo.......', '.oWWWWWWWo......', 'oeWWWWWWWoooo...',
+    'onWWWWWWWWWWWo..', '.owWWWWWWWWWWWo.', '..owWWWWWWWWWWWo', '...owwWWWWWWwwo.', '....oooooooooo..'],
+    legs: [['.....ow..ow.....', '.....oo..oo.....'], ['....ow....ow....', '....oo....oo....']] },
+  dog: { pal: { o: '#5a3a22', C: '#c99560', c: '#a8774a', l: '#e8c08a', d: '#8a5a32', e: '#2a2030', n: '#3a2a20', R: '#c0392b' }, rows: [
+    '..ooooo.............', '.oCCCCCo............', 'odCCCeCCoo..........', 'odCCCCCCCno.........', '.odCCCCCCCo.......o.',
+    '..oRRRRCCCoooooooooCo', '...oRRlCCCCCCCCCCCo.', '....oClllCCCCCCCCco.', '....oCCCCCCCCCCCcco.', '.....occccccccccco..'],
+    legs: [['.....odo.odo..odo.odo', '.....ooo.ooo..ooo.ooo'], ['....odo..odo.odo..odo', '....ooo..ooo.ooo..ooo']] },
+  cat: { pal: { o: '#6a3a1a', O: '#e08a3a', d: '#b8642a', l: '#f5e2c8', k: '#f2b8a0', e: '#2a6a2a', n: '#f08aa0' }, rows: [
+    '.o...o..........', 'oOo.oOo.........', 'okOOOkO.........', 'oOeOOeOo........', 'oOOnOOOo.....o..', '.olllOOOoooooOo.',
+    '..oOdOOdOOdOOOo.', '..oOOdOOdOOdOOo.', '...oOOOOOOOOOo..'],
+    legs: [['...oOo...oOo....', '...ooo...ooo....'], ['..oOo.....oOo...', '..ooo.....ooo...']] }
+};
+function aniSprite(type, flip, st) {
+  return cache('A' + type + flip + st, () => {
+    const A = ANI[type], rows = [...A.rows, ...A.legs[st ? 1 : 0]], w = Math.max(...rows.map(x => x.length)), h = rows.length;
+    const s = canvas(w, h), c = s.getContext('2d');
+    if (!flip) { c.translate(w, 0); c.scale(-1, 1); }   // dessiné tête à gauche : on le retourne pour regarder à droite
+    rows.forEach((row, y) => [...row].forEach((ch, x) => { const col = A.pal[ch]; if (col) { c.fillStyle = col; c.fillRect(x, y, 1, 1); } }));
+    return harmonize(s);
   });
 }
+function animalSprite(type, flip, sit, st = 0) { return aniSprite(ANI[type] ? type : 'cat', flip, st); }
 
 const PROD_COL = { egg: '#fdf6e3', wool: '#ffffff', rabbit_wool: '#f6dfe6', truffle: '#6b4a36' };
 export function drawAnimal(c, a, now, def) {
   if (a.type === 'chicken') return drawChicken(c, a, now);
   const px = Math.round(a.x * T), py = Math.round(a.y * T + (a.moving ? Math.sin(now / (a.type === 'rabbit' ? 60 : 110)) * (a.type === 'rabbit' ? 2 : 1) : 0));
   groundShadow(c, px, py + 5, a.type === 'sheep' ? 7 : 5, 2);
-  c.drawImage(animalSprite(a.type, !!a.f, !a.moving && a.type === 'cat' ? 1 : 0, a.moving ? (now / 150 | 0) % 2 : 0), px - 9, py - 10);
+  { const im = animalSprite(a.type, !!a.f, 0, a.moving ? (now / 150 | 0) % 2 : 0); c.drawImage(im, px - (im.width >> 1), py + 6 - im.height); }   // pattes au sol
   if (a.produced && def && def.prod) { bubble(c, px, py - 15); c.fillStyle = PROD_COL[def.prod] || '#fff'; c.fillRect(px - 3, py - 20, 6, 4); }
   if (a.heart > 0) { const hy = py - 15 - (1 - a.heart) * 8; c.fillStyle = '#ff5a7a'; c.fillRect(px - 3, hy, 2, 2); c.fillRect(px + 1, hy, 2, 2); c.fillRect(px - 3, hy + 1, 6, 2); c.fillRect(px - 2, hy + 3, 4, 1); c.fillRect(px - 1, hy + 4, 2, 1); }
 }

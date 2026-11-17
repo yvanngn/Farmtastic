@@ -1,4 +1,4 @@
-import { paintGrass, paintOchre, paintRoad, paintPlanks, softEdge, OCHRE, paintRiver, paintBridge, paintCliff, autotile, ROAD, canopy, dress } from './terrain.js';
+import { paintGrass, paintOchre, paintRoad, paintPlanks, softEdge, OCHRE, paintRiver, paintBridge, paintCliff, autotile, ROAD, canopy, dress, roofFor } from './terrain.js';
 // Centre du village pré-rendu : place pavée, halle du marché, panneau d'affichage,
 // fontaine, lampadaires, bancs, jardinières et arbres. Reconstruit à chaque saison.
 import { CFG } from '../config.js';
@@ -84,8 +84,7 @@ export function buildTown(season) {
   R(ux + 2, uy - 4, uw - 4, 3 * T + 2, '#8a5a32');
   for (let k = 0; k < 3 * T; k += 4) R(ux + 2, uy - 4 + k, uw - 4, 1, '#74482a');
   R(ux + uw - 12, uy - 4, 10, 3 * T + 2, '#6e4426');
-  for (let i = 0; i < 9; i++) R(ux - 3 + (8 - i) * 2, uy - 24 + i * 2, uw + 6 - (8 - i) * 4, 2, i % 2 ? '#4f5a74' : '#5f6b88'); // toit : pointe en haut
-  R(ux - 4, uy - 6, uw + 8, 3, '#3b4258');
+  roofFor(R, ux, uy - 26, uw, 22, '#5f6b88');
   R(ux + 24, uy + 14, 16, 26, '#4a2c18'); R(ux + 26, uy + 16, 12, 24, '#6e4426'); R(ux + 35, uy + 28, 2, 2, '#e8c26a');
   R(ux + 6, uy + 8, 14, 12, '#3b2414'); R(ux + 7, uy + 9, 12, 10, '#ffd98a'); R(ux + 12, uy + 9, 1, 10, '#3b2414'); R(ux + 7, uy + 13, 12, 1, '#3b2414');
   R(ux + 44, uy + 8, 14, 12, '#3b2414'); R(ux + 45, uy + 9, 12, 10, '#ffd98a'); R(ux + 50, uy + 9, 1, 10, '#3b2414'); R(ux + 45, uy + 13, 12, 1, '#3b2414');
@@ -268,8 +267,7 @@ export function buildQuartier(season) {
   { // maison de Hailey (x24-27, y4-6) : petite maison rose pâle, toit turquoise, jardinière, porte x25
     const x0 = QUARTIER.hailey.x * T, y0 = QUARTIER.hailey.y * T, w = 4 * T;
     R(x0 + 2, y0 - 4, w - 4, 3 * T + 4, '#f2dce0'); for (let k = 0; k < 3 * T; k += 5) R(x0 + 2, y0 - 4 + k, w - 4, 1, '#e4c8ce');
-    for (let i = 0; i < 9; i++) R(x0 - 3 + (8 - i) * 2, y0 - 22 + i * 2, w + 6 - (8 - i) * 4, 2, i % 2 ? '#4a8a84' : '#5aa8a0');
-    R(x0 - 4, y0 - 5, w + 8, 3, '#2e5a56');
+    roofFor(R, x0, y0 - 24, w, 21, '#5aa8a0');
     R(x0 + T + 2, y0 + 2 * T - 6, 12, T + 6, '#6a4a3e'); R(x0 + T + 3, y0 + 2 * T - 5, 10, T + 5, '#8a5e4a'); R(x0 + T + 10, y0 + 2 * T + 2, 2, 2, '#e8c26a');
     for (const wx of [x0 + 6, x0 + w - 18]) { R(wx, y0 + 8, 12, 11, '#6a4a3e'); R(wx + 1, y0 + 9, 10, 9, '#bfe3f5'); R(wx + 5, y0 + 9, 1, 9, '#6a4a3e'); R(wx - 1, y0 + 19, 14, 3, '#8a5a32'); R(wx, y0 + 17, 3, 2, '#f07ab0'); R(wx + 5, y0 + 17, 3, 2, '#f6d24a'); R(wx + 9, y0 + 17, 3, 2, '#f07ab0'); }
     R(x0 + T, y0 + 3 * T - 1, 16, 3, '#c2bdb4');
@@ -278,8 +276,7 @@ export function buildQuartier(season) {
     const h = QUARTIER.remy, x0 = h.x * T, y0 = h.y * T, w = h.w * T;
     R(x0 - 2, y0 + 3 * T, w + 4, 3, 'rgba(20,12,8,.3)');
     R(x0 + 2, y0 - 4, w - 4, 3 * T + 4, '#c8d8e4'); for (let k = 0; k < 3 * T; k += 5) R(x0 + 2, y0 - 4 + k, w - 4, 1, '#a8bccc');
-    for (let i = 0; i < 9; i++) R(x0 - 3 + (8 - i) * 2, y0 - 22 + i * 2, w + 6 - (8 - i) * 4, 2, i % 2 ? '#8f3224' : '#a8432f');
-    R(x0 - 4, y0 - 5, w + 8, 3, '#5a2a22'); R(x0 + w - 18, y0 - 26, 7, 14, '#6a6a72'); R(x0 + w - 19, y0 - 27, 9, 2, '#4a4a52');
+    roofFor(R, x0, y0 - 24, w, 21, '#a8432f'); R(x0 + w - 18, y0 - 26, 7, 14, '#6a6a72'); R(x0 + w - 19, y0 - 27, 9, 2, '#4a4a52');
     const dx = h.door * T + 1; R(dx, y0 + 2 * T - 6, 14, T + 6, '#3b2414'); R(dx + 2, y0 + 2 * T - 4, 10, T + 4, '#8a5a32'); R(dx + 9, y0 + 2 * T + 4, 2, 2, '#e8c26a');
     for (const wx of [x0 + 6, x0 + w - 18]) { R(wx, y0 + 10, 12, 11, '#3b2414'); R(wx + 1, y0 + 11, 10, 9, '#ffd98a'); R(wx + 5, y0 + 11, 1, 9, '#3b2414'); }
     R(x0 + 4, y0 + 3 * T - 8, 10, 6, '#7a4f2e'); R(x0 + 5, y0 + 3 * T - 11, 2, 3, '#5aa040'); R(x0 + 9, y0 + 3 * T - 12, 2, 4, '#5aa040'); R(x0 + 12, y0 + 3 * T - 10, 2, 2, '#e0402a');   // herbes aromatiques
@@ -289,8 +286,7 @@ export function buildQuartier(season) {
     R(x0 - 2, bot, w + 4, 3, 'rgba(20,12,8,.3)');
     R(x0, top, w, bot - top, '#b8664a'); for (let y = top + 3; y < bot; y += 4) { R(x0, y, w, 1, '#9a523a'); for (let x = x0 + ((y / 4 | 0) % 2) * 4; x < x0 + w; x += 8) R(x, y - 3, 1, 3, '#9a523a'); }
     R(x0, top + 2 * T + 6, w, 2, '#e8dcc8');   // bandeau entre les étages
-    for (let i = 0; i < 10; i++) R(x0 - 4 + (9 - i) * 2, top - 22 + i * 2, w + 8 - (9 - i) * 4, 2, i % 2 ? '#4a4e5a' : '#5e6470');   // toit
-    R(x0 - 4, top - 4, w + 8, 3, '#2e3038'); R(x0 + w - 14, top - 18, 6, 14, '#7a3a2a'); R(x0 + w - 15, top - 19, 8, 2, '#5a2a1e');   // cheminée
+    roofFor(R, x0, top - 24, w, 22, '#5e6470');   // toit R(x0 + w - 14, top - 18, 6, 14, '#7a3a2a'); R(x0 + w - 15, top - 19, 8, 2, '#5a2a1e');   // cheminée
     const win = (x, y) => { R(x, y, 12, 12, '#e8dcc8'); R(x + 1, y + 1, 10, 10, '#a8d0e8'); R(x + 6, y + 1, 1, 10, '#e8dcc8'); R(x + 1, y + 6, 10, 1, '#e8dcc8'); };
     for (const k of [6, 2 * T - 6, w - 18]) win(x0 + k, top + 8);   // étage
     win(x0 + 6, y0 + 10); win(x0 + w - 18, y0 + 10);   // rez-de-chaussée

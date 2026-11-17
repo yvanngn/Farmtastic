@@ -173,3 +173,29 @@ export function dress(g, W, H, ground, building, seed = 1) {
     }
   }
 }
+
+// ---------- Toits (refaits : avant, les toits étaient « à l'envers ») ----------
+// A — pan de toit façon Stardew : grand pan d'ardoises sur toute la largeur (débord de 3 px), faîtage clair en haut,
+// rangées de plus en plus sombres vers l'avant-toit, avant-toit dans l'ombre et ombre portée sur la façade.
+// B — pignon pointu : triangle vers le haut, rives sombres, petite lucarne. roofFor choisit : grandes maisons → A, petites → B.
+export function roofSlab(R, x, y, w, h, base) {
+  R(x - 4, y, w + 8, h, shade(base, .5));
+  R(x - 3, y + 1, w + 6, h - 2, base);
+  for (let r = 0; r < h - 5; r += 4) { const f = 1.12 - r / h * .35; R(x - 3, y + 3 + r, w + 6, 3, shade(base, f)); R(x - 3, y + 6 + r, w + 6, 1, shade(base, f * .72)); for (let k = (r / 4 % 2) * 3; k < w + 6; k += 6) R(x - 3 + k, y + 3 + r, 1, 3, shade(base, f * .78)); }
+  R(x - 3, y + 1, w + 6, 2, shade(base, 1.3));
+  R(x - 4, y + h - 3, w + 8, 3, shade(base, .55));
+  R(x - 4, y + h, w + 8, 2, 'rgba(20,12,8,.28)');
+}
+export function roofGable(R, x, y, w, h, base, lucarne = true) {
+  const cx = x + w / 2;
+  for (let r = 0; r < h; r++) {
+    const half = Math.max(1, Math.round((w / 2 + 4) * (r + 1) / h));
+    R(Math.round(cx - half), y + r, half * 2, 1, shade(base, 1.12 - r / h * .3 - (r % 4 === 3 ? .22 : 0)));
+    R(Math.round(cx - half) - 1, y + r, 2, 1, shade(base, .5)); R(Math.round(cx + half) - 1, y + r, 2, 1, shade(base, .5));
+    if (r > 2) R(Math.round(cx - half) + 2, y + r, 1, 1, shade(base, 1.25));   // rive éclairée à gauche
+  }
+  R(Math.round(cx) - 1, y - 1, 2, 2, shade(base, .5));
+  if (lucarne && h >= 16) { R(cx - 5, y + h - 13, 10, 8, '#f4ead8'); R(cx - 4, y + h - 12, 8, 6, '#ffd98a'); R(cx, y + h - 12, 1, 6, '#f4ead8'); }
+  R(x - 4, y + h, w + 8, 2, 'rgba(20,12,8,.28)');
+}
+export const roofFor = (R, x, y, w, h, base) => w >= 72 ? roofSlab(R, x, y, w, h, base) : roofGable(R, x, y, w, h, base);
