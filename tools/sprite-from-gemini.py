@@ -11,6 +11,9 @@ src = open(os.path.join(ROOT, 'tools/hero-propositions.py')).read().split('cells
 G = {'__file__': os.path.join(ROOT, 'tools/hero-propositions.py')}; exec(src, G)
 PICK = {
   'myst': dict(H=40, ncol=40, white=222, front=[0, 1, 2, 3], back=[4, 5, 6, 7], side=[(8, 1), (9, 1), (10, 1), (11, 1)]),   # planche myst_v2 (profils tournés à droite → miroir)
+  'franck': dict(H=38, ncol=40, white=222, front=[0, 1, 2, 3], back=[4, 5, 6, 7], side=[(8, 1), (9, 1), (10, 1), (11, 1)]),
+  'hailey': dict(H=36, ncol=40, white=240, halo=0, front=[0, 1, 2, 3], back=[4, 5, 6, 5], side=[(8, 1), (9, 1), (10, 1), (11, 1)]),
+  'luna': dict(H=36, ncol=40, white=240, halo=0, front=[0, 1, 2, 3], back=[5, 6, 5, 6], side=[(8, 1), (9, 1), (10, 1), (11, 1)]),
 }
 def blobs(im):
     a = np.array(im).astype(int); fg = np.abs(a - 255).sum(2) > 60
@@ -41,7 +44,7 @@ for name, P in PICK.items():
             rgb = a[..., :3]; grey = (rgb.max(2) - rgb.min(2) < 40) & (rgb.mean(2) > 95)
             a[op & edge & grey, 3] = 0
         return Image.fromarray(a.astype('uint8'), 'RGBA')
-    rows = {v: [G['outline'](halo(G['crisp'](c, k, C))) for c in r] for v, r in rows.items()}
+    rows = {v: [G['outline']((halo if P.get('halo', 1) else (lambda x: x))(G['crisp'](c, k, C))) for c in r] for v, r in rows.items()}
     n = 4; FW = max(c.size[0] for r in rows.values() for c in r) + 2; FH = max(c.size[1] for r in rows.values() for c in r) + 2
     sh = Image.new('RGBA', (FW * n, FH * 3))
     for ri, v in enumerate(('front', 'back', 'side')):

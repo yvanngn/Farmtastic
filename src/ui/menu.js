@@ -24,6 +24,7 @@ import { HAND_RECIPES, RECIPE_CATS } from '../data/recipes.js';
 import { recipeOpen } from '../systems/level.js';
 import { build, canBuild, canBuyAnimal, homeCount, buy, buyAnimal, buyBag, bagCost, buyStack, stackCost, STACKS, canCraft, craft } from '../systems/economy.js';
 import { consume } from '../systems/player.js';
+import { SHEETS } from '../render/sheets.js';
 import { hearts, POINTS_PER_HEART, DEGREES, DEGREE_NAMES, tasteOf } from '../systems/social.js';
 import { ITEMS as ALL_ITEMS } from '../data/items.js';
 import { slots, usedSlots, stackSize } from '../systems/inventory.js';
@@ -146,7 +147,9 @@ export function createMenu(g, opts) {
         const all = Object.keys(ALL_ITEMS), unknown = all.filter(k => !(k in known) && tasteOf(n, k) !== 'neutre').length;
         const rows = DEGREES.map(d => { const its = Object.keys(known).filter(k => known[k] === d); return its.length ? `<b>${DEGREE_NAMES[d]}</b><span>${its.map(k => it(k).i + ' ' + it(k).n).join(', ')}</span>` : ''; }).join('');
         const life = (r.seen || []).map(i => n.story && n.story[i] ? `<li>${esc(n.story[i].t)}</li>` : '').join('');
-        return card(`<div class="pnj"><div class="nom" style="color:${n.color}">${esc(n.name)}</div>
+        const sh = n.look && SHEETS[n.look.sheet], Z = 3;   // portrait : première image de face de sa planche, grossie, coupée à mi-corps
+        const pic = sh ? `<div class="portrait" style="width:${sh.fw * Z}px;height:${Math.round(sh.fh * 0.55) * Z}px;background:url(${sh.url}) 0 0/${sh.fw * (sh.n || 4) * Z}px ${sh.fh * 3 * Z}px no-repeat"></div>` : '';
+        return card(`<div class="pnj"><div class="tete">${pic}<div class="nom" style="color:${n.color}">${esc(n.name)}</div></div>
           <div>${'❤️'.repeat(h) + '🤍'.repeat(Math.max(0, 10 - h))}</div>
           <small>${pts % POINTS_PER_HEART}/${POINTS_PER_HEART} vers le prochain cœur · aujourd'hui : ${r.talked ? '💬 ✔' : '💬 —'} ${r.gifted ? '🎁 ✔' : '🎁 —'}</small>
           <h4>Goûts découverts</h4>${rows ? `<div class="gouts">${rows}</div>` : '<p class="info">Offrez-lui des objets pour découvrir ses goûts.</p>'}

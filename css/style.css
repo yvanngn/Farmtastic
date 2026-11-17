@@ -470,3 +470,5 @@ body.bande[data-nrj="vert"] #nrjVert { bottom: calc(var(--bande) + var(--pad) * 
 
 /* Début de partie : la bulle de dialogue en haut, sous les boutons ⏩ ⏭ (la scène reste visible) */
 @media (max-aspect-ratio: 1/1) { #dlg.haut { top: calc(var(--sa-t) + 52px); bottom: auto } }   /* téléphone en portrait : la place libre est en haut */
+.pnj .tete { display: flex; align-items: center; gap: 12px }
+.pnj .portrait { flex: none; image-rendering: pixelated; border-radius: 6px; background-color: #e8dcc0 !important; border: 2px solid #6a4a2a; }
