@@ -1,12 +1,13 @@
 // Bois et pierre. La puissance de l'outil (palier) retire autant de PV par coup
 // et réduit l'énergie dépensée. Casser des pierres donne de l'XP de minage.
 import { CFG } from '../config.js';
-import { freeForObj, key, isForest, newTree, newRock } from '../world/map.js';
+import { freeForObj, key, isForest, newTree, newRock, genObjects, isSolid } from '../world/map.js';
 import { TREE_KINDS, TREE_KIND_IDS, TREE_GROW_DAYS, ROCK_DAYS, STONE_YIELD, FOREST } from '../data/forest.js';
 import { MIN_PICK, MINING_GAIN, TIER_NAMES, energyCost } from '../data/tools.js';
 import { add, scatter } from './inventory.js';
 import { useEnergy } from './player.js';
 import { gainXp, toolTier, hasTool } from './skills.js';
+import { gainPxp, XP } from './level.js';
 
 export const TOOL_FOR = { tree: 'axe', rock: 'pick', rock_big: 'pick', boulder: 'pick' };
 export const isStone = t => t === 'rock' || t === 'rock_big' || t === 'boulder';
@@ -39,6 +40,7 @@ export function hitObject(g, x, y) {
   if (isStone(o.t)) gainXp(g, 'mining', MINING_GAIN.hit);
   if (o.hp <= 0) {
     delete S.objs[k];
+    gainPxp(g, o.t === 'boulder' ? 2 * XP.small : XP.small, o.t);   // lot 8 : 1 XP par petit objet cassé (💡 2 pour un gros rocher)
     if (o.t === 'tree') {
       const [a, b] = TREE_KINDS[treeKind(o, x, y)].wood, n = a + (g.rnd() * (b - a + 1) | 0); scatter(g, 'wood', n, x, y);
       g.bus.emit('pop', { t: '+' + n + '🪵', x, y });
@@ -90,4 +92,21 @@ export function regrow(g) {
     const k = freeForestTile(g); if (!k) break;
     S.rockQueue.push({ k, d: ROCK_DAYS, big: g.rnd() < 0.35 }); planned++;
   }
+}
+
+// Lot 8 : à chaque changement de saison, on remet autant d'arbres et de cailloux qu'au départ (même si la ferme a été vidée) :
+// une nouvelle génération (graine de la saison) remplit les cases restées libres, sans dépasser le nombre de départ.
+export function seasonRestock(g) {
+  const S = g.S, start = genObjects(), fresh = genObjects(12345 + (S.year || 1) * 4 + (S.season || 0) * 977);
+  const count = o => { let t = 0, r = 0; for (const k in o) { const x = o[k].t; if (x === 'tree') t++; else if (x === 'rock' || x === 'rock_big') r++; } return { t, r }; };
+  const want = count(start), have = count(S.objs); let added = 0;
+  const px = Math.floor(S.x), py = Math.floor(S.y), queued = new Set((S.rockQueue || []).map(q => q.k)), pots = new Set((S.pots || []).map(p => key(p.x, p.y)));
+  for (const k in fresh) {
+    const o = fresh[k], tree = o.t === 'tree', rock = o.t === 'rock' || o.t === 'rock_big';
+    if (!(tree || rock) || (tree ? have.t >= want.t : have.r >= want.r)) continue;
+    const [x, y] = k.split(',').map(Number);
+    if (S.objs[k] || queued.has(k) || pots.has(k) || (x === px && y === py) || !freeForObj(x, y) || isSolid({ ...S, scene: 'farm' }, x, y)) continue;
+    S.objs[k] = tree ? newTree(o.k) : newRock(o.t === 'rock_big'); tree ? have.t++ : have.r++; added++;
+  }
+  return added;
 }

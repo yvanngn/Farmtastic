@@ -2,6 +2,7 @@
 
 Semver horodaté (heure de Paris). Patch automatique à chaque publication ; mineure et majeure sur décision de l'utilisateur.
 
+- **0.1.18** — 2026-11-17 16:52
 - **0.1.17** — 2026-11-17 15:42
 - **0.1.16** — 2026-11-17 15:32
 - **0.1.15** — 2026-11-17 15:19

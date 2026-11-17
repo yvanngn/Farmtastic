@@ -63,3 +63,15 @@ test('7g : lumière dorée le matin, orangée le soir, rien la nuit ; ombres ver
   assert.ok(sunShadow(400).dx < 0 && sunShadow(1100).dx > 0 && sunShadow(765).dx === 0);
   assert.ok(sunShadow(400).sx > 1, 'ombres longues le matin');
 });
+
+test('lot 8 : transition de la nuit — énergie qui remonte, rêve (jamais deux fois le même de suite), puis sauvegarde (newDay)', async () => {
+  const { sleep } = await import('../src/systems/time.js');
+  const { DREAMS } = await import('../src/data/npcs.js');
+  const { g, S } = makeGame({ rnd: seq(0.1, 0.1, 0.1, 0.1, 0.1) });
+  const nights = [], order = []; g.bus.on('night', n => { nights.push(n); order.push('night'); }); g.bus.on('newDay', () => order.push('newDay'));
+  S.energy = 12; S.minute = 1300; assert.equal(sleep(g), true);
+  assert.equal(nights.length, 1); assert.equal(nights[0].from, 12); assert.equal(nights[0].to, S.maxE);
+  assert.ok(DREAMS.includes(nights[0].dream));
+  S.minute = 1300; sleep(g); assert.notEqual(nights[1].dream, nights[0].dream, 'pas deux fois le même rêve de suite');
+  assert.deepEqual(order.slice(0, 2), ['newDay', 'night'], 'newDay déclenche la sauvegarde automatique');
+});

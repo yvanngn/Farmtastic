@@ -33,10 +33,10 @@ export const isForest = (x) => x >= 34;
 export const isHedge = (x, y) => (y === 35 && (x < 15 || x > 17)) || (x === 47 && ((y >= 8 && y < 35) || y <= 3 || y === 7));
 // Bord nord de la ferme : une barrière en bois ; bord ouest (au-dessus de la gare) : une falaise rocheuse.
 export const isFarmFence = (x, y) => y === 0 && x > 0 && x < 47;
-export const isCliff = (x, y) => x === 0 && y <= 12;
-// Gare (à l'ouest) : petit bâtiment x1-3 y14-16, quai x1-2 y17-23, voie ferrée x0 dès y13.
-export const isStation = (x, y) => inRect(x, y, 1, 14, 3, 16);
-export const isPlatform = (x, y) => inRect(x, y, 1, 17, 2, 23);
+export const isCliff = (x, y) => x === 0;   // lot 8 : plus de gare dans la ferme, la falaise court sur tout le bord ouest
+// Lot 8 : plus de gare dans la ferme (la gare est une zone à part, à l'ouest du centre-ville).
+export const isStation = () => false;
+export const isPlatform = () => false;
 // Maison de Myst (au nord-est, un peu à l'écart) : x40-45, y1-3, porche y4.
 export const isMystHouse = () => false;   // Myst habite maintenant au fond du quartier (scène « quartier »)
 const AXE_SPOT = (x, y) => inRect(x, y, 5, 30, 7, 32);
@@ -46,10 +46,10 @@ export function ground(x, y) {
   return isPond(x, y) ? 'water' : isPlot(x, y) ? 'soil' : isPath(x, y) ? 'path' : 'grass';
 }
 
-import { tileAt, SOLID_TILES } from './scenes.js';
+import { tileAt, SOLID_TILES, FOREST_CHEST } from './scenes.js';
 import { AXE_GROVE, BIG_TREE } from '../data/repairs.js';
 import { BUSHES } from '../data/recipes.js';
-import { TREE_GROW_DAYS } from '../data/forest.js';
+import { TREE_GROW_DAYS, FOREST } from '../data/forest.js';
 const BUSH_SET = new Set(BUSHES.map(([x, y]) => x + ',' + y));
 
 export function isSolid(S, x, y) {
@@ -59,11 +59,12 @@ export function isSolid(S, x, y) {
   if (S.tent && (S.scene || 'farm') === 'farm' && S.tent.x === x && S.tent.y === y) return true;   // tente
   if ((S.scene || 'farm') === 'farm' && (BUSH_SET.has(x + ',' + y) || (S.fires || []).some(f => f.x === x && f.y === y) || (S.chests || []).some(c => c.x === x && c.y === y))) return true;   // buissons, feux, coffres
   if (S.scene === 'wild' && S.wild && S.wild.rocks && S.wild.rocks[x + ',' + y]) return true;
+  if (S.scene === 'foret' && x === FOREST_CHEST.x && y === FOREST_CHEST.y) return true;   // lot 8 : le coffre du labyrinthe
   if (S.scene === 'foret' && S.foret && S.foret.shrooms && S.foret.shrooms[x + ',' + y]) return false;
   if (S.scene === 'foret' && S.foret && S.foret.cut && S.foret.cut[x + ',' + y] != null && (S.year - 1) * 112 + S.season * 28 + S.day - S.foret.cut[x + ',' + y] < TREE_GROW_DAYS) return false;   // arbre coupé (repousse comme à la ferme)
   if (S.scene && S.scene !== 'farm') { const t = tileAt(S.scene, x, y); if (S.scene === 'grange' && (t === 'p' || t === 'r') && S.grange && S.grange.broken.includes(x + ',' + y)) return false; return SOLID_TILES.includes(t); }
   if (x < 0 || y < 0 || x >= CFG.W || y >= CFG.H) return true;
-  return isPond(x, y) || isHouse(x, y) || isGrange(x, y) || (x === 0 && ((y >= 9 && y <= 11) || y >= 13)) || isStation(x, y) || isMystHouse(x, y) || isFranckHouse(x, y) || isLunaHouse(x, y) || !!buildingAt(S.built, x, y) || isGate(x, y) || isFence(x, y, S.built) || isBin(x, y) || !!(S.objs && S.objs[key(x, y)]);
+  return isPond(x, y) || isHouse(x, y) || isGrange(x, y) || x === 0 || isMystHouse(x, y) || isFranckHouse(x, y) || isLunaHouse(x, y) || !!buildingAt(S.built, x, y) || isGate(x, y) || isFence(x, y, S.built) || isBin(x, y) || !!(S.objs && S.objs[key(x, y)]);
 }
 
 // Générateur pseudo-aléatoire déterministe (même carte pour une même graine).
@@ -74,7 +75,7 @@ export function rng(seed) {
 
 export function freeForObj(x, y) {
   return !isHouse(x, y) && !isPlot(x, y) && !isPond(x, y) && !isPath(x, y) && !inRect(x, y, 17, 5, 33, 14)
-    && !isBin(x, y) && !isLunaLot(x, y) && !inRect(x, y, 9, 0, 14, 5) && !inRect(x, y, 44, 16, 47, 20) && !inRect(x, y, 0, 8, 3, 24) && !inRect(x, y, 4, 5, 9, 7) && !inRect(x, y, 39, 0, 47, 6) && !AXE_SPOT(x, y) && !BUSH_SET.has(x + ',' + y) && x > 0 && y > 0 && x < CFG.W - 1 && y < CFG.H - 1;
+    && !isBin(x, y) && !isLunaLot(x, y) && !inRect(x, y, 9, 0, 14, 5) && !inRect(x, y, 44, 16, 47, 20) && !inRect(x, y, 4, 5, 9, 7) && !inRect(x, y, 39, 0, 47, 6) && !AXE_SPOT(x, y) && !BUSH_SET.has(x + ',' + y) && x > 0 && y > 0 && x < CFG.W - 1 && y < CFG.H - 1;
 }
 
 const KINDS = ['oak', 'pine', 'birch'];
@@ -85,17 +86,17 @@ export const newRock = big => (big ? { t: 'rock_big', hp: ROCK_HPS.rock_big } : 
 // Carte de départ : le bois de l'est est bien garni (sans dépasser ses limites), un peu de fouillis sur la ferme.
 export function genObjects(seed = 12345) {
   const r = rng(seed), o = {};
-  let trees = 0, rocks = 0; // limites du bois (70 arbres, 30 pierres, cf. data/forest.js)
+  let trees = 0, rocks = 0; // limites du bois (cf. FOREST dans data/forest.js) ; lot 8 : bien plus garni partout
   for (let y = 0; y < CFG.H; y++) for (let x = 0; x < CFG.W; x++) {
     if (!freeForObj(x, y)) continue;
     const v = r(), kind = KINDS[r() * 3 | 0];
     if (isForest(x)) {
-      if (v < 0.14) { if (trees++ < 70) o[key(x, y)] = newTree(kind); }
-      else if (v < 0.21) { if (rocks++ < 30) o[key(x, y)] = newRock(v >= 0.18); }
-      else if (v < 0.23) o[key(x, y)] = { t: 'boulder', hp: ROCK_HPS.boulder };
+      if (v < 0.30) { if (trees++ < FOREST.MAX_TREES) o[key(x, y)] = newTree(kind); }
+      else if (v < 0.44) { if (rocks++ < FOREST.MAX_ROCKS) o[key(x, y)] = newRock(v >= 0.40); }
+      else if (v < 0.46) o[key(x, y)] = { t: 'boulder', hp: ROCK_HPS.boulder };
     }
-    else if (v < 0.04) o[key(x, y)] = newTree(kind);
-    else if (v < 0.08) o[key(x, y)] = newRock(v > 0.07);
+    else if (v < 0.10) o[key(x, y)] = newTree(kind);
+    else if (v < 0.19) o[key(x, y)] = newRock(v > 0.165);
   }
   for (const [x, y] of AXE_GROVE) o[key(x, y)] = newTree(KINDS[(x + y) % 3]);   // petit bois du sud
   for (const [dx, dy] of [[0, 0], [1, 0], [0, 1], [1, 1], [-1, 1], [-1, 0], [1, 2], [0, 2], [-1, 2]]) delete o[key(BIG_TREE.x + dx, BIG_TREE.y + dy)];

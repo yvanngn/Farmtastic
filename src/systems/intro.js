@@ -6,11 +6,13 @@ import { INTRO_LINES, INTRO_MYST, MYST } from '../data/npcs.js';
 import { FARM_LOTS } from '../data/buildings.js';
 
 export const TRAIN_MS = 3200;            // la locomotive entre en gare et s'arrête
+export const LOCO_LEAVE_S = 2.5;         // lot 8 : la locomotive repart une fois le héros dans la diligence
 export const COACH_SPEED = 3.2;          // cases par seconde
 export const GARE_QUAI = { x: 4.5, y: 7.6 }, MYST_QUAI = { x: 4.5, y: 5.8 };
 export const TRAIN_DOOR = { x: 2.9, y: 4.6 };   // porte du wagon, une fois le train à quai (le héros est assis dedans)
 export const STEP_SPEED = 2.4;                    // cases par seconde quand il descend sur le quai
 export const RIDE = {
+  gare: { y: 8.6, from: 5.2, to: 23.6 },   // lot 8 : le héros monte dans la diligence au bout du quai ; la locomotive repart
   town: { y: 10.6, from: -.5, to: 33.6 },
   rondpoint: { y: 9, from: -.5, to: 8.5 }
 };
@@ -22,7 +24,7 @@ const myst = (g, lines, onEnd, extra = {}) => { g.introWait = true; g.bus.emit('
 function startRide(g, scene) {
   const S = g.S, R = RIDE[scene];
   S.scene = scene; S.x = R.from; S.y = R.y; S.dir = 3;
-  g.ride = { scene, x: R.from, y: R.y, said: {} };
+  g.ride = { scene, x: R.from, y: R.y, said: {}, t: 0 };
   g.bus.emit('scene', scene);
 }
 
@@ -48,19 +50,22 @@ export function introTick(g, dt) {
     Object.assign(S, GARE_QUAI); S.dir = 2; P.walkFrame = 0; I.step = 'myst'; return 'quai';
   }
   if (I.step === 'myst') {
-    myst(g, INTRO_MYST.gare, () => { I.step = 'diligence'; startRide(g, 'town'); g.bus.emit('sfx', 'spurs'); });
+    myst(g, INTRO_MYST.gare, () => { I.step = 'diligence'; startRide(g, 'gare'); g.bus.emit('sfx', 'spurs'); });
     return 'myst';
   }
   if (I.step === 'diligence') {
-    if (!g.ride || g.ride.scene !== S.scene) startRide(g, S.scene === 'rondpoint' ? 'rondpoint' : 'town');
+    if (!g.ride || g.ride.scene !== S.scene) startRide(g, S.scene === 'rondpoint' || S.scene === 'gare' ? S.scene : 'town');
     const r = g.ride, R = RIDE[r.scene];
     if (r.scene === 'town' && !r.said.legende && r.x > 1) { r.said.legende = true; myst(g, INTRO_MYST.legende); return 'legende'; }
     if (r.scene === 'town') {
       const stop = INTRO_MYST.arrets.find(a => !r.said[a.x] && r.x >= a.x);
       if (stop) { r.said[stop.x] = true; myst(g, [stop.t]); return 'arret'; }   // la diligence attend la fin de l'explication
     }
+    r.t += dt;
+    if (r.scene === 'gare' && r.t < LOCO_LEAVE_S) return 'locomotive';   // la locomotive repart d'abord, sous les yeux du héros
     r.x = Math.min(R.to, r.x + COACH_SPEED * dt); S.x = r.x; S.y = r.y;
     if (r.x < R.to) return 'roule';
+    if (r.scene === 'gare') { startRide(g, 'town'); return 'route'; }
     if (r.scene === 'town') { startRide(g, 'rondpoint'); return 'pont'; }
     I.step = 'choix'; return 'arrivee';
   }

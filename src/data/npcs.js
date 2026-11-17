@@ -254,6 +254,20 @@ export const IGOR = {
   questions: []
 };
 
+// Lot 8 : rêves et prémonitions du héros pendant la nuit (💡 écrits par Claude, 🆕 à valider). Restent vagues :
+// ils évoquent seulement ce que l'utilisateur a décrit (ferme hantée, caverne, grand arbre, forêt, cabane à rebâtir).
+export const DREAMS = [
+  "Je rêve que la cabane est entièrement reconstruite… et qu'une lumière brille à chaque fenêtre.",
+  "Une vieille femme pleure au bout du champ. Quand je m'approche, il n'y a plus que le vent.",
+  "Je marche dans la forêt. Les arbres se referment derrière moi… mais quelque chose brille tout au fond.",
+  "J'entends un grondement sous la terre, très loin, du côté de la caverne. Comme si elle m'attendait.",
+  "Le grand arbre de la ferme me parle. Je ne comprends pas les mots, mais sa voix est douce.",
+  "Je vois mes champs couverts d'épis dorés jusqu'à l'horizon. Je me réveille presque en souriant.",
+  "Un train siffle dans la nuit. Je suis sur le quai, mais cette fois, je ne monte pas.",
+  "Je rêve d'une lanterne qui s'allume toute seule dans la grange… Prémonition, ou simple fatigue ?",
+  "Des pas dans la poussière autour de la cabane. Au matin, je saurai peut-être à qui ils sont.",
+  "Rien. Une nuit noire et paisible, sans aucun rêve. Ça fait du bien, parfois."
+];
 // Arrivée en train (pensées du héros, 🆕) : après un licenciement, il cherche un sens à sa vie.
 export const INTRO_LINES = [
   "Après mon licenciement, j'ai voulu redonner un sens à ma vie.",

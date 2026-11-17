@@ -1,11 +1,12 @@
 // Recettes qu'on connaît et qu'on fabrique n'importe où (onglet « Recettes »). Au début : seulement le feu.
+// lot 8 : lvl = niveau du joueur requis (recettes du début : niveau 1 ; les autres 💡 en attendant les choix de l'utilisateur)
 export const HAND_RECIPES = {
-  campfire: { out: 'campfire', q: 1, in: { wood: 5, stone: 2 }, cat: 'feu' },
-  chest: { out: 'chest', q: 1, in: { wood: 80, stone: 20 }, cat: 'rangement', job: 'charpentier' },   // appris auprès de Harry Fordson   // appris auprès d'Igor
-  chaudron: { out: 'chaudron', q: 1, in: { stone: 20, wood: 10 }, cat: 'feu', job: 'forgeron' },   // 💡 patron acheté à la forge
-  bague_cuivre: { out: 'bague_cuivre', q: 1, in: { copper_ore: 3, stone: 2 }, cat: 'bijoux', job: 'joaillier' },
-  tisane: { out: 'tisane', q: 1, in: { berry: 2, paquerette: 2 }, cat: 'potions', job: 'alchimiste' },
-  bonnet: { out: 'bonnet', q: 1, in: { wool: 2 }, cat: 'couture', job: 'couturier' }
+  campfire: { out: 'campfire', q: 1, in: { wood: 5, stone: 2 }, cat: 'feu', lvl: 1 },
+  chest: { out: 'chest', q: 1, in: { wood: 80, stone: 20 }, cat: 'rangement', job: 'charpentier', lvl: 1 },   // appris auprès de Harry Fordson   // appris auprès d'Igor
+  chaudron: { out: 'chaudron', q: 1, in: { stone: 20, wood: 10 }, cat: 'feu', job: 'forgeron', lvl: 1 },   // 💡 patron acheté à la forge
+  bague_cuivre: { out: 'bague_cuivre', q: 1, in: { copper_ore: 3, stone: 2 }, cat: 'bijoux', job: 'joaillier', lvl: 4 },
+  tisane: { out: 'tisane', q: 1, in: { berry: 2, paquerette: 2 }, cat: 'potions', job: 'alchimiste', lvl: 2 },
+  bonnet: { out: 'bonnet', q: 1, in: { wool: 2 }, cat: 'couture', job: 'couturier', lvl: 3 }
 };
 export const START_RECIPES = ['campfire'];
 // Onglets des recettes, par type d'objet (les autres types viendront avec les nouvelles recettes).
@@ -20,7 +21,7 @@ export const BUSHES = [[8, 16], [12, 17], [4, 27], [11, 34], [13, 29], [21, 22],
 export const BERRY_DAYS = 2, BERRY_PICK = [2, 4];
 export const MAX_FIRES = 3;
 export const RECIPES = [
-  { out: 'hay', q: 3, in: { wheat: 1 } },
-  { out: 'fence', q: 1, in: { wood: 2 } },
-  { out: 'potion', q: 1, in: { carrot: 2, egg: 1 } }
+  { out: 'hay', q: 3, in: { wheat: 1 }, lvl: 1 },
+  { out: 'fence', q: 1, in: { wood: 2 }, lvl: 1 },
+  { out: 'potion', q: 1, in: { carrot: 2, egg: 1 }, lvl: 2 }
 ];

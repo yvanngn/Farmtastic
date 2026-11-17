@@ -11,12 +11,12 @@ import { CFG } from '../config.js';
 import { TEST_SWORD, testSwordHere } from '../systems/wild.js';
 import { rainbowVisible } from '../systems/nature.js';
 import { isRepaired, fieldToolAt } from '../systems/repair.js';
-import { FIELD_TOOLS } from '../data/repairs.js';
+import { FIELD_TOOLS, BIG_TREE } from '../data/repairs.js';
 import { BUSHES } from '../data/recipes.js';
 import { bushRipe, cookProgress } from '../systems/cooking.js';
 import { ghostVisible } from '../systems/ghost.js';
 import { SCATTER_MS } from '../systems/inventory.js';
-import { isForestTree, forestCut } from '../systems/foret.js';
+import { isForestTree, forestCut, forestChestFull } from '../systems/foret.js';
 import { CUEILLE_HITS } from '../systems/nature.js';
 import { GHOST } from '../data/npcs.js';
 // Buisson à baies (baies bleues quand il y en a).
@@ -103,9 +103,8 @@ import { buildWest } from './west.js';
 import { PICKUPS, isBroken } from '../systems/grange.js';
 import { buildWild, drawMob, drawZRock, drawShroom, drawForestTree } from './wild.js';
 import { MUSHROOMS } from '../data/items.js';
-import { LAYOUTS } from '../world/scenes.js';
+import { LAYOUTS, FOREST_CHEST } from '../world/scenes.js';
 import { toolIcon, drawToolPix } from './sprites.js';
-// Train de l'arrivée (voie x0) : à quai 3 s, puis repart vers le sud en accélérant.
 // Farmwest : le grand arbre de la ferme (incassable) : tronc large, racines, feuillage en trois étages qui ondule un peu.
 const BIG_LEAF = [['#3f7a32', '#5a9a46', '#7ab85a'], ['#4a8a3a', '#6aaa4a', '#8ac862'], ['#c87a2a', '#e09a3a', '#f2c25a'], ['#8a8a7a', '#a8a898', '#d8dcd4']];
 function drawBigTree(c, x, y, season, now) {
@@ -118,8 +117,8 @@ function drawBigTree(c, x, y, season, now) {
   for (const [bx, by, r] of [[-17, -44, 4], [9, -46, 5], [-5, -60, 4], [3, -52, 3]]) blob(bx, by, r, L[2]);
 }
 // Farmwest : locomotive à vapeur qui entre en gare par le nord sur la voie (x1-2) et s'arrête le long du quai.
-function drawLoco(c, t, now, hero) {
-  const x = 16 + 1, stopY = 6 * 16, y0 = stopY - (t < 3 ? (3 - t) * (3 - t) * 50 : 0);
+function drawLoco(c, t, now, hero, leave = 0) {
+  const x = 16 + 1, stopY = 6 * 16, y0 = stopY - (t < 3 ? (3 - t) * (3 - t) * 50 : 0) + leave * leave * 40;   // lot 8 : repart vers le sud en accélérant
   const R = (a, b, w, h, col) => { c.fillStyle = col; c.fillRect(Math.round(a), Math.round(b), w, h); };
   for (const [k, col] of [[0, '#7a3a2a'], [1, '#7a3a2a']]) { const y = y0 - 52 - k * 46; R(x + 2, y + 2, 28, 44, 'rgba(0,0,0,.3)'); R(x, y, 28, 44, col); R(x, y, 28, 3, '#3a2a20'); R(x, y + 41, 28, 3, '#3a2a20'); for (let w = 8; w < 38; w += 10) R(x + 22, y + w, 4, 6, '#ffd98a'); R(x + 3, y + 4, 2, 36, '#a8574a');
     if (!k) { R(x + 27, y + 14, 2, 18, '#3a2a20'); R(x + 28, y + 15, 1, 16, '#5a3a2a'); }   // porte du wagon, côté quai
@@ -131,7 +130,7 @@ function drawLoco(c, t, now, hero) {
   R(x + 8, y0 + 46, 12, 4, '#3a3a44'); R(x + 9, y0 + 50, 10, 10, '#a8302b'); R(x + 11, y0 + 52, 6, 4, '#ffd98a');   // cabine et lanterne
   R(x + 4, y0 + 62, 20, 8, '#a8302b'); for (let k = 0; k < 5; k++) R(x + 6 + k * 4, y0 + 66, 2, 6, '#5a5a66');   // chasse-buffle
   R(x + 10, y0 + 14, 8, 8, '#1a1a20'); R(x + 9, y0 + 12, 10, 3, '#3a3a44');   // cheminée
-  const puff = t < 6 ? 1 : .35;   // fumée : forte en arrivant, légère à l'arrêt
+  const puff = t < 6 || leave > 0 ? 1 : .35;   // fumée : forte en arrivant, légère à l'arrêt
   for (let k = 0; k < 5; k++) { const ph = (now / 600 + k * .2) % 1, py = y0 + 10 - ph * 40, sz = 5 + ph * 10; c.fillStyle = `rgba(235,235,235,${(1 - ph) * .55 * puff})`; c.fillRect(Math.round(x + 14 - sz / 2 + Math.sin(k * 2 + now / 400) * 4), Math.round(py), Math.round(sz), Math.round(sz)); }
 }
 // Farmwest : diligence tirée par deux chevaux, cocher en chapeau sur le siège ; roues qui tournent.
@@ -146,18 +145,6 @@ function drawCoach(c, wx, wy, now) {
   R(-26, -4, 40, 2, '#e8c26a');
   for (const wxx of [-22, 6]) { R(wxx - 1, -4, 12, 12, '#3a2a20'); R(wxx + 1, -2, 8, 8, '#a8774a'); R(wxx + 4, spin ? -2 : 1, 2, spin ? 8 : 2, '#3a2a20'); R(wxx + (spin ? 1 : 4), 1, spin ? 8 : 2, 2, '#3a2a20'); }   // roues
   R(12, -20, 8, 8, '#5b3a22'); R(13, -28 + trot, 6, 7, '#e8b48c'); R(10, -31 + trot, 12, 2, '#5a3a22'); R(12, -35 + trot, 8, 4, '#5a3a22');   // cocher au chapeau
-}
-function drawTrain(c, t) {
-  const T2 = 16, y0 = 16.5 * T2 + (t > 3 ? (t - 3) * (t - 3) * 40 : 0);
-  const car = (y, col, loco) => {
-    c.fillStyle = 'rgba(0,0,0,.3)'; c.fillRect(2, y + 2, 14, 46);
-    c.fillStyle = col; c.fillRect(1, y, 14, 46); c.fillStyle = 'rgba(255,255,255,.18)'; c.fillRect(1, y, 3, 46);
-    c.fillStyle = '#2a2a30'; c.fillRect(1, y, 14, 3); c.fillRect(1, y + 43, 14, 3);
-    if (loco) { c.fillStyle = '#e8c26a'; c.fillRect(4, y + 44, 8, 2); c.fillStyle = '#fff6c0'; c.fillRect(6, y + 46, 4, 2); }
-    else for (let k = 8; k < 40; k += 10) { c.fillStyle = '#bfe3f5'; c.fillRect(13, y + k, 2, 6); }
-  };
-  car(y0, '#2f6a4a', false); car(y0 + 48, '#2f6a4a', false); car(y0 + 96, '#a8302b', true);
-  if (t > 2.6) { c.fillStyle = 'rgba(230,230,230,' + Math.max(0, .6 - (t - 2.6) * .15) + ')'; for (let k = 0; k < 4; k++) c.fillRect(4 + k * 3, y0 + 140 - k * 9 - (t - 2.6) * 8, 6, 6); }
 }
 import { SCENES } from '../world/scenes.js';
 import { ANIMALS } from '../data/animals.js';
@@ -197,8 +184,8 @@ let swing = null;
 
   function resize() {
     dpr = Math.min(window.devicePixelRatio || 1, 3);
-    cv.width = Math.round(innerWidth * dpr); cv.height = Math.round(innerHeight * dpr);
-    cv.style.width = innerWidth + 'px'; cv.style.height = innerHeight + 'px';
+    const w = cv.clientWidth || innerWidth, h = cv.clientHeight || innerHeight;   // lot 8 : la scène s'arrête au-dessus de la bande d'outils
+    cv.width = Math.round(w * dpr); cv.height = Math.round(h * dpr);
     // ~12 tuiles sur le plus petit côté (réglable : Proche 9 / Normal 12 / Loin 15)
     scale = Math.max(1, Math.min(8, Math.round(Math.min(cv.width, cv.height) / (T * getZoom()))));   // 1 possible : « Très loin » sur petit écran
     ctx.imageSmoothingEnabled = false;
@@ -312,6 +299,7 @@ let swing = null;
     if (scene === 'foret') {
       for (let y = Math.max(1, y0); y <= Math.min(LAYOUTS.foret.length - 2, y1 + 2); y++) for (let x = Math.max(1, x0 - 1); x <= Math.min(LAYOUTS.foret[0].length - 2, x1 + 1); x++)
         if (isForestTree(x, y)) { const cut = forestCut(S, x, y); list.push({ z: y + .9, d: () => drawForestTree(ctx, x, y, S.season, cut) }); }
+      list.push({ z: FOREST_CHEST.y + .8, d: () => { drawChest(ctx, FOREST_CHEST.x, FOREST_CHEST.y); if (forestChestFull(S)) { ctx.fillStyle = 'rgba(255,240,170,' + (.2 + .15 * Math.sin(now / 300)) + ')'; ctx.fillRect(FOREST_CHEST.x * T, FOREST_CHEST.y * T + 2, 16, 12); } } });   // lot 8 : coffre au bout du labyrinthe
       const cols = {}; for (const ss of MUSHROOMS) for (const m of ss) cols[m.id] = m.c;
       for (const k in (S.foret && S.foret.shrooms) || {}) { const [x, y] = k.split(',').map(Number), m = S.foret.shrooms[k]; list.push({ z: y + .6, d: () => drawShroom(ctx, x, y, m, cols[m.sp]) }); }
     }
@@ -345,7 +333,15 @@ let swing = null;
         list.push({ z: 9999, d: () => drawRainbow(ctx, R.x * T + 8, R.y * T + 10, S.minute, R) });
       }
     }
-    if (scene === 'farm') for (const t of FIELD_TOOLS) if (fieldToolAt(S, t.x, t.y)) list.push({ z: t.y + .4, d: () => { // outil posé par terre
+    if (scene === 'farm') for (const t of FIELD_TOOLS) if (t.tool === 'axe' && fieldToolAt(S, t.x, t.y)) list.push({ z: BIG_TREE.y + .99, d: () => {   // lot 8 : la hache plantée dans le tronc du grand arbre
+      const px = BIG_TREE.x * T + 8 + 6, py = BIG_TREE.y * T + 14 - 16, a = .25 + .2 * Math.sin(now / 300), R = (u, v, w, h, col) => { ctx.fillStyle = col; ctx.fillRect(px + u, py + v, w, h); };
+      ctx.fillStyle = 'rgba(255,240,170,' + a + ')'; ctx.fillRect(px - 3, py - 5, 18, 14);
+      R(-2, -3, 3, 7, '#8c8f96'); R(-2, -3, 3, 1, '#c2c6cc'); R(1, -2, 2, 5, '#5a5a66');   // fer à moitié enfoncé, fente dans l'écorce
+      R(-3, -4, 1, 9, '#3f2615');
+      for (let k = 0; k < 11; k++) R(2 + k, Math.round(k * .55), 2, 2, k % 3 ? '#a8774a' : '#8a5a32');   // manche qui dépasse, un peu tombant
+      R(12, 5, 2, 2, '#5b3a22');
+    } });
+    if (scene === 'farm') for (const t of FIELD_TOOLS) if (t.tool !== 'axe' && fieldToolAt(S, t.x, t.y)) list.push({ z: t.y + .4, d: () => { // outil posé par terre
       const b = Math.round(Math.sin(now / 250 + t.x) * 1.5), x = t.x * T, y = t.y * T;
       ctx.fillStyle = 'rgba(0,0,0,.25)'; ctx.fillRect(x + 3, y + 12, 10, 2);
       ctx.fillStyle = 'rgba(255,240,170,' + (.25 + .2 * Math.sin(now / 300)) + ')'; ctx.fillRect(x + 1, y + 1 + b, 14, 12);
@@ -418,8 +414,7 @@ let swing = null;
       ctx.fillStyle = '#e8c26a'; ctx.fillRect(x + 7, y, 2, 3); ctx.fillStyle = '#7a4f2e'; ctx.fillRect(x - 3, y + 13, 2, 2); ctx.fillRect(x + 17, y + 13, 2, 2);
     } });
     // (bijou d'Igor retiré le 17/11 : quête supprimée)
-    if (scene === 'farm' && g.trainT && now - g.trainT < 9000) list.push({ z: 9998, d: () => drawTrain(ctx, (now - g.trainT) / 1000) });
-    if (scene === 'gare') list.push({ z: 0.5, d: () => drawLoco(ctx, S.intro && S.intro.step === 'train' ? (g.introT || 0) / 1000 : 99, now, g.introHidden ? S.look : null) });   // Farmwest : la locomotive à quai
+    if (scene === 'gare' && S.intro && S.intro.step !== 'done' && !(g.ride && g.ride.scene === 'gare' && g.ride.t > 6)) list.push({ z: 0.5, d: () => drawLoco(ctx, S.intro.step === 'train' ? (g.introT || 0) / 1000 : 99, now, g.introHidden ? S.look : null, g.ride && g.ride.scene === 'gare' ? g.ride.t : 0) });   // lot 8 : elle repart une fois le héros dans la diligence   // Farmwest : la locomotive à quai
     if (g.cueille && g.cueille.scene === scene) { const q = g.cueille; list.push({ z: 9990, d: () => { const x = q.x * T, y = q.y * T - 6; ctx.fillStyle = 'rgba(0,0,0,.6)'; ctx.fillRect(x - 1, y - 1, 18, 5); ctx.fillStyle = '#7ad04a'; ctx.fillRect(x, y, Math.round(16 * q.n / CUEILLE_HITS), 3); } }); }   // jauge de cueillette
     if (g.ride && g.ride.scene === scene) list.push({ z: g.ride.y + .2, d: () => drawCoach(ctx, g.ride.x, g.ride.y, now) });   // la diligence
     if (scene === 'farm' && testSwordHere(S)) list.push({ z: TEST_SWORD.y + .4, d: () => {
@@ -456,7 +451,7 @@ let swing = null;
         } });
       }));
     }
-    for (const id in g.npcs) { const n = g.npcs[id]; if ((n.scene || 'farm') !== scene) continue; list.push({ z: n.y, d: () => { drawChar(ctx, Math.round(n.x * T - 6), Math.round(n.y * T - 19), n.look, n.dir || 0, n.walking ? 1 + ((now / 85 | 0) % 8) : 0, now); label(n.name, n.x * T, n.y * T - (n.look.tall ? 28 : 25));
+    for (const id in g.npcs) { const n = g.npcs[id]; if ((n.scene || 'farm') !== scene) continue; list.push({ z: n.y, d: () => { drawChar(ctx, Math.round(n.x * T - 6), Math.round(n.y * T - 19), n.look, n.dir || 0, n.walking ? 1 + ((now / 85 | 0) % 8) : 0, now);   // lot 8 : plus de nom au-dessus des PNJ
       if (n.sleeping) { const t = now / 600; ctx.fillStyle = '#e8f0ff'; ctx.font = 'bold 7px Nunito, sans-serif'; ctx.fillText('z', n.x * T + 6 + (t % 1) * 3, n.y * T - 30 - (t % 1) * 6); ctx.font = 'bold 9px Nunito, sans-serif'; ctx.fillText('Z', n.x * T + 10 + ((t + .5) % 1) * 3, n.y * T - 34 - ((t + .5) % 1) * 7); } } }); }
     for (const id in g.others) { const o = g.others[id]; if (!o.look || (o.scene || 'farm') !== scene) continue; list.push({ z: o.y, d: () => { drawChar(ctx, Math.round(o.x * T - 6), Math.round(o.y * T - 19), o.look, o.dir, o.f, now + 777); label(o.name, o.x * T, o.y * T - 25); } }); }
     if (!g.ride && !g.introHidden) list.push({ z: S.y, d: () => {   // pendant la diligence (et l'arrivée en train), le héros est dedans

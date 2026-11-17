@@ -7,10 +7,10 @@ export const REPAIR_STEP = 1;   // 1 bois et 1 pierre par coup de marteau : c'es
 // Outils posés dehors au début : la pioche contre la grange, la hache au pied du grand arbre de la ferme (Farmwest).
 export const FIELD_TOOLS = [
   { tool: 'pick', x: 14, y: 3, n: 'la pioche', i: '⛏️' },
-  { tool: 'axe', x: 7, y: 31, n: 'la hache', i: '🪓' }   // Farmwest : posée contre le grand arbre de la ferme
+  { tool: 'axe', x: 7, y: 31, n: 'la hache', i: '🪓' }   // lot 8 : plantée dans le tronc du grand arbre (case d'action à droite du tronc)
 ];
 export const AXE_GROVE = [[4, 30], [9, 30], [5, 33], [9, 33], [3, 33], [10, 28]];
-// Farmwest : chaque ferme a un grand arbre incassable ; la hache est posée à son pied.
+// Farmwest : chaque ferme a un grand arbre incassable ; la hache est plantée dans son tronc (lot 8).
 export const BIG_TREE = { x: 6, y: 30 };
 // Arrivée en train : quai de la gare, à l'ouest de la ferme.
 export const ARRIVAL = { x: 2.0, y: 20.6 };

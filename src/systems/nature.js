@@ -1,6 +1,6 @@
 // Nature : fleurs à cueillir, cailloux et filons à piocher (ferme, forêt, Caverne sombre ; jamais en ville),
 // et arc-en-ciel les jours de pluie avec un trésor à son pied. Logique pure.
-import { LAYOUTS } from '../world/scenes.js';
+import { FOREST_ROUTE, LAYOUTS } from '../world/scenes.js';
 import { key, freeForObj, isSolid } from '../world/map.js';
 import { CFG } from '../config.js';
 import { FLOWERS } from '../data/items.js';
@@ -10,6 +10,7 @@ import { useEnergy } from './player.js';
 import { gainXp, toolTier, hasTool } from './skills.js';
 import { MINING_GAIN, energyCost } from '../data/tools.js';
 import { isWet } from './weather.js';
+import { gainPxp, XP } from './level.js';
 
 const dayId = S => S.year + '-' + S.season + '-' + S.day;
 const size = sc => sc === 'farm' ? [CFG.W, CFG.H] : [LAYOUTS[sc][0].length, LAYOUTS[sc].length];
@@ -24,7 +25,8 @@ export function freeSpot(S, sc, x, y) {
   const L = LAYOUTS[sc];
   if ((sc === 'montagne' || sc === 'plage') && L && L[y]) return 'ns'.includes(L[y][x]) && Math.hypot(x - S.x, y - S.y) > 2;
   if (!L || !L[y] || L[y][x] !== '.') return false;
-  if (sc === 'foret') return x > 0 && x < 27 && !(S.foret && S.foret.shrooms && S.foret.shrooms[k]);
+  if (sc === 'foret') return x > 0 && x < 27 && !FOREST_ROUTE.has(key(x, y)) &&   // lot 8 : jamais de caillou sur le chemin du labyrinthe
+    !(S.foret && S.foret.shrooms && S.foret.shrooms[k]);
   if (sc === 'wild') return !(S.wild && S.wild.rocks && S.wild.rocks[k]) && !(x < 4 && y < 7);
   return false;
 }
@@ -85,6 +87,7 @@ export function pickFlower(g, x, y) {
   const c = cueillir(g, x, y, '🌸 ' + KNIFE_FLOWER); if (c !== true) return c;
   delete N.flowers[k];
   add(g, id, 1);
+  gainPxp(g, XP.small, 'flower');   // lot 8
   g.bus.emit('sfx', 'collect'); g.bus.emit('pop', { t: '+🌸', x, y });
   return id;
 }
@@ -102,6 +105,7 @@ export function hitNature(g, x, y) {
   gainXp(g, 'mining', MINING_GAIN.hit);
   if (o.hp <= 0) {
     delete N.rocks[k];
+    gainPxp(g, XP.small, 'rock');   // lot 8
     scatter(g, 'stone', 1, x, y);
     let txt = '+1🪨';
     if (o.t === 'vein') {

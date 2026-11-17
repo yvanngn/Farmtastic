@@ -3,7 +3,7 @@
 // Usage : node tools/export-dialogues.mjs            → écrit le fichier et affiche le nombre de 🆕
 //         node tools/export-dialogues.mjs --valider  → marque toutes les répliques actuelles comme validées
 import { readFileSync, writeFileSync, existsSync } from 'node:fs';
-import { NPCS, INTRO_LINES, GHOST_LINES, INTRO_MYST } from '../src/data/npcs.js';
+import { NPCS, INTRO_LINES, GHOST_LINES, INTRO_MYST, DREAMS } from '../src/data/npcs.js';
 import { NIGHT_TIP } from '../src/systems/camp.js';
 import { EXAMINE } from '../src/data/examine.js';
 
@@ -32,6 +32,7 @@ for (const n of Object.values(NPCS)) {
 for (const t of NIGHT_TIP) all.push({ npc: 'Conseil (à 18h)', where: 'nuit', t });
 for (const t of Object.values(GHOST_LINES).flat()) all.push({ npc: 'Le héros (quête Ghostbuster)', where: 'nuit', t });
 for (const [k, v] of Object.entries(INTRO_MYST)) for (const t of v) all.push({ npc: 'Myst (nouveau début : ' + k + ')', where: 'intro', t: typeof t === 'string' ? t : t.t });
+for (const t of DREAMS) all.push({ npc: 'Le héros (rêves de la nuit, lot 8)', where: 'nuit', t });
 for (const t of INTRO_LINES) all.push({ npc: 'Le héros (arrivée en train)', where: 'intro', t });
 for (const [k, t] of Object.entries(EXAMINE.farm)) all.push({ npc: 'Décor (le héros commente)', where: k, t });
 for (const [k, t] of Object.entries(EXAMINE.tiles)) all.push({ npc: 'Décor (le héros commente)', where: k, t });

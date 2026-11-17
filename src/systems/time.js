@@ -5,8 +5,9 @@ import { rollWeather } from './weather.js';
 import { rollRainbow } from './nature.js';
 import { animalsNewDay } from './animals.js';
 import { socialNewDay } from './social.js';
-import { regrow } from './resources.js';
+import { regrow, seasonRestock } from './resources.js';
 import { toClinic } from './clinic.js';
+import { DREAMS } from '../data/npcs.js';
 
 export function tickTime(g, dtMs) {
   g.timeAcc += dtMs;
@@ -21,7 +22,8 @@ export function tickTime(g, dtMs) {
 export function newDay(g, slept) {
   const S = g.S;
   S.day++;
-  if (S.day > 28) { S.day = 1; S.season = (S.season + 1) % 4; if (S.season === 0) S.year++; }
+  let newSeason = false;
+  if (S.day > 28) { S.day = 1; S.season = (S.season + 1) % 4; if (S.season === 0) S.year++; newSeason = true; }
   S.minute = CFG.DAY_START;
   g.timeAcc = 0;
   if (slept) S.energy = S.maxE;
@@ -31,13 +33,28 @@ export function newDay(g, slept) {
   animalsNewDay(S);
   socialNewDay(S);
   regrow(g);
+  if (newSeason && S.objs) seasonRestock(g);   // lot 8 : la nature reprend ses droits à chaque saison
   g.enemies.length = 0;
   g.bus.emit('newDay', { slept });
 }
 
+// Lot 8 : transition de la nuit — un court moment où l'énergie remonte, un rêve ou une prémonition, puis sauvegarde automatique
+// (l'interface écoute 'night' ; la sauvegarde suit l'événement 'newDay').
+export function pickDream(g) {
+  const S = g.S; let i = g.rnd() * DREAMS.length | 0;
+  if (i === S.lastDream) i = (i + 1) % DREAMS.length;   // jamais deux fois de suite le même
+  S.lastDream = i; return DREAMS[i];
+}
+export function nightTransition(g, from) {
+  const S = g.S, n = { from: Math.max(0, Math.round(from)), to: Math.round(S.energy), max: S.maxE, dream: pickDream(g), name: S.name };
+  g.bus.emit('night', n); return n;
+}
+
 export function sleep(g) {
   if (g.S.minute < CFG.SLEEP_FROM) { g.bus.emit('toast', 'Trop tôt pour dormir (après 18h)'); return false; }
+  const from = g.S.energy;
   newDay(g, true);
+  nightTransition(g, from);
   ((g.S.quests ||= {}).debut ||= {}).dormi = true;
   g.bus.emit('sfx', 'sleep');
   g.bus.emit('toast', 'Bonne nuit… 🌙');

@@ -435,3 +435,35 @@ body.intro #introBar { display: flex }
 body.intro #hud, body.intro #topbtns, body.intro #controls, body.intro #hearts { display: none !important }
 #bIntroFast.on { background: linear-gradient(180deg, #e8c26a, #c9953a); color: #3a2410 }
 #introBar button { font-size: clamp(12px, 3.2vmin, 15px); touch-action: none }
+
+/* ============ Lot 8 : barre d'outils dans une bande SOUS la scène (elle ne cache plus le bas du jeu) ============ */
+:root { --bande: calc(clamp(48px, 8.5vmin, 62px) + var(--sa-b)) }
+#game { width: 100%; height: 100% }
+body.bande #game { inset: 0 0 auto 0; height: calc(100% - var(--bande)) }
+body.bande #hotbar { left: 0; right: 0; bottom: 0; transform: none; height: var(--bande); max-width: none; justify-content: center; align-items: center;
+  padding: 4px var(--pad) calc(4px + var(--sa-b)); border-radius: 0; border: 0; border-top: 3px solid var(--bois-fonce, #2e1c10);
+  background: var(--planches, #5b3a22), #5b3a22; box-shadow: 0 -4px 12px rgba(0,0,0,.4) }
+body.bande #hotbar button { width: clamp(36px, 7vmin, 50px) }
+body.bande #stick, body.bande #droite { bottom: calc(var(--bande) + var(--pad) * 2) }
+body.bande[data-nrj="vert"] #nrjVert { bottom: calc(var(--bande) + var(--pad) * 2) }
+@media (max-aspect-ratio: 1/1) { body.bande #hotbar { bottom: 0; max-width: none } }
+
+/* ============ Lot 8 : transition de la nuit (énergie qui remonte, rêve, sauvegarde) ============ */
+#ovNight { position: fixed; inset: 0; z-index: 90; display: none; place-items: center; background: radial-gradient(ellipse at 50% 30%, #1c2346, #07081a 70%); color: #e8ecff; opacity: 0; transition: opacity .5s }
+#ovNight.on { display: grid; opacity: 1; animation: nuitIn .6s ease }
+@keyframes nuitIn { from { opacity: 0 } to { opacity: 1 } }
+#ovNight .nuit-ciel { position: absolute; inset: 0; background-image: radial-gradient(1px 1px at 12% 20%, #fff, transparent), radial-gradient(1px 1px at 70% 15%, #fff, transparent), radial-gradient(1.5px 1.5px at 40% 35%, #ffe9b0, transparent), radial-gradient(1px 1px at 85% 45%, #fff, transparent), radial-gradient(1px 1px at 25% 60%, #cfe0ff, transparent), radial-gradient(1px 1px at 60% 70%, #fff, transparent); opacity: .8 }
+#ovNight .nuit-box { position: relative; width: min(520px, 88vw); text-align: center; padding: 18px }
+#ovNight .nuit-lune { font-size: 46px; filter: drop-shadow(0 0 14px rgba(255,230,160,.6)) }
+#ovNight .nuit-reve { min-height: 4.5em; font-style: italic; font-size: clamp(15px, 2.6vmin, 19px); line-height: 1.45; color: #dfe4ff; margin: 12px 0 18px }
+#ovNight .nuit-nrj { display: flex; align-items: center; gap: 8px; justify-content: center }
+#ovNight .nuit-barre { width: min(280px, 60vw); height: 12px; border-radius: 6px; background: rgba(255,255,255,.12); border: 1px solid rgba(255,223,138,.4); overflow: hidden }
+#ovNight .nuit-barre i { display: block; height: 100%; width: 0; background: linear-gradient(90deg, #f2c25a, #7ad04a) }
+#ovNight .nuit-nrj b { font-variant-numeric: tabular-nums; min-width: 72px; text-align: left; color: #ffdf8a }
+#ovNight .nuit-save { display: block; margin-top: 14px; min-height: 1.2em; opacity: .85 }
+
+/* Lot 8 : barre d'XP fine sous le nom, avec le niveau */
+#hXpRow { display: flex; align-items: center; gap: 6px; margin: 2px 0 3px }
+#hLvl { font-size: 11px; color: var(--or-vif, #ffdf8a); white-space: nowrap; min-width: 40px }
+#hXpRow .bar.xp { flex: 1; height: 4px; margin: 0; background: rgba(255,255,255,.12) }
+#hXpRow .bar.xp i { background: linear-gradient(90deg, #8ac8ff, #c8a8ff) }

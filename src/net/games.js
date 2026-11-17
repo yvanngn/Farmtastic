@@ -34,7 +34,11 @@ export async function createOnlineGame(sb, mode, name) { return row((await call(
 export async function joinOnlineGame(sb, code, name) { return row((await call(sb, 'join_game', { p_code: normCode(code), p_name: name }))[0]); }
 export async function myOnlineGames(sb) { try { return (await call(sb, 'my_games', {})).map(row); } catch { return []; } }
 
-// Effacer une partie solo : sa sauvegarde locale, sa ligne dans l'index et, en ligne, la partie elle-même.
+// Lot 8 : texte de la validation, pour toute suppression de partie (solo ou à plusieurs).
+export const deleteQuestion = gm => gm && gm.mode === 'multi'
+  ? { q: 'Supprimer cette partie ?', note: 'Partie à plusieurs : si tu l’as créée, elle disparaît pour tout le monde ; sinon, tu la quittes et ta ferme est effacée.' }
+  : { q: 'Supprimer cette partie ?', note: 'Ta ferme et sa sauvegarde seront effacées pour de bon.' };
+// Effacer une partie (solo ou à plusieurs) : sa sauvegarde locale, sa ligne dans l'index et, en ligne, la partie elle-même.
 export function removeFromIndex(storage, id) {
   const list = readIndex(storage).filter(x => x.id !== id);
   try { storage.setItem(IDX, JSON.stringify(list)); } catch { /* rien */ }

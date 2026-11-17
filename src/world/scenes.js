@@ -263,6 +263,9 @@ export const QUARTIER = {
   remy: { x: 18, y: 22, w: 5, door: 20 },   // 17/11 : maison de Remy Gusto, le cuistot
   lot: { x: 32, y: 12 }
 };
+// Lot 8 : une boîte aux lettres devant chaque maison d'habitant (à droite du perron) ; on lit le nom en l'examinant.
+export const MAILBOX_IDS = ['luna', 'franck', 'hailey', 'myst', 'ed', 'remy'];
+export const mailboxOwner = (x, y) => MAILBOX_IDS.find(id => { const h = QUARTIER[id]; return x === h.door + 1 && y === h.y + (h.porch ? 4 : 3); }) || null;
 LAYOUTS.quartier = (() => {
   const Q = QUARTIER, W = Q.W, H = Q.H, m = Array.from({ length: H }, (_, y) => Array.from({ length: W }, (_, x) => (x === 0 || x === W - 1 || y === H - 1 || y === 0 ? 'T' : 'g')));
   for (const y of [8, 9, 17, 18]) for (let x = 1; x < W - 1; x++) m[y][x] = '.';   // deux rues
@@ -282,6 +285,7 @@ LAYOUTS.quartier = (() => {
   for (let y = QUARTIER.ed.y - 3; y < QUARTIER.ed.y; y++) for (let x = QUARTIER.ed.x; x < QUARTIER.ed.x + QUARTIER.ed.w; x++) if (m[y][x] === 'T') m[y][x] = 'g';   // rien devant le toit à étages
   // chemin de Myst : de sa porte (en bas), il longe le bas puis remonte jusqu'à la 2e rue
   const my = Q.myst; for (let x = my.door; x <= 14; x++) m[my.y + 5][x] = '.'; for (let y = 19; y <= my.y + 5; y++) m[y][14] = '.';
+  for (const id of MAILBOX_IDS) { const h = Q[id]; m[h.y + (h.porch ? 4 : 3)][h.door + 1] = 'k'; }   // lot 8 : boîtes aux lettres (k), sans texte
   for (let x = 1; x <= 12; x++) if (m[20][x] === 'g') m[20][x] = 'T';                 // rangée d'arbres : il vit à l'écart
   for (let y = 21; y < H - 1; y++) for (const x of [11, 12]) if (m[y][x] === 'g') m[y][x] = 'T';
   for (const [x, y] of [[3, 11], [15, 11], [31, 6], [38, 11], [36, 20], [24, 22], [30, 25], [20, 26]]) if (m[y][x] === 'g') m[y][x] = 'T';
@@ -312,24 +316,57 @@ function buildWild() {
 }
 LAYOUTS.wild = buildWild();
 // Forêt à côté de la ferme (ouest) : grands arbres (T), clairières, sortie D vers la ferme.
+// Lot 8 : la forêt devient un labyrinthe (murs d'arbres T et de gros cailloux #), entrée à l'ouest (0,9),
+// sortie vers la caverne à l'est (29,9), trouée secrète en haut (27,0) et un coffre au bout du labyrinthe.
+// Labyrinthe « parfait » creusé de façon déterministe (toujours au moins un chemin), puis quelques murs ouverts en plus.
+const FW = 30, FH = 18;
+const FOREST_KEEP = [[9, 7], [18, 13], [18, 12], [5, 12]];   // lieux de promenade des habitants (restent ouverts)
 function buildForest() {
-  const W = 30, H = 18;
-  const m = Array.from({ length: H }, (_, y) => Array.from({ length: W }, (_, x) => (x === 0 || y === 0 || x === W - 1 || y === H - 1 ? 'T' : '.')));
-  // bosquets : positions fixes pour une forêt dense mais praticable
-  const groves = [[3, 3], [7, 2], [12, 4], [17, 2], [22, 4], [25, 7], [4, 8], [9, 10], [14, 8], [19, 11], [24, 13], [5, 14], [11, 14], [16, 15], [21, 15], [27, 12], [2, 11], [8, 6], [13, 12], [20, 7]];
-  for (const [x, y] of groves) { m[y][x] = 'T'; if (x + 1 < W - 1 && (x + y) % 3) m[y][x + 1] = 'T'; if (y + 1 < H - 1 && (x * y) % 4 === 0) m[y + 1][x] = 'T'; }
-  const keep = [[9, 7], [18, 13], [5, 12]]; // lieux de promenade des habitants
-  for (let y = 1; y < H - 1; y++) for (let x = 1; x < W - 1; x++)
-    if ((x * 13 + y * 7) % 9 === 0 && y !== 9 && !keep.some(([a, b]) => Math.abs(a - x) + Math.abs(b - y) < 2)) m[y][x] = 'T';
-  for (let x = 24; x < W - 1; x++) m[9][x] = '.';
-  m[9][W - 1] = 'D';
-  return m.map(r => r.join(''));
+  const m = Array.from({ length: FH }, () => Array.from({ length: FW }, () => 'T'));
+  let s = 8086; const r = () => (s = (s * 1664525 + 1013904223) >>> 0) / 4294967296;
+  const cells = [], seen = new Set([1 + ',' + 9]), stack = [[1, 9]];
+  m[9][1] = '.';
+  while (stack.length) {   // parcours en profondeur : cases impaires, murs entre elles
+    const [x, y] = stack[stack.length - 1];
+    const nb = [[2, 0], [-2, 0], [0, 2], [0, -2]].map(([a, b]) => [x + a, y + b]).filter(([a, b]) => a >= 1 && b >= 1 && a <= FW - 3 && b <= FH - 3 && !seen.has(a + ',' + b));
+    if (!nb.length) { stack.pop(); continue; }
+    const [nx, ny] = nb[r() * nb.length | 0];
+    m[(y + ny) / 2][(x + nx) / 2] = '.'; m[ny][nx] = '.'; seen.add(nx + ',' + ny); stack.push([nx, ny]); cells.push([nx, ny]);
+  }
+  for (let y = 1; y < FH - 1; y++) for (let x = 1; x < FW - 1; x++)   // quelques raccourcis (moins frustrant)
+    if (m[y][x] === 'T' && (x + y) % 2 === 1 && x < FW - 2 && r() < .12) m[y][x] = '.';
+  for (let y = 1; y < FH - 1; y++) m[y][FW - 2] = m[y][FW - 3] === '.' && y % 2 === 1 && r() < .3 ? '.' : 'T';
+  m[9][FW - 2] = '.'; m[1][FW - 3] = '.';
+  for (const [x, y] of FOREST_KEEP) m[y][x] = '.';
+  for (let y = 1; y < FH - 1; y++) for (let x = 1; x < FW - 1; x++)   // des cailloux dans les murs
+    if (m[y][x] === 'T' && r() < .22) m[y][x] = '#';
+  return m.map(row => row.join(''));
 }
 LAYOUTS.foret = buildForest();
-// passage secret : une trouée entre les arbres, tout en haut à droite de la forêt (vers le parc d'attractions caché)
-LAYOUTS.foret = LAYOUTS.foret.map((r, y) => y === 0 ? r.slice(0, 27) + '.' + r.slice(28) : r);
-// Forêt : entrée à l'ouest (depuis le centre-ville) et sentier qui la traverse jusqu'à la sortie est.
-LAYOUTS.foret = LAYOUTS.foret.map((r, y) => y === 9 ? 'D' + '.'.repeat(r.length - 2) + 'D' : r);
+// sorties : à l'ouest (vers les fermes), à l'est (caverne), trouée secrète tout en haut à droite
+LAYOUTS.foret = LAYOUTS.foret.map((r, y) => y === 0 ? r.slice(0, 27) + '.' + r.slice(28) : y === 9 ? 'D' + r.slice(1, -1) + 'D' : r);
+// Chemin le plus court entre deux cases du labyrinthe (largeur d'abord) ; null si bloqué.
+export function forestPath(from, to, blocked = () => false) {
+  const L = LAYOUTS.foret, ok = (x, y) => L[y] && L[y][x] && '.D'.includes(L[y][x]) && !blocked(x, y);
+  const prev = { [from]: null }, q = [from];
+  while (q.length) {
+    const c = q.shift(); if (c === to) break;
+    const [x, y] = c.split(',').map(Number);
+    for (const [a, b] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) { const k = (x + a) + ',' + (y + b); if (!(k in prev) && ok(x + a, y + b)) { prev[k] = c; q.push(k); } }
+  }
+  if (!(to in prev)) return null;
+  const out = []; for (let k = to; k; k = prev[k]) out.unshift(k); return out;
+}
+// Le coffre : la case du labyrinthe la plus éloignée de l'entrée (un vrai bout de labyrinthe).
+export const FOREST_CHEST = (() => {
+  const L = LAYOUTS.foret, dist = { '0,9': 0 }, q = ['0,9']; let far = '0,9';
+  while (q.length) { const c = q.shift(), [x, y] = c.split(',').map(Number); const open = [[1, 0], [-1, 0], [0, 1], [0, -1]].filter(([a, b]) => L[y + b] && '.D'.includes(L[y + b][x + a] || 'T')).length;
+    if (dist[c] > dist[far] && L[y][x] === '.' && y > 0 && x <= FW - 4 && open === 1) far = c;   // un cul-de-sac, loin des sorties
+    for (const [a, b] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) { const k = (x + a) + ',' + (y + b); if (!(k in dist) && L[y + b] && L[y + b][x + a] && '.D'.includes(L[y + b][x + a])) { dist[k] = dist[c] + 1; q.push(k); } } }
+  const [x, y] = far.split(',').map(Number); return { x, y };
+})();
+// Cases à garder libres (les cailloux de la nature n'y poussent pas) : les chemins entrée → caverne, → trouée, → coffre.
+export const FOREST_ROUTE = new Set([...(forestPath('0,9', '29,9') || []), ...(forestPath('0,9', '27,0') || []), ...(forestPath('0,9', FOREST_CHEST.x + ',' + FOREST_CHEST.y) || [])]);
 // ---------- Farmwest, lot 2 : nouvelles zones (d'après docs/carte-region-farmwest.jpg) ----------
 // s terre ocre, g herbe, . chemin, D sortie, T arbre, F fontaine, P panneau, f clôture, H maison du ranch, B grange du ranch,
 // E entrepôt du port, = planches (quai, ponton), w eau
@@ -345,13 +382,12 @@ LAYOUTS.gare = (() => {
   for (let x = 6; x < W; x++) { m[0][x] = 'T'; m[H - 1][x] = 'T'; } for (let y = 0; y < H; y++) m[y][W - 1] = y === 8 || y === 9 ? 'D' : 'T';
   return m.map(r => r.join(''));
 })();
-// Rond-point (26 × 18) : chemins en croix, anneau autour de la fontaine, panneaux vers chaque zone
+// Rond-point (26 × 18) : chemins en croix, anneau autour de la fontaine (lot 8 : plus de panneaux indicateurs)
 LAYOUTS.rondpoint = (() => {
   const W = 26, H = 18, m = grid(W, H, 's');
   for (let y = 0; y < H; y++) { m[y][12] = '.'; m[y][13] = '.'; } for (let x = 0; x < W; x++) { m[8][x] = '.'; m[9][x] = '.'; }
   for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) { const d = Math.hypot(x - 12.5, y - 8.5); if (d < 4.6 && d > 2.2) m[y][x] = '.'; if (d <= 2.2) m[y][x] = 'F'; }
   for (const [x, y] of [[3, 3], [6, 2], [20, 3], [22, 13], [4, 14], [18, 15], [8, 13], [21, 6]]) m[y][x] = 'T';
-  for (const [x, y] of [[11, 2], [15, 6], [16, 11], [9, 12]]) m[y][x] = 'P';
   for (let y = 0; y < H; y++) { m[y][3] = m[y][4] = (y === 8 || y === 9) ? '=' : 'w'; }   // la rivière et son pont en bois (vers le centre-ville)
   border(m, [[12, 0], [13, 0], [12, H - 1], [13, H - 1], [0, 8], [0, 9], [W - 1, 8], [W - 1, 9]]);
   return m.map(r => r.join(''));
@@ -385,7 +421,7 @@ LAYOUTS.port = (() => {
   return m.map(r => r.join(''));
 })();
 
-export const SOLID_TILES = '#WDBKTPCHNYXMQUJAOVZFLfprEmncwGRIxyzqjuhe^';   // ^ falaise (7b)   // e escalier (maison d'Ed)   // h haie de bordure   // + attractions du parc (R I x y z q j u)   // w eau (mer, lac), G grotte   // m n lits de la clinique, c bureau  // A = fauteuil (Franck) / marchand d'animaux (village)
+export const SOLID_TILES = '#WDBKTPCHNYXMQUJAOVZFLfprEmncwGRIxyzqjuhe^k';   // k boîte aux lettres (lot 8)   // ^ falaise (7b)   // e escalier (maison d'Ed)   // h haie de bordure   // + attractions du parc (R I x y z q j u)   // w eau (mer, lac), G grotte   // m n lits de la clinique, c bureau  // A = fauteuil (Franck) / marchand d'animaux (village)
 // Tuiles qui ouvrent une interface.
 export const UI_TILES = { M: 'market', Q: 'board', U: 'upgrades', J: 'carpenter', A: 'animals', O: 'bakery', V: 'butcher', Z: 'fishmonger' };
 

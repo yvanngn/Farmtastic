@@ -17,6 +17,12 @@ import { createMapView } from './ui/mapView.js';
 import { createBoard } from './ui/board.js';
 import { createTitle } from './ui/title.js';
 import { createHotbar } from './ui/hotbar.js';
+import { createNight } from './ui/night.js';
+import { questXpTick, seedQuestXp, registerRecipeLevels } from './systems/level.js';
+import { QUESTS } from './systems/quests.js';
+import { HAND_RECIPES as HR_LVL } from './data/recipes.js';
+import { POT_RECIPES as PR_LVL } from './data/patterns.js';
+registerRecipeLevels([...Object.values(HR_LVL), ...Object.values(PR_LVL)].map(r => ({ n: (ITEMS[r.out] || {}).n || r.out, lvl: r.lvl || 0 })));
 import { introTick, introActive, skipIntro } from './systems/intro.js';
 import { createDialog } from './ui/dialog.js';
 import { NPCS, OUT_FROM, OUT_TO, INTRO_LINES } from './data/npcs.js';
@@ -81,6 +87,7 @@ createParcPanel(g, audio);
 const mapView = createMapView(g, renderer, audio);
 const board = createBoard(g, audio);
 const dialog = createDialog(g, audio);
+const night = createNight({ audio, save: () => doSave(false) });
 let playerMarket = null;
 
 // Branchements bus → UI
@@ -89,6 +96,7 @@ function wireBus() {
   g.bus.on('pop', p => g.fx.push({ ...p, life: 1 }));
   g.bus.on('newDay', () => { renderer.initWeather(); audio.play('day'); doSave(false); });
   g.bus.on('scene', () => { g.enemies.length = 0; });
+  g.bus.on('night', n => night.show(n));   // lot 8 : transition de la nuit
   g.bus.on('openChest', c => chestPanel.open(c));
   g.bus.on('showMap', () => { mapView.open(); toast('🗺️ Le plan est toujours là : bouton 🗺️ en haut à droite (ou touche M).'); });
   g.bus.on('clinic', e => { const h = NPCS.hailey, lines = e && e.off === 'repos' ? h.clinicRepos : e && e.off === 'nuit' ? h.clinicNuit : h.clinic; setTimeout(() => g.bus.emit('say', { name: h.name, color: h.color, voice: h.voice, lines }), 600); });
@@ -151,8 +159,7 @@ async function continueGame(gm) {
   g.S.game = { id: gm.id, code: gm.code || null, mode: gm.mode || 'solo' }; if (gm.lot != null) g.S.farmLot = gm.lot;
   begin();
 }
-async function deleteGame(gm) {
-  if (gm.mode === 'multi') return games;
+async function deleteGame(gm) {   // lot 8 : solo ou à plusieurs (validation dans la fenêtre des parties)
   try { store && store.removeItem(localKey(gm.id)); } catch { /* rien */ }
   if (store) removeFromIndex(store, gm.id);
   if (net.sb && !gm.offline) await deleteOnlineGame(net.sb, gm.id).catch(() => toast('⚠️ Effacée ici, mais pas en ligne (réessaie plus tard).'));
@@ -232,10 +239,10 @@ async function begin() {
   for (const [x, y] of BUSHES) delete g.S.objs[x + ',' + y];   // les buissons à baies gardent leur place
   for (const id in NPCS) registerNPC(g, NPCS[id]);
   for (const id in g.npcs) placeNPC(g.npcs[id], g.S, OUT_FROM, OUT_TO);
-  if (!g.S.intro.arrived && !g.S.intro.step) { // (anciennes parties) arrivée en train : le train repart pendant que le héros repense à l'annonce
-    g.trainT = performance.now();
+  if (!g.S.intro.arrived && !g.S.intro.step) { // (anciennes parties) le héros repense à l'annonce (lot 8 : plus de train dans la ferme)
     setTimeout(() => g.bus.emit('say', { name: g.S.name, color: '#ffdf8a', lines: INTRO_LINES, onEnd: () => { g.S.intro.arrived = true; } }), 2600);
   }
+  if (!g.S.xpQuests) seedQuestXp(g.S, QUESTS);   // lot 8 : ce qui est déjà fait ne rapporte pas d'XP d'un coup
   started = true; g.inGame = true; custom.close(); hud.show(); hotbar.show(); renderer.initWeather(); ensureOrders(g);
   if (net.sb) { playerMarket = createPlayerMarket(net.sb, net.uid, g); await upsertProfile(net.sb, net.uid, g.S); if (game && game.mode === 'multi') { mp = createMultiplayer({ sb: net.sb, uid: net.uid, g, world: game.id }); mp.join(); } }
   doSave(false);
@@ -293,7 +300,7 @@ function loop(now) {
     for (let i = g.fx.length - 1; i >= 0; i--) { const f = g.fx[i]; f.life -= dt; f.y -= dt * 0.75; if (f.life <= 0) g.fx.splice(i, 1); }
     renderer.updateParticles(dt);
     renderer.render(now);
-    if ((hudT += dt) > 0.25) { hudT = 0; hud.update(); repairPanel.update(started && !dialog.isOpen && !document.querySelector('.overlay.on')); }
+    if ((hudT += dt) > 0.25) { hudT = 0; if (started && !introActive(g.S)) questXpTick(g, QUESTS); hud.update(); repairPanel.update(started && !dialog.isOpen && !document.querySelector('.overlay.on')); }
   }
   if (custom.isOpen()) custom.draw(now);
   if (title.isOpen()) title.draw(now);

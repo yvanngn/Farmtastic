@@ -21,6 +21,7 @@ import { PATTERNS, POT_RECIPES } from '../data/patterns.js';
 import { JOBS } from '../data/jobs.js';
 import { jobXp, jobLevel, jobNext } from '../systems/jobs.js';
 import { HAND_RECIPES, RECIPE_CATS } from '../data/recipes.js';
+import { recipeOpen } from '../systems/level.js';
 import { build, canBuild, canBuyAnimal, homeCount, buy, buyAnimal, buyBag, bagCost, buyStack, stackCost, STACKS, canCraft, craft } from '../systems/economy.js';
 import { consume } from '../systems/player.js';
 import { hearts, POINTS_PER_HEART, DEGREES, DEGREE_NAMES, tasteOf } from '../systems/social.js';
@@ -63,7 +64,7 @@ export function createMenu(g, opts) {
       if (!cats.includes(recCat)) recCat = cats[0];
       const tabsH = '<div class="rec-tabs">' + cats.map(c => `<button data-rcat="${c}" class="${c === recCat ? 'on' : ''}">${RECIPE_CATS[c]}</button>`).join('') + '</div>';
       return '<p class="info">Les recettes que tu connais, rangées par type. On les fabrique n\'importe où, avec ce qu\'on a sur soi.</p>' + tabsH + '<div class="grid">' + known.filter(id => HAND_RECIPES[id].cat === recCat).map(id => { const r = HAND_RECIPES[id];
-        return card(`<div class="t">${iconHTML(r.out)} <b>${it(r.out).n}</b> ×${r.q}</div><div>${Object.entries(r.in).map(([k, n]) => `${iconHTML(k)}${n} <small>(${S.inv[k] || 0})</small>`).join(' ')}</div><button data-hcraft="${id}" ${canCraftHand(S, id) ? '' : 'disabled'}>Fabriquer</button>`); }).join('') + '</div>';
+        return card(`<div class="t">${iconHTML(r.out)} <b>${it(r.out).n}</b> ×${r.q}</div><div>${Object.entries(r.in).map(([k, n]) => `${iconHTML(k)}${n} <small>(${S.inv[k] || 0})</small>`).join(' ')}</div>${recipeOpen(S, r) ? `<button data-hcraft="${id}" ${canCraftHand(S, id) ? '' : 'disabled'}>Fabriquer</button>` : `<button disabled>🔒 Niveau ${r.lvl}</button>`}`); }).join('') + '</div>';
     },
     sac(S) {
       const ids = Object.keys(S.inv);

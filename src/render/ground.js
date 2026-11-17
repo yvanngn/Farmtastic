@@ -89,21 +89,18 @@ export function buildGround(season, built = {}, fixed = { house: true, grange: t
   drawHouse(g, R); if (!fixed.house) drawRuins(R, 2 * T + 4, 6 * T + 12, 10, 80, 'house');
   drawBin(R);
   drawGrange(R); if (!fixed.grange) drawRuins(R, 10 * T, 14 * T, 1 * T + 10 - 18, 5 * T, 'grange');
-  drawStation(R);
   // haies le long des bords sans sortie (bas et droite) : on voit tout de suite où sont les chemins
   for (let y = 0; y < CFG.H; y++) for (let x = 0; x < CFG.W; x++) if (isHedge(x, y)) {
     const px = x * T, py = y * T;
     R(px, py + 4, T, T - 4, '#2f6a2a'); R(px + 1, py + 2, 6, 6, '#3f8a34'); R(px + 8, py + 1, 7, 7, '#3f8a34'); R(px + 3, py + 6, 10, 6, '#4a9a3a');
     R(px + 2, py + 3, 2, 1, '#68b84c'); R(px + 10, py + 2, 2, 1, '#68b84c'); R(px, py + T - 2, T, 2, '#24521f');
   }
-  // barrière en bois au nord (derrière les bâtiments) et falaise rocheuse à l'ouest, au-dessus de la gare
+  // barrière en bois au nord (derrière les bâtiments) et falaise rocheuse sur tout le bord ouest
   for (let x = 1; x < CFG.W - 1; x++) { const px = x * T; R(px, 6, T, 2, '#8a5a32'); R(px, 11, T, 2, '#8a5a32'); R(px, 6, T, 1, '#b07a48'); if (x % 2 === 0) { R(px + 6, 2, 3, 13, '#6a4426'); R(px + 6, 2, 3, 1, '#b07a48'); } }
-  for (let y = 0; y <= 12; y++) { const py = y * T; R(0, py, T, T, '#7a7480'); R(0, py, 3, T, '#5a5560'); R(T - 3, py, 3, T, '#a8a2ae'); R(4, py + 3 + (y % 3) * 3, 8, 4, '#8f8a96'); R(4, py + 3 + (y % 3) * 3, 8, 1, '#c4bfca'); R(2, py + T - 2, T - 2, 2, '#4a4650'); }
+  for (let y = 0; y < CFG.H; y++) { const py = y * T; R(0, py, T, T, '#7a7480'); R(0, py, 3, T, '#5a5560'); R(T - 3, py, 3, T, '#a8a2ae'); R(4, py + 3 + (y % 3) * 3, 8, 4, '#8f8a96'); R(4, py + 3 + (y % 3) * 3, 8, 1, '#c4bfca'); R(2, py + T - 2, T - 2, 2, '#4a4650'); }
   for (const y of [0, 1, 2, 3, 7]) { const py = y * T; R(47 * T, py, T, T - 4, '#2f6a2a'); R(47 * T + 2, py + 2, 12, 8, '#3f8a34'); }
   // bordures de pierre le long des sorties élargies
   for (const [x0, y0, x1, y1] of [[15, 33, 17, 35], [45, 4, 47, 6]]) { R(x0 * T - 2, y0 * T, 2, (y1 - y0 + 1) * T, '#8f887f'); R((x1 + 1) * T, y0 * T, 2, (y1 - y0 + 1) * T, '#8f887f'); if (y1 - y0 < 3) { R(x0 * T, y0 * T - 2, (x1 - x0 + 1) * T, 2, '#8f887f'); R(x0 * T, (y1 + 1) * T, (x1 - x0 + 1) * T, 2, '#8f887f'); } }
-  // panneau au bout de la route de l'est : « Centre-ville → »
-  R(44 * T + 7, 6 * T + 6, 2, 12, '#5b3a22'); signBoard(R, 44 * T + 8, 6 * T + 2, 'CENTRE-VILLE →');
   drawFieldStakes(R);
   if (built.coop) drawCoop(R); else drawLot(g, R, 'coop');
   if (built.pigsty) drawPigsty(R); else drawLot(g, R, 'pigsty');
@@ -185,25 +182,6 @@ function drawRuins(R, x0, x1, top, bot, kind) {
   if (kind === 'house') { R(43, 51, 17, 14, '#2a2420'); R(41, 54, 21, 3, '#9c7a52'); R(41, 60, 21, 3, '#8a6a48'); }
   // débris devant
   R(x0 + 6, bot + 3, 12, 2, '#7a4f2e'); R(x0 + 10, bot + 6, 3, 3, '#8f887f'); R(x1 - 20, bot + 4, 10, 2, '#6a4426'); R(x1 - 8, bot + 7, 4, 2, '#9a958c');
-}
-
-// Gare de l'ouest : voie ferrée (x0, dès y13 jusqu'en bas), petit bâtiment (x1-3, y14-16), quai (x1-2, y17-23).
-function drawStation(R) {
-  for (let y = 13 * T; y < CFG.H * T; y += 4) R(1, y, 14, 2, '#6a4a30');                 // traverses
-  R(3, 13 * T, 2, (CFG.H - 13) * T, '#8c8f96'); R(11, 13 * T, 2, (CFG.H - 13) * T, '#8c8f96');
-  R(3, 13 * T, 1, (CFG.H - 13) * T, '#c2c6cc'); R(11, 13 * T, 1, (CFG.H - 13) * T, '#c2c6cc');
-  R(1, 13 * T - 2, 14, 6, '#a8302b'); R(1, 13 * T - 2, 14, 2, '#d8443a');                // butoir
-  const qx = 1 * T, qy = 17 * T;                                                          // quai
-  R(qx, qy, 2 * T, 7 * T, '#a9a29a'); R(qx, qy, 2, 7 * T, '#f2d13b');
-  for (let y = qy; y < qy + 7 * T; y += 8) R(qx + 2, y, 2 * T - 2, 1, '#8f887f');
-  for (let x = qx + 8; x < qx + 2 * T; x += 8) R(x, qy, 1, 7 * T, '#8f887f');
-  const bx = 1 * T, by = 14 * T, bw = 3 * T, bh = 3 * T;                                  // bâtiment
-  R(bx, by + 10, bw, bh - 10, '#b5654a'); for (let y = by + 14; y < by + bh; y += 4) R(bx, y, bw, 1, '#94503a');
-  R(bx - 3, by, bw + 6, 12, '#3e5a7a'); R(bx - 3, by, bw + 6, 2, '#5a7ea4'); R(bx - 3, by + 11, bw + 6, 2, '#2a4058');
-  R(bx + 6, by + 22, 10, 10, '#f0e6d0'); R(bx + 7, by + 23, 8, 8, '#7fb6d9');
-  R(bx + 26, by + 22, 12, bh - 22, '#4a2414'); R(bx + 27, by + 23, 10, bh - 23, '#7a4426');
-  R(bx + 8, by + 14, 30, 6, '#f4ead2'); R(bx + 10, by + 16, 26, 1, '#3e5a7a'); R(bx + 10, by + 18, 18, 1, '#3e5a7a');   // panneau « GARE »
-  R(qx + 4, qy + 5 * T, 22, 4, '#7a4f2e'); R(qx + 5, qy + 5 * T + 4, 2, 4, '#5b3a22'); R(qx + 23, qy + 5 * T + 4, 2, 4, '#5b3a22');   // banc
 }
 
 // Maison de Myst (x40-45, y1-3, porche y4) : vieille maison sombre à deux étages, toit mansardé, fenêtres hautes.

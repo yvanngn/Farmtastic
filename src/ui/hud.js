@@ -5,6 +5,7 @@ import { ITEMS, TOOLS } from '../data/items.js';
 import { SEASONS, WEATHER_LABELS } from '../data/look.js';
 import { fmtTime } from '../systems/time.js';
 import { iconHTML } from './icons.js';
+import { xpBar } from '../systems/level.js';
 
 export function selIcon(S) {
   const t = TOOLS.find(x => x.id === S.sel);
@@ -30,6 +31,7 @@ export function createHud(g, controls) {
       $('#hName').textContent = S.name; $('#hMoney').textContent = S.money;
       const where = { house: ' · 🏠', coop: ' · 🐔', pigsty: ' · 🐷', barn: ' · 🐑', luna: ' · 🏡', franck: ' · 🏚️', grange: ' · 🕳️', wild: ' · 🕳️ Caverne (étage 1)', foret: ' · 🌲', town: ' · 🏙️', quartier: ' · 🏘️', montagne: ' · 🏔️', plage: ' · 🏖️', parc: ' · 🎡' }[S.scene] || '';
       $('#hTime').textContent = `${SEASONS[S.season]} j${S.day}, an ${S.year || 1} · ${fmtTime(S.minute)} · ${WEATHER_LABELS[S.weather].split(' ')[0]}${where}`;
+      { const b = xpBar(S); $('#hLvl').textContent = 'Niv. ' + b.level; $('#hXp').style.width = Math.round(b.p * 100) + '%'; $('#hXpRow').title = b.need ? `Expérience : ${b.cur} / ${b.need} vers le niveau ${b.level + 1}` : 'Niveau maximum'; }   // lot 8 : barre d'XP fine + niveau
       gauge('hEn', S.energy / S.maxE);
       { // autres affichages de l'énergie (au choix dans les réglages) : arc autour du bouton, barre verticale, au-dessus du héros
         const r = S.energy / S.maxE, lvl = gaugeLevel(r), mode = nrjMode();

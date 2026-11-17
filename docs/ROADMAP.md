@@ -109,23 +109,22 @@ La liste détaillée est dans `docs/CARNET.md`, section « Chantier graphique ni
 
 ---
 
-## Lot 8 — Expérience et niveaux du joueur (demande du 17/11)
-- [ ] **À faire en premier (note du 17/11)** : **plus de gare dans les fermes** — retirer l'ancienne petite gare et la voie ferrée de la ferme (la gare est désormais une zone à part, à l'ouest du centre-ville).
-- [ ] **Hache plantée dans le grand arbre** (note du 17/11) : la hache doit sembler enfoncée dans le tronc, pas posée au pied.
-- [ ] **Supprimer une partie à plusieurs** (aujourd'hui seules les parties solo s'effacent), avec une **validation** (« Supprimer cette partie ? ») pour **toutes** les suppressions de partie.
-- [ ] **Beaucoup plus de cailloux et d'arbres** dans les fermes au départ.
-- [ ] **À chaque changement de saison**, on en remet **tout autant**, même si la ferme a été vidée.
-- [ ] **La locomotive repart** une fois le héros monté dans la diligence.
-- [ ] **Plus de panneaux indicateurs** des lieux (pas naturel) : rond-point, centre-ville, etc.
-- [ ] Devant chez les habitants : des **boîtes aux lettres** à la place des panneaux, **sans texte affiché** ; on voit le nom **quand on la lit** (action).
-- [ ] **Plus de nom au-dessus des PNJ.**
-- [ ] **Barre d'outils sous l'écran de jeu** (bande en bas) pour ne plus cacher le bas de la scène.
-- [ ] **Forêt-labyrinthe** : des **cailloux** aussi, toujours **au moins un chemin possible** (vérifié par un test), et un **coffre au bout** du labyrinthe. ❓ Contenu du coffre.
-- [ ] **Transition de la nuit** (en dormant) : un court moment où l'on voit **l'énergie remonter**, où l'on entend le héros faire des **rêves ou des prémonitions**, puis une **sauvegarde automatique**. ❓ Textes des rêves : à écrire par toi (sinon 💡 de Claude en 🆕).
-- [ ] Le joueur gagne de l'**expérience (XP)** : **1 point** par petit objet cassé (arbre, caillou), par **fleur** ou champignon cueilli ; **5 points** par **objet fabriqué** ; **plusieurs dizaines** par **quête** résolue, **plus pour une quête principale**.
-- [ ] **Niveaux** : le niveau 1 s'atteint vite, puis la courbe est **exponentielle** ; **niveau 10 maximum** pour l'instant.
-- [ ] Les niveaux **débloquent naturellement** des zones et des choses (ex. caverne, recettes, magasins, objet pour parler au fantôme).
-- ❓ Quoi se débloque à quel niveau ? Affichage (barre d'XP dans le HUD ?).
+## Lot 8 — Expérience et niveaux du joueur (demande du 17/11) ✅ v0.1.18
+- [x] **Plus de gare dans les fermes** : petite gare et voie retirées ; la falaise court sur tout le bord ouest.
+- [x] **Hache plantée dans le tronc** du grand arbre.
+- [x] **Supprimer une partie à plusieurs** (si on l'a créée : pour tous ; sinon on la quitte) + validation « Supprimer cette partie ? » pour **toutes** les suppressions. SQL : nouvelle version de `ferme_delete_game`.
+- [x] **Beaucoup plus de cailloux et d'arbres** au départ (≈ 170 arbres et 115 cailloux, contre 75 et 42).
+- [x] **À chaque changement de saison**, on en remet autant qu'au départ (cases libres seulement).
+- [x] **La locomotive repart** une fois le héros dans la diligence (la diligence part de la gare).
+- [x] **Plus de panneaux indicateurs** (rond-point, route de la ferme, sortie est du centre-ville).
+- [x] **Boîtes aux lettres** sans texte devant chez les habitants ; on lit le nom en l'examinant.
+- [x] **Plus de nom au-dessus des PNJ** (les autres joueurs gardent le leur).
+- [x] **Barre d'outils dans une bande sous la scène**.
+- [x] **Forêt-labyrinthe** : murs d'arbres et de gros cailloux, cailloux à casser jamais sur le chemin, chemin garanti (test) vers la caverne, la trouée et le **coffre au bout** (or + composants simples au hasard, rempli à chaque saison 💡).
+- [x] **Transition de nuit** : énergie qui remonte, rêve ou prémonition (10 rêves 💡 🆕), sauvegarde automatique.
+- [x] **XP** : 1 par arbre / caillou / fleur / champignon, 5 par objet fabriqué ou plat, 40 par quête secondaire, 100 par quête principale (+10 par étape), 30 par quête du jour (💡 valeurs des quêtes).
+- [x] **Niveaux** : niveau 1 à 10 XP, puis × 1,75 par niveau (niveau 10 à ≈ 5100 XP) ; **niveau 10 max**. Barre d'XP fine + niveau dans le HUD.
+- [x] **Déblocages** : forêt au **niveau 3**, caverne au **niveau 5** (la quête qui l'ouvre viendra), recettes selon le niveau (celles du début au niveau 1 ; autres niveaux 💡). Suite à décider par l'utilisateur.
 
 ## Lot 9 — Quêtes secondaires de fabrication (demande du 17/11)
 - [ ] Quêtes de **craft** secondaires, par exemple **de cuisine** (confitures, plats au chaudron), données par les habitants ou le panneau.

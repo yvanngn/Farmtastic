@@ -3,10 +3,11 @@ import { HAND_RECIPES, COOK, COOK_MS, BUSHES, BERRY_DAYS, BERRY_PICK, MAX_FIRES 
 import { isSolid, isPath, key } from '../world/map.js';
 import { add, has, canAdd, scatter } from './inventory.js';
 import { gainJob } from './jobs.js';
+import { gainPxp, XP, recipeOpen } from './level.js';
 
 const dayNo = S => (S.year - 1) * 112 + S.season * 28 + S.day;
 export const knows = (S, id) => (S.recipes || []).includes(id);
-export const canCraftHand = (S, id) => knows(S, id) && Object.entries(HAND_RECIPES[id].in).every(([k, n]) => has(S, k, n));
+export const canCraftHand = (S, id) => knows(S, id) && recipeOpen(S, HAND_RECIPES[id]) && Object.entries(HAND_RECIPES[id].in).every(([k, n]) => has(S, k, n));
 
 export function craftHand(g, id) {
   const S = g.S, r = HAND_RECIPES[id];
@@ -14,6 +15,7 @@ export function craftHand(g, id) {
   for (const [k, n] of Object.entries(r.in)) add(g, k, -n);
   add(g, r.out, r.q);
   if (r.job) gainJob(g, r.job);
+  gainPxp(g, XP.craft, 'craft');   // lot 8 : 5 XP par objet fabriqué
   g.bus.emit('sfx', 'craft'); g.bus.emit('toast', `Fabriqué : ${r.out === 'campfire' ? 'un feu de camp 🔥 (prends-le en main et pose-le)' : r.out === 'chest' ? 'un coffre 📦' : r.out}`);
   return true;
 }

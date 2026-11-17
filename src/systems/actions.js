@@ -1,5 +1,5 @@
 import { repairOven } from './resto.js';
-import { forestTreeAt, chopForest } from './foret.js';
+import { forestTreeAt, chopForest, isForestChest, openForestChest } from './foret.js';
 // Aiguillage d'une action sur une tuile, selon la scène (ferme ou intérieur).
 import { isBin, key, isPlot } from '../world/map.js';
 import { seaOpen } from './admin.js';
@@ -27,6 +27,8 @@ import { pickFlower, hitNature, natureAt, digTreasure } from './nature.js';
 import { findNPCAt, talk, gift, hearts } from './social.js';
 import { add } from './inventory.js';
 import { TOOL_FOR } from './resources.js';
+import { zoneOpen, ZONE_LEVEL } from './level.js';
+import { ADMIN } from './admin.js';
 
 const TOOL_IDS = ['hand', 'axe', 'pick', 'sickle', 'shovel', 'sword', 'rod', 'hammer'];
 const own = (S, t) => (hasTool(S, t) ? t : 'hand');
@@ -107,12 +109,14 @@ function act0(g, tx, ty) {
   { const f = pickFlower(g, tx, ty); if (f === false) return 'noknife'; if (f === 'progress') return 'progress'; if (f) return 'pick'; }
   { const N = natureAt(S, sc); if (N && N.rocks[key(tx, ty)]) return hitNature(g, tx, ty) ? 'hit' : 'none'; }
   const d = doorAt(sc, tx, ty);
+  if (d && ZONE_LEVEL[d.to] && !zoneOpen(S, d.to) && !ADMIN.on) { g.bus.emit('sfx', 'denied'); g.bus.emit('toast', d.to === 'foret' ? `🌲 Les arbres sont si serrés qu'on ne passe pas… (niveau ${ZONE_LEVEL.foret} requis)` : `🔒 La caverne attendra : niveau ${ZONE_LEVEL[d.to]} requis.`); return 'locked'; }   // lot 8 : zones débloquées par le niveau
   if (d && d.to === 'wild' && !isOpen(S)) { g.bus.emit('sfx', 'denied'); g.bus.emit('toast', 'La grille de la caverne est fermée à clé. Le Maire saura peut-être…'); return 'locked'; }
   if (d && d.to === 'plage' && !seaOpen(S)) { g.bus.emit('sfx', 'denied'); g.bus.emit('toast', '🚧 Le chemin de la plage est barré pour l’instant.'); return 'locked'; }
   if (d && HOME_OWNER[d.to] && !canEnterHome(S, HOME_OWNER[d.to])) return knock(g, HOME_OWNER[d.to]);
   if (d && !(sc === 'farm' && BUILDINGS[d.to] && !(S.built && S.built[d.to]))) { enterScene(g, d.to, d.spawn); return 'door'; }
   if (sc === 'grange') { const r = grangeAction(g, tx, ty); if (r !== 'none') return r; }
   if (sc === 'resto' && tileAt('resto', tx, ty) === 'O') return repairOven(g);   // le four du cuistot (lot 5)
+  if (sc === 'foret' && isForestChest(tx, ty)) return openForestChest(g) ? 'chest' : 'none';   // lot 8 : coffre au bout du labyrinthe
   if (sc === 'foret' && forestTreeAt(S, tx, ty)) return chopForest(g, tx, ty) ? 'hit' : 'none';
   if (sc === 'foret') { const r = pickShroom(g, tx, ty); return r === 'progress' ? 'progress' : r ? 'pick' : r === false ? 'noknife' : 'none'; }
   if (sc === 'parc') { const t = tileAt(sc, tx, ty), k = parcAt(t); if (k === 'ride') return ride(g, t) ? 'ride' : 'none'; if (k === 'game') return startGame(g, t) ? 'game' : 'none'; if (k === 'stall') return buyStall(g, t) ? 'buy' : 'none'; }

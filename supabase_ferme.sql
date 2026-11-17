@@ -159,7 +159,13 @@ $$;
 create or replace function public.ferme_delete_game(p_game uuid) returns void
 language plpgsql security definer set search_path = public as $$
 begin
-  delete from ferme_games where id = p_game and owner_id = auth.uid() and mode = 'solo';
+  -- lot 8 : partie solo ou partie à plusieurs créée par moi → supprimée (pour tous) ; sinon je quitte la partie (ma ferme et ma sauvegarde)
+  if exists (select 1 from ferme_games where id = p_game and owner_id = auth.uid()) then
+    delete from ferme_games where id = p_game;
+  else
+    delete from ferme_saves where game_id = p_game and player_id = auth.uid();
+    delete from ferme_players where game_id = p_game and player_id = auth.uid();
+  end if;
 end $$;
 
 -- Marché : achat, retrait, encaissement atomiques.

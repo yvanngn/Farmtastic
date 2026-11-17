@@ -1,10 +1,11 @@
 import { cueillir } from './nature.js';
 // Forêt : chaque jour, des champignons de la saison poussent au pied des arbres.
 // Taille petite / moyenne / grosse (la grosse est rare) ; une espèce rare et chère par saison.
-import { LAYOUTS } from '../world/scenes.js';
+import { LAYOUTS, FOREST_CHEST } from '../world/scenes.js';
 import { key } from '../world/map.js';
-import { MUSHROOMS } from '../data/items.js';
+import { MUSHROOMS, ITEMS } from '../data/items.js';
 import { add } from './inventory.js';
+import { gainPxp, XP } from './level.js';
 
 export const SHROOMS_PER_DAY = 8, P_RARE = 0.12, P_BIG = 0.1, P_MEDIUM = 0.3;
 
@@ -32,6 +33,7 @@ export function pickShroom(g, x, y) {
   if (!m) return null;
   const c = cueillir(g, x, y, `🍄 ${KNIFE_LINE}`); if (c !== true) return c;   // couteau + jauge (lot 5)
   delete S.foret.shrooms[k];
+  gainPxp(g, XP.small, 'shroom');   // lot 8 : champignon cueilli
   const id = `${m.sp}_${m.size}`;
   add(g, id, 1);
   g.bus.emit('sfx', 'collect');
@@ -64,8 +66,28 @@ export function chopForest(g, x, y) {
   g.bus.emit('swing', 'axe'); g.bus.emit('objHit', { x, y, t: 'tree', broken: hits[k] >= TREE_HP });
   if (hits[k] < TREE_HP) { g.bus.emit('sfx', 'chop'); return true; }
   delete hits[k]; cut[k] = dayN(S);
+  gainPxp(g, XP.small, 'tree');   // lot 8
   g.bus.emit('sfx', 'break');
   const n = 3 + (g.rnd() * 3 | 0); scatter(g, 'wood', n, x, y);
   g.bus.emit('pop', { t: '+' + n + '🪵', x, y });
   return true;
+}
+
+// Lot 8 : le coffre au bout du labyrinthe. Contenu (demande de l'utilisateur) : de l'or et des composants simples au hasard.
+// Il se remplit de nouveau à chaque saison (💡).
+export const CHEST_GOLD = [80, 160], CHEST_PARTS = ['wood', 'stone', 'berry', 'mure', 'copper_ore'], CHEST_PICKS = 3;   // 💡 quantités
+const seasonId = S => S.year + '-' + S.season;
+export const forestChestFull = S => !(S.foret && S.foret.chest === seasonId(S));
+export const isForestChest = (x, y) => x === FOREST_CHEST.x && y === FOREST_CHEST.y;
+export function openForestChest(g) {
+  const S = g.S;
+  if (!forestChestFull(S)) { g.bus.emit('toast', '📦 Le coffre est vide. Il sera peut-être de nouveau rempli à la prochaine saison…'); return false; }
+  S.foret ||= { day: null, shrooms: {} }; S.foret.chest = seasonId(S);
+  const gold = CHEST_GOLD[0] + (g.rnd() * (CHEST_GOLD[1] - CHEST_GOLD[0] + 1) | 0), got = {};
+  S.money += gold;
+  for (let i = 0; i < CHEST_PICKS; i++) { const id = CHEST_PARTS[g.rnd() * CHEST_PARTS.length | 0], n = 2 + (g.rnd() * 4 | 0); add(g, id, n); got[id] = (got[id] || 0) + n; }
+  g.bus.emit('sfx', 'collect'); g.bus.emit('pop', { t: '+' + gold + '$', x: FOREST_CHEST.x, y: FOREST_CHEST.y });
+  g.bus.emit('toast', `📦 Le coffre au bout du labyrinthe ! +${gold} $ et ${Object.entries(got).map(([id, n]) => n + ' ' + ((ITEMS[id] && ITEMS[id].n) || id)).join(', ')}`);
+  g.bus.emit('chestOpened', { gold, got });
+  return { gold, got };
 }

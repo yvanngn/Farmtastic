@@ -3,7 +3,7 @@
 import { CFG } from '../config.js';
 import { inRect, isPath, isSolid, key } from '../world/map.js';
 import { add } from './inventory.js';
-import { newDay } from './time.js';
+import { newDay, nightTransition } from './time.js';
 
 export const TENT_ZONE = { x0: 1, y0: 5, x1: 9, y1: 9 };   // « à côté de la maison »
 export const TENT_ENERGY = 1;   // 16/11 : dormir rend 100 % de l'énergie (demande de l'utilisateur)
@@ -35,9 +35,10 @@ export function foldTent(g) {
 export function sleepTent(g) {
   const S = g.S;
   if (S.minute < CFG.SLEEP_FROM) { g.bus.emit('toast', 'Trop tôt pour dormir (après 18h)'); return false; }
-  const t = S.tent;
+  const t = S.tent, from = S.energy;
   newDay(g, true);
   S.energy = Math.round(S.maxE * TENT_ENERGY);
+  nightTransition(g, from);   // lot 8
   ((S.quests ||= {}).debut ||= {}).dormi = true;
   S.x = t.x + .5; S.y = t.y + 1.6; S.scene = 'farm';
   g.bus.emit('sfx', 'sleep'); g.bus.emit('toast', 'Nuit sous la tente… bien reposé(e) ! ⛺');

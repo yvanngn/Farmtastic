@@ -105,3 +105,12 @@ test('Farmwest lot 1 : joueur « Cloud Jimny » par défaut', async () => {
   const { defaultState } = await import('../src/core/state.js');
   assert.equal(defaultState().name, 'Cloud Jimny');
 });
+
+test('lot 8 : toute suppression de partie (solo ou à plusieurs) passe par « Supprimer cette partie ? »', async () => {
+  const { deleteQuestion, removeFromIndex } = await import('../src/net/games.js');
+  for (const mode of ['solo', 'multi']) assert.equal(deleteQuestion({ mode }).q, 'Supprimer cette partie ?');
+  assert.match(deleteQuestion({ mode: 'multi' }).note, /quittes/);
+  const mem = { v: {}, getItem(k) { return this.v[k] ?? null; }, setItem(k, x) { this.v[k] = x; } };
+  upsertIndex(mem, { id: 'm1', mode: 'multi', code: 'FERME-AB12' });
+  assert.equal(removeFromIndex(mem, 'm1').length, 0, 'une partie à plusieurs s’efface aussi de l’index');
+});

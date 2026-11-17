@@ -116,7 +116,7 @@ test('une ferme de départ par joueur : 4 emplacements, chacun annonce le sien',
 // ---- 15/11 soir : cabane délabrée, Myst, gare, villa du maire ----
 import { REPAIRS, FIELD_TOOLS, AXE_GROVE, REPAIR_STEP } from '../src/data/repairs.js';
 import { isRepaired, contribute, repairNear, fieldToolAt } from '../src/systems/repair.js';
-import { isPlatform, isStation, genObjects } from '../src/world/map.js';
+import { isPlatform, isStation, isCliff, genObjects } from '../src/world/map.js';
 import { MYST } from '../src/data/npcs.js';
 import { mystTick } from '../src/systems/social.js';
 import { LAYOUTS as LAY } from '../src/world/scenes.js';
@@ -168,9 +168,10 @@ test('Myst attend sur le quai, vient parler après les pensées du héros (plan,
   assert.ok(LAY.quartier[24].slice(3, 9) === 'XXXXXX' && LAY.quartier[20][4] === 'T', 'sa maison est tout en bas à gauche, à l’écart derrière une rangée d’arbres');
   assert.equal(MYST.look.tall && MYST.look.coat, true, 'grand, long manteau');
 });
-test('gare à l’ouest : quai et chemin vers la ferme ; plus de villa en ville (le Maire vit au ranch)', () => {
-  assert.ok(isStation(2, 15) && isPlatform(1, 20));
-  assert.equal(isSolid({ scene: 'farm' }, 0, 20), true, 'la voie ferrée');
+test('lot 8 : plus de gare dans la ferme (falaise sur tout le bord ouest) ; plus de villa en ville (le Maire vit au ranch)', () => {
+  for (let y = 0; y < 36; y++) assert.ok(!isStation(2, y) && !isPlatform(1, y));
+  assert.equal(isSolid({ scene: 'farm' }, 0, 20), true, 'la falaise');
+  for (let y = 0; y < 36; y++) assert.ok(isCliff(0, y));
   for (let x = 3; x <= 16; x++) assert.equal(ground(x, 20), 'path');
   assert.ok(!LAY.town.some(r => r.includes('W')), 'villa effacée');
 });
@@ -278,7 +279,10 @@ test('Farmwest lot 3 : train → Myst → diligence (arrêts le temps des explic
   let n = 0; while (g.S.intro.step === 'descente' && n++ < 100) introTick(g, .1);
   assert.equal(g.introHidden, false); assert.equal(g.S.x, 4.5, 'descendu sur le quai');
   introTick(g, .1); assert.equal(said.at(-1).name, 'Myst'); end();
-  assert.equal(g.S.scene, 'town'); assert.ok(g.ride, 'en diligence');
+  assert.equal(g.S.scene, 'gare'); assert.ok(g.ride, 'en diligence, encore à la gare');
+  assert.equal(introTick(g, 1), 'locomotive', 'lot 8 : la locomotive repart une fois le héros monté'); assert.equal(g.ride.x, RIDE.gare.from, 'la diligence attend');
+  n = 0; while (g.S.scene === 'gare' && n++ < 200) introTick(g, .2);
+  assert.equal(g.S.scene, 'town');
   let stops = 0, guard = 0;
   while (g.S.intro.step === 'diligence' && guard++ < 2000) {
     const before = said.length, x = g.ride && g.ride.x; introTick(g, .1);
@@ -368,4 +372,28 @@ test('intro : « Passer l’intro » mène directement devant la ferme (premièr
   assert.equal(introActive(g.S), false); assert.equal(g.S.scene, 'farm'); assert.equal(g.S.farmLot, 1, 'ferme 0 prise → la 1');
   assert.equal(g.S.x, FARM_DROP.x); assert.equal(g.introHidden, false); assert.equal(g.ride, null);
   assert.equal(skipIntro(g), false, 'rien à passer ensuite');
+});
+
+test('lot 8 : forêt-labyrinthe — cailloux, toujours un chemin (caverne, trouée, coffre), coffre au bout avec or et composants', async () => {
+  const { forestPath, FOREST_CHEST, FOREST_ROUTE, LAYOUTS: L } = await import('../src/world/scenes.js');
+  const { openForestChest, forestChestFull } = await import('../src/systems/foret.js');
+  const { ensureNature } = await import('../src/systems/nature.js');
+  const F = L.foret;
+  assert.ok(F.join('').split('#').length > 15, 'des gros cailloux dans les murs');
+  assert.ok(forestPath('0,9', '29,9'), 'entrée → caverne'); assert.ok(forestPath('0,9', '27,0'), 'entrée → trouée secrète');
+  const c = FOREST_CHEST; assert.equal(F[c.y][c.x], '.');
+  assert.ok(forestPath('0,9', c.x + ',' + c.y).length > 25, 'le coffre est loin, au bout du labyrinthe');
+  // même avec les cailloux de la nature et le coffre, le chemin reste libre, jour après jour
+  const { g, S } = makeGame({ rnd: (() => { let k = 7; return () => (k = (k * 9301 + 49297) % 233280) / 233280; })(), state: { scene: 'foret', x: 1.5, y: 9.5 } });
+  for (let d = 1; d <= 20; d++) { S.day = d; ensureNature(g, 'foret'); }
+  const N = S.nature.foret, blocked = (x, y) => F[y][x] !== 'D' && isSolid(S, x, y);
+  assert.ok(Object.keys(N.rocks).length > 5, 'des cailloux à casser aussi');
+  for (const k of Object.keys(N.rocks)) assert.ok(!FOREST_ROUTE.has(k), 'pas de caillou sur le chemin ' + k);
+  assert.ok(forestPath('0,9', '29,9', blocked), 'toujours au moins un chemin vers la caverne');
+  assert.equal(isSolid(S, c.x, c.y), true, 'on ne marche pas sur le coffre');
+  const m0 = S.money; S.inv = {};
+  assert.equal(act(g, c.x, c.y), 'chest');
+  assert.ok(S.money > m0, 'de l’or'); assert.ok(Object.values(S.inv).reduce((a, b) => a + b, 0) >= 6, 'des composants');
+  assert.equal(forestChestFull(S), false); assert.equal(openForestChest(g), false, 'vide jusqu’à la saison suivante');
+  S.season = (S.season + 1) % 4; assert.equal(forestChestFull(S), true);
 });

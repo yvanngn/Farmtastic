@@ -8,6 +8,7 @@ import { shade, disc } from './pixel.js';
 import { GRASS, drawLunaHouse, drawFranckHouse, drawMystHouse } from './ground.js';
 import { treeSprite } from './sprites.js';
 import { signBoard } from './pixfont.js';
+import { MAILBOX_IDS } from '../world/scenes.js';
 const T = CFG.T;
 
 // Lampadaires allumés la nuit (px du village).
@@ -205,8 +206,6 @@ export function buildTown(season) {
     if (ch === 'L') { R(px + 7, py - 10, 2, 25, '#2b2730'); R(px + 5, py + 13, 6, 2, '#2b2730'); R(px + 4, py - 16, 8, 7, '#2b2730'); R(px + 5, py - 15, 6, 5, '#ffd98a'); R(px + 3, py - 17, 10, 2, '#3a3540'); }
   }
   for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) if (L[y][x] === 'T') g.drawImage(treeSprite(season, (x + y) % 4), x * T - 9, y * T - 28);
-  // panneau vers la forêt, près de la sortie est
-  R(32 * T + 7, 8 * T + 6, 2, 12, '#5b3a22'); signBoard(R, 29 * T + 10, 8 * T + 2, 'ROND-POINT →');
   // (villa du Maire effacée le 17/11 : Manu vit dans son ranch)
   drawHedges(R, LAYOUTS.town);   // haies de bordure
   return c;
@@ -241,10 +240,12 @@ export function buildQuartier(season) {
   drawLunaHouse(shift((Q.luna.x - 18) * T, (Q.luna.y - 29) * T));
   drawFranckHouse(shift((Q.franck.x - 25) * T, (Q.franck.y - 29) * T));
   drawMystHouse(shift((Q.myst.x - 40) * T, (Q.myst.y - 1) * T));   // la maison de Myst, tout en bas à gauche, derrière les arbres
-  // pancartes : qui habite là (à côté du perron)
-  for (const [id, name] of [['luna', 'LUNA'], ['franck', 'FRANCK'], ['hailey', 'HAILEY'], ['myst', 'MYST'], ['ed', 'FAMILLE ED'], ['remy', 'REMY']]) {
-    const h = Q[id], rows = h.porch ? 4 : 3, sx = (h.door + 1) * T + 10, sy = (h.y + rows) * T + 2;
-    R(sx - 1, sy + 4, 2, 10, '#5b3a22'); signBoard(R, sx, sy - 4, name);
+  // lot 8 : boîtes aux lettres (sans texte) à la place des pancartes ; le nom se lit en l'examinant
+  for (const id of MAILBOX_IDS) {
+    const h = Q[id], px = (h.door + 1) * T, py = (h.y + (h.porch ? 4 : 3)) * T;
+    R(px + 4, py + 14, 9, 2, 'rgba(30,20,10,.3)'); R(px + 7, py + 7, 2, 8, '#5b3a22'); R(px + 7, py + 7, 1, 8, '#7a4f2e');   // poteau
+    R(px + 3, py + 1, 10, 7, '#3a4a5a'); R(px + 3, py + 1, 10, 2, '#5a6e82'); R(px + 3, py + 7, 10, 1, '#26323e'); R(px + 4, py + 3, 1, 4, '#26323e');   // boîte en fer, porte
+    R(px + 12, py - 2, 1, 6, '#3a2a20'); R(px + 13, py - 2, 3, 2, '#c0392b');   // petit drapeau rouge
   }
   // terrains libres pour de futurs habitants (piquets + panneau)
   { // clinique (x18-21, y4-6) : murs blancs, croix verte, auvent turquoise, porte vitrée (x19)

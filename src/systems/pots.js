@@ -5,7 +5,8 @@ import { isSolid, isPath, key } from '../world/map.js';
 import { add, has, canAdd } from './inventory.js';
 import { ITEMS } from '../data/items.js';
 import { gainJob } from './jobs.js';
-export const knowsPot = (S, id) => !!POT_RECIPES[id].base ? (S.recipes || []).includes('chaudron') : (S.recipes || []).includes(id);
+import { gainPxp, XP, recipeOpen } from './level.js';
+export const knowsPot = (S, id) => !recipeOpen(S, POT_RECIPES[id]) ? false : !!POT_RECIPES[id].base ? (S.recipes || []).includes('chaudron') : (S.recipes || []).includes(id);
 
 export const hasPattern = (S, id) => (S.recipes || []).includes(PATTERNS[id].recipe);
 export function buyPattern(g, id) {
@@ -63,5 +64,6 @@ export function usePot(g, pot) {
   add(g, r.out, r.q); pot.cook = null;
   g.bus.emit('sfx', 'collect'); g.bus.emit('pop', { t: `+${r.q} ${ITEMS[r.out].i}`, x: pot.x, y: pot.y });
   gainJob(g, r.job); ((S.quests ||= {}).debut ||= {}).cuisine = true;
+  gainPxp(g, XP.craft, 'craft');   // lot 8 : plat préparé = objet fabriqué
   return 'done';
 }

@@ -6,6 +6,7 @@ import { BUILDINGS, WORKBENCH } from '../data/buildings.js';
 import { isUnlocked } from './market.js';
 import { add, has, slots, canAdd, stackSize, STACKS } from './inventory.js';
 import { CFG } from '../config.js';
+import { gainPxp, XP, recipeOpen } from './level.js';
 
 export const BAG_STEP = 6;
 export const bagCost = S => 600 * ((slots(S) - CFG.INV_SLOTS) / BAG_STEP + 1);
@@ -140,9 +141,10 @@ export const canCraft = (S, r) => Object.entries(r.in).every(([k, n]) => has(S, 
 
 export function craft(g, index) {
   const r = RECIPES[index];
-  if (!g.S.workbench || !r || !canCraft(g.S, r)) return false; // on fabrique seulement à l'établi réparé
+  if (!g.S.workbench || !r || !canCraft(g.S, r) || !recipeOpen(g.S, r)) return false; // on fabrique seulement à l'établi réparé
   for (const [k, n] of Object.entries(r.in)) add(g, k, -n);
   add(g, r.out, r.q);
+  gainPxp(g, XP.craft, 'craft');   // lot 8
   g.bus.emit('sfx', 'craft');
   return true;
 }

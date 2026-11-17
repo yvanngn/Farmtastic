@@ -127,3 +127,16 @@ test('21/11 : ce qu’on casse se répand au sol, on le ramasse en passant dessu
   clock.t += SCATTER_MS; pickDrops(g, d.x, d.y); assert.ok(S.inv.wood > 0); assert.ok(sfx.includes('getWood'));
   assert.equal(pickSound('stone'), 'getStone'); assert.equal(pickSound('gold_ore'), 'getOre'); assert.equal(pickSound('berry'), 'getFood');
 });
+
+test('lot 8 : beaucoup plus d’arbres et de cailloux au départ, et autant remis à chaque saison même si la ferme est vidée', async () => {
+  const { seasonRestock } = await import('../src/systems/resources.js');
+  const { newDay } = await import('../src/systems/time.js');
+  const o = genObjects(), n = t => Object.values(o).filter(x => t.includes(x.t)).length;
+  assert.ok(n(['tree']) >= 150 && n(['rock', 'rock_big']) >= 100, `départ : ${n(['tree'])} arbres, ${n(['rock', 'rock_big'])} cailloux`);
+  const { g } = makeGame(); g.S.objs = {}; g.S.x = 5.5; g.S.y = 6.8; g.S.day = 28;
+  newDay(g, true);
+  const m = t => Object.values(g.S.objs).filter(x => t.includes(x.t)).length;
+  assert.ok(m(['tree']) >= n(['tree']) * .8 && m(['rock', 'rock_big']) >= n(['rock', 'rock_big']) * .8, `remis : ${m(['tree'])} / ${m(['rock', 'rock_big'])}`);
+  assert.ok(m(['tree']) <= n(['tree']) && m(['rock', 'rock_big']) <= n(['rock', 'rock_big']) + 10, 'jamais plus qu’au départ');
+  assert.equal(seasonRestock(g), 0, 'ferme déjà pleine : rien de plus');
+});

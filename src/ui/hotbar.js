@@ -23,6 +23,6 @@ export function createHotbar(g, audio) {
   return {
     render,
     pick(i) { const t = owned()[i]; if (!t) return false; g.S.sel = t.id; audio.play('ui'); g.bus.emit('inv'); render(); return true; },
-    show() { bar.hidden = false; last = ''; render(); }
+    show() { bar.hidden = false; last = ''; render(); document.body.classList.add('bande'); dispatchEvent(new Event('resize')); }   // lot 8 : bande sous la scène
   };
 }

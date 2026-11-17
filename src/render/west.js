@@ -9,7 +9,7 @@ import { treeSprite, pineSprite, cactusSprite, pebbleSprite } from './sprites.js
 
 const T = CFG.T;
 // Panneaux du rond-point : position → texte (vers quelle zone mène la sortie la plus proche)
-const SIGNS = { rondpoint: { '11,2': 'FERMES', '15,6': 'RÉSIDENCES', '16,11': 'RANCH', '9,12': 'CENTRE-VILLE' } };
+const SIGNS = {};   // lot 8 : plus de panneaux indicateurs (pas naturel)
 
 const DESERT = ['gare', 'rondpoint', 'ranch'];
 export function buildWest(name, season) {
