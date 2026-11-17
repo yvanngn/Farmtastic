@@ -1,3 +1,4 @@
+import { paintGrass } from './terrain.js';
 // Terres sauvages pré-rendues : herbe plus sombre et touffue, arbres serrés en bordure,
 // rochers, sortie vers la ferme. Reconstruites à chaque saison.
 import { CFG } from '../config.js';
@@ -56,8 +57,8 @@ export function buildWild(season, name = 'wild') {
   const B = shade(GRASS[season], .88), tones = [B, B, shade(B, .9), shade(B, 1.08)];
   for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
     const px = x * T, py = y * T;
-    for (let by = 0; by < T; by += 4) for (let bx = 0; bx < T; bx += 4) R(px + bx, py + by, 4, 4, tones[r() * 4 | 0]);
-    for (let k = 0; k < 3; k++) { const sx = px + 1 + (r() * 12 | 0), sy = py + 2 + (r() * 10 | 0), d = shade(B, .75); R(sx, sy + 1, 1, 2, d); R(sx + 2, sy + 1, 1, 2, d); R(sx + 1, sy, 1, 3, d); }
+    paintGrass(R, r, px, py, x, y, B, season);   // Farmwest (7a) : herbe en brins
+    for (let k = 0; k < 0; k++) { const sx = px + 1 + (r() * 12 | 0), sy = py + 2 + (r() * 10 | 0), d = shade(B, .75); R(sx, sy + 1, 1, 2, d); R(sx + 2, sy + 1, 1, 2, d); R(sx + 1, sy, 1, 3, d); }
     if (L[y][x] === 'D') { R(px, py, T, T, '#5a4a3a'); R(px + 2, py + 2, 10, 12, '#2a2220'); R(px, py, T, 2, '#8a7a68'); }
   }
   // rochers (#) puis arbres (T), triés de haut en bas

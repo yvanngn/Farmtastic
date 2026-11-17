@@ -1,3 +1,4 @@
+import { paintGrass, paintOchre, paintRoad, paintPlanks, softEdge, OCHRE, paintRiver, paintBridge, paintCliff } from './terrain.js';
 // Centre du village pré-rendu : place pavée, halle du marché, panneau d'affichage,
 // fontaine, lampadaires, bancs, jardinières et arbres. Reconstruit à chaque saison.
 import { CFG } from '../config.js';
@@ -22,9 +23,23 @@ export function buildTown(season) {
   // sol : herbe en bordure, pavés sur la place
   for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
     const px = x * T, py = y * T, ch = L[y][x];
+    // Farmwest (7b) : rivière, ponts en bois, falaise en terrasses
+    if (ch === 'w') { paintRiver(R, r, px, py, x, y, L); continue; }
+    if (ch === '=') { paintBridge(R, r, px, py, x, y, L); continue; }
+    if (ch === '^') { paintCliff(R, r, px, py, x, y, L, season); continue; }
+    // Farmwest (7a) : terre ocre, rues de sable avec ornières, trottoirs en planches devant les commerces, place pavée
     if (ch === 'g' || ch === 'T' || ch === 'D' || ch === 'W') {
-      for (let by = 0; by < T; by += 4) for (let bx = 0; bx < T; bx += 4) R(px + bx, py + by, 4, 4, [B, B, shade(B, .93), shade(B, 1.06)][r() * 4 | 0]);
-      if (ch === 'D') { R(px, py, T, T, '#c9a66a'); R(px + 3, py + 4, 5, 3, '#dcc394'); }
+      if (ch === 'D') { paintRoad(R, r, px, py, x, y); continue; }
+      paintOchre(R, r, px, py, x, y, season);
+      continue;
+    }
+    const isB = (a, b) => 'MUJAOVZRY'.includes((L[b] || '')[a] || '');
+    if (isB(x, y - 1) || isB(x - 1, y - 1) || isB(x + 1, y - 1)) { paintPlanks(R, r, px, py, x, y); continue; }   // trottoir de bois
+    const plaza = x >= 12 && x <= 21 && y >= 5 && y <= 9;
+    if (!plaza) {
+      paintRoad(R, r, px, py, x, y, (y === 10 || y === 11 || y === 24) ? 1 : (x === 20 || x === 21) ? 2 : 0);
+      const oc = shade(OCHRE[season] || OCHRE[0], 1);
+      for (const [dx, dy, sd] of [[0, -1, 'n'], [0, 1, 's'], [-1, 0, 'w'], [1, 0, 'e']]) { const n = (L[y + dy] || '')[x + dx]; if (n === 'g') softEdge(R, r, px, py, sd, oc); }
       continue;
     }
     R(px, py, T, T, '#a9a29a');
@@ -147,7 +162,7 @@ export function buildTown(season) {
   }
   for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) if (L[y][x] === 'T') g.drawImage(treeSprite(season, (x + y) % 4), x * T - 9, y * T - 28);
   // panneau vers la forêt, près de la sortie est
-  R(32 * T + 7, 8 * T + 6, 2, 12, '#5b3a22'); signBoard(R, 30 * T + 10, 8 * T + 2, 'FORÊT →');
+  R(32 * T + 7, 8 * T + 6, 2, 12, '#5b3a22'); signBoard(R, 29 * T + 10, 8 * T + 2, 'ROND-POINT →');
   // (villa du Maire effacée le 17/11 : Manu vit dans son ranch)
   drawHedges(R, LAYOUTS.town);   // haies de bordure
   return c;
@@ -162,16 +177,21 @@ export function buildQuartier(season) {
   const B = GRASS[season];
   for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
     const px = x * T, py = y * T, ch = L[y][x];
-    if (ch === '.' || ch === 'D') {
+    if (ch === '.' || ch === 'D') {   // Farmwest (7a) : allées de sable tassé, bords adoucis
+      paintRoad(R, r, px, py, x, y, (y === 8 || y === 9 || y === 17 || y === 18) ? 1 : 0);
+      for (const [dx, dy, sd] of [[0, -1, 'n'], [0, 1, 's'], [-1, 0, 'w'], [1, 0, 'e']]) { const n = (L[y + dy] || '')[x + dx]; if (n && n !== '.' && n !== 'D' && n !== 'X') softEdge(R, r, px, py, sd, shade(B, .95)); }
+      continue;
+    }
+    if (false) {
       R(px, py, T, T, '#a9a29a');
       for (let k = 0; k < 4; k++) { const sx = px + (k % 2) * 8 + ((y % 2) * 4), sy = py + (k >> 1) * 8; R(sx + 1, sy + 1, 6, 6, ['#bcb5ac', '#b3aca2', '#c6c0b7'][r() * 3 | 0]); R(sx + 1, sy + 6, 6, 1, '#8f887f'); }
       continue;
     }
-    for (let by = 0; by < T; by += 4) for (let bx = 0; bx < T; bx += 4) R(px + bx, py + by, 4, 4, [B, B, shade(B, .93), shade(B, 1.06)][r() * 4 | 0]);
-    if (r() < .06) { const col = ['#ffffff', '#f5e050', '#f07ab0'][r() * 3 | 0]; R(px + 7, py + 7, 3, 1, col); R(px + 8, py + 6, 1, 3, col); }
+    paintGrass(R, r, px, py, x, y, B, season);
+    if (r() < .02) { const col = ['#ffffff', '#f5e050', '#f07ab0'][r() * 3 | 0]; R(px + 7, py + 7, 3, 1, col); R(px + 8, py + 6, 1, 3, col); }
   }
   // haies et boîtes aux lettres devant chaque maison, bordure de trottoir
-  for (const yy of [8, 17]) { R(T, yy * T - 1, (W - 2) * T, 2, '#8f887f'); R(T, (yy + 2) * T - 1, (W - 2) * T, 2, '#8f887f'); }
+  // (bordures de trottoir gris retirées : allées de sable au lot 7a)
   const shift = (dx, dy) => (x, y, w, h, col) => R(x + dx, y + dy, w, h, col);
   const Q = QUARTIER;
   drawLunaHouse(shift((Q.luna.x - 18) * T, (Q.luna.y - 29) * T));

@@ -30,6 +30,7 @@ export function examineText(S, tx, ty) {
     if (inH(Q.remy)) return E.remy; if (inH(Q.ed)) return E.ed; if (inH(Q.myst)) return E.myst; if (inH(Q.clinique)) return E.clinic; if (inH(Q.hailey)) return E.hailey; if (inH(Q.luna)) return E.luna;
     return S.social && S.social.franck && S.social.franck.points >= 750 ? E.franckOpen : E.franck;
   }
+  if (sc === 'town' && (t === '^' || t === 'w')) return t === '^' ? K.cliff : K.river;
   if (sc === 'town') return t === 'R' ? K.bar : t === 'W' ? K.villa : t === 'T' ? K.treeTown : t === 'L' ? (S.village && S.village.done.includes('lampadaires') ? K.Lon : K.L) : K[t] || null;
   if (sc === 'foret') return t === 'T' ? K.treeForest : null;   // 'T' = arbre dehors, pas la table des intérieurs
   if (['montagne', 'plage', 'parc', 'rondpoint', 'ranch', 'port'].includes(sc) && t === 'T') return K.treeTown;

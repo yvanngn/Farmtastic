@@ -202,6 +202,10 @@ function buildTown() {
   for (const [x, y] of TOWN_LAMPS) put('L', x, y);
   for (const [x, y] of [[13, 5], [19, 5], [12, 9], [20, 9]]) put('b', x, y);
   for (const [x, y] of [[11, 2], [22, 2], [2, 26], [31, 26], [12, 22], [24, 22]]) if (m[y][x] === 'g') put('f', x, y);
+  // Farmwest (7b) : le centre-ville sur son plateau — falaise en terrasses au nord (^), rivière à l'est et au sud (w), ponts en bois (=)
+  for (let x = 0; x < W; x++) { m[0][x] = '^'; m[1][x] = '^'; }
+  for (let y = 2; y < H; y++) m[y][W - 2] = y === 10 ? '=' : 'w';
+  for (let x = 0; x < W - 1; x++) m[H - 2][x] = (x === 20 || x === 21) ? '=' : 'w';
   return m.map(r => r.join(''));
 }
 LAYOUTS.town = buildTown();
@@ -380,7 +384,7 @@ LAYOUTS.port = (() => {
   return m.map(r => r.join(''));
 })();
 
-export const SOLID_TILES = '#WDBKTPCHNYXMQUJAOVZFLfprEmncwGRIxyzqjuhe';   // e escalier (maison d'Ed)   // h haie de bordure   // + attractions du parc (R I x y z q j u)   // w eau (mer, lac), G grotte   // m n lits de la clinique, c bureau  // A = fauteuil (Franck) / marchand d'animaux (village)
+export const SOLID_TILES = '#WDBKTPCHNYXMQUJAOVZFLfprEmncwGRIxyzqjuhe^';   // ^ falaise (7b)   // e escalier (maison d'Ed)   // h haie de bordure   // + attractions du parc (R I x y z q j u)   // w eau (mer, lac), G grotte   // m n lits de la clinique, c bureau  // A = fauteuil (Franck) / marchand d'animaux (village)
 // Tuiles qui ouvrent une interface.
 export const UI_TILES = { M: 'market', Q: 'board', U: 'upgrades', J: 'carpenter', A: 'animals', O: 'bakery', V: 'butcher', Z: 'fishmonger' };
 

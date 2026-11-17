@@ -7,7 +7,7 @@ import { BUILDINGS } from '../data/buildings.js';
 import { signBoard } from './pixfont.js';
 const T = CFG.T;
 
-export const GRASS = ['#6bb64a', '#58a23c', '#a8a347', '#e4ecef'];
+export const GRASS = ['#86ae46', '#9aac44', '#b2a048', '#e4ecef'];   // Farmwest (7a) : herbe plus chaude et sèche (voir terrain.js)
 export const WATER = '#3a7cc2';
 // Fenêtres de la maison et du poulailler (px monde) : éclairées la nuit.
 export const LIGHTS = [{ x: 51, y: 60, r: 46 }, { x: 384, y: 116, r: 26 }, { x: 303, y: 484, r: 30 }];

@@ -48,6 +48,8 @@ export const EXAMINE = {
     warehouse: 'Un entrepôt du port. Des caisses partout, des noms de villes lointaines peints dessus.',
     sea: 'La mer. Des voiliers attendent la marée.',
     O: 'Le four du restaurant.',
+    cliff: 'Une falaise de terre rouge. Le centre-ville est perché sur son plateau.',
+    river: 'La rivière fait le tour du centre-ville. L’eau est fraîche et claire.',
     treeForest: "Un grand arbre de la forêt. Avec la hache, je pourrais le couper… sauf ceux du bord.",
     treeWild: "Des arbres serrés. Impossible de passer par là.",
     rockWild: 'Un rocher énorme. Ma pioche ne lui ferait rien.',

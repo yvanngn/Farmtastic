@@ -96,8 +96,8 @@ Décrits par l'utilisateur :
 ## Lot 7 et suivants — Grand upgrade graphique (style de l'image et de Stardew Valley)
 Objectif : le rendu de `docs/carte-region-farmwest.jpg` : terre ocre et chemins de sable, rivière bleue avec ponts en bois, forêts denses en grappes, falaises en terrasses, bâtiments de l'Ouest en planches avec toits colorés, plage et pontons.
 La liste détaillée est dans `docs/CARNET.md`, section « Chantier graphique niveau Stardew ». Ordre proposé :
-- [ ] 7a. Palette Far West (ocre, sable, vert sapin, bleu rivière) et sols de toutes les zones.
-- [ ] 7b. Falaises en terrasses, rivière et ponts en bois.
+- [x] 7a. Palette Far West et sols (v0.1.14) : herbe plus chaude en brins partout (ferme, zone résidentielle, forêt), **centre-ville en terre ocre** avec **rues de sable à ornières**, **trottoirs en planches** devant chaque commerce, place pavée gardée ; allées de sable aux bords adoucis dans la zone résidentielle ; peintres de sol partagés (`src/render/terrain.js`).
+- [x] 7b. Falaises, rivière et ponts (v0.1.14) : le centre-ville sur son **plateau** — **falaise de terre rouge en terrasses** au nord, **rivière** à l'est et au sud, **ponts en bois** vers le rond-point et la station balnéaire ; panneau « ROND-POINT → ». (Rond-point : rivière et pont depuis le lot 2.)
 - [ ] 7c. Bâtiments western (saloon, banque, shérif, magasins en planches avec auvents).
 - [ ] 7d. Arbres et forêts denses, cactus, rochers.
 - [ ] 7e. Personnages et animaux redessinés (chapeaux de cow-boy, bottes…).

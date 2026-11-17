@@ -95,7 +95,7 @@ Principe : étapes « à partir de telle heure → tel lieu », avec variantes s
 - **Repos (jours 7, 14, 21, 28)** : grasse matinée ; 14 h-17 h balade en forêt ; 17 h-18 h 30 devant chez elle ; puis chez elle.
 
 ## 7. Chantier graphique « niveau Stardew » (lot 7, liste à faire petit à petit)
-Fait : sol de la ferme (herbe en brins, nappes de tons, bords de chemins adoucis, v0.1.5).
+Fait : sol de la ferme (v0.1.5) ; **7a** palette Far West et sols (centre-ville ocre, rues à ornières, trottoirs en planches, herbe en brins partout) et **7b** falaise, rivière et ponts autour du centre-ville (v0.1.14). Suite : 7c bâtiments western.
 - **Sols et décors** : même herbe partout ; transitions douces herbe ↔ terre ↔ pavés ↔ sable ↔ eau ; pavés variés ; eau animée (reflets, écume, nénuphars) ; herbe qui ondule ; saisons plus marquées.
 - **Personnages** : sprites plus détaillés avec contour ; marche en 8 images ; animations d'outils ; portraits dans les dialogues ; enfant et personnes âgées ; animaux animés ; **vêtements western**.
 - **Objets et bâtiments** : arbres plus volumineux qui tombent ; contours sombres ; façades détaillées, fumée des cheminées ; intérieurs meublés pièce par pièce ; icônes en pixel art à la place des émojis.
@@ -114,4 +114,4 @@ Fait : sol de la ferme (herbe en brins, nappes de tons, bords de chemins adoucis
 ## 9. Historique (une ligne par séance ; détail dans Git et `docs/VERSIONS.md`)
 - 15/11 : écran titre, inventaire, arbres et pierres, charpentier, commerces, Luna, panneau d'affichage, début sans outils, champ, zone de combat, Franck, établi, discussions façon Witch'rok, objets au sol, mode en ligne préparé.
 - 16/11 : lots 1-4 (tuto des baies, rappel 18 h, clinique à 1 h, patrons, chaudron, quête du jour, métiers), Ghostbuster, équilibrage, versions, objets qui tombent, forêt coupable, maisons ouvertes, Hailey (routine), Ed et sa famille, barre d'outils, essai d'herbe façon Stardew.
-- 17/11 : **Farmwest** — renommage, lot 1 ambiance western, lot 2 nouvelle carte (rond-point, ranch, port, liaisons), lot 3 nouveau début (gare, diligence, choix de la ferme), lot 4 quêtes principales (grand arbre, outils uniques, plus de bijou), lot 5 restaurant et couteau (cueillette à la jauge), lot 6 charpentier Harry Fordson, Remy Gusto ; carnet nettoyé.
+- 17/11 : **Farmwest** — renommage, lot 1 ambiance western, lot 2 nouvelle carte (rond-point, ranch, port, liaisons), lot 3 nouveau début (gare, diligence, choix de la ferme), lot 4 quêtes principales (grand arbre, outils uniques, plus de bijou), lot 5 restaurant et couteau (cueillette à la jauge), lot 6 charpentier Harry Fordson, Remy Gusto ; carnet nettoyé ; lots 7a-7b (sols Far West, falaise, rivière, ponts).
