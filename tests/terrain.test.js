@@ -21,9 +21,9 @@ test('lot 11b : canopée continue sur les arbres, lisière ombrée au sud', () =
   assert.equal(g.px.get('8,17'), 'rgba(20,30,10,.3)', 'ombre sous la lisière');
 });
 
-test('lot 11g : palette unique (48 couleurs + 3 accents) ; chaque couleur ramenée à la plus proche', async () => {
+test('lot 11g : palette unique (48 couleurs + 5 accents) ; chaque couleur ramenée à la plus proche', async () => {
   const { PALETTE, nearest } = await import('../src/render/pixel.js');
-  assert.equal(PALETTE.length, 51); assert.equal(new Set(PALETTE).size, 51);
+  assert.equal(PALETTE.length, 53); assert.equal(new Set(PALETTE).size, 53);
   assert.deepEqual(nearest(0x86, 0xa5, 0x42), [0x86, 0xa5, 0x42], 'une couleur de la palette reste elle-même');
   const p = nearest(10, 200, 30); assert.ok(PALETTE.includes('#' + p.map(v => v.toString(16).padStart(2, '0')).join('')));
 });

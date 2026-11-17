@@ -63,7 +63,7 @@ export function groundShadow(c, cx, cy, rx, ry, a = 0.28) {
 // ---------- Lot 11g : palette unique et contours colorés ----------
 // 48 couleurs tirées de tous les décors du jeu (k-moyennes sur les 4 saisons), + 3 couleurs vives pour les accents.
 export const PALETTE = ['#1f281a', '#244f24', '#1f4633', '#5a331e', '#80341a', '#40444c', '#2d6446', '#6c4628', '#3b792f', '#7b5231', '#69564c', '#498e3b', '#535c67', '#b0402f', '#936339', '#3169a0', '#c25e1d', '#699e3f', '#918d3c', '#d44e3b', '#3578b8', '#a7764a', '#86a542', '#877574', '#85b74a', '#af8753', '#9caf45', '#b2a048', '#438fcc', '#7b8f97', '#bf965e', '#9c9286', '#eea23a', '#cfa667', '#c0ca53', '#a9a1a1', '#c9b079', '#deb26e', '#bcb7ab', '#e1c48a', '#96cbec', '#cdc5be', '#e9d29a', '#dfd5c6', '#f2e2b4', '#dfded9', '#e2eaee', '#f1f7fa',
-  '#e070b0', '#8a6aaa', '#f2c832'];
+  '#e070b0', '#8a6aaa', '#f2c832', '#f0a8a8', '#d08484'];   // accents (+ roses du cochon)
 const PAL_RGB = PALETTE.map(c => [1, 3, 5].map(i => parseInt(c.slice(i, i + 2), 16)));
 const PAL_CACHE = new Map();
 export function nearest(r, g, b) {
