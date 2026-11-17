@@ -177,7 +177,7 @@ function sheetImage(name) {
 }
 function drawSheet(c, ox, oy, L, d, f) {
   const img = sheetImage(L.sheet); if (!img) return false;
-  const S = SHEETS[L.sheet], col = f ? [1, 2, 3, 0][(f - 1) >> 1] : 0, row = d === 0 ? 0 : d === 1 ? 1 : 2;
+  const S = SHEETS[L.sheet], n = S.n || 4, col = f ? ((f - 1) * n / WALK_N | 0) % n : 0, row = d === 0 ? 0 : d === 1 ? 1 : 2;
   const x = Math.round(ox + 6 - S.fw / 2), y = oy + 19 - S.fh;
   if (d === 3) { c.save(); c.translate(x + S.fw, y); c.scale(-1, 1); c.drawImage(img, col * S.fw, row * S.fh, S.fw, S.fh, 0, 0, S.fw, S.fh); c.restore(); }   // profil droit = miroir
   else c.drawImage(img, col * S.fw, row * S.fh, S.fw, S.fh, x, y, S.fw, S.fh);

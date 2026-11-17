@@ -56,7 +56,9 @@ def walk(s, view, k):
     return out
 os.makedirs(os.path.join(ROOT, 'assets/sprites'), exist_ok=True)
 js = []
+ONLY = {'heros', 'luna', 'franck', 'hailey'}   # les autres ont leurs planches de marche (tools/sprite-from-sheets.py)
 for name, P in CHARS.items():
+    if name not in ONLY: continue
     H = round((P['front'][3] - P['front'][1]) * K)
     fr = outline(shrink(cut(P['front']), H))
     sd = outline(shrink(cut(P['side']), H)) if P['side'] else fr
@@ -71,8 +73,4 @@ for name, P in CHARS.items():
     path = os.path.join(ROOT, 'assets/sprites', name + '.png'); sheet.save(path)
     js.append(f"  {name}: {{ fw: {FW}, fh: {FH}, url: 'data:image/png;base64,{base64.b64encode(open(path, 'rb').read()).decode()}' }}")
     print(name, FW, FH)
-open(os.path.join(ROOT, 'src/render/sheets.js'), 'w').write("""// Planches de sprites tirées de docs/personnages-reference.jpg (tools/sprite-from-reference.py, ne pas modifier à la main).
-// Grille : lignes = face, dos, profil (tourné vers la gauche) ; colonnes = repos, pas 1, repos, pas 2. Intégrées en data URL
-// pour marcher partout (GitHub Pages, page claude.ai). Tant qu'une image n'est pas chargée, le dessin par code prend le relais.
-export const SHEETS = {
-""" + ',\n'.join(js) + "\n};\n")
+# (src/render/sheets.js est écrit par tools/sprite-from-sheets.py, à lancer ensuite)
