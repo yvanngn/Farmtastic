@@ -30,6 +30,7 @@ export function defaultState() {
     market: { slots: [] },
     lastDream: -1,                   // lot 8 : dernier rêve de la nuit (pas deux fois de suite le même)
     pxp: 0,                          // lot 8 : expérience du joueur (le niveau s'en déduit)
+    craftQ: {},                      // lot 9 : demandes de fabrication de la semaine { habitant|'panneau': { week, item, qty, reward, done } }
     xpQuests: null                   // lot 8 : quêtes et étapes qui ont déjà rapporté de l'XP (null = à initialiser)
   };
 }

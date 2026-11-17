@@ -154,10 +154,11 @@ test('parler : la réplique du jour en tête, puis les sujets et « Rien. »', (
   talk(g, 'luna');
   assert.equal(all[0].choices.at(-1), 'Rien.');
   assert.equal(all[0].choices[0], LUNA.topics[0].t);
-  assert.equal(all[0].choices.length, 2, 'le sujet sur l’argent attend 3 cœurs');
+  assert.equal(all[0].choices.length, 3, 'le sujet sur l’argent attend 3 cœurs ; lot 9 : « Une demande ? » avant « Rien. »');
+  assert.equal(all[0].choices[1], '🛠️ Une demande ?');
   all[0].onChoose(0);
   assert.deepEqual(all.at(-1).lines, LUNA.topics[0].lines);
-  const n = all.length; all[0].onChoose(1); assert.equal(all.length, n, '« Rien. » ferme la discussion');
+  const n = all.length; all[0].onChoose(2); assert.equal(all.length, n, '« Rien. » ferme la discussion');
 });
 
 test('Manuel, le chef du village : élu à l’unanimité, il aime ses villageois', () => {

@@ -5,6 +5,7 @@ import { $ } from './dom.js';
 import { ITEMS } from '../data/items.js';
 import { KINDS, PROJECTS, FESTIVAL_GOAL, FESTIVALS, UNLOCKS } from '../data/requests.js';
 import { dailyQuest, deliverDaily } from '../systems/daily.js';
+import { craftRequest, craftReady, deliverCraft, BOARD } from '../systems/craftquests.js';
 import { ensureOrders, fulfillOrder, discardOrder, timeLeft, fmtDelay, currentProject, unlock } from '../systems/market.js';
 
 export function createBoard(g, audio) {
@@ -21,8 +22,11 @@ export function createBoard(g, audio) {
       <div class="jauge" style="--k:${KINDS.fete.color}"><b>🎉 ${FESTIVALS[S.season]}</b>${bar(F.pts, FESTIVAL_GOAL, KINDS.fete.color)}<small>${F.done ? 'Tout est prêt ✔' : `${F.pts}/${FESTIVAL_GOAL} objets avant la fin de la saison`}</small></div>
       <div class="jauge" style="--k:${KINDS.caravane.color}"><b>🐪 Caravane : ${S.caravan.tokens} jeton(s)</b><small>À échanger plus bas contre des graines, des animaux et des outils.</small></div>
     </div>`;
-    const dq = dailyQuest(g), dH = dq ? `<h3>📌 Quête du jour</h3><div class="grid affiches"><div class="card affiche" style="--k:#4fb07a"><span class="pastille">📌</span><div class="t">${it(dq.item).i} ${dq.qty} × ${it(dq.item).n}</div><div><b>${dq.reward} $</b></div>`
+    const dq = dailyQuest(g); let dH = dq ? `<h3>📌 Quête du jour</h3><div class="grid affiches"><div class="card affiche" style="--k:#4fb07a"><span class="pastille">📌</span><div class="t">${it(dq.item).i} ${dq.qty} × ${it(dq.item).n}</div><div><b>${dq.reward} $</b></div>`
       + (dq.done ? '<small>✅ Faite ! Nouvelle quête demain.</small>' : `<button data-daily="1" ${(S.inv[dq.item] || 0) >= dq.qty ? 'class="primaire"' : 'disabled'}>Livrer (${S.inv[dq.item] || 0}/${dq.qty})</button>`) + '</div></div>' : '';
+    const cq = craftRequest(g, BOARD), cH = cq ? `<h3>🛠️ Demande de fabrication (cette semaine)</h3><div class="grid affiches"><div class="card affiche" style="--k:#c87a3a"><span class="pastille">🛠️</span><div class="t">${it(cq.item).i} ${cq.qty} × ${it(cq.item).n}</div><div><b>${cq.reward} $</b> · ⭐ XP</div>`
+      + (cq.done ? '<small>✅ Faite ! Une autre la semaine prochaine.</small>' : `<button data-craftq="1" ${craftReady(S, cq) ? 'class="primaire"' : 'disabled'}>Livrer (${S.inv[cq.item] || 0}/${cq.qty})</button>`) + '</div></div>' : '';   // lot 9
+    dH += cH;
     if (!CFG.BOARD_OPEN && !slots.length) { body.innerHTML = dH || '<p class="info">📌 Le panneau est vide pour l’instant. Repasse demain !</p>'; return; }
     const cards = '<div class="grid affiches">' + slots.map(s => {
       const o = s.order;
@@ -43,6 +47,7 @@ export function createBoard(g, audio) {
   body.addEventListener('click', e => {
     const d = e.target.dataset;
     if (d.daily) deliverDaily(g);
+    if (d.craftq) deliverCraft(g, BOARD);
     else if (d.give) fulfillOrder(g, d.give);
     else if (d.drop) { discardOrder(g, d.drop); audio.play('ui'); }
     else if (d.unlock) unlock(g, d.unlock);

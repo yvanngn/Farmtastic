@@ -254,6 +254,14 @@ export const IGOR = {
   questions: []
 };
 
+// Lot 9 : demandes de fabrication des habitants (une par semaine). {objet} = « 2 × Confiture de baies ». 🆕 à valider (💡 Claude).
+export const CRAFT_LINES = {
+  ask: "Dis, tu saurais me préparer {objet} ? Je te le revaudrai.",
+  wait: "Toujours partant pour {objet} ? Rien ne presse, la semaine n'est pas finie.",
+  give: "Oh, tu l'as ! Merci, ça me rend bien service.",
+  done: "Merci encore pour ce que tu m'as apporté. Repasse la semaine prochaine, j'aurai sûrement autre chose à te demander.",
+  none: "Pour l'instant, je n'ai besoin de rien. Mais si tu apprends à fabriquer des choses, je saurai m'en souvenir !"
+};
 // Lot 8 : rêves et prémonitions du héros pendant la nuit (💡 écrits par Claude, 🆕 à valider). Restent vagues :
 // ils évoquent seulement ce que l'utilisateur a décrit (ferme hantée, caverne, grand arbre, forêt, cabane à rebâtir).
 export const DREAMS = [

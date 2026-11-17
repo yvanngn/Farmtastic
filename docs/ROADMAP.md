@@ -126,8 +126,10 @@ La liste détaillée est dans `docs/CARNET.md`, section « Chantier graphique ni
 - [x] **Niveaux** : niveau 1 à 10 XP, puis × 1,75 par niveau (niveau 10 à ≈ 5100 XP) ; **niveau 10 max**. Barre d'XP fine + niveau dans le HUD.
 - [x] **Déblocages** : forêt au **niveau 3**, caverne au **niveau 5** (la quête qui l'ouvre viendra), recettes selon le niveau (celles du début au niveau 1 ; autres niveaux 💡). Suite à décider par l'utilisateur.
 
-## Lot 9 — Quêtes secondaires de fabrication (demande du 17/11)
-- [ ] Quêtes de **craft** secondaires, par exemple **de cuisine** (confitures, plats au chaudron), données par les habitants ou le panneau.
+## Lot 9 — Quêtes secondaires de fabrication (demande du 17/11) ✅ v0.1.19
+- [x] Demandes de **fabrication** données par les **habitants** (choix « 🛠️ Une demande ? » en discutant) et par le **panneau d'affichage**.
+- [x] **Une par habitant et par semaine** (le panneau aussi) ; seulement des objets que le joueur **sait fabriquer** à son niveau (feu de camp, confitures et plats du chaudron, grillades, objets de l'établi).
+- [x] Récompense : argent (💡 2 × prix de vente + 20 $), **40 XP** (quête secondaire), **+60 points d'amitié** pour un habitant (💡).
 
 ## Lot 10 — Carte de la région refaite comme l'image (demande du 17/11)
 Objectif : le plan 🗺️ → Région doit ressembler à `docs/carte-region-farmwest.jpg` (même disposition, même niveau de détail).

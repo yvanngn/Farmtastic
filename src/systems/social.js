@@ -1,4 +1,6 @@
 import { cuistotTalk, harryTalk } from './resto.js';
+import { craftRequest, craftReady, deliverCraft, craftLabel } from './craftquests.js';
+import { CRAFT_LINES } from '../data/npcs.js';
 // Liens sociaux avec les PNJ. Les répliques d'histoire se débloquent avec l'amitié, une par jour.
 // 250 points = 1 cœur. Une discussion et un cadeau par jour.
 export const POINTS_PER_HEART = 250;
@@ -47,8 +49,9 @@ export function talk(g, id) {
   if (q) { say([q.q], { choices: q.a.map(a => a.t), onChoose: i => answer(g, id, q.id, i) }); return q.q; }
   // Comme dans Witch'rok : la réplique reste en tête, puis on choisit un sujet ou « Rien. »
   const topics = (n.topics || []).filter(tp => (tp.h || 0) <= hearts(r));
-  if (topics.length) say([line], { choices: [...topics.map(tp => tp.t), 'Rien.'], onChoose: i => { const tp = topics[i]; if (!tp) return; if (tp.open) g.bus.emit('open', tp.open); else say(tp.lines); } });
-  else say([line]);
+  const ask = { t: '🛠️ Une demande ?', craft: true };   // lot 9 : demande de fabrication de la semaine
+  const all = [...topics, ask];
+  say([line], { choices: [...all.map(tp => tp.t), 'Rien.'], onChoose: i => { const tp = all[i]; if (!tp) return; if (tp.craft) craftTalk(g, id, say); else if (tp.open) g.bus.emit('open', tp.open); else say(tp.lines); } });
   return line;
 }
 
@@ -188,4 +191,15 @@ export function findNPCAt(g, tx, ty) {
 
 export function socialNewDay(S) {
   for (const id in S.social) S.social[id].talked = S.social[id].gifted = false;
+}
+
+// Lot 9 : l'habitant donne (ou reprend) sa demande de fabrication de la semaine.
+export function craftTalk(g, id, say) {
+  const S = g.S, q = craftRequest(g, id), fill = t => t.replace('{objet}', q ? craftLabel(q) : '');
+  if (!q) { say([CRAFT_LINES.none]); return 'none'; }
+  if (q.done) { say([CRAFT_LINES.done]); return 'done'; }
+  if (craftReady(S, q)) { say([CRAFT_LINES.give], { onEnd: () => deliverCraft(g, id) }); return 'give'; }
+  const first = !q.seen; q.seen = true;
+  say([fill(first ? CRAFT_LINES.ask : CRAFT_LINES.wait) + ` (récompense : ${q.reward} $)`]);
+  return first ? 'ask' : 'wait';
 }
