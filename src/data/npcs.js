@@ -234,24 +234,13 @@ export const HAILEY = {
 
 // Igor (décrit par l'utilisateur) : forgeron. Ancien sportif de haut niveau ; une cheville tordue a brisé ses rêves
 // de Jeux olympiques. Il s'est reconverti en forgeron, et il est plutôt bon : il fait de bons outils et aimerait
-// apprendre à faire des armes. Il traîne dans le quartier : il a perdu son bijou (ici ou près de la cabane).
+// apprendre à faire des armes. Il traîne dans le quartier (sa quête du bijou a été retirée le 17/11).
 export const IGOR = {
   id: 'igor', name: 'Igor', de: 'de lui', color: '#e0884a', voice: 'voiceChef',
   look: { body: 'h', bottom: 'pant', skin: '#d9a07a', hair: 0, hairC: '#2a1e18', shirt: '#6a4a36', pants: '#3a3632', tall: true },   // 💡 tablier de cuir, carrure d'athlète
   home: null, dayScene: 'quartier', day: { x: 18.5, y: 13.5 },   // il traîne dans la ruelle du quartier 💡
   traits: ['Forgeron', 'Ancien sportif de haut niveau', 'Cheville abîmée', 'Fait de bons outils', 'Rêve de forger des armes'],
   taste: { adore: [], aime: ['copper_ore', 'iron_ore'], naime: ['berry'], deteste: [] },   // 💡 un forgeron aime le minerai
-  lost: [
-    "Hé ! Tu n'aurais pas vu un bijou ? Une petite pièce à laquelle je tiens beaucoup.",
-    "Je l'ai fait tomber… ou bien ici, dans le quartier, ou bien près de la vieille cabane, là-haut.",
-    "Si tu le trouves, rapporte-le-moi. Je saurai te remercier."
-  ],
-  reminder: "Toujours pas de trace de mon bijou… Ici, ou près de la cabane, j'en suis sûr.",
-  thanks: [
-    "Mon bijou ! Tu l'as trouvé ! Merci, vraiment.",
-    "Pour te remercier, je vais t'apprendre un truc de forgeron : fabriquer un coffre.",
-    "Il te faudra 80 bois et 20 pierres. Pratique pour ranger tout ce que tu ramasses !"
-  ],
   story: [
     { h: 0, t: "Salut. Moi, c'est Igor, le forgeron. Enfin… depuis quelques années." },
     { h: 1, t: "Avant, j'étais sportif. De haut niveau. Je m'entraînais pour les Jeux olympiques." },

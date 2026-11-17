@@ -1,6 +1,6 @@
+import { disc } from './pixel.js';
 import { getZoom } from '../ui/settingsPanel.js';
 import { QUARTIER, PARC_B } from '../world/scenes.js';
-import { JEWEL, jewelHere } from '../systems/igor.js';
 // Caverne : la lumière du jour entre par la sortie ; quelques cristaux luisent.
 const CAVE_LIGHTS = [{ x: 8, y: 72, r: 60 }, { x: 25 * 16, y: 12 * 16, r: 18 }, { x: 44 * 16, y: 20 * 16, r: 18 }];
 import { toolTier } from '../systems/skills.js';
@@ -105,6 +105,17 @@ import { MUSHROOMS } from '../data/items.js';
 import { LAYOUTS } from '../world/scenes.js';
 import { toolIcon, drawToolPix } from './sprites.js';
 // Train de l'arrivée (voie x0) : à quai 3 s, puis repart vers le sud en accélérant.
+// Farmwest : le grand arbre de la ferme (incassable) : tronc large, racines, feuillage en trois étages qui ondule un peu.
+const BIG_LEAF = [['#3f7a32', '#5a9a46', '#7ab85a'], ['#4a8a3a', '#6aaa4a', '#8ac862'], ['#c87a2a', '#e09a3a', '#f2c25a'], ['#8a8a7a', '#a8a898', '#d8dcd4']];
+function drawBigTree(c, x, y, season, now) {
+  const px = x * 16 + 8, py = y * 16 + 14, R = (a, b, w, h, col) => { c.fillStyle = col; c.fillRect(Math.round(px + a), Math.round(py + b), w, h); }, L = BIG_LEAF[season] || BIG_LEAF[0], sway = Math.round(Math.sin(now / 1400) * 1);
+  R(-22, -2, 44, 6, 'rgba(20,30,10,.3)');
+  R(-7, -30, 14, 30, '#5b3a22'); R(-5, -30, 4, 30, '#7a4f2e'); R(-10, -4, 6, 4, '#5b3a22'); R(4, -4, 7, 4, '#5b3a22'); R(-3, -18, 2, 6, '#3f2615');   // tronc et racines
+  const blob = (bx, by, r, col) => disc(c, Math.round(px + bx + sway), Math.round(py + by), r, col);   // disques pixel (bords nets)
+  for (const [bx, by, r] of [[-16, -36, 13], [16, -36, 13], [0, -44, 16], [-9, -54, 11], [10, -54, 11], [0, -62, 10]]) blob(bx, by, r, L[0]);
+  for (const [bx, by, r] of [[-14, -40, 9], [14, -40, 9], [-2, -48, 11], [-7, -58, 7], [7, -58, 7]]) blob(bx, by, r, L[1]);
+  for (const [bx, by, r] of [[-17, -44, 4], [9, -46, 5], [-5, -60, 4], [3, -52, 3]]) blob(bx, by, r, L[2]);
+}
 // Farmwest : locomotive à vapeur qui entre en gare par le nord sur la voie (x1-2) et s'arrête le long du quai.
 function drawLoco(c, t, now) {
   const x = 16 + 1, stopY = 2 * 16, y0 = stopY - (t < 3 ? (3 - t) * (3 - t) * 50 : 0);
@@ -284,7 +295,7 @@ let swing = null;
     const list = [], pickTier = toolTier(S, 'pick');
     if (outside) for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) {
       const o = S.objs[x + ',' + y];
-      if (o) list.push({ z: y + .9, d: () => o.t === 'tree' ? drawTree(ctx, x, y, o, S.season, now) : drawRock(ctx, x, y, o, (MIN_PICK[o.t] || 1) > pickTier) });
+      if (o) list.push({ z: y + .9, d: () => o.t === 'bigtree' ? drawBigTree(ctx, x, y, S.season, now) : o.t === 'tree' ? drawTree(ctx, x, y, o, S.season, now) : drawRock(ctx, x, y, o, (MIN_PICK[o.t] || 1) > pickTier) });
     }
     if (outside) for (const a of S.animals) list.push({ z: a.y, d: () => drawAnimal(ctx, a, now, ANIMALS[a.type]) });
     if (outside) for (const e of g.enemies) list.push({ z: e.y, d: () => drawSlime(ctx, e, now) });
@@ -396,11 +407,7 @@ let swing = null;
       ctx.fillStyle = '#1c2a30'; for (let i = 0; i < 7; i++) ctx.fillRect(x + 8 - (i >> 1), y + 7 + i, (i >> 1) * 2 + 1, 1);
       ctx.fillStyle = '#e8c26a'; ctx.fillRect(x + 7, y, 2, 3); ctx.fillStyle = '#7a4f2e'; ctx.fillRect(x - 3, y + 13, 2, 2); ctx.fillRect(x + 17, y + 13, 2, 2);
     } });
-    if (scene === 'farm' && jewelHere(S)) list.push({ z: JEWEL.y + .3, d: () => { // bijou d'Igor qui scintille derrière la cabane
-      const x = JEWEL.x * T + 8, y = JEWEL.y * T + 11, tw = (now / 260 | 0) % 3;
-      ctx.fillStyle = '#c9a330'; ctx.fillRect(x - 2, y - 1, 4, 3); ctx.fillStyle = '#7ad0e8'; ctx.fillRect(x - 1, y - 3, 2, 2);
-      ctx.fillStyle = '#fff'; if (tw === 0) { ctx.fillRect(x + 2, y - 5, 1, 3); ctx.fillRect(x + 1, y - 4, 3, 1); } else if (tw === 1) ctx.fillRect(x - 3, y - 4, 1, 1);
-    } });
+    // (bijou d'Igor retiré le 17/11 : quête supprimée)
     if (scene === 'farm' && g.trainT && now - g.trainT < 9000) list.push({ z: 9998, d: () => drawTrain(ctx, (now - g.trainT) / 1000) });
     if (scene === 'gare') list.push({ z: 0.5, d: () => drawLoco(ctx, S.intro && S.intro.step === 'train' ? (g.introT || 0) / 1000 : 99, now) });   // Farmwest : la locomotive à quai
     if (g.ride && g.ride.scene === scene) list.push({ z: g.ride.y + .2, d: () => drawCoach(ctx, g.ride.x, g.ride.y, now) });   // la diligence

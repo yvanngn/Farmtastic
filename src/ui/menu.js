@@ -11,7 +11,7 @@ import { TOOLS } from '../data/items.js';
 import { TIER_NAMES, UPGRADABLE, MAX_TIER } from '../data/tools.js';
 import { BUILDINGS } from '../data/buildings.js';
 import { SHOPS } from '../data/shops.js';
-import { QUESTS, questProgress } from '../systems/quests.js';
+import { QUESTS, questProgress, questVisible } from '../systems/quests.js';
 import { isUnlocked } from '../systems/market.js';
 import { canRepairBench, repairBench } from '../systems/economy.js';
 import { WORKBENCH } from '../data/buildings.js';
@@ -131,7 +131,7 @@ export function createMenu(g, opts) {
         return card(`<div class="t" style="font-size:1.1em">${q.i} <b>${q.n}</b></div><ol class="etapes">` + q.steps.map((st, i) =>
           `<li class="${done[i] ? 'fait' : i === cur ? 'encours' : 'avenir'}">${done[i] ? '✔ ' : i === cur ? '▸ ' : ''}${i <= cur || done[i] ? esc(st.t) : '???'}${st.locked && !done[i] && i === cur ? ' <small>(bientôt)</small>' : ''}</li>`).join('') + '</ol>');
       };
-      const ids = Object.keys(QUESTS).filter(id => dn >= (QUESTS[id].from || 0) || Object.keys(S.quests?.[id] || {}).length)
+      const ids = Object.keys(QUESTS).filter(id => questVisible(S, id) && (dn >= (QUESTS[id].from || 0) || Object.keys(S.quests?.[id] || {}).length))
         .sort((a, b) => (QUESTS[b].order || 0) - (QUESTS[a].order || 0));   // « Premiers pas » en tête
       const col = (t, list) => `<div><h3>${t}</h3>${list.map(one).join('') || '<p class="info">Aucune pour l’instant.</p>'}</div>`;
       return `<div class="quetes-cols">${col('⭐ Quêtes principales', ids.filter(id => QUESTS[id].main))}${col('📋 Quêtes secondaires', ids.filter(id => !QUESTS[id].main))}</div>`;

@@ -13,25 +13,19 @@ export const QUESTS = {
       { id: 'parler', t: "Trouver un moyen de lui parler (objet à venir)", done: S => !!S.quests?.ghost?.talked, locked: true }
     ]
   },
-  igor: {
-    n: 'Un coffre pour ranger', i: '📦', from: 3,
-    steps: [
-      { id: 'rencontre', t: 'Parler à Igor, le forgeron, qui traîne dans le quartier', done: S => !!S.quests?.igor?.asked },
-      { id: 'bijou', t: 'Retrouver son bijou : « ici, ou près de la cabane »', done: S => !!S.quests?.igor?.found },
-      { id: 'rendre', t: 'Lui rapporter le bijou : il t’apprendra le coffre', done: S => !!S.quests?.igor?.done },
-      { id: 'coffre', t: 'Fabriquer ton coffre (📜 Recettes : 80 bois + 20 pierres)', done: S => (S.chests || []).length > 0 || (S.inv?.chest || 0) > 0 }
-    ]
-  },
   debut: {
-    n: 'Premiers pas', i: '🌱', main: true, order: 9,   // quête principale (les autres sont secondaires)
+    n: 'Premiers pas', i: '🌱', main: true, order: 9,   // Farmwest (lot 4) : cabane, coffre, pioche, hache, pelle
     steps: [
       { id: 'tente', t: 'Ouvrir le sac 🎒, choisir la tente et « Déployer » à côté de la cabane', done: S => !!S.tent || isRepaired(S, 'house') },
-      { id: 'nuit', t: 'Dès 18h il fait nuit : dormir sous la tente (sinon pas d’énergie le lendemain ; à 0 d’énergie, clinique et 10 % de frais)', done: S => !!S.quests?.debut?.dormi || isRepaired(S, 'house') },
-      { id: 'outils', t: 'Trouver la pioche (contre la grange) et un outil pour couper les arbres', done: S => !!(S.tools?.pick && S.tools?.axe) },
+      { id: 'nuit', t: 'Dès 18h il fait nuit : dormir sous la tente (pas couché à 1h → clinique et frais)', done: S => !!S.quests?.debut?.dormi || isRepaired(S, 'house') },
+      { id: 'pioche', t: 'Trouver la pioche, posée contre la grange', done: S => !!S.tools?.pick },
+      { id: 'hache', t: 'Trouver la hache, au pied du grand arbre de la ferme', done: S => !!S.tools?.axe },
       { id: 'feu', t: 'Faire un feu de camp (📜 Recettes : 5 bois + 2 cailloux)', done: S => (S.fires || []).length > 0 || (S.inv?.campfire || 0) > 0 || isRepaired(S, 'house') },
-      { id: 'cabane', t: 'Rafistoler la cabane : 80 bois et 30 pierres', done: S => isRepaired(S, 'house') },
-      { id: 'cuisine', t: 'Faire la cuisine : acheter le patron du chaudron chez Igor (« Tu vends quoi ? »), le fabriquer et préparer une confiture de baies', done: S => !!S.quests?.debut?.cuisine },
-      { id: 'grange', t: 'Rafistoler la grange (100 bois et 60 pierres) : la pelle est dedans, pour bêcher et planter', done: S => isRepaired(S, 'grange') }
+      { id: 'cabane', t: 'Retaper la cabane : 80 bois et 30 pierres (marteau 🔨)', done: S => isRepaired(S, 'house') },
+      { id: 'coffre', t: 'Construire un coffre (📜 Recettes : 80 bois + 20 pierres)', done: S => (S.chests || []).length > 0 || (S.inv?.chest || 0) > 0 },
+      { id: 'grange', t: 'Rafistoler la grange : 100 bois et 60 pierres', done: S => isRepaired(S, 'grange') },
+      { id: 'pelle', t: 'Trouver la pelle dans la grange, pour bêcher et planter', done: S => !!S.tools?.shovel },
+      { id: 'cuisine', t: 'Faire la cuisine : patron du chaudron chez Igor (« Tu vends quoi ? »), le fabriquer et préparer une confiture', done: S => !!S.quests?.debut?.cuisine }
     ]
   },
   franck: {
@@ -45,6 +39,8 @@ export const QUESTS = {
     ]
   }
 };
+// Les quêtes secondaires sont cachées au début : elles apparaissent une fois la cabane retapée (💡 à confirmer).
+export const questVisible = (S, id) => !!QUESTS[id] && (QUESTS[id].main || isRepaired(S, 'house'));
 export function questProgress(S, id) {
   const q = QUESTS[id], done = q.steps.map(s => s.done(S));
   const cur = done.indexOf(false);

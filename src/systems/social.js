@@ -1,4 +1,3 @@
-import { igorTalk } from './igor.js';
 // Liens sociaux avec les PNJ. Les répliques d'histoire se débloquent avec l'amitié, une par jour.
 // 250 points = 1 cœur. Une discussion et un cadeau par jour.
 export const POINTS_PER_HEART = 250;
@@ -37,7 +36,6 @@ export function talk(g, id) {
   const r = g.S.social[id], n = g.npcs[id];
   if (!r || !n) return false;
   r.seen ||= []; r.asked ||= []; r.talks ||= 0;
-  if (id === 'igor' && igorTalk(g, n)) { r.talks++; return true; }   // quête du bijou
   const say = (lines, extra) => g.bus.emit('say', { name: n.name, title: n.title, color: n.color, voice: n.voice, lines, ...extra });
   // une question de temps en temps (1 discussion sur 3), une seule fois chacune
   const q = !r.talked && r.talks % 3 === 2 && (n.questions || []).find(x => !r.asked.includes(x.id) && x.h <= hearts(r));

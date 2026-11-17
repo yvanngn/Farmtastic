@@ -28,7 +28,6 @@ export const ITEMS = {
   berry_cooked: { n: 'Baies grillées', p: 6, i: '🍒', eat: { e: 5 } },
   mure: { n: 'Mûres', p: 3, i: '🫐', eat: { e: 2 } },                     // 💡 un peu plus nourrissantes que les baies
   mure_grillee: { n: 'Mûres grillées', p: 8, i: '🍇', eat: { e: 6 } },
-  igor_bijou: { n: 'Bijou d’Igor', p: 0, i: '💍', keep: true },
   chaudron: { n: 'Chaudron', p: 0, i: '🍲', keep: true },        // à poser ; on y cuisine à la louche
   louche: { n: 'Louche', p: 10, i: '🥄', keep: true, buy: 30 },   // 💡 prix ; vendue à la forge
   bague_cuivre: { n: 'Bague de cuivre', p: 90, i: '💍' },

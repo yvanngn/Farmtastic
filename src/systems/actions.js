@@ -17,7 +17,6 @@ import { hitZRock, isOpen, pickTestSword } from './wild.js';
 import { pickShroom } from './foret.js';
 import { repairAt, contribute, pickFieldTool } from './repair.js';
 import { pitchTent, tentAt, useTent } from './camp.js';
-import { pickJewel } from './igor.js';
 import { cast, hook, zoneAt } from './fishing.js';
 import { parcAt, ride, startGame, buyStall } from './parc.js';
 import { chestAt, placeChest } from './chests.js';
@@ -93,7 +92,6 @@ function act0(g, tx, ty) {
   }
   if (pickTestSword(g, tx, ty)) return 'pick';
   if (pickFieldTool(g, tx, ty)) return 'pick';
-  if (pickJewel(g, tx, ty)) return 'pick';
   if (tentAt(S, tx, ty)) return useTent(g) && 'tent';
   { const c = chestAt(S, tx, ty); if (c) { g.bus.emit('openChest', c); return 'chest'; } }
   if (S.sel === 'chest' && sc === 'farm') return placeChest(g, tx, ty) ? 'chestPlaced' : 'missing';

@@ -18,6 +18,7 @@ export const pickupAt = (S, x, y) => PICKUPS.find(p => p.x === x && p.y === y &&
 export function takePickup(g, p) {
   const S = g.S;
   grangeState(S).found.push(p.tool);
+  if (hasTool(S, p.tool)) { g.bus.emit('toast', `Tu as déjà ${p.n}.`); return null; }   // jamais deux fois le même outil
   S.tools = { ...S.tools, [p.tool]: Math.max(1, S.tools[p.tool] || 0) };
   S.sel = p.tool;
   g.bus.emit('sfx', 'levelup'); g.bus.emit('toast', `Tu as trouvé ${p.n} ! ${p.i}`); g.bus.emit('inv');

@@ -287,3 +287,30 @@ test('Farmwest lot 3 : train → Myst → diligence (arrêts le temps des explic
   ask.onChoose(2); assert.equal(g.S.farmLot, 2); end();
   assert.equal(introActive(g.S), false); assert.equal(g.S.scene, 'farm'); assert.equal(g.S.intro.myst, 'done');
 });
+
+test('Farmwest lot 4 : grand arbre incassable et hache à son pied ; pas deux fois le même outil', async () => {
+  const { BIG_TREE, FIELD_TOOLS } = await import('../src/data/repairs.js');
+  const { pickFieldTool } = await import('../src/systems/repair.js');
+  const { takePickup, PICKUPS } = await import('../src/systems/grange.js');
+  const { hitObject } = await import('../src/systems/resources.js');
+  const { g, S } = start({ sel: 'axe', tools: { hammer: 1, axe: 1 } });
+  S.objs = genObjects();
+  assert.equal(S.objs[BIG_TREE.x + ',' + BIG_TREE.y].t, 'bigtree'); assert.ok(isSolid(S, BIG_TREE.x, BIG_TREE.y));
+  assert.equal(hitObject(g, BIG_TREE.x, BIG_TREE.y), false, 'incassable'); assert.ok(S.objs[BIG_TREE.x + ',' + BIG_TREE.y]);
+  const axe = FIELD_TOOLS.find(t => t.tool === 'axe'); assert.ok(Math.abs(axe.x - BIG_TREE.x) <= 1 && Math.abs(axe.y - BIG_TREE.y) <= 1, 'la hache est au pied du grand arbre');
+  assert.equal(isSolid(S, axe.x, axe.y), false);
+  S.tools = { hammer: 1, axe: 3 }; assert.equal(pickFieldTool(g, axe.x, axe.y), null, 'déjà une hache : on ne la reprend pas'); assert.equal(S.tools.axe, 3);
+  S.tools = { hammer: 1, shovel: 2 }; assert.equal(takePickup(g, PICKUPS.find(p => p.tool === 'shovel')), null); assert.equal(S.tools.shovel, 2);
+  const m = migrate({ objs: { '1,1': { t: 'tree' } } }); assert.equal(m.objs['6,30'].t, 'bigtree', 'anciennes parties : le grand arbre apparaît');
+});
+
+test('Farmwest lot 4 : quêtes principales (cabane, coffre, pioche, hache, pelle), secondaires cachées au début, plus de bijou', async () => {
+  const { QUESTS, questVisible } = await import('../src/systems/quests.js');
+  const { contribute } = await import('../src/systems/repair.js');
+  assert.ok(!QUESTS.igor, 'la quête du bijou est supprimée');
+  const ids = QUESTS.debut.steps.map(s => s.id); for (const k of ['cabane', 'coffre', 'pioche', 'hache', 'pelle']) assert.ok(ids.includes(k), k);
+  const { g, S } = start({ repair: { house: { wood: 79, stone: 30 }, grange: { wood: 0, stone: 0 } }, inv: { wood: 5, stone: 5 }, sel: 'hammer' });
+  assert.equal(questVisible(S, 'franck'), false, 'secondaire cachée'); assert.ok(questVisible(S, 'debut'));
+  contribute(g, 'house'); assert.ok(isRepaired(S, 'house'));
+  assert.ok(S.recipes.includes('chest'), 'recette du coffre (provisoire) avec la cabane'); assert.ok(questVisible(S, 'franck'));
+});

@@ -17,9 +17,6 @@ for (const n of Object.values(NPCS)) {
   (n.clinic || []).forEach(t => add('à la clinique (après un malaise)', t));
   (n.clinicRepos || []).forEach(t => add('à la clinique, appelée pendant son jour de repos', t));
   (n.clinicNuit || []).forEach(t => add('à la clinique, appelée la nuit', t));
-  (n.lost || []).forEach(t => add('quête : il a perdu son bijou', t));
-  if (n.reminder) add('quête : rappel', n.reminder);
-  (n.thanks || []).forEach(t => add('quête : bijou rendu', t));
   if (n.welcomeEnd) { add('accueil (réponse du joueur)', n.welcomeEnd.t); add('accueil', n.welcomeEnd.r); }
   (n.story || []).forEach(l => add(`histoire ${l.h} ♥`, l.t));
   (n.topics || []).forEach(tp => { add('sujet (joueur)', tp.t); tp.lines.forEach(t => add('sujet', t)); });

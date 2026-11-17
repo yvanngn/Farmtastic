@@ -65,14 +65,14 @@ Réponses de l'utilisateur : un **cocher** conduit la diligence (peut-être un P
 - Les parties déjà commencées ne rejouent pas ce début.
 - [ ] Plus tard : le **cocher** en PNJ ; des **arrêts de diligence** pour voyager entre les zones (payants ?).
 
-## Lot 4 — Nouvelles quêtes du début
-- [ ] Quêtes **principales** de départ : **retaper la cabane**, **construire un coffre**, **trouver la pelle**, **trouver la pioche**.
-- [ ] Les quêtes **secondaires** sont gardées mais **cachées au début** (onglet vide ou verrouillé).
-- [ ] Revoir `docs/PARCOURS.md` (temps, énergie, moments creux) avec ce nouvel ordre.
-- ❓ Où trouve-t-on la pelle et la pioche (aujourd'hui : pioche contre la grange, pelle dans la grange à réparer) ?
-- ❓ Quand les quêtes secondaires se débloquent-elles (jour 2 ? cabane finie ?) ?
-- ❓ **Contradiction à régler** : « construire un coffre » est une quête principale, mais le patron du coffre est donné par le **charpentier** après la **première quête secondaire**. Faut-il que cette 1re quête secondaire fasse partie du parcours principal, ou que la quête « construire un coffre » attende qu'elle soit débloquée ?
-- ❓ Que devient la quête du bijou d'Igor, qui donne aujourd'hui la recette du coffre ?
+## Lot 4 — Nouvelles quêtes du début ✅ (17/11/2026, v0.1.11)
+Réponses de l'utilisateur : la **pelle** est dans la grange une fois réparée ; la **pioche** reste contre la grange ; chaque ferme a un **grand arbre incassable** au pied duquel on trouve la **hache** ; on ne peut **jamais avoir deux fois le même outil** (multijoueur) ; la **quête du bijou d'Igor est supprimée** (dialogues nettoyés) ; le **coffre devient une quête principale**.
+- [x] Quête principale « Premiers pas » : tente → nuit → **pioche** (contre la grange) → **hache** (au pied du grand arbre) → feu → **retaper la cabane** → **construire un coffre** → rafistoler la grange → **pelle** (dans la grange) → cuisine.
+- [x] **Grand arbre** incassable sur chaque ferme (au sud-ouest, x6 y30), la hache posée à son pied ; les anciennes parties le reçoivent aussi.
+- [x] Pas deux fois le même outil (hache, pioche, pelle, faucille) : test ajouté.
+- [x] Quête du bijou d'Igor supprimée (code, objet, répliques).
+- [x] Quêtes **secondaires cachées au début** : elles apparaissent quand la cabane est retapée (💡 à confirmer).
+- ⏳ **À réfléchir : ce que sera la quête du coffre.** En attendant, la recette du coffre s'apprend en retapant la cabane (provisoire).
 
 ## Lot 5 — Cueillette au couteau
 - [ ] Il faut un **couteau** pour prendre les **fleurs** (comme pour les champignons).

@@ -486,3 +486,8 @@ Chaque ligne = un lot indépendant, à demander quand il y a des crédits.
 - ✅ Nouvelle partie : **gare** (scène à l'ouest du centre-ville) → locomotive à vapeur qui entre en gare (sifflet, fumée) → pensées du héros → **Myst** sur le quai → **diligence** à travers le centre-ville, arrêtée devant chaque bâtiment le temps de l'explication → pont → **rond-point** → **choix d'une des 4 fermes** → conseils → dépôt devant la ferme. Code : `src/systems/intro.js`, répliques `INTRO_MYST` dans `src/data/npcs.js` (🆕).
 - ⚠️ Ancien accueil de Myst sur le quai de la ferme : gardé seulement pour les vieilles parties en cours d'accueil.
 - Dialogues : 99 répliques 🆕 (envoi pour relecture à 100).
+
+## Séance 17/11/2026 (14h50) — Farmwest, lot 4 « Nouvelles quêtes du début » (v0.1.11)
+- ✅ Décisions : pelle dans la grange réparée ; pioche contre la grange ; **grand arbre incassable** sur chaque ferme avec la **hache** à son pied ; **jamais deux fois le même outil** ; **quête du bijou d'Igor supprimée** ; **coffre = quête principale**.
+- ✅ « Premiers pas » : tente, nuit, pioche, hache, feu, cabane, coffre, grange, pelle, cuisine. Secondaires cachées jusqu'à la cabane retapée (💡).
+- ⏳ À réfléchir (utilisateur) : **ce que sera la quête du coffre** ; provisoire : la recette vient avec la cabane retapée.

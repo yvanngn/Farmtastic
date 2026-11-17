@@ -28,6 +28,10 @@ export function contribute(g, id) {
   g.bus.emit('sfx', 'pick'); g.bus.emit('pop', { t: moved.trim(), x: (R.x0 + R.x1) / 2, y: R.y1 });
   if (isRepaired(S, id)) {
     g.bus.emit('sfx', 'levelup'); g.bus.emit('toast', `✅ ${R.n} est réparée !`); g.bus.emit('repaired', id);
+    if (id === 'house' && !(S.recipes || []).includes('chest')) {   // ⏳ provisoire (17/11) : la quête du coffre est à repenser ; en attendant, la recette vient avec la cabane
+      S.recipes = [...(S.recipes || []), 'chest'];
+      g.bus.emit('toast', '📦 Nouvelle recette : le coffre (80 bois + 20 pierres) — 📜 Recettes');
+    }
   }
   return true;
 }
@@ -36,7 +40,7 @@ export function contribute(g, id) {
 export const fieldToolAt = (S, x, y) => onFarm(S) ? FIELD_TOOLS.find(t => t.x === x && t.y === y && !(S.tools && S.tools[t.tool])) || null : null;
 export function pickFieldTool(g, x, y) {
   const S = g.S, t = fieldToolAt(S, x, y);
-  if (!t) return null;
+  if (!t || (S.tools && S.tools[t.tool])) return null;   // jamais deux fois le même outil
   S.tools = { ...S.tools, [t.tool]: Math.max(1, S.tools[t.tool] || 0) };
   S.sel = t.tool;
   g.bus.emit('sfx', 'levelup'); g.bus.emit('toast', `Tu as trouvé ${t.n} ! ${t.i}`); g.bus.emit('inv');

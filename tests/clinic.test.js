@@ -36,8 +36,9 @@ test('quête « Premiers pas » : déployer la tente depuis le sac, puis dormir,
   assert.equal(nightTip(g), true); assert.ok(said[0].lines.some(l => /clinique/.test(l))); assert.equal(nightTip(g), false, 'une seule fois');
   act(g, S.tent.x, S.tent.y); said.at(-1).onChoose(0);
   assert.equal(questProgress(S, 'debut').cur, 2);
-  S.tools = { pick: 1, axe: 1 }; assert.equal(questProgress(S, 'debut').cur, 3);
-  S.fires = [{ x: 9, y: 9 }]; assert.equal(questProgress(S, 'debut').cur, 4);
+  S.tools = { pick: 1 }; assert.equal(questProgress(S, 'debut').cur, 3, 'la pioche, puis la hache');
+  S.tools = { pick: 1, axe: 1 }; assert.equal(questProgress(S, 'debut').cur, 4);
+  S.fires = [{ x: 9, y: 9 }]; assert.equal(questProgress(S, 'debut').cur, 5, 'ensuite : retaper la cabane');
 });
 
 test('déployer la tente loin de la cabane : refusé avec une explication', () => {

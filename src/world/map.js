@@ -47,7 +47,7 @@ export function ground(x, y) {
 }
 
 import { tileAt, SOLID_TILES } from './scenes.js';
-import { AXE_GROVE } from '../data/repairs.js';
+import { AXE_GROVE, BIG_TREE } from '../data/repairs.js';
 import { BUSHES } from '../data/recipes.js';
 import { TREE_GROW_DAYS } from '../data/forest.js';
 const BUSH_SET = new Set(BUSHES.map(([x, y]) => x + ',' + y));
@@ -97,6 +97,8 @@ export function genObjects(seed = 12345) {
     else if (v < 0.04) o[key(x, y)] = newTree(kind);
     else if (v < 0.08) o[key(x, y)] = newRock(v > 0.07);
   }
-  for (const [x, y] of AXE_GROVE) o[key(x, y)] = newTree(KINDS[(x + y) % 3]);   // petit bois du sud : la hache est cachée au milieu
+  for (const [x, y] of AXE_GROVE) o[key(x, y)] = newTree(KINDS[(x + y) % 3]);   // petit bois du sud
+  for (const [dx, dy] of [[0, 0], [1, 0], [0, 1], [1, 1], [-1, 1], [-1, 0], [1, 2], [0, 2], [-1, 2]]) delete o[key(BIG_TREE.x + dx, BIG_TREE.y + dy)];
+  o[key(BIG_TREE.x, BIG_TREE.y)] = { t: 'bigtree' };   // le grand arbre (incassable) ; la hache est posée à son pied
   return o;
 }

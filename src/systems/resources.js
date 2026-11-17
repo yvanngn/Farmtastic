@@ -17,6 +17,7 @@ export const isGrown = o => o.t !== 'tree' || (o.g ?? TREE_GROW_DAYS) >= TREE_GR
 export function hitObject(g, x, y) {
   const S = g.S, k = key(x, y), o = S.objs[k];
   if (!o) return false;
+  if (o.t === 'bigtree') { g.bus.emit('sfx', 'denied'); g.bus.emit('toast', 'Ce vieil arbre est bien trop grand pour être abattu. Il veille sur la ferme depuis toujours.'); return false; }
   const tool = TOOL_FOR[o.t];
   if (S.sel !== tool) {
     g.bus.emit('sfx', 'denied');

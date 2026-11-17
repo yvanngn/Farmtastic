@@ -56,6 +56,8 @@ export function migrate(raw) {
   // Avant le lot 4, le poulailler existait d'office (et la bergerie si on avait des moutons).
   if (!raw.built) s.built = { coop: true, pigsty: false, barn: (raw.animals || []).some(a => a.type === 'sheep') };
   else s.built = Object.assign(d.built, raw.built);
+  if (s.inv) delete s.inv.igor_bijou;   // 17/11 : quête du bijou d'Igor supprimée
+  if (s.objs && !Object.values(s.objs).some(o => o && o.t === 'bigtree')) s.objs['6,30'] = { t: 'bigtree' };   // Farmwest : le grand arbre de la ferme
   for (const [o, n] of [['soupe_baies', 'confiture_baies'], ['soupe_mures', 'confiture_mures']]) if (s.inv && s.inv[o]) { s.inv[n] = (s.inv[n] || 0) + s.inv[o]; delete s.inv[o]; }   // 16/11 : soupes → confitures
   s.v = CFG.VERSION;
   return s;

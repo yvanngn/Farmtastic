@@ -172,26 +172,6 @@ test('16/11 : on entre dans toutes les maisons, Myst compris', () => {
   S.scene = 'quartier'; assert.equal(act(g, 5, 26), 'door'); assert.equal(S.scene, 'myst');
 });
 
-test('Igor le forgeron : il cherche son bijou (derrière la cabane) et nous apprend le coffre', async () => {
-  const { IGOR } = await import('../src/data/npcs.js');
-  const { JEWEL, jewelHere, pickJewel } = await import('../src/systems/igor.js');
-  const { talk: tk, registerNPC: reg } = await import('../src/systems/social.js');
-  const { questProgress } = await import('../src/systems/quests.js');
-  const { HAND_RECIPES } = await import('../src/data/recipes.js');
-  const { g, S } = makeGame({ state: { minute: 600, day: 3, scene: 'quartier', recipes: ['campfire'], inv: {} } });
-  reg(g, IGOR); placeNPC(g.npcs.igor, S, OUT_FROM, OUT_TO);
-  assert.equal(g.npcs.igor.scene, 'quartier', 'il traîne dans le quartier');
-  const said = []; g.bus.on('say', d => said.push(d));
-  S.scene = 'farm'; assert.equal(jewelHere(S), false, 'pas de bijou tant qu’il n’en a pas parlé');
-  tk(g, 'igor'); assert.match(said[0].lines.join(' '), /cabane/);
-  assert.equal(jewelHere(S), true);
-  assert.equal(act(g, JEWEL.x, JEWEL.y), 'pick'); assert.equal(S.inv.igor_bijou, 1);
-  assert.equal(questProgress(S, 'igor').cur, 2);
-  tk(g, 'igor');
-  assert.ok(S.recipes.includes('chest')); assert.deepEqual(HAND_RECIPES.chest.in, { wood: 80, stone: 20 });
-  assert.equal(S.inv.igor_bijou || 0, 0); assert.equal(questProgress(S, 'igor').cur, 3);
-  assert.ok(IGOR.story.some(l => /olympiques/i.test(l.t)) && IGOR.story.some(l => /armes/.test(l.t)));
-});
 
 test('Manu, le Maire : la journée sur la place, le soir dans sa maison du ranch', async () => {
   const { CHEF: C } = await import('../src/data/npcs.js');
@@ -203,14 +183,6 @@ test('Manu, le Maire : la journée sur la place, le soir dans sa maison du ranch
   S.minute = OUT_TO + 20; placeNPC(n, S, OUT_FROM, OUT_TO); assert.equal(n.scene, 'ranch_maison', 'le soir, il rentre au ranch');
 });
 
-test('lot 3 : quête du coffre d’Igor pas avant le 3e jour', async () => {
-  const { talk: tk, registerNPC: reg } = await import('../src/systems/social.js');
-  const { IGOR } = await import('../src/data/npcs.js');
-  const { g, S } = makeGame({ state: { minute: 600, day: 2, scene: 'quartier', inv: {} } });
-  reg(g, IGOR); placeNPC(g.npcs.igor, S, OUT_FROM, OUT_TO);
-  tk(g, 'igor'); assert.ok(!S.quests?.igor?.asked, 'pas de bijou le 2e jour');
-  S.day = 3; S.social.igor.talked = false; tk(g, 'igor'); assert.ok(S.quests.igor.asked);
-});
 
 test('16/11 : routine de Hailey — clinique le jour, déjeuner variable, repos 1 jour sur 7', async () => {
   const { HAILEY } = await import('../src/data/npcs.js');
