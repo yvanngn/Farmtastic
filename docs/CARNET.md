@@ -74,7 +74,8 @@ Légende : ✅ fait · ⏳ à faire · ❓ question pour l'utilisateur · 💡 i
 
 ## 4. Décidé, à faire dans un lot ultérieur
 - ⏳ **Lot 7 (a → g)** : grand upgrade graphique façon carte de référence / Stardew (détail § 7), dont **7e bis : vêtements western** (chapeaux, bandanas, gilets, bottes à éperons…).
-- ⏳ **Plus de gare dans les fermes** (note du 17/11, à faire au début du prochain lot).
+- ⏳ **Début du lot 8** (notes du 17/11) : plus de gare dans les fermes ; hache plantée dans le grand arbre ; suppression des parties à plusieurs + validation de toute suppression ; beaucoup plus de cailloux et d'arbres au départ, remis en même quantité à chaque saison ; transition de nuit (énergie qui remonte, rêves / prémonitions, sauvegarde auto).
+- ❓ **Rêves et prémonitions** de la nuit : qui les écrit, et que présagent-ils ?
 - ⏳ **Lot 10** : carte de la région refaite comme l'image ; **lot 11** : deuxième passe graphique « niveau de l'image » (auto-tuilage, forêts, falaises, eau, bâtiments 3/4, décor dense, palette).
 - ⏳ **Lot 8** : **expérience et niveaux** du joueur : 1 XP par petit objet cassé, fleur ou champignon ; 5 par objet fabriqué ; dizaines par quête (plus pour une principale) ; courbe exponentielle ; **niveau 10 max** ; déblocages de zones et de choses.
 - ⏳ **Lot 9** : **quêtes secondaires de fabrication** (cuisine : confitures, plats au chaudron…).

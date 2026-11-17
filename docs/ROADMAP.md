@@ -111,6 +111,11 @@ La liste détaillée est dans `docs/CARNET.md`, section « Chantier graphique ni
 
 ## Lot 8 — Expérience et niveaux du joueur (demande du 17/11)
 - [ ] **À faire en premier (note du 17/11)** : **plus de gare dans les fermes** — retirer l'ancienne petite gare et la voie ferrée de la ferme (la gare est désormais une zone à part, à l'ouest du centre-ville).
+- [ ] **Hache plantée dans le grand arbre** (note du 17/11) : la hache doit sembler enfoncée dans le tronc, pas posée au pied.
+- [ ] **Supprimer une partie à plusieurs** (aujourd'hui seules les parties solo s'effacent), avec une **validation** (« Supprimer cette partie ? ») pour **toutes** les suppressions de partie.
+- [ ] **Beaucoup plus de cailloux et d'arbres** dans les fermes au départ.
+- [ ] **À chaque changement de saison**, on en remet **tout autant**, même si la ferme a été vidée.
+- [ ] **Transition de la nuit** (en dormant) : un court moment où l'on voit **l'énergie remonter**, où l'on entend le héros faire des **rêves ou des prémonitions**, puis une **sauvegarde automatique**. ❓ Textes des rêves : à écrire par toi (sinon 💡 de Claude en 🆕).
 - [ ] Le joueur gagne de l'**expérience (XP)** : **1 point** par petit objet cassé (arbre, caillou), par **fleur** ou champignon cueilli ; **5 points** par **objet fabriqué** ; **plusieurs dizaines** par **quête** résolue, **plus pour une quête principale**.
 - [ ] **Niveaux** : le niveau 1 s'atteint vite, puis la courbe est **exponentielle** ; **niveau 10 maximum** pour l'instant.
 - [ ] Les niveaux **débloquent naturellement** des zones et des choses (ex. caverne, recettes, magasins, objet pour parler au fantôme).
