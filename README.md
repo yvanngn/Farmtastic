@@ -1,4 +1,6 @@
-# Moteur Ferme
+# Farmwest
+
+Une ferme au Far West (anciennement Farm'tastic). Feuille de route : `docs/ROADMAP.md`.
 
 Moteur de jeu de ferme pixel art multijoueur (style Stardew Valley, cultures façon Hay Day), en JavaScript natif (modules ES), sans build.
 

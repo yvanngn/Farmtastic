@@ -1,4 +1,10 @@
-# Règles pour Claude — Moteur Ferme
+# Règles pour Claude — Farmwest (moteur Ferme)
+
+## Farmwest (depuis le 17/11/2026)
+- Le jeu s'appelle **Farmwest** (ancien nom : Farm'tastic), thème **Far West**. Dépôt `yvanngn/farmwest`, GitHub Pages https://yvanngn.github.io/farmwest/, jeu claude.ai toujours republié sur la même page.
+- **Feuille de route : `docs/ROADMAP.md`**. On fait **un lot à la fois**, dans l'ordre, sur demande ; poser d'abord les questions ❓ du lot. En fin de lot : cocher la roadmap et compléter le carnet.
+- Carte de référence de la région et du style graphique visé : `docs/carte-region-farmwest.jpg`.
+- Ne pas renommer la clé de sauvegarde (`ferme_save_v1`) ni le préfixe Supabase (`ferme_`) : les parties existantes seraient perdues.
 
 - Lire ce fichier et README.md avant tout ; ils font foi.
 - `src/systems/` ne touche JAMAIS le DOM ni `Math.random`/`Date.now` directement : utiliser `g.bus.emit`, `g.rnd()`, `g.now()`.

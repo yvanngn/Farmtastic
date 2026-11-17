@@ -1,4 +1,4 @@
-# Dialogues de Farm'tastic
+# Dialogues de Farmwest
 
 🆕 = réplique pas encore validée. Corrige directement le texte, puis renvoie-le.
 

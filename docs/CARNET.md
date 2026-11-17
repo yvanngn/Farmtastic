@@ -1,15 +1,22 @@
-# Carnet de Farm'tastic
+# Carnet de Farmwest
 
 Mémoire du projet : tout ce qui a été dit, décidé, fait ou pas encore fait. À lire avant chaque séance, à compléter à la fin. On n'efface rien : une idée abandonnée passe en « Abandonné » avec la raison.
 
 Légende : ✅ fait · 🔨 en cours · ⏳ à faire · 💡 idée de Claude (à valider) · ❌ abandonné
+
+## ⭐ Farmwest (17/11/2026) — à lire en premier
+- Le jeu **Farm'tastic devient Farmwest**, une ferme au **Far West**. Dépôt `yvanngn/farmwest`, GitHub Pages https://yvanngn.github.io/farmwest/, même page claude.ai.
+- **Toute la suite est dans `docs/ROADMAP.md`** (lots 0 à 7, questions ❓ à trancher avant chaque lot). Carte de référence : `docs/carte-region-farmwest.jpg`.
+- Nouveau début prévu : arrivée en **locomotive**, accueil de **Myst**, traversée du centre-ville en **diligence**, choix d'une des **4 fermes** au premier rond-point.
+- Nom du joueur par défaut : **Cloud Jimny** (avant : Claude Gémini).
+- Ce qui suit dans ce carnet (sections 1 et plus, séances) décrit le jeu tel qu'il était avant le passage à Farmwest ; on le corrige au fur et à mesure des lots.
 
 ## 0. Parcours du joueur
 Le résumé du début de partie (à faire, possible, temps moyens, moments creux) est dans **`docs/PARCOURS.md`**. Le relire avant d'ajouter du contenu et le mettre à jour (skill `parcours-debut`) dès qu'un lot change l'énergie, les coûts, les quêtes ou les déblocages.
 
 ## 1. L'histoire et le monde (résumé, à jour le 15/11/2026 au soir)
 - Jeu de ferme pixel art multijoueur, style Stardew Valley, cultures façon Hay Day. Ton doux, un peu d'humour ; les habitants dévoilent **lentement** leur vie au fil de l'amitié.
-- **Le héros** (nom par défaut « Claude Gémini », modifiable : prénom et nom) a été licencié et cherche à redonner un sens à sa vie. Il a toujours rêvé de construire sa propre maison. Une annonce offrait une **cabane abandonnée** à qui voulait s'en occuper ; peu de gens sont venus, à cause d'une **rumeur : la ferme serait hantée**.
+- **Le héros** (nom par défaut « Cloud Jimny » depuis le 17/11, avant « Claude Gémini », modifiable : prénom et nom) a été licencié et cherche à redonner un sens à sa vie. Il a toujours rêvé de construire sa propre maison. Une annonce offrait une **cabane abandonnée** à qui voulait s'en occuper ; peu de gens sont venus, à cause d'une **rumeur : la ferme serait hantée**.
 - Il **arrive en train** à la gare. **Myst** l'attend sur le quai, l'accueille, lui montre le plan, la tente et la liste des tâches, puis repart.
 - La **cabane** et la **grange** sont délabrées : on les rafistole avec du bois et des pierres. En attendant, on dort sous la **tente**.
 - Pas d'histoire inventée par Claude : seulement ce que l'utilisateur décrit (les idées de Claude vont en 💡).
@@ -92,7 +99,7 @@ Mots de l'utilisateur, à respecter tels quels :
 ## 4. Ce qui existe dans le jeu
 > **Attention** : cette liste est historique (dans l'ordre où les choses ont été faites). Ce qui a changé depuis est indiqué dans les séances datées à la fin du carnet. Points remplacés : l'accueil du chef (→ Myst à la gare), la hache dans la grange (→ dehors, parmi des arbres), les Terres sauvages derrière le portail est (→ Caverne sombre après la forêt, fermée), la forêt à l'ouest de la ferme (→ à l'est du centre-ville), les maisons de Luna et Franck sur la ferme (→ quartier), la roue des objets (→ sac en cases), l'évanouissement à 2h avec −10 % (→ pas d'énergie récupérée ; à 0 d'énergie, clinique −10 %), la caméra qui remonte pendant les dialogues (→ supprimé).
 
-- **Écran titre** : décor de ferme animé (aube, grange, silo, moulin, champ de blé, oiseaux, pollen), logo « Farm'tastic » en Lilita One doré qui flotte, « Touchez l'écran pour commencer », cascade d'étoiles, menu Continuer / Nouvelle partie / Comment jouer / Réglages, musique de titre.
+- **Écran titre** : décor de ferme animé (aube, grange, silo, moulin, champ de blé, oiseaux, pollen), logo « Farmwest » en Lilita One doré qui flotte, « Touchez l'écran pour commencer », cascade d'étoiles, menu Continuer / Nouvelle partie / Comment jouer / Réglages, musique de titre.
 - **Personnage** : personnalisation complète, marche de profil animée.
 - **Ferme** : cultures en temps réel (blé, maïs, carotte ; pluie +25 %), bois/pierre, gros rochers, XP de minage (10 niveaux), forge (Cuivre → Iridium), énergie.
 - **Inventaire** : 12 cases au départ (+6 par achat, max 36) ; **10 objets max par case** (25 bois = 3 cases). Magasin d'amélioration au village : sac plus grand, piles 10 → 20 → 30 → 50 → 99 (800 / 2 000 / 4 500 / 9 000 🪙).
@@ -176,7 +183,7 @@ Les listes de répliques à valider qui étaient ici ont été relues et corrig�
 - **Bug corrigé (lot 5)** : la halle du marché plantait à l'ouverture (variable manquante) depuis le début. Elle affiche maintenant l'étal de graines, puis le marché entre joueurs (ou « hors ligne »).
 - **Vente** : les commerces ne rachètent rien ; on vend tout au bac près de la maison. L'utilisateur y réfléchira plus tard (15/11/2026).
 - **Anciennes sauvegardes** : avec les piles de 10, un ancien sac (piles jusqu'à 99) peut dépasser le nombre de cases. Rien n'est perdu, mais on ne peut plus rien ramasser tant qu'on n'a pas vendu ou acheté une amélioration.
-- **Nom de la page** : l'artefact claude.ai s'appelle encore « Moteur Ferme » dans la liste, alors que le jeu s'appelle Farm'tastic.
+- **Nom de la page** : l'artefact claude.ai s'appelle encore « Moteur Ferme » dans la liste, alors que le jeu s'appelle Farmwest.
 
 - **Gros rochers** : ils existaient avant le lot 3 (pioche Cuivre, 8 à 12 pierres). Je les ai gardés dans la carte de départ, en plus des 2 types de pierres demandés, mais ils ne réapparaissent pas. → à confirmer : les garder, les faire repousser ou les retirer.
 - **Pierres « mêmes règles » que les arbres** : mon interprétation, c'est qu'une pierre met 3 jours à réapparaître (elle est prévue, puis sort de terre au bout de 3 jours), au lieu de grandir à vue comme un arbre. À valider.
@@ -189,7 +196,7 @@ Les listes de répliques à valider qui étaient ici ont été relues et corrig�
 - **Écran noir sur GitHub Pages (corrigé le 15/11)** : `index.html`, la page servie par GitHub, était restée sur la toute première version, alors que seule `play.html` (claude.ai) était mise à jour. Le jeu plantait donc au démarrage. `index.html` est maintenant régénérée depuis `play.html` (`node tools/build-index.mjs`), et un test vérifie qu'elles restent identiques.
 
 ## 6. Idées de Claude (💡 à valider)
-- Sous-titre de l'écran titre : « ✦ une ferme à partager ✦ » (déjà affiché, à garder ou retirer).
+- Sous-titre de l'écran titre : « ✦ une ferme au Far West ✦ » (déjà affiché, à garder ou retirer).
 - **Goûts de Luna** (tirés de sa personnalité : ancienne informaticienne, rêve de ferme, budget serré, retape sa maison) : adore les graines de carotte et de blé ; aime le pain, le croissant et le bois ; n'aime pas la pierre ni le foin ; déteste la gelée. Il n'existe pas encore de fleurs ni de bijoux à offrir.
 - **Lot 12** : réparation de l'établi par le charpentier, et son prix.
 - **Lot 10** : le nom « Terres sauvages », l'ouverture par le premier chantier, les points de vie, dégâts et vitesses des monstres, le cochon au lance-pierre qui laisse de l'argent, les pourcentages de minerai, le nombre de salles.

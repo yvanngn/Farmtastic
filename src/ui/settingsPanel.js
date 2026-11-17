@@ -29,7 +29,7 @@ export function createSettingsPanel(audio, g) {
         <span class="pct">${s[c.k].on ? Math.round(s[c.k].vol * 100) : 0} %</span>
       </div>`).join('') + `
       ${g.inGame ? '<div class="row" style="justify-content:center"><button data-totitle="1" class="primaire">🏠 Revenir au menu principal</button></div>' : ''}
-      <p class="info" style="text-align:center;opacity:.7">Farm'tastic ${versionLabel()}</p>
+      <p class="info" style="text-align:center;opacity:.7">Farmwest ${versionLabel()}</p>
       <div class="ecran"><b>📱 Écran</b>
         <div class="row">${Object.entries(ORIENTS).map(([k, v]) => `<button data-orient="${k}" class="${getOrient() === k ? 'on' : ''}">${v}</button>`).join('')}</div>
         <div class="row"><button data-fs="1" class="primaire">⛶ Plein écran</button>${document.fullscreenElement ? '<button data-fs="0">Quitter</button>' : ''}</div>

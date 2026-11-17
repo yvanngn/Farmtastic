@@ -1,4 +1,4 @@
-# Parcours du début de Farm'tastic
+# Parcours du début de Farmwest
 
 Ce qu'on peut faire, ce qu'on doit faire et combien de temps ça prend, du 1er jour à la grange réparée.
 **But : que le joueur ait toujours quelque chose à faire.**

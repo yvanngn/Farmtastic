@@ -37,7 +37,7 @@ if (process.argv.includes('--valider')) {
   writeFileSync(VALID, [...new Set(all.map(l => l.t))].join('\n') + '\n');
   console.log(`${all.length} répliques marquées comme validées.`);
 } else {
-  let md = "# Dialogues de Farm'tastic\n\n🆕 = réplique pas encore validée. Corrige directement le texte, puis renvoie-le.\n", num = 0, nouv = 0, cur = '';
+  let md = "# Dialogues de Farmwest\n\n🆕 = réplique pas encore validée. Corrige directement le texte, puis renvoie-le.\n", num = 0, nouv = 0, cur = '';
   for (const l of all) {
     if (l.npc !== cur) { md += `\n## ${l.npc}\n\n`; cur = l.npc; }
     const isNew = !valid.has(l.t); if (isNew) nouv++;

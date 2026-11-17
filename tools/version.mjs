@@ -1,4 +1,4 @@
-// Semver horodaté de Farm'tastic.
+// Semver horodaté de Farmwest.
 //   node tools/version.mjs          → patch +1 (à chaque publication)
 //   node tools/version.mjs minor    → mineure +1, patch à 0 (seulement sur demande de l'utilisateur)
 //   node tools/version.mjs major    → majeure +1, mineure et patch à 0 (seulement sur demande)

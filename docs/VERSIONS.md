@@ -1,4 +1,4 @@
-# Versions de Farm'tastic
+# Versions de Farmwest
 
 Semver horodaté (heure de Paris). Patch automatique à chaque publication ; mineure et majeure sur décision de l'utilisateur.
 

@@ -1,9 +1,9 @@
-# Farm'tastic — reprise du projet
+# Farmwest — reprise du projet
 
 Document à donner à une nouvelle conversation pour reprendre le jeu sans rien perdre.
 
 ## Où est quoi
-- **Code** : dépôt GitHub `yvanngn/Farmtastic` (branche `main`). README.md et CLAUDE.md font foi.
+- **Code** : dépôt GitHub `yvanngn/farmwest` (branche `main`). README.md et CLAUDE.md font foi.
 - **Version jouable** : page claude.ai « Moteur Ferme » (publiée depuis `play.html` + `css/` + `src/`). Republier toujours sur la même page.
 - **Base de données** : `supabase_schema.sql` (profils, sauvegardes, mondes, objets partagés, PNJ, liens sociaux, marché entre joueurs). Supabase n'est pas encore branché (`src/config.js` vide → jeu solo, sauvegarde locale).
 - **Tests** : `npm test` (node:test, 119 tests au vert). Un fichier par système dans `tests/`.
@@ -60,4 +60,4 @@ Document à donner à une nouvelle conversation pour reprendre le jeu sans rien 
 Plus tard : bouclier, suite des tunnels.
 
 ## Pour démarrer la nouvelle conversation
-Joindre ce fichier ou écrire : « Reprends Farm'tastic depuis le dépôt yvanngn/Farmtastic, lis HANDOFF.md et attaque le lot suivant. »
+Joindre ce fichier ou écrire : « Reprends Farmwest depuis le dépôt yvanngn/farmwest, lis HANDOFF.md et attaque le lot suivant. »

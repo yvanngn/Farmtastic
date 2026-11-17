@@ -1,5 +1,5 @@
 -- =====================================================================
--- Farm'tastic — tables Supabase, toutes préfixées « ferme_ » (le projet contient d'autres jeux).
+-- Farmwest — tables Supabase, toutes préfixées « ferme_ » (le projet contient d'autres jeux).
 -- À coller dans Supabase > SQL Editor > Run (une seule fois ; relançable sans danger).
 -- Pré-requis : Authentication > Sign In / Providers > activer « Anonymous sign-ins ».
 -- Les positions des joueurs passent par Realtime (Broadcast/Presence) : rien n'est écrit en base en continu.
