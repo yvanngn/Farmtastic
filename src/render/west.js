@@ -4,6 +4,7 @@ import { CFG } from '../config.js';
 import { LAYOUTS } from '../world/scenes.js';
 import { rng } from '../world/map.js';
 import { shade, disc } from './pixel.js';
+import { signBoard } from './pixfont.js';
 import { autotile, canopy, paintRiver, dress, roofFor, softPatches } from './terrain.js';
 import { GRASS } from './ground.js';
 import { treeSprite, pineSprite, cactusSprite, pebbleSprite } from './sprites.js';
@@ -85,7 +86,7 @@ export function buildWest(name, season) {
     win(px + 12, py + 30); win(px + w - 22, py + 30);
     R(px + w / 2 - 7, py + h - 24, 14, 24, '#5b3a22'); R(px + w / 2 - 5, py + h - 22, 10, 22, '#8a5a32'); R(px + w / 2 + 2, py + h - 12, 2, 2, '#e8c26a');
     R(px - 2, py + h - 6, w + 4, 6, '#8a5a32'); for (let k = 0; k < w; k += 12) R(px + k, py + h - 22, 2, 16, '#6a4426');   // véranda
-    R(px + w / 2 - 16, py + 18, 32, 8, '#f4ead2'); g.fillStyle = '#5a2a22'; g.font = 'bold 6px Georgia'; g.textAlign = 'center'; g.fillText('MAIRE', px + w / 2, py + 24); g.textAlign = 'start';
+    signBoard(R, px + w / 2, py + 17, 'MAIRIE');
   }
   for (const [x0, y0, x1, y1] of block('B')) {   // grange rouge à croix blanches
     const px = x0 * T, py = y0 * T, w = (x1 - x0 + 1) * T, h = (y1 - y0 + 1) * T;
@@ -102,8 +103,7 @@ export function buildWest(name, season) {
     win(px + 10, py + 30); win(px + w - 20, py + 30);
     R(px + w / 2 - 7, py + h - 24, 14, 24, '#5b3a22'); R(px + w / 2 - 5, py + h - 22, 10, 22, '#8a5a32');
     disc(g, px + w / 2, py + 6, 6, '#3f2615'); disc(g, px + w / 2, py + 6, 5, '#f4ead2'); R(px + w / 2, py + 2, 1, 4, '#3b2414'); R(px + w / 2, py + 6, 3, 1, '#3b2414');   // horloge
-    R(px + w / 2 - 18, py + 15, 36, 9, '#3f2615'); R(px + w / 2 - 17, py + 16, 34, 7, '#e8c26a');
-    g.fillStyle = '#3b2414'; g.font = 'bold 6px Georgia'; g.textAlign = 'center'; g.fillText('FARMWEST', px + w / 2, py + 22); g.textAlign = 'start';
+    signBoard(R, px + w / 2, py + 14, 'GARE DE FARMWEST');   // enseigne réécrite nette à l'écran
     R(3 * T, py + h - 4, 3 * T, 4, '#6a4426'); for (let k = 0; k < 3; k++) R(3 * T + 4 + k * 16, py + h, 2, 10, '#5b3a22');   // auvent du quai
     for (const bx of [3 * T + 6, 5 * T + 2]) { R(bx, 10 * T, 10, 4, '#8a5a32'); R(bx, 10 * T + 4, 1, 3, '#5b3a22'); R(bx + 9, 10 * T + 4, 1, 3, '#5b3a22'); }   // bancs
   }

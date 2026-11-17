@@ -413,3 +413,9 @@ test('lot 11 : à chaque saison, un nouveau labyrinthe au hasard, jamais bloquan
   const S = { year: 1, season: 0, foret: { layout: '9-9', cut: { '3,3': 1 }, shrooms: { '1,1': {} } }, nature: { foret: { rocks: { '4,4': {} } } } };
   syncForest(S); assert.deepEqual(S.foret.cut, {}); assert.equal(S.nature.foret, undefined, 'cailloux de l’ancien labyrinthe retirés');
 });
+
+test('Myst reste sur le quai pendant que le héros descend du train', async () => {
+  const { placeMyst } = await import('../src/systems/social.js');
+  const { MYST } = await import('../src/data/npcs.js');
+  for (const step of ['train', 'descente', 'myst']) { const n = { ...MYST }; placeMyst(n, { intro: { step }, scene: 'gare' }); assert.equal(n.scene, 'gare', step); }
+});

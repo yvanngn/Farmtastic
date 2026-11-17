@@ -467,3 +467,6 @@ body.bande[data-nrj="vert"] #nrjVert { bottom: calc(var(--bande) + var(--pad) * 
 #hLvl { font-size: 11px; color: var(--or-vif, #ffdf8a); white-space: nowrap; min-width: 40px }
 #hXpRow .bar.xp { flex: 1; height: 4px; margin: 0; background: rgba(255,255,255,.12) }
 #hXpRow .bar.xp i { background: linear-gradient(90deg, #8ac8ff, #c8a8ff) }
+
+/* Début de partie : la bulle de dialogue en haut, sous les boutons ⏩ ⏭ (la scène reste visible) */
+@media (max-aspect-ratio: 1/1) { #dlg.haut { top: calc(var(--sa-t) + 52px); bottom: auto } }   /* téléphone en portrait : la place libre est en haut */

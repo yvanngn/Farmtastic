@@ -153,7 +153,8 @@ export function placeMyst(n, S) {
   n.sleeping = false;
   const step = S.intro && S.intro.step;
   if (step && step !== 'done') {   // Farmwest : sur le quai de la gare, puis assis dans la diligence (on ne le voit pas)
-    n.walking = false; if (step === 'train' || step === 'myst') { n.scene = 'gare'; n.x = 4.5; n.y = 5.8; n.dir = 0; } else n.scene = 'none';
+    n.walking = false; if (step === 'train' || step === 'descente' || step === 'myst') {   // (il reste sur le quai pendant que le héros descend du train)
+      n.scene = 'gare'; n.x = 4.5; n.y = 5.8; n.dir = 0; } else n.scene = 'none';
     return;
   }
   if (st === 'sleep' || st === 'wait' || st === 'talk') {   // il attend le joueur sur le quai

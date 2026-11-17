@@ -3,6 +3,7 @@
 // Une question affiche ses réponses en boutons (touches 1, 2, 3) : il faut répondre.
 import { $ } from './dom.js';
 import { ADMIN } from '../systems/admin.js';
+import { introActive } from '../systems/intro.js';
 
 export function createDialog(g, audio) {
   const box = $('#dlg'), nameEl = $('#dlgName'), textEl = $('#dlgText'), choicesEl = $('#dlgChoices');
@@ -15,6 +16,7 @@ export function createDialog(g, audio) {
     textEl.textContent = cur.line;
     choicesEl.innerHTML = cur.choices ? cur.choices.map((c, i) => `<button data-c="${i}">${c}</button>`).join('') : '';
     $('#dlgNext').style.display = cur.choices || !queue.length ? 'none' : '';   // ▸ seulement s'il y a une suite (comme Witch'rok)
+    box.classList.toggle('haut', introActive(g.S));   // au début (gare, diligence) : la bulle s'affiche en haut, la scène reste visible
     box.classList.remove('on'); void box.offsetWidth; box.classList.add('on');
     if (cur.voice) audio.play(cur.voice);
   }
@@ -33,6 +35,12 @@ export function createDialog(g, audio) {
     if (cur && cur.choices) return; // il faut répondre
     swallowUntil = performance.now() + 450;   // le clic qui ferme la bulle ne doit rien déclencher derrière (inventaire…)
     if (ADMIN.on) close(); else next();
+  });
+  // un clic / toucher n'importe où fait avancer le texte (sauf sur un bouton ou une fenêtre ouverte) ; une question attend sa réponse
+  addEventListener('pointerup', e => {
+    if (!cur || cur.choices || box.contains(e.target) || e.target.closest('button, input, .overlay.on, #controls, #hotbar, #topbtns')) return;
+    if (performance.now() - shownAt < 250) return;   // le clic qui a ouvert la bulle ne la fait pas avancer
+    swallowUntil = performance.now() + 450; ADMIN.on ? close() : next();
   });
   addEventListener('click', e => { if (performance.now() < swallowUntil && !box.contains(e.target)) { e.preventDefault(); e.stopImmediatePropagation(); } }, true);
   addEventListener('keydown', e => {
