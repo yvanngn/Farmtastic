@@ -115,6 +115,12 @@ La liste détaillée est dans `docs/CARNET.md`, section « Chantier graphique ni
 - [ ] **Supprimer une partie à plusieurs** (aujourd'hui seules les parties solo s'effacent), avec une **validation** (« Supprimer cette partie ? ») pour **toutes** les suppressions de partie.
 - [ ] **Beaucoup plus de cailloux et d'arbres** dans les fermes au départ.
 - [ ] **À chaque changement de saison**, on en remet **tout autant**, même si la ferme a été vidée.
+- [ ] **La locomotive repart** une fois le héros monté dans la diligence.
+- [ ] **Plus de panneaux indicateurs** des lieux (pas naturel) : rond-point, centre-ville, etc.
+- [ ] Devant chez les habitants : des **boîtes aux lettres** à la place des panneaux, **sans texte affiché** ; on voit le nom **quand on la lit** (action).
+- [ ] **Plus de nom au-dessus des PNJ.**
+- [ ] **Barre d'outils sous l'écran de jeu** (bande en bas) pour ne plus cacher le bas de la scène.
+- [ ] **Forêt-labyrinthe** : des **cailloux** aussi, toujours **au moins un chemin possible** (vérifié par un test), et un **coffre au bout** du labyrinthe. ❓ Contenu du coffre.
 - [ ] **Transition de la nuit** (en dormant) : un court moment où l'on voit **l'énergie remonter**, où l'on entend le héros faire des **rêves ou des prémonitions**, puis une **sauvegarde automatique**. ❓ Textes des rêves : à écrire par toi (sinon 💡 de Claude en 🆕).
 - [ ] Le joueur gagne de l'**expérience (XP)** : **1 point** par petit objet cassé (arbre, caillou), par **fleur** ou champignon cueilli ; **5 points** par **objet fabriqué** ; **plusieurs dizaines** par **quête** résolue, **plus pour une quête principale**.
 - [ ] **Niveaux** : le niveau 1 s'atteint vite, puis la courbe est **exponentielle** ; **niveau 10 maximum** pour l'instant.
