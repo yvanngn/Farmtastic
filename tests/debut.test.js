@@ -397,3 +397,19 @@ test('lot 8 : forêt-labyrinthe — cailloux, toujours un chemin (caverne, trou�
   assert.equal(forestChestFull(S), false); assert.equal(openForestChest(g), false, 'vide jusqu’à la saison suivante');
   S.season = (S.season + 1) % 4; assert.equal(forestChestFull(S), true);
 });
+
+test('lot 11 : à chaque saison, un nouveau labyrinthe au hasard, jamais bloquant (caverne, trouée, coffre)', async () => {
+  const { syncForest, forestPath, FOREST_CHEST, LAYOUTS: L, forestKey } = await import('../src/world/scenes.js');
+  const seen = new Set();
+  for (let year = 1; year <= 3; year++) for (let season = 0; season < 4; season++) {
+    const S = { year, season, scene: 'farm' }; syncForest(S);
+    seen.add(L.foret.join(''));
+    const c = FOREST_CHEST, chest = (x, y) => x === c.x && y === c.y;
+    assert.ok(forestPath('0,9', '29,9', chest), `caverne ${year}-${season}`); assert.ok(forestPath('0,9', '27,0', chest), `trouée ${year}-${season}`);
+    assert.ok(forestPath('0,9', c.x + ',' + c.y).length > 20, 'coffre au bout');
+    for (const [x, y] of [[10, 7], [19, 13], [19, 12], [5, 12]]) assert.equal(L.foret[y][x], '.', 'promenades des habitants');
+  }
+  assert.equal(seen.size, 12, 'une forme différente à chaque saison');
+  const S = { year: 1, season: 0, foret: { layout: '9-9', cut: { '3,3': 1 }, shrooms: { '1,1': {} } }, nature: { foret: { rocks: { '4,4': {} } } } };
+  syncForest(S); assert.deepEqual(S.foret.cut, {}); assert.equal(S.nature.foret, undefined, 'cailloux de l’ancien labyrinthe retirés');
+});

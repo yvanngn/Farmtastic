@@ -1,6 +1,6 @@
 // Nature : fleurs à cueillir, cailloux et filons à piocher (ferme, forêt, Caverne sombre ; jamais en ville),
 // et arc-en-ciel les jours de pluie avec un trésor à son pied. Logique pure.
-import { FOREST_ROUTE, LAYOUTS } from '../world/scenes.js';
+import { syncForest, FOREST_ROUTE, LAYOUTS } from '../world/scenes.js';
 import { key, freeForObj, isSolid } from '../world/map.js';
 import { CFG } from '../config.js';
 import { FLOWERS } from '../data/items.js';
@@ -46,6 +46,7 @@ export function pickVein(r) {
 
 // Une fois par jour et par lieu : nouvelles fleurs (celles d'hier fanent), cailloux et filons complétés.
 export function ensureNature(g, sc) {
+  if (sc === 'foret') syncForest(g.S);   // lot 11
   const C = NATURE[sc];
   if (!C) return null;
   const S = g.S; S.nature ||= {};

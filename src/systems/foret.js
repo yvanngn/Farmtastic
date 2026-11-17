@@ -1,7 +1,7 @@
 import { cueillir } from './nature.js';
 // Forêt : chaque jour, des champignons de la saison poussent au pied des arbres.
 // Taille petite / moyenne / grosse (la grosse est rare) ; une espèce rare et chère par saison.
-import { LAYOUTS, FOREST_CHEST } from '../world/scenes.js';
+import { LAYOUTS, FOREST_CHEST, syncForest } from '../world/scenes.js';
 import { key } from '../world/map.js';
 import { MUSHROOMS, ITEMS } from '../data/items.js';
 import { add } from './inventory.js';
@@ -11,7 +11,7 @@ export const SHROOMS_PER_DAY = 8, P_RARE = 0.12, P_BIG = 0.1, P_MEDIUM = 0.3;
 
 export function ensureShrooms(g) {
   const S = g.S, day = S.year + '-' + S.season + '-' + S.day;
-  S.foret ||= { day: null, shrooms: {} };
+  syncForest(S);   // lot 11 : labyrinthe de la saison
   if (S.foret.day === day) return S.foret.shrooms;
   const L = LAYOUTS.foret, out = {}, sp = MUSHROOMS[S.season];
   const nearTree = (x, y) => [[1, 0], [-1, 0], [0, 1], [0, -1]].some(([a, b]) => L[y + b] && L[y + b][x + a] === 'T');

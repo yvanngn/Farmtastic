@@ -6,6 +6,7 @@ import { rollRainbow } from './nature.js';
 import { animalsNewDay } from './animals.js';
 import { socialNewDay } from './social.js';
 import { regrow, seasonRestock } from './resources.js';
+import { syncForest } from '../world/scenes.js';
 import { toClinic } from './clinic.js';
 import { DREAMS } from '../data/npcs.js';
 
@@ -33,7 +34,8 @@ export function newDay(g, slept) {
   animalsNewDay(S);
   socialNewDay(S);
   regrow(g);
-  if (newSeason && S.objs) seasonRestock(g);   // lot 8 : la nature reprend ses droits à chaque saison
+  if (newSeason && S.objs) seasonRestock(g);
+  if (newSeason) syncForest(S);   // lot 11 : nouveau labyrinthe dans la forêt   // lot 8 : la nature reprend ses droits à chaque saison
   g.enemies.length = 0;
   g.bus.emit('newDay', { slept });
 }

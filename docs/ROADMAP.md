@@ -147,7 +147,7 @@ Pour que **les scènes du jeu** atteignent le niveau de détail de l'image, scè
 - [x] 11e. (v0.1.22 : contours colorés automatiques sur tous les décors extérieurs) **Bâtiments en 3/4** : toits en tuiles ou bardeaux avec volume, façades détaillées, perrons, cheminées ; contours colorés (pas noirs).
 - [x] 11f. (centre-ville et zones de l'Ouest) **Décor dense** : tonneaux, caisses, clôtures, fleurs, rochers, champs cultivés, parasols, bateaux.
 - [x] 11g. Palette unique : 48 couleurs tirées des décors (k-moyennes) + 3 accents, tramage léger ; décors, carte et sprites ramenés à la palette (v0.1.22).
-- [x] Forêt-labyrinthe : allées de 2 cases, murs en gros buissons (v0.1.22). **Palette unique** (~48 couleurs) et lumière en haut à gauche partout, pour l'harmonie de l'ensemble.
+- [x] Forêt-labyrinthe : allées de 2 cases, murs en gros buissons (v0.1.22) ; **nouvelle forme à chaque saison**, tirée au hasard, jamais bloquante (v0.1.23). **Palette unique** (~48 couleurs) et lumière en haut à gauche partout, pour l'harmonie de l'ensemble.
 
 ## Plus tard (déjà noté dans le carnet)
 - Pièce secrète dans chaque maison.

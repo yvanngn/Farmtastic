@@ -321,9 +321,9 @@ LAYOUTS.wild = buildWild();
 // Labyrinthe « parfait » creusé de façon déterministe (toujours au moins un chemin), puis quelques murs ouverts en plus.
 const FW = 30, FH = 18;
 const FOREST_KEEP = [[10, 7], [19, 13], [19, 12], [5, 12]];   // lieux de promenade des habitants (restent ouverts)
-function buildForest() {   // lot 11 : allées de 2 cases (plus lisible), murs d'une case
+function buildForest(seed = 8086) {   // lot 11 : allées de 2 cases (plus lisible), murs d'une case
   const m = Array.from({ length: FH }, () => Array.from({ length: FW }, () => 'T'));
-  let s = 8086; const r = () => (s = (s * 1664525 + 1013904223) >>> 0) / 4294967296;
+  let s = seed >>> 0 || 1; const r = () => (s = (s * 1664525 + 1013904223) >>> 0) / 4294967296;
   const CX = 9, CY = 5, X0 = c => 1 + c * 3, Y0 = c => 3 + c * 3;   // cases de 2 × 2 : x 1-2, 4-5… 25-26 ; y 3-4, 6-7, 9-10, 12-13, 15-16
   const open = (x0, y0, w, h) => { for (let y = y0; y < y0 + h; y++) for (let x = x0; x < x0 + w; x++) if (y > 0 && y < FH - 1 && x > 0 && x < FW - 1) m[y][x] = '.'; };
   const seen = new Set(['0,2']), stack = [[0, 2]]; open(X0(0), Y0(2), 2, 2);
@@ -337,16 +337,16 @@ function buildForest() {   // lot 11 : allées de 2 cases (plus lisible), murs d
   }
   for (let cy = 0; cy < CY; cy++) for (let cx = 0; cx < CX - 1; cx++) if (r() < .12) open(X0(cx), Y0(cy), 5, 2);   // quelques raccourcis
   open(25, 9, 4, 2);                      // vers la sortie est (caverne)
-  open(26, 1, 2, 3); open(25, 1, 3, 1);   // vers la trouée secrète (27, 0)
+  open(26, 1, 2, 3);   // vers la trouée secrète (27, 0)
   open(1, 9, 2, 2);
   for (const [x, y] of FOREST_KEEP) m[y][x] = '.';
   for (let y = 1; y < FH - 1; y++) for (let x = 1; x < FW - 1; x++)   // des cailloux dans les murs
     if (m[y][x] === 'T' && r() < .22) m[y][x] = '#';
   return m.map(row => row.join(''));
 }
-LAYOUTS.foret = buildForest();
 // sorties : à l'ouest (vers les fermes), à l'est (caverne), trouée secrète tout en haut à droite
-LAYOUTS.foret = LAYOUTS.foret.map((r, y) => y === 0 ? r.slice(0, 27) + '.' + r.slice(28) : y === 9 ? 'D' + r.slice(1, -1) + 'D' : r);
+const forestLayout = seed => buildForest(seed).map((r, y) => y === 0 ? r.slice(0, 27) + '.' + r.slice(28) : y === 9 ? 'D' + r.slice(1, -1) + 'D' : r);
+LAYOUTS.foret = forestLayout(8086);
 // Chemin le plus court entre deux cases du labyrinthe (largeur d'abord) ; null si bloqué.
 export function forestPath(from, to, blocked = () => false) {
   const L = LAYOUTS.foret, ok = (x, y) => L[y] && L[y][x] && '.D'.includes(L[y][x]) && !blocked(x, y);
@@ -360,15 +360,45 @@ export function forestPath(from, to, blocked = () => false) {
   const out = []; for (let k = to; k; k = prev[k]) out.unshift(k); return out;
 }
 // Le coffre : la case du labyrinthe la plus éloignée de l'entrée (un vrai bout de labyrinthe).
-export const FOREST_CHEST = (() => {
+function farthest() {
   const L = LAYOUTS.foret, dist = { '0,9': 0 }, q = ['0,9']; let far = '0,9';
   while (q.length) { const c = q.shift(), [x, y] = c.split(',').map(Number); const open = [[1, 0], [-1, 0], [0, 1], [0, -1]].filter(([a, b]) => L[y + b] && '.D'.includes(L[y + b][x + a] || 'T')).length;
-    if (dist[c] > dist[far] && L[y][x] === '.' && y > 0 && x <= FW - 4 && open === 1) far = c;   // un cul-de-sac, loin des sorties
+    if (dist[c] > dist[far] && L[y][x] === '.' && y > 0 && x <= FW - 4 && open < 4 && !FOREST_KEEP.some(([a, b]) => Math.abs(a - x) + Math.abs(b - y) < 2)) far = c;   // au bout d'une allée, loin des sorties (contre un mur)
     for (const [a, b] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) { const k = (x + a) + ',' + (y + b); if (!(k in dist) && L[y + b] && L[y + b][x + a] && '.D'.includes(L[y + b][x + a])) { dist[k] = dist[c] + 1; q.push(k); } } }
   const [x, y] = far.split(',').map(Number); return { x, y };
-})();
+}
+export const FOREST_CHEST = farthest();   // objet modifié sur place quand le labyrinthe change
 // Cases à garder libres (les cailloux de la nature n'y poussent pas) : les chemins entrée → caverne, → trouée, → coffre.
-export const FOREST_ROUTE = new Set([...(forestPath('0,9', '29,9') || []), ...(forestPath('0,9', '27,0') || []), ...(forestPath('0,9', FOREST_CHEST.x + ',' + FOREST_CHEST.y) || [])]);
+export const FOREST_ROUTE = new Set();
+const fillRoute = () => { FOREST_ROUTE.clear(); for (const t of ['29,9', '27,0', FOREST_CHEST.x + ',' + FOREST_CHEST.y]) for (const k of forestPath('0,9', t) || []) FOREST_ROUTE.add(k); };
+fillRoute();
+// Lot 11 : à chaque saison, un nouveau labyrinthe tiré au hasard (graine = année et saison : le même pour tous les joueurs
+// d'une partie). Toujours un chemin vers la caverne, la trouée et le coffre (labyrinthe « parfait » + vérification).
+export const forestSeed = (year, season) => 8086 + (year || 1) * 7919 + (season || 0) * 104729;
+export let forestKey = '1-0';
+export function setForestSeason(year, season) {
+  const key = (year || 1) + '-' + (season || 0);
+  if (key === forestKey) return false;
+  for (let k = 0; k < 20; k++) {   // (par sécurité : on retire une graine si un chemin manquait)
+    LAYOUTS.foret = forestLayout(forestSeed(year, season) + k * 31);
+    Object.assign(FOREST_CHEST, farthest()); fillRoute();
+    if (forestPath('0,9', '29,9') && forestPath('0,9', '27,0') && FOREST_CHEST.x > 0) break;
+  }
+  forestKey = key; return true;
+}
+setForestSeason(1, 0);
+// Met la forêt d'une partie à la saison en cours ; au changement de labyrinthe, on oublie les arbres coupés, les champignons
+// et les cailloux de la forêt (ils repoussent dans le nouveau labyrinthe, jamais sur le chemin).
+export function syncForest(S) {
+  if (!S) return;
+  setForestSeason(S.year, S.season);
+  const F = S.foret || (S.foret = { day: null, shrooms: {} });
+  if (F.layout === forestKey) return;
+  const first = F.layout === undefined && !F.cut && !F.hits;
+  F.layout = forestKey; F.cut = {}; F.hits = {}; F.shrooms = {}; F.day = null;
+  if (S.nature && S.nature.foret && !first) delete S.nature.foret;
+  if (S.scene === 'foret') { const t = (LAYOUTS.foret[Math.floor(S.y)] || '')[Math.floor(S.x)]; if (t !== '.' && t !== 'D') { S.x = 1.6; S.y = 9.6; } }   // jamais coincé dans un mur
+}
 // ---------- Farmwest, lot 2 : nouvelles zones (d'après docs/carte-region-farmwest.jpg) ----------
 // s terre ocre, g herbe, . chemin, D sortie, T arbre, F fontaine, P panneau, f clôture, H maison du ranch, B grange du ranch,
 // E entrepôt du port, = planches (quai, ponton), w eau

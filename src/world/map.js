@@ -46,7 +46,7 @@ export function ground(x, y) {
   return isPond(x, y) ? 'water' : isPlot(x, y) ? 'soil' : isPath(x, y) ? 'path' : 'grass';
 }
 
-import { tileAt, SOLID_TILES, FOREST_CHEST } from './scenes.js';
+import { tileAt, SOLID_TILES, FOREST_CHEST, syncForest } from './scenes.js';
 import { AXE_GROVE, BIG_TREE } from '../data/repairs.js';
 import { BUSHES } from '../data/recipes.js';
 import { TREE_GROW_DAYS, FOREST } from '../data/forest.js';
@@ -59,6 +59,7 @@ export function isSolid(S, x, y) {
   if (S.tent && (S.scene || 'farm') === 'farm' && S.tent.x === x && S.tent.y === y) return true;   // tente
   if ((S.scene || 'farm') === 'farm' && (BUSH_SET.has(x + ',' + y) || (S.fires || []).some(f => f.x === x && f.y === y) || (S.chests || []).some(c => c.x === x && c.y === y))) return true;   // buissons, feux, coffres
   if (S.scene === 'wild' && S.wild && S.wild.rocks && S.wild.rocks[x + ',' + y]) return true;
+  if (S.scene === 'foret') syncForest(S);   // lot 11 : labyrinthe de la saison
   if (S.scene === 'foret' && x === FOREST_CHEST.x && y === FOREST_CHEST.y) return true;   // lot 8 : le coffre du labyrinthe
   if (S.scene === 'foret' && S.foret && S.foret.shrooms && S.foret.shrooms[x + ',' + y]) return false;
   if (S.scene === 'foret' && S.foret && S.foret.cut && S.foret.cut[x + ',' + y] != null && (S.year - 1) * 112 + S.season * 28 + S.day - S.foret.cut[x + ',' + y] < TREE_GROW_DAYS) return false;   // arbre coupé (repousse comme à la ferme)
