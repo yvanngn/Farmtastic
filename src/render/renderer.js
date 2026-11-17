@@ -17,6 +17,7 @@ import { bushRipe, cookProgress } from '../systems/cooking.js';
 import { ghostVisible } from '../systems/ghost.js';
 import { SCATTER_MS } from '../systems/inventory.js';
 import { isForestTree, forestCut } from '../systems/foret.js';
+import { CUEILLE_HITS } from '../systems/nature.js';
 import { GHOST } from '../data/npcs.js';
 // Buisson à baies (baies bleues quand il y en a).
 function drawBush(c, x, y, ripe, mure) {
@@ -267,7 +268,7 @@ let swing = null;
     const scene = S.scene || 'farm', outside = scene === 'farm', sky = outside || !!SCENES[scene].outdoor, SC = SCENES[scene];
     if (scene === 'house' && cacheScene === 'house' && cache !== interiors['house' + !!S.workbench + (S.bed !== false)]) cacheScene = ''; // établi réparé
     if (cacheSeason !== S.season || cacheScene !== scene) {
-      cache = outside ? farmGround() : scene === 'wild' ? (interiors['wild' + S.season] ||= buildWild(S.season)) : scene === 'foret' ? (interiors['foret' + S.season] ||= buildWild(S.season, 'foret')) : scene === 'town' ? (interiors['town' + S.season] ||= buildTown(S.season)) : scene === 'quartier' ? (interiors['quartier' + S.season] ||= buildQuartier(S.season)) : (scene === 'montagne' || scene === 'plage') ? (interiors[scene] ||= buildBiome(scene, S.season)) : scene === 'parc' ? (interiors['parc' + S.season] ||= buildParc(S.season)) : (scene === 'rondpoint' || scene === 'ranch' || scene === 'port' || scene === 'gare') ? (interiors[scene + S.season] ||= buildWest(scene, S.season)) : (scene === 'house' ? (interiors['house' + !!S.workbench + (S.bed !== false)] ||= buildInterior(scene, S)) : (interiors[scene] ||= buildInterior(scene, S)));
+      cache = outside ? farmGround() : scene === 'wild' ? (interiors['wild' + S.season] ||= buildWild(S.season)) : scene === 'foret' ? (interiors['foret' + S.season] ||= buildWild(S.season, 'foret')) : scene === 'town' ? (interiors['town' + S.season] ||= buildTown(S.season)) : scene === 'quartier' ? (interiors['quartier' + S.season] ||= buildQuartier(S.season)) : (scene === 'montagne' || scene === 'plage') ? (interiors[scene] ||= buildBiome(scene, S.season)) : scene === 'parc' ? (interiors['parc' + S.season] ||= buildParc(S.season)) : (scene === 'rondpoint' || scene === 'ranch' || scene === 'port' || scene === 'gare') ? (interiors[scene + S.season] ||= buildWest(scene, S.season)) : (scene === 'resto' ? (interiors['resto' + !!(S.resto && S.resto.oven)] ||= buildInterior(scene, S)) : scene === 'house' ? (interiors['house' + !!S.workbench + (S.bed !== false)] ||= buildInterior(scene, S)) : (interiors[scene] ||= buildInterior(scene, S)));
       if (cacheSeason !== S.season) initWeather();
       cacheSeason = S.season; cacheScene = scene;
     }
@@ -352,7 +353,7 @@ let swing = null;
         ctx.fillStyle = 'rgba(0,0,0,.55)'; ctx.fillRect(x - 1, y - 1, 18, 5); ctx.fillStyle = '#f2a03a'; ctx.fillRect(x, y, Math.round(16 * p), 3); } });
     }
     if (sky) { // sorties : flèches animées et nom de la destination, au bord de l'écran
-      const NAMES = { farm: 'Ma ferme', quartier: 'Zone résidentielle', gare: 'Gare', rondpoint: 'Rond-point', ranch: 'Ranch du Maire', port: 'Zone portuaire', town: 'Centre-ville', foret: 'Forêt', wild: 'Caverne sombre' }, seen = new Set();
+      const NAMES = { farm: 'Ma ferme', quartier: 'Zone résidentielle', gare: 'Gare', resto: 'Restaurant', rondpoint: 'Rond-point', ranch: 'Ranch du Maire', port: 'Zone portuaire', town: 'Centre-ville', foret: 'Forêt', wild: 'Caverne sombre' }, seen = new Set();
       for (const d of SC.doors || []) {
         const W = SC.W, H = SC.H, edge = d.x === 0 ? 'g' : d.x === W - 1 ? 'd' : d.y === 0 ? 'h' : d.y === H - 1 ? 'b' : null;
         if (!edge || !NAMES[d.to] || seen.has(d.to + edge)) continue; seen.add(d.to + edge);
@@ -410,6 +411,7 @@ let swing = null;
     // (bijou d'Igor retiré le 17/11 : quête supprimée)
     if (scene === 'farm' && g.trainT && now - g.trainT < 9000) list.push({ z: 9998, d: () => drawTrain(ctx, (now - g.trainT) / 1000) });
     if (scene === 'gare') list.push({ z: 0.5, d: () => drawLoco(ctx, S.intro && S.intro.step === 'train' ? (g.introT || 0) / 1000 : 99, now) });   // Farmwest : la locomotive à quai
+    if (g.cueille && g.cueille.scene === scene) { const q = g.cueille; list.push({ z: 9990, d: () => { const x = q.x * T, y = q.y * T - 6; ctx.fillStyle = 'rgba(0,0,0,.6)'; ctx.fillRect(x - 1, y - 1, 18, 5); ctx.fillStyle = '#7ad04a'; ctx.fillRect(x, y, Math.round(16 * q.n / CUEILLE_HITS), 3); } }); }   // jauge de cueillette
     if (g.ride && g.ride.scene === scene) list.push({ z: g.ride.y + .2, d: () => drawCoach(ctx, g.ride.x, g.ride.y, now) });   // la diligence
     if (scene === 'farm' && testSwordHere(S)) list.push({ z: TEST_SWORD.y + .4, d: () => {
       const b = Math.round(Math.sin(now / 250) * 1.5), x = TEST_SWORD.x * T, y = TEST_SWORD.y * T;

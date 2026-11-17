@@ -46,6 +46,7 @@ export const EXAMINE = {
     ranchBarn: 'La grange du ranch. Ça sent le foin et le cheval.',
     warehouse: 'Un entrepôt du port. Des caisses partout, des noms de villes lointaines peints dessus.',
     sea: 'La mer. Des voiliers attendent la marée.',
+    O: 'Le four du restaurant.',
     treeForest: "Un grand arbre de la forêt. Avec la hache, je pourrais le couper… sauf ceux du bord.",
     treeWild: "Des arbres serrés. Impossible de passer par là.",
     rockWild: 'Un rocher énorme. Ma pioche ne lui ferait rien.',

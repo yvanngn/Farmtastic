@@ -62,9 +62,27 @@ export function ensureNature(g, sc) {
   return N;
 }
 
+// Farmwest (lot 5) : fleurs et champignons se cueillent au couteau, en restant appuyé : une petite jauge se remplit
+// (CUEILLE_HITS coups d'action, l'action se répète quand on garde le doigt appuyé). Renvoie false sans couteau,
+// 'progress' pendant la jauge, true quand c'est cueilli.
+export const CUEILLE_HITS = 3;
+export const KNIFE_FLOWER = "Je ne vais pas arracher ces fleurs à la main… Il me faudrait un couteau pour les couper proprement.";
+export function cueillir(g, x, y, needLine) {
+  const S = g.S, sc = S.scene || 'farm', k = sc + ':' + key(x, y);
+  if (!(S.tools && S.tools.knife)) {
+    if (g.now() - (g.knifeT || -1e9) > 4000) { g.knifeT = g.now(); g.bus.emit('toast', needLine); }
+    return false;
+  }
+  if (!g.cueille || g.cueille.k !== k) g.cueille = { k, scene: sc, x, y, n: 0 };
+  g.cueille.n++;
+  if (g.cueille.n < CUEILLE_HITS) { g.bus.emit('sfx', 'ui'); return 'progress'; }
+  g.cueille = null;
+  return true;
+}
 export function pickFlower(g, x, y) {
   const S = g.S, N = natureAt(S, S.scene || 'farm'), k = key(x, y), id = N && N.flowers[k];
   if (!id) return null;
+  const c = cueillir(g, x, y, '🌸 ' + KNIFE_FLOWER); if (c !== true) return c;
   delete N.flowers[k];
   add(g, id, 1);
   g.bus.emit('sfx', 'collect'); g.bus.emit('pop', { t: '+🌸', x, y });

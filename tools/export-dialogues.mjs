@@ -15,6 +15,9 @@ for (const n of Object.values(NPCS)) {
   (n.welcomeLines || []).forEach(t => add('accueil', t));
   (n.arrival || []).forEach(t => add('accueil (il somnolait devant la cabane)', t));
   (n.clinic || []).forEach(t => add('à la clinique (après un malaise)', t));
+  (n.ask || []).forEach(t => add('quête du four : demande', t));
+  if (n.reminder) add('quête du four : rappel', n.reminder);
+  (n.thanks || []).forEach(t => add('quête du four : merci', t));
   (n.clinicRepos || []).forEach(t => add('à la clinique, appelée pendant son jour de repos', t));
   (n.clinicNuit || []).forEach(t => add('à la clinique, appelée la nuit', t));
   if (n.welcomeEnd) { add('accueil (réponse du joueur)', n.welcomeEnd.t); add('accueil', n.welcomeEnd.r); }

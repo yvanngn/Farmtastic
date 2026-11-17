@@ -12,12 +12,12 @@ const game = (st = {}) => makeGame({ rnd, state: { inv: {}, season: 0, ...st } }
 
 test('fleurs de saison partout sauf en ville, à cueillir', () => {
   for (const sc of ['farm', 'foret']) {   // pas de fleurs dans la caverne
-    const { g, S } = game({ scene: sc });
+    const { g, S } = game({ scene: sc, tools: { knife: 1 } });
     const N = ensureNature(g, sc), ids = FLOWERS[0].map(f => f.id);
     assert.ok(Object.keys(N.flowers).length > 0, sc);
     assert.ok(Object.values(N.flowers).every(f => ids.includes(f)));
     const [x, y] = Object.keys(N.flowers)[0].split(',').map(Number);
-    assert.ok(pickFlower(g, x, y)); assert.equal(Object.values(S.inv).reduce((a, b) => a + b, 0), 1);
+    assert.equal(pickFlower(g, x, y), 'progress'); pickFlower(g, x, y); assert.ok(pickFlower(g, x, y)); assert.equal(Object.values(S.inv).reduce((a, b) => a + b, 0), 1);
   }
   const { g } = game({ scene: 'town' });
   assert.equal(ensureNature(g, 'town'), null, 'rien en ville');
@@ -76,4 +76,10 @@ test('16/11 : on coupe les arbres de la forêt (hache) ; souche, puis ils repous
   assert.ok(!forestTreeAt(S, x, y)); assert.equal(isSolid(S, x, y), false, 'souche : on passe');
   ramasse(g); assert.ok(S.inv.wood >= 3);
   S.day += TREE_GROW_DAYS; assert.ok(forestTreeAt(S, x, y), 'repoussé');
+});
+
+test('Farmwest lot 5 : sans couteau, on ne cueille pas les fleurs', () => {
+  const { g, S } = game({ scene: 'farm', tools: {} });
+  const N = ensureNature(g, 'farm'); const [x, y] = Object.keys(N.flowers)[0].split(',').map(Number);
+  assert.equal(pickFlower(g, x, y), false); assert.ok(N.flowers[x + ',' + y], 'la fleur est toujours là');
 });

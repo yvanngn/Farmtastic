@@ -71,7 +71,8 @@ export const TOOLS = [
   { id: 'shovel', n: 'Pelle', i: '🪏' },
   { id: 'sword', n: 'Épée', i: '🗡️' },
   { id: 'rod', n: 'Canne à pêche', i: '🎣' },
-  { id: 'hammer', n: 'Marteau', i: '🔨' }
+  { id: 'hammer', n: 'Marteau', i: '🔨' },
+  { id: 'knife', n: 'Couteau', i: '🔪' }   // Farmwest (lot 5) : récompense du cuistot ; fleurs et champignons
 ];
 
 // Fleurs sauvages (💡 espèces et prix) : 3 par saison, la 3e plus rare. Serviront aux potions et à l'alchimie.

@@ -127,6 +127,12 @@ export function buildTown(season) {
     R(ux + uw - 9, uy + 34, 6, 7, '#e8c26a'); R(ux + uw - 9, uy + 33, 6, 2, '#fff6e0'); R(ux + uw - 4, uy + 35, 2, 4, '#e8c26a');   // chope mousseuse
     for (const k of [6, uw - 18]) { R(ux + k, uy + 9, 12, 1, '#ffd98a'); R(ux + k, uy + 20, 12, 1, '#ffd98a'); }   // vitres éclairées
   });
+  // restaurant (x13-17, y26-28) : façade crème, auvent rayé rouge et blanc, menu sur ardoise, tonneau de fleurs
+  shop(TOWN_B.Y.x, TOWN_B.Y.y, 5, '#a8432f', '#c85a3a', 'RESTAURANT', (ux, uy, uw) => {
+    for (let k = 0; k < uw; k += 8) R(ux + k, uy + 4, 4, 5, '#f4ead2');   // auvent rayé
+    R(ux + uw + 2, uy + 30, 10, 13, '#3a3a3a'); R(ux + uw + 3, uy + 31, 8, 11, '#2a2a2a'); for (let k = 0; k < 3; k++) R(ux + uw + 4, uy + 33 + k * 3, 6, 1, '#f4ead2');   // ardoise du menu
+    R(ux - 12, uy + 34, 10, 9, '#7a4f2e'); R(ux - 11, uy + 31, 3, 3, '#e05a9a'); R(ux - 7, uy + 30, 3, 3, '#f2c832');   // fleurs
+  });
   // fontaine (x11-13, y8-10)
   const fx = TOWN_B.F.x * T + 24, fy = TOWN_B.F.y * T + 24;
   disc(g, fx, fy + 2, 23, '#6f6a73'); disc(g, fx, fy, 22, '#9a958c'); disc(g, fx, fy, 18, '#3a7cc2'); disc(g, fx - 4, fy - 5, 6, '#6aa8e0');

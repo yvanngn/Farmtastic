@@ -203,106 +203,118 @@
 173. *(conversation)* T'es qui, toi ? Moi c'est Jade ! 🆕
 174. *(conversation)* Papa, il dit qu'un jour il aura un magasin. Avec plein de bonbons dedans. 🆕
 
+## Le cuistot
+
+175. *(quête du four : demande)* Ah, un client ! Désolé, la cuisine est fermée… Mon four a rendu l'âme ce matin. 🆕
+176. *(quête du four : demande)* Si tu sais manier un marteau, tu pourrais le réparer ? Il faudrait 30 pierres et 15 bois. 🆕
+177. *(quête du four : demande)* En échange, je te donne mon vieux couteau. Il coupe encore très bien. 🆕
+178. *(quête du four : rappel)* Le four, c'est par ici, au fond de la cuisine. 30 pierres et 15 bois, et un bon coup de marteau ! 🆕
+179. *(quête du four : merci)* Il chauffe ! Il chauffe vraiment ! Merci ! 🆕
+180. *(quête du four : merci)* Comme promis, voici mon couteau. Pour les fleurs et les champignons, rien de mieux : une coupe nette, ça repousse mieux. 🆕
+181. *(conversation)* Le four ronronne comme au premier jour. 🆕
+182. *(conversation)* Un jour, je ferai une carte avec les légumes de ta ferme. 🆕
+
 ## Conseil (à 18h)
 
-175. *(nuit)* 🌙 Il est 18h : la nuit tombe. 🆕
-176. *(nuit)* Dors sous ta tente pour récupérer ton énergie (touche la tente → Dormir). 🆕
-177. *(nuit)* Si tu ne dors pas, tu ne récupères rien le lendemain. Et si tu n'es pas couché(e) à 1h, ou si ton énergie tombe à 0, tu t'effondres : réveil à la clinique, avec 10 % de frais ! 🆕
+183. *(nuit)* 🌙 Il est 18h : la nuit tombe. 🆕
+184. *(nuit)* Dors sous ta tente pour récupérer ton énergie (touche la tente → Dormir). 🆕
+185. *(nuit)* Si tu ne dors pas, tu ne récupères rien le lendemain. Et si tu n'es pas couché(e) à 1h, ou si ton énergie tombe à 0, tu t'effondres : réveil à la clinique, avec 10 % de frais ! 🆕
 
 ## Le héros (quête Ghostbuster)
 
-178. *(nuit)* … Hou-hou… Hou-hou… 🆕
-179. *(nuit)* Un hululement, dans la nuit. Sûrement une chouette… sûrement. 🆕
-180. *(nuit)* … Hoooooou… 🆕
-181. *(nuit)* Ça, ce n'était pas une chouette. 🆕
-182. *(nuit)* … Hoooooou… 🆕
-183. *(nuit)* Encore ce bruit. Cette fois, je vais voir ce qui se passe sur la ferme. 🆕
-184. *(nuit)* On dirait… une vieille femme. Transparente. Elle pleure. 🆕
-185. *(nuit)* Elle a disparu dès que je me suis approché(e)… 🆕
-186. *(nuit)* Il me faudrait un moyen de lui parler. Mais lequel ? 🆕
+186. *(nuit)* … Hou-hou… Hou-hou… 🆕
+187. *(nuit)* Un hululement, dans la nuit. Sûrement une chouette… sûrement. 🆕
+188. *(nuit)* … Hoooooou… 🆕
+189. *(nuit)* Ça, ce n'était pas une chouette. 🆕
+190. *(nuit)* … Hoooooou… 🆕
+191. *(nuit)* Encore ce bruit. Cette fois, je vais voir ce qui se passe sur la ferme. 🆕
+192. *(nuit)* On dirait… une vieille femme. Transparente. Elle pleure. 🆕
+193. *(nuit)* Elle a disparu dès que je me suis approché(e)… 🆕
+194. *(nuit)* Il me faudrait un moyen de lui parler. Mais lequel ? 🆕
 
 ## Myst (nouveau début : gare)
 
-187. *(intro)* Bienvenue à Farmwest. Tu dois être la personne de l'annonce. Moi, c'est Myst. 🆕
-188. *(intro)* La diligence nous attend. Monte, je t'accompagne jusqu'aux fermes. 🆕
+195. *(intro)* Bienvenue à Farmwest. Tu dois être la personne de l'annonce. Moi, c'est Myst. 🆕
+196. *(intro)* La diligence nous attend. Monte, je t'accompagne jusqu'aux fermes. 🆕
 
 ## Myst (nouveau début : legende)
 
-189. *(intro)* Tu sais pourquoi les fermes du Nord sont vides ? On raconte qu'un fantôme rôde là-haut, la nuit. 🆕
-190. *(intro)* Depuis, personne n'a osé s'y installer. Moi, je n'y crois pas trop. 🆕
+197. *(intro)* Tu sais pourquoi les fermes du Nord sont vides ? On raconte qu'un fantôme rôde là-haut, la nuit. 🆕
+198. *(intro)* Depuis, personne n'a osé s'y installer. Moi, je n'y crois pas trop. 🆕
 
 ## Myst (nouveau début : arrets)
 
-191. *(intro)* À droite, l'atelier du charpentier : c'est lui qui construit les bâtiments. En face, la halle du marché et le panneau d'affichage, où les habitants laissent leurs demandes. 🆕
-192. *(intro)* Le saloon d'Ed. Un ancien routier : il connaît tout le monde, et toutes les nouvelles passent par son comptoir. 🆕
-193. *(intro)* La place et sa fontaine. Manu, le Maire, y passe ses journées. Il te serrera la main… et te parlera des impôts. 🆕
-194. *(intro)* Là-haut, le magasin d'outils ; en face, le marchand d'animaux. Plus au sud, la rue des commerces : boulangerie, boucherie, poissonnerie et magasin général. 🆕
-195. *(intro)* Après le pont, c'est le rond-point. Les fermes sont juste au nord. 🆕
+199. *(intro)* À droite, l'atelier du charpentier : c'est lui qui construit les bâtiments. En face, la halle du marché et le panneau d'affichage, où les habitants laissent leurs demandes. 🆕
+200. *(intro)* Le saloon d'Ed. Un ancien routier : il connaît tout le monde, et toutes les nouvelles passent par son comptoir. 🆕
+201. *(intro)* La place et sa fontaine. Manu, le Maire, y passe ses journées. Il te serrera la main… et te parlera des impôts. 🆕
+202. *(intro)* Là-haut, le magasin d'outils ; en face, le marchand d'animaux. Plus au sud, la rue des commerces : boulangerie, boucherie, poissonnerie et magasin général. 🆕
+203. *(intro)* Après le pont, c'est le rond-point. Les fermes sont juste au nord. 🆕
 
 ## Myst (nouveau début : rond)
 
-196. *(intro)* Nous y voilà. Les quatre fermes du Nord sont là-haut, autour du chemin en croix. 🆕
-197. *(intro)* Choisis celle qui te plaît. 🆕
+204. *(intro)* Nous y voilà. Les quatre fermes du Nord sont là-haut, autour du chemin en croix. 🆕
+205. *(intro)* Choisis celle qui te plaît. 🆕
 
 ## Myst (nouveau début : fin)
 
-198. *(intro)* Bon choix. Le cocher va te déposer devant chez toi. 🆕
-199. *(intro)* Ta cabane ne tiendra pas la nuit. Ouvre ton sac 🎒, choisis la tente et appuie sur « Déployer », juste à côté de la cabane. 🆕
-200. *(intro)* Ta liste des tâches 📜, en haut à droite, te dira quoi faire. Et le plan est dans 🗺️. 🆕
-201. *(intro)* Moi, j'habite au fond de la zone résidentielle, à l'est du rond-point. … Et si tu entends des bruits la nuit, ce n'est sûrement rien. À plus tard. 🆕
+206. *(intro)* Bon choix. Le cocher va te déposer devant chez toi. 🆕
+207. *(intro)* Ta cabane ne tiendra pas la nuit. Ouvre ton sac 🎒, choisis la tente et appuie sur « Déployer », juste à côté de la cabane. 🆕
+208. *(intro)* Ta liste des tâches 📜, en haut à droite, te dira quoi faire. Et le plan est dans 🗺️. 🆕
+209. *(intro)* Moi, j'habite au fond de la zone résidentielle, à l'est du rond-point. … Et si tu entends des bruits la nuit, ce n'est sûrement rien. À plus tard. 🆕
 
 ## Le héros (arrivée en train)
 
-202. *(intro)* Après mon licenciement, j'ai voulu redonner un sens à ma vie.
-203. *(intro)* J'ai toujours rêvé de construire ma propre maison. Alors, quand j'ai vu l'annonce qui disait que cette cabane abandonnée était offerte à la personne qui voulait s'en occuper…
-204. *(intro)* Il paraît que peu de gens sont venus essayer, à cause de la fameuse rumeur comme quoi la ferme serait hantée !
+210. *(intro)* Après mon licenciement, j'ai voulu redonner un sens à ma vie.
+211. *(intro)* J'ai toujours rêvé de construire ma propre maison. Alors, quand j'ai vu l'annonce qui disait que cette cabane abandonnée était offerte à la personne qui voulait s'en occuper…
+212. *(intro)* Il paraît que peu de gens sont venus essayer, à cause de la fameuse rumeur comme quoi la ferme serait hantée !
 
 ## Décor (le héros commente)
 
-205. *(house)* Un jour cette cabane sera plus belle.
-206. *(grange)* La vieille grange. On dirait qu'elle s'enfonce sous la colline…
-207. *(fence)* Une clôture en bois qui semble solide.
-208. *(water)* L'eau est claire. Je crois voir des têtards.
-209. *(luna)* Une belle maison. Il y a encore des cartons derrière la fenêtre.
-210. *(franck)* Les volets sont fermés.
-211. *(franckOpen)* L'intérieur semble cosy !
-212. *(gate)* J'entends des bruits visqueux.
-213. *(coop)* Le poulailler. On entend glousser là-dedans.
-214. *(pigsty)* La porcherie. Ça sent… la porcherie.
-215. *(barn)* La bergerie. Une bêle bergerie !
-216. *(houseRuin)* Ma future maison ... enfin cabane pour le moment… Avec du bois et des pierres, je peux la rafistoler.
-217. *(grangeRuin)* La grange tient à peine debout. Impossible d'entrer pour l'instant.
-218. *(hailey)* Une petite maison rose, avec des fleurs aux fenêtres. 🆕
-219. *(ed)* Une grande maison à étages. Un petit vélo rose attend devant la porte. 🆕
-220. *(clinic)* La clinique du quartier. On y soigne les bobos… et les gens épuisés.
-221. *(myst)* Une vieille maison sombre, un peu à l'écart. Les rideaux sont tirés.
-222. *(station)* La petite gare. Le train ne repassera pas avant un moment.
-223. *(rails)* La voie ferrée. Elle file vers le sud.
-224. *(villa)* Très belle villa.
-225. *(K)* Le plan de travail. Il ne manque plus qu'un bon repas.
-226. *(T)* Une table en bois, avec une tasse oubliée dessus.
-227. *(P)* Une plante verte. Elle a l'air de bien se porter.
-228. *(C)* Un coffre. Vide, pour l'instant.
-229. *(N)* Un nid douillet, plein de paille.
-230. *(Y)* Une botte de foin. Ça gratte rien qu'à la regarder.
-231. *(X)* Des cartons de déménagement. « Fragile », écrit à la main.
-232. *(A)* Un vieux fauteuil, creusé juste là où l'on s'assoit.
-233. *(B)* Un lit fait au carré.
-234. *(F)* La fontaine du village. L'eau chante doucement.
-235. *(L)* Un lampadaire en fer forgé.
-236. *(Lon)* Un lampadaire. Il brille de nouveau, grâce à moi !
-237. *(b)* Un simple banc.
-238. *(f)* Des fleurs bien entretenues. Quelqu'un en prend soin.
-239. *(treeTown)* Un grand arbre qui fait de l'ombre à la place.
-240. *(bar)* Le saloon d’Ed. Ça sent le bois ciré et la limonade. 🆕
-241. *(signWest)* Un panneau en bois. Les flèches indiquent les fermes, les résidences, le ranch et le centre-ville. 🆕
-242. *(fenceRanch)* Une solide clôture de ranch. Les chevaux ont de la place pour galoper. 🆕
-243. *(ranchHouse)* La maison du Maire. Une belle véranda… Manu ne se refuse rien. 🆕
-244. *(ranchBarn)* La grange du ranch. Ça sent le foin et le cheval. 🆕
-245. *(warehouse)* Un entrepôt du port. Des caisses partout, des noms de villes lointaines peints dessus. 🆕
-246. *(sea)* La mer. Des voiliers attendent la marée. 🆕
-247. *(treeForest)* Un grand arbre de la forêt. Avec la hache, je pourrais le couper… sauf ceux du bord. 🆕
-248. *(treeWild)* Des arbres serrés. Impossible de passer par là.
-249. *(rockWild)* Un rocher énorme. Ma pioche ne lui ferait rien.
-250. *(rockGrange)* De la roche dure.
-251. *(wallGrange)* Des planches couvertes de toiles d'araignée.
+213. *(house)* Un jour cette cabane sera plus belle.
+214. *(grange)* La vieille grange. On dirait qu'elle s'enfonce sous la colline…
+215. *(fence)* Une clôture en bois qui semble solide.
+216. *(water)* L'eau est claire. Je crois voir des têtards.
+217. *(luna)* Une belle maison. Il y a encore des cartons derrière la fenêtre.
+218. *(franck)* Les volets sont fermés.
+219. *(franckOpen)* L'intérieur semble cosy !
+220. *(gate)* J'entends des bruits visqueux.
+221. *(coop)* Le poulailler. On entend glousser là-dedans.
+222. *(pigsty)* La porcherie. Ça sent… la porcherie.
+223. *(barn)* La bergerie. Une bêle bergerie !
+224. *(houseRuin)* Ma future maison ... enfin cabane pour le moment… Avec du bois et des pierres, je peux la rafistoler.
+225. *(grangeRuin)* La grange tient à peine debout. Impossible d'entrer pour l'instant.
+226. *(hailey)* Une petite maison rose, avec des fleurs aux fenêtres. 🆕
+227. *(ed)* Une grande maison à étages. Un petit vélo rose attend devant la porte. 🆕
+228. *(clinic)* La clinique du quartier. On y soigne les bobos… et les gens épuisés.
+229. *(myst)* Une vieille maison sombre, un peu à l'écart. Les rideaux sont tirés.
+230. *(station)* La petite gare. Le train ne repassera pas avant un moment.
+231. *(rails)* La voie ferrée. Elle file vers le sud.
+232. *(villa)* Très belle villa.
+233. *(K)* Le plan de travail. Il ne manque plus qu'un bon repas.
+234. *(T)* Une table en bois, avec une tasse oubliée dessus.
+235. *(P)* Une plante verte. Elle a l'air de bien se porter.
+236. *(C)* Un coffre. Vide, pour l'instant.
+237. *(N)* Un nid douillet, plein de paille.
+238. *(Y)* Une botte de foin. Ça gratte rien qu'à la regarder.
+239. *(X)* Des cartons de déménagement. « Fragile », écrit à la main.
+240. *(A)* Un vieux fauteuil, creusé juste là où l'on s'assoit.
+241. *(B)* Un lit fait au carré.
+242. *(F)* La fontaine du village. L'eau chante doucement.
+243. *(L)* Un lampadaire en fer forgé.
+244. *(Lon)* Un lampadaire. Il brille de nouveau, grâce à moi !
+245. *(b)* Un simple banc.
+246. *(f)* Des fleurs bien entretenues. Quelqu'un en prend soin.
+247. *(treeTown)* Un grand arbre qui fait de l'ombre à la place.
+248. *(bar)* Le saloon d’Ed. Ça sent le bois ciré et la limonade. 🆕
+249. *(signWest)* Un panneau en bois. Les flèches indiquent les fermes, les résidences, le ranch et le centre-ville. 🆕
+250. *(fenceRanch)* Une solide clôture de ranch. Les chevaux ont de la place pour galoper. 🆕
+251. *(ranchHouse)* La maison du Maire. Une belle véranda… Manu ne se refuse rien. 🆕
+252. *(ranchBarn)* La grange du ranch. Ça sent le foin et le cheval. 🆕
+253. *(warehouse)* Un entrepôt du port. Des caisses partout, des noms de villes lointaines peints dessus. 🆕
+254. *(sea)* La mer. Des voiliers attendent la marée. 🆕
+255. *(O)* Le four du restaurant. 🆕
+256. *(treeForest)* Un grand arbre de la forêt. Avec la hache, je pourrais le couper… sauf ceux du bord. 🆕
+257. *(treeWild)* Des arbres serrés. Impossible de passer par là.
+258. *(rockWild)* Un rocher énorme. Ma pioche ne lui ferait rien.
+259. *(rockGrange)* De la roche dure.
+260. *(wallGrange)* Des planches couvertes de toiles d'araignée.

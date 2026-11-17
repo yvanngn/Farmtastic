@@ -78,6 +78,17 @@ export const LAYOUTS = {
     '#C......#',
     '#########'
   ],
+  // Restaurant (lot 5) : la salle à gauche (tables T, plante P), la cuisine à droite derrière une cloison (#) ouverte :
+  // four (O, en panne au début), plan de travail (K), étagère (C)
+  resto: [
+    '##############',
+    '#WWWWWWW#WWWW#',
+    '#.......#OKKC#',
+    '#.TT.........#',
+    '#.......#....#',
+    '#P......#....#',
+    '######D#######'
+  ],
   // Maison du Maire au ranch : bureau (K), fauteuil (A), lit (B), plante (P), table (T)
   ranch_maison: [
     '#########',
@@ -155,7 +166,8 @@ export const TOWN_B = {
   M: { x: 3, y: 2, w: 7, h: 3 }, Q: { x: 12, y: 4, w: 3, h: 1 }, U: { x: 25, y: 2, w: 4, h: 3 },
   F: { x: 15, y: 6, w: 3, h: 3 }, J: { x: 3, y: 13, w: 4, h: 3 }, A: { x: 27, y: 13, w: 3, h: 3 },
   O: { x: 3, y: 20, w: 4, h: 3 }, V: { x: 13, y: 20, w: 4, h: 3 }, Z: { x: 26, y: 20, w: 4, h: 3 },
-  R: { x: 9, y: 13, w: 4, h: 3 }   // 16/11 : le bar d'Ed (porte x11)
+  R: { x: 9, y: 13, w: 4, h: 3 },   // 16/11 : le bar d'Ed (porte x11)
+  Y: { x: 13, y: 26, w: 5, h: 3 }   // Farmwest (lot 5) : le restaurant (porte x15), à la place de l'ancienne villa
 };
 export const TOWN_LAMPS = [[10, 8], [23, 8], [8, 12], [23, 12], [10, 25], [24, 25]];
 function buildTown() {
@@ -166,8 +178,9 @@ function buildTown() {
   pave(0, 10, W - 1, 11);                 // grande rue (ouest → est)
   pave(12, 5, 21, 9);                     // place de la fontaine
   pave(2, 24, 31, 24);                    // rue des commerces
+  pave(18, 29, 19, 29);   // trottoir du restaurant jusqu'à l'avenue
   pave(20, 12, 21, 30);   // avenue jusqu'à la sortie sud (pont → station balnéaire) ; la villa du Maire est effacée (il vit au ranch)
-  for (const k of 'MUJAOVZR') { const b = TOWN_B[k]; pave(b.x - 1, b.y + b.h, b.x + b.w, b.y + b.h); }   // trottoir devant chaque porte
+  for (const k of 'MUJAOVZRY') { const b = TOWN_B[k]; pave(b.x - 1, b.y + b.h, b.x + b.w, b.y + b.h); }   // trottoir devant chaque porte
   pave(6, 5, 6, 9); pave(26, 5, 26, 9);   // halle et magasin → grande rue
   pave(7, 12, 7, 16); pave(30, 12, 30, 16); pave(4, 17, 4, 19); pave(28, 17, 28, 19); pave(15, 12, 15, 19);   // ruelles
   for (const [k, b] of Object.entries(TOWN_B)) put(k, b.x, b.y, b.w, b.h);
@@ -382,11 +395,12 @@ export const SCENES = {
     { x: 31, y: 15, to: 'port', spawn: { x: 1.6, y: 7 } }, { x: 31, y: 16, to: 'port', spawn: { x: 1.6, y: 7 } },
     { x: 15, y: 21, to: 'parc', spawn: { x: 16.5, y: 22.2 } }, { x: 16, y: 21, to: 'parc', spawn: { x: 16.5, y: 22.2 } },   // au sud : la fête foraine
     { x: 6, y: 5, to: 'ranch_maison', spawn: { x: 4.5, y: 5.4 } }, { x: 7, y: 5, to: 'ranch_maison', spawn: { x: 4.5, y: 5.4 } }] },
+  resto: { W: 14, H: 7, doors: [{ x: 6, y: 6, to: 'town', spawn: { x: 15.5, y: 29.8 } }] },
   ranch_maison: { W: 9, H: 7, doors: [{ x: 4, y: 6, to: 'ranch', spawn: { x: 7, y: 6.8 } }] },
   port: { W: 36, H: 20, outdoor: true, doors: [{ x: 0, y: 6, to: 'ranch', spawn: { x: 29.4, y: 16 } }, { x: 0, y: 7, to: 'ranch', spawn: { x: 29.4, y: 16 } }] },
   montagne: { W: 36, H: 24, outdoor: true, cold: true, doors: [{ x: 0, y: 8, to: 'quartier', spawn: { x: 38.2, y: 8.6 } }, { x: 0, y: 9, to: 'quartier', spawn: { x: 38.2, y: 8.6 } }] },
   plage: { W: 40, H: 20, outdoor: true, doors: [{ x: 19, y: 0, to: 'town', spawn: { x: 20.5, y: 29.8 } }, { x: 20, y: 0, to: 'town', spawn: { x: 20.5, y: 29.8 } }] },
-  town: { W: 34, H: 32, outdoor: true, doors: [{ x: 20, y: 31, to: 'plage', spawn: { x: 19.5, y: 1.8 } }, { x: 21, y: 31, to: 'plage', spawn: { x: 20.5, y: 1.8 } }, { x: 33, y: 10, to: 'rondpoint', spawn: { x: 1.6, y: 9 } }, { x: 0, y: 10, to: 'gare', spawn: { x: 21.4, y: 9 } }, { x: 11, y: 15, to: 'bar', spawn: { x: 4.5, y: 5.4 } }] },
+  town: { W: 34, H: 32, outdoor: true, doors: [{ x: 20, y: 31, to: 'plage', spawn: { x: 19.5, y: 1.8 } }, { x: 21, y: 31, to: 'plage', spawn: { x: 20.5, y: 1.8 } }, { x: 33, y: 10, to: 'rondpoint', spawn: { x: 1.6, y: 9 } }, { x: 0, y: 10, to: 'gare', spawn: { x: 21.4, y: 9 } }, { x: 15, y: 28, to: 'resto', spawn: { x: 6.5, y: 5.4 } }, { x: 11, y: 15, to: 'bar', spawn: { x: 4.5, y: 5.4 } }] },
   house: { W: 12, H: 9, doors: [{ x: 5, y: 8, to: 'farm', spawn: { x: 5.5, y: 5.9 } }] },
   coop: { W: 10, H: 7, doors: [{ x: 4, y: 6, to: 'farm', spawn: { x: 24.5, y: 8.9 } }] },
   // Forêt : à l'est du centre-ville ; au-delà (est), la zone de la Caverne sombre (fermée pour l'instant).

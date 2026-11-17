@@ -1,3 +1,4 @@
+import { cueillir } from './nature.js';
 // Forêt : chaque jour, des champignons de la saison poussent au pied des arbres.
 // Taille petite / moyenne / grosse (la grosse est rare) ; une espèce rare et chère par saison.
 import { LAYOUTS } from '../world/scenes.js';
@@ -29,10 +30,7 @@ export const KNIFE_LINE = "Je préfère ne pas les ramasser à la main… même 
 export function pickShroom(g, x, y) {
   const S = g.S, k = key(x, y), m = S.foret && S.foret.shrooms[k];
   if (!m) return null;
-  if (!(S.tools && S.tools.knife)) { // sans couteau, il préfère ne pas les cueillir à la main
-    if (g.now() - (g.knifeT || -1e9) > 4000) { g.knifeT = g.now(); g.bus.emit('toast', `🍄 ${KNIFE_LINE}`); }
-    return false;
-  }
+  const c = cueillir(g, x, y, `🍄 ${KNIFE_LINE}`); if (c !== true) return c;   // couteau + jauge (lot 5)
   delete S.foret.shrooms[k];
   const id = `${m.sp}_${m.size}`;
   add(g, id, 1);

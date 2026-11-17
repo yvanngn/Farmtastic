@@ -14,7 +14,7 @@ export const QUESTS = {
     ]
   },
   debut: {
-    n: 'Premiers pas', i: '🌱', main: true, order: 9,   // Farmwest (lot 4) : cabane, coffre, pioche, hache, pelle
+    n: 'Premiers pas', i: '🌱', main: true, order: 9,   // Farmwest (lots 4-5) : cabane, coffre, pioche, hache, couteau (four du cuistot), grange + pelle
     steps: [
       { id: 'tente', t: 'Ouvrir le sac 🎒, choisir la tente et « Déployer » à côté de la cabane', done: S => !!S.tent || isRepaired(S, 'house') },
       { id: 'nuit', t: 'Dès 18h il fait nuit : dormir sous la tente (pas couché à 1h → clinique et frais)', done: S => !!S.quests?.debut?.dormi || isRepaired(S, 'house') },
@@ -23,9 +23,8 @@ export const QUESTS = {
       { id: 'feu', t: 'Faire un feu de camp (📜 Recettes : 5 bois + 2 cailloux)', done: S => (S.fires || []).length > 0 || (S.inv?.campfire || 0) > 0 || isRepaired(S, 'house') },
       { id: 'cabane', t: 'Retaper la cabane : 80 bois et 30 pierres (marteau 🔨)', done: S => isRepaired(S, 'house') },
       { id: 'coffre', t: 'Construire un coffre (📜 Recettes : 80 bois + 20 pierres)', done: S => (S.chests || []).length > 0 || (S.inv?.chest || 0) > 0 },
-      { id: 'grange', t: 'Rafistoler la grange : 100 bois et 60 pierres', done: S => isRepaired(S, 'grange') },
-      { id: 'pelle', t: 'Trouver la pelle dans la grange, pour bêcher et planter', done: S => !!S.tools?.shovel },
-      { id: 'cuisine', t: 'Faire la cuisine : patron du chaudron chez Igor (« Tu vends quoi ? »), le fabriquer et préparer une confiture', done: S => !!S.quests?.debut?.cuisine }
+      { id: 'four', t: 'Aider le cuistot du restaurant (centre-ville) : réparer son four au marteau (30 pierres + 15 bois) — il te donnera son couteau', done: S => !!S.resto?.knife || !!S.tools?.knife },
+      { id: 'grange', t: 'Rafistoler la grange (100 bois et 60 pierres) et y trouver la pelle, pour bêcher et planter', done: S => !!S.tools?.shovel }
     ]
   },
   franck: {

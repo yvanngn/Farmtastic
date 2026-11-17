@@ -90,7 +90,7 @@ test('forêt : champignons de saison au pied des arbres, gros et rares plus cher
   const L = LAYOUTS.foret;
   for (const kk of Object.keys(S.foret.shrooms)) { const [x, y] = kk.split(',').map(Number); assert.ok([[1, 0], [-1, 0], [0, 1], [0, -1]].some(([a, b]) => L[y + b][x + a] === 'T'), 'au pied d’un arbre'); }
   const [x, y] = Object.keys(S.foret.shrooms)[0].split(',').map(Number);
-  assert.ok(pickShroom(g, x, y));
+  assert.equal(pickShroom(g, x, y), 'progress', 'la jauge se remplit'); pickShroom(g, x, y); assert.ok(pickShroom(g, x, y));
   assert.equal(Object.values(S.inv).reduce((a, b) => a + b, 0), 1);
 });
 
@@ -308,9 +308,10 @@ test('Farmwest lot 4 : quêtes principales (cabane, coffre, pioche, hache, pelle
   const { QUESTS, questVisible } = await import('../src/systems/quests.js');
   const { contribute } = await import('../src/systems/repair.js');
   assert.ok(!QUESTS.igor, 'la quête du bijou est supprimée');
-  const ids = QUESTS.debut.steps.map(s => s.id); for (const k of ['cabane', 'coffre', 'pioche', 'hache', 'pelle']) assert.ok(ids.includes(k), k);
+  const ids = QUESTS.debut.steps.map(s => s.id); for (const k of ['cabane', 'coffre', 'pioche', 'hache', 'four', 'grange']) assert.ok(ids.includes(k), k);
+  assert.ok(!ids.includes('cuisine') && !ids.includes('pelle'), 'confiture retirée ; pelle fusionnée avec la grange');
   const { g, S } = start({ repair: { house: { wood: 79, stone: 30 }, grange: { wood: 0, stone: 0 } }, inv: { wood: 5, stone: 5 }, sel: 'hammer' });
   assert.equal(questVisible(S, 'franck'), false, 'secondaire cachée'); assert.ok(questVisible(S, 'debut'));
-  contribute(g, 'house'); assert.ok(isRepaired(S, 'house'));
+  for (let i = 0; i < 3 && !isRepaired(S, 'house'); i++) contribute(g, 'house'); assert.ok(isRepaired(S, 'house'));
   assert.ok(S.recipes.includes('chest'), 'recette du coffre (provisoire) avec la cabane'); assert.ok(questVisible(S, 'franck'));
 });

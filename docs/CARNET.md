@@ -491,3 +491,9 @@ Chaque ligne = un lot indépendant, à demander quand il y a des crédits.
 - ✅ Décisions : pelle dans la grange réparée ; pioche contre la grange ; **grand arbre incassable** sur chaque ferme avec la **hache** à son pied ; **jamais deux fois le même outil** ; **quête du bijou d'Igor supprimée** ; **coffre = quête principale**.
 - ✅ « Premiers pas » : tente, nuit, pioche, hache, feu, cabane, coffre, grange, pelle, cuisine. Secondaires cachées jusqu'à la cabane retapée (💡).
 - ⏳ À réfléchir (utilisateur) : **ce que sera la quête du coffre** ; provisoire : la recette vient avec la cabane retapée.
+
+## Séance 17/11/2026 (15h) — Farmwest, lot 5 « Couteau du cuistot » (v0.1.12)
+- ✅ Décisions : couteau = quête principale ; restaurant avec cuisine ; four du cuistot à réparer (30 pierres + 15 bois) ; couteau en récompense ; étape pelle fusionnée avec la grange ; étape confiture retirée ; quêtes secondaires cachées au début (confirmé).
+- ✅ Restaurant au sud du centre-ville (ancienne villa), salle + cuisine ; **le cuistot** (💡 nom à trouver) ; four en panne → réparé → couteau. Fleurs et champignons : couteau + jauge (rester appuyé).
+- ⏳ Roadmap : **lot 8 expérience et niveaux** (1 XP par petit objet cassé / fleur, 5 par objet fabriqué, dizaines par quête, plus pour les principales ; courbe exponentielle ; niveau 10 max ; déblocages) ; **lot 9 quêtes de craft secondaires** (cuisine…).
+- ❓ Nom et personnalité du cuistot.

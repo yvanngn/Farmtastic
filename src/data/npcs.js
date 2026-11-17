@@ -341,3 +341,25 @@ export const INTRO_MYST = {
     "Moi, j'habite au fond de la zone résidentielle, à l'est du rond-point. … Et si tu entends des bruits la nuit, ce n'est sûrement rien. À plus tard."
   ]
 };
+
+// Farmwest (lot 5) : le cuistot du restaurant (centre-ville). 💡 nom, apparence et répliques proposés par Claude, à valider.
+// Son four est en panne : le réparer (marteau, 30 pierres + 15 bois) rapporte le couteau (quête principale « Premiers pas »).
+export const CUISTOT = {
+  id: 'cuistot', name: 'Le cuistot', de: 'de lui', color: '#f2a03a', voice: 'voiceFranck',
+  look: { body: 'h', bottom: 'pant', skin: '#e8b48c', hair: 0, hairC: '#3a2a20', shirt: '#f4f4f0', pants: '#3a3a44' },
+  home: null, dayScene: 'resto', day: { x: 11.5, y: 4.6 },   // 💡 en cuisine toute la journée
+  traits: ['Cuisinier du restaurant', 'Son four est en panne'], taste: {},
+  ask: [
+    "Ah, un client ! Désolé, la cuisine est fermée… Mon four a rendu l'âme ce matin.",
+    "Si tu sais manier un marteau, tu pourrais le réparer ? Il faudrait 30 pierres et 15 bois.",
+    "En échange, je te donne mon vieux couteau. Il coupe encore très bien."
+  ],
+  reminder: "Le four, c'est par ici, au fond de la cuisine. 30 pierres et 15 bois, et un bon coup de marteau !",
+  thanks: [
+    "Il chauffe ! Il chauffe vraiment ! Merci !",
+    "Comme promis, voici mon couteau. Pour les fleurs et les champignons, rien de mieux : une coupe nette, ça repousse mieux."
+  ],
+  chat: ["Le four ronronne comme au premier jour.", "Un jour, je ferai une carte avec les légumes de ta ferme."],
+  questions: []
+};
+NPCS.cuistot = CUISTOT;

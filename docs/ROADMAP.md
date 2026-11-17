@@ -74,11 +74,13 @@ Réponses de l'utilisateur : la **pelle** est dans la grange une fois réparée 
 - [x] Quêtes **secondaires cachées au début** : elles apparaissent quand la cabane est retapée (💡 à confirmer).
 - ⏳ **À réfléchir : ce que sera la quête du coffre.** En attendant, la recette du coffre s'apprend en retapant la cabane (provisoire).
 
-## Lot 5 — Cueillette au couteau
-- [ ] Il faut un **couteau** pour prendre les **fleurs** (comme pour les champignons).
-- [ ] Cueillir = **petite jauge de temps** (rester appuyé, comme la louche au chaudron).
-- [ ] Le couteau apparaît dans la barre d'outils.
-- ❓ Qui donne ou vend le couteau, et quand ? Les champignons demandent-ils déjà le couteau partout ?
+## Lot 5 — Le couteau du cuistot et la cueillette ✅ (17/11/2026, v0.1.12)
+Décisions : le couteau fait partie d'une **quête principale** ; un **restaurant** au centre-ville, avec une **cuisine** où l'on entre ; le **cuistot** a son **four en panne**, on le répare (**30 pierres + 15 bois**) et on reçoit le **couteau**. Quête « Premiers pas » : étape « pelle » fusionnée avec la grange, étape « confiture » retirée ; quêtes secondaires cachées au début (confirmé).
+- [x] **Restaurant** (sud du centre-ville, à la place de l'ancienne villa) : façade, auvent rayé, ardoise du menu ; intérieur avec salle et **cuisine** (four, plan de travail).
+- [x] **Le cuistot** (💡 nom et répliques à valider) : en cuisine la journée ; il demande de réparer le four.
+- [x] **Four** : toucher avec le marteau et 30 🪨 + 15 🪵 → réparé (il s'allume) → le cuistot donne le **couteau** (jamais deux fois).
+- [x] **Fleurs et champignons** : il faut le couteau, et une **jauge** se remplit en restant appuyé (3 coups d'action).
+- [x] Étape « Aider le cuistot » dans « Premiers pas » ; « grange + pelle » en une seule étape ; plus de confiture.
 
 ## Lot 6 — Métier de charpentier
 - [ ] Nouveau métier **charpentier** (avec forgeron, alchimiste, couturier, joaillier, cuisinier), 10 niveaux.
@@ -99,6 +101,15 @@ La liste détaillée est dans `docs/CARNET.md`, section « Chantier graphique ni
 - [ ] 7g. Lumière, ombres et ambiance (poussière, couchers de soleil).
 
 ---
+
+## Lot 8 — Expérience et niveaux du joueur (demande du 17/11)
+- [ ] Le joueur gagne de l'**expérience (XP)** : **1 point** par petit objet cassé (arbre, caillou), par **fleur** ou champignon cueilli ; **5 points** par **objet fabriqué** ; **plusieurs dizaines** par **quête** résolue, **plus pour une quête principale**.
+- [ ] **Niveaux** : le niveau 1 s'atteint vite, puis la courbe est **exponentielle** ; **niveau 10 maximum** pour l'instant.
+- [ ] Les niveaux **débloquent naturellement** des zones et des choses (ex. caverne, recettes, magasins, objet pour parler au fantôme).
+- ❓ Quoi se débloque à quel niveau ? Affichage (barre d'XP dans le HUD ?).
+
+## Lot 9 — Quêtes secondaires de fabrication (demande du 17/11)
+- [ ] Quêtes de **craft** secondaires, par exemple **de cuisine** (confitures, plats au chaudron), données par les habitants ou le panneau.
 
 ## Plus tard (déjà noté dans le carnet)
 - Pièce secrète dans chaque maison.

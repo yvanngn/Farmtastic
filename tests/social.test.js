@@ -212,3 +212,19 @@ test('Farmwest lot 1 : portes battantes en entrant au saloon', () => {
   const sfx = []; g.bus.on('sfx', s => sfx.push(s));
   act(g, 11, 15); assert.equal(S.scene, 'bar'); assert.ok(sfx.includes('saloon'));
 });
+
+test('Farmwest lot 5 : restaurant, four du cuistot en panne → réparé au marteau → couteau', async () => {
+  const { CUISTOT } = await import('../src/data/npcs.js');
+  const { registerNPC: reg, talk: tk } = await import('../src/systems/social.js');
+  const { OVEN_COST } = await import('../src/systems/resto.js');
+  const { g, S } = makeGame({ state: { minute: 600, scene: 'town', tools: { hammer: 1 }, inv: { stone: 40, wood: 20 } } });
+  assert.equal(act(g, 15, 28), 'door'); assert.equal(S.scene, 'resto');
+  reg(g, CUISTOT); placeNPC(g.npcs.cuistot, S, OUT_FROM, OUT_TO); assert.equal(g.npcs.cuistot.scene, 'resto');
+  const said = []; g.bus.on('say', d => said.push(d));
+  tk(g, 'cuistot'); assert.ok(said.at(-1).lines.some(l => /30 pierres et 15 bois/.test(l)));
+  S.sel = 'hand'; assert.equal(act(g, 9, 2), 'need', 'il faut le marteau');
+  S.sel = 'hammer'; assert.equal(act(g, 9, 2), 'fixed'); assert.equal(S.inv.stone, 40 - OVEN_COST.stone); assert.equal(S.inv.wood, 20 - OVEN_COST.wood);
+  S.social.cuistot.talked = false; tk(g, 'cuistot'); said.at(-1).onEnd();
+  assert.ok(S.tools.knife, 'le couteau en récompense'); assert.ok(S.resto.knife);
+  const before = { ...S.tools }; S.social.cuistot.talked = false; tk(g, 'cuistot'); assert.deepEqual(S.tools, before, 'pas deux couteaux');
+});

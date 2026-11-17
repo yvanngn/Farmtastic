@@ -1,3 +1,4 @@
+import { repairOven } from './resto.js';
 import { forestTreeAt, chopForest } from './foret.js';
 // Aiguillage d'une action sur une tuile, selon la scène (ferme ou intérieur).
 import { isBin, key, isPlot } from '../world/map.js';
@@ -103,7 +104,7 @@ function act0(g, tx, ty) {
   if (S.sel === 'tent' && sc === 'farm' && !npc) return pitchTent(g, tx, ty) ? 'pitch' : 'missing';
   { const rp = repairAt(S, tx, ty); if (rp) { if (S.sel !== 'hammer') { g.bus.emit('sfx', 'denied'); g.bus.emit('toast', '🔨 Prends le marteau dans la roue des outils 🛠️ pour réparer.'); return 'needHammer'; } return contribute(g, rp) ? 'repair' : 'missing'; } }
   if (digTreasure(g, tx, ty)) return 'treasure';
-  if (pickFlower(g, tx, ty)) return 'pick';
+  { const f = pickFlower(g, tx, ty); if (f === false) return 'noknife'; if (f === 'progress') return 'progress'; if (f) return 'pick'; }
   { const N = natureAt(S, sc); if (N && N.rocks[key(tx, ty)]) return hitNature(g, tx, ty) ? 'hit' : 'none'; }
   const d = doorAt(sc, tx, ty);
   if (d && d.to === 'wild' && !isOpen(S)) { g.bus.emit('sfx', 'denied'); g.bus.emit('toast', 'La grille de la caverne est fermée à clé. Le Maire saura peut-être…'); return 'locked'; }
@@ -111,8 +112,9 @@ function act0(g, tx, ty) {
   if (d && HOME_OWNER[d.to] && !canEnterHome(S, HOME_OWNER[d.to])) return knock(g, HOME_OWNER[d.to]);
   if (d && !(sc === 'farm' && BUILDINGS[d.to] && !(S.built && S.built[d.to]))) { enterScene(g, d.to, d.spawn); return 'door'; }
   if (sc === 'grange') { const r = grangeAction(g, tx, ty); if (r !== 'none') return r; }
+  if (sc === 'resto' && tileAt('resto', tx, ty) === 'O') return repairOven(g);   // le four du cuistot (lot 5)
   if (sc === 'foret' && forestTreeAt(S, tx, ty)) return chopForest(g, tx, ty) ? 'hit' : 'none';
-  if (sc === 'foret') { const r = pickShroom(g, tx, ty); return r ? 'pick' : r === false ? 'noknife' : 'none'; }
+  if (sc === 'foret') { const r = pickShroom(g, tx, ty); return r === 'progress' ? 'progress' : r ? 'pick' : r === false ? 'noknife' : 'none'; }
   if (sc === 'parc') { const t = tileAt(sc, tx, ty), k = parcAt(t); if (k === 'ride') return ride(g, t) ? 'ride' : 'none'; if (k === 'game') return startGame(g, t) ? 'game' : 'none'; if (k === 'stall') return buyStall(g, t) ? 'buy' : 'none'; }
   if (tileAt(sc, tx, ty) === 'G') { g.bus.emit('toast', '🧊 Une grotte gelée, bouchée par des éboulis et de la glace. Impossible d’entrer… pour l’instant.'); return 'locked'; }
   if (sc === 'wild' && tileAt(sc, tx, ty) === 'S') { g.bus.emit('sfx', 'denied'); g.bus.emit('toast', '⬇️ Un escalier s’enfonce vers l’étage 2… bloqué par des éboulis pour l’instant.'); return 'stairs'; }
