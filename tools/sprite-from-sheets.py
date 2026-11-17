@@ -24,7 +24,6 @@ CH = {
   'igor':  dict(H=33, front=(A, GB[0]), back=(A, GB[1]), side=(A, GB[2])),
   'ed':    dict(H=33, front=(A, GC[0]), back=(A, GC[1]), side=(A, GC[2])),
   'suzie': dict(H=32, front=(A, GD[0]), back=(A, GD[1]), side=(A, GD[2])),
-  'myst':  dict(H=34, front=(M, GM[0]), back=(M, GM[1]), side=(M, GM[2])),
   'jade':  dict(H=25, front=(B, J[0]), back=(B, J[1]), side=(B, J[2])),
   'remy':  dict(H=33, front=(B, R_[0]), back=(B, R_[1]), side=(REF, [(721, 405, 780, 563)])),
   'harry': dict(H=33, front=(B, HA[0]), back=(REF, [(911, 573, 979, 715)]), side=(B, HA[1])),
