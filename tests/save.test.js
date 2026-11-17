@@ -114,3 +114,12 @@ test('lot 8 : toute suppression de partie (solo ou à plusieurs) passe par « Su
   upsertIndex(mem, { id: 'm1', mode: 'multi', code: 'FERME-AB12' });
   assert.equal(removeFromIndex(mem, 'm1').length, 0, 'une partie à plusieurs s’efface aussi de l’index');
 });
+
+test('une partie effacée ne revient pas au rechargement, même si la base en ligne la renvoie encore', async () => {
+  const { buryGame, unburyGame, readTomb, visibleGames, mergeGames } = await import('../src/net/games.js');
+  const mem = { v: {}, getItem(k) { return this.v[k] ?? null; }, setItem(k, x) { this.v[k] = x; } };
+  buryGame(mem, 'g1');
+  const online = [{ id: 'g1', mode: 'multi', code: 'FERME-AAAA' }, { id: 'g2', mode: 'solo' }];
+  assert.deepEqual(visibleGames(mergeGames([], online), readTomb(mem)).map(x => x.id), ['g2']);
+  unburyGame(mem, 'g1'); assert.equal(visibleGames(online, readTomb(mem)).length, 2, 'rejointe à nouveau : elle revient');
+});

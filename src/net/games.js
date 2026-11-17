@@ -44,4 +44,11 @@ export function removeFromIndex(storage, id) {
   try { storage.setItem(IDX, JSON.stringify(list)); } catch { /* rien */ }
   return list;
 }
+// Parties effacées sur cet appareil : on les retient pour qu'elles ne reviennent pas au rechargement, même si la base
+// en ligne ne les a pas supprimées (ancienne fonction SQL, réseau coupé, partie à plusieurs dont on n'est pas le créateur).
+export const TOMB = 'ferme_parties_effacees';
+export function readTomb(storage) { try { return new Set(JSON.parse(storage.getItem(TOMB)) || []); } catch { return new Set(); } }
+export function buryGame(storage, id) { const t = readTomb(storage); t.add(id); try { storage.setItem(TOMB, JSON.stringify([...t].slice(-200))); } catch { /* rien */ } return t; }
+export function unburyGame(storage, id) { const t = readTomb(storage); if (t.delete(id)) try { storage.setItem(TOMB, JSON.stringify([...t])); } catch { /* rien */ } return t; }
+export const visibleGames = (list, tomb) => list.filter(x => !tomb.has(x.id));
 export async function deleteOnlineGame(sb, id) { await call(sb, 'delete_game', { p_game: id }); return true; }

@@ -63,7 +63,7 @@ import { registerNPC, talk, gift } from './systems/social.js';
 import { add } from './systems/inventory.js';
 import { initSupabase, upsertProfile } from './net/supabase.js';
 import { createSaveManager, localAdapter, supabaseAdapter, localKey } from './net/save.js';
-import { removeFromIndex, deleteOnlineGame, readIndex, upsertIndex, mergeGames, localGame, createOnlineGame, joinOnlineGame, myOnlineGames } from './net/games.js';
+import { buryGame, unburyGame, readTomb, visibleGames, removeFromIndex, deleteOnlineGame, readIndex, upsertIndex, mergeGames, localGame, createOnlineGame, joinOnlineGame, myOnlineGames } from './net/games.js';
 import { createGamesPanel } from './ui/gamesPanel.js';
 import { createInventoryGrid } from './ui/inventoryGrid.js';
 import { createSellPanel } from './ui/sellPanel.js';
@@ -148,7 +148,7 @@ function openGame(gm) {
   const adapters = store ? [localAdapter(store, localKey(gm.id))] : [];
   if (net.sb && !gm.offline) adapters.push(supabaseAdapter(net.sb, net.uid, gm.id));
   saver = createSaveManager({ adapters, getState: () => g.S, canSave: () => started });
-  if (store) games = mergeGames(upsertIndex(store, gm), games);
+  if (store) { unburyGame(store, gm.id); games = mergeGames(upsertIndex(store, gm), games); }   // (une partie rejointe de nouveau réapparaît)
 }
 async function continueGame(gm) {
   openGame(gm);
@@ -161,7 +161,7 @@ async function continueGame(gm) {
 }
 async function deleteGame(gm) {   // lot 8 : solo ou à plusieurs (validation dans la fenêtre des parties)
   try { store && store.removeItem(localKey(gm.id)); } catch { /* rien */ }
-  if (store) removeFromIndex(store, gm.id);
+  if (store) { removeFromIndex(store, gm.id); buryGame(store, gm.id); }   // retenue comme effacée : elle ne revient pas au rechargement
   if (net.sb && !gm.offline) await deleteOnlineGame(net.sb, gm.id).catch(() => toast('⚠️ Effacée ici, mais pas en ligne (réessaie plus tard).'));
   games = games.filter(x => x.id !== gm.id);
   title.setSave(games.length > 0, games.length);
@@ -321,5 +321,6 @@ function loop(now) {
   // ancienne sauvegarde unique (avant les parties) : elle devient une partie solo de cet appareil
   try { const old = store && JSON.parse(store.getItem(CFG.LSKEY)); if (old && !local.some(x => x.id === 'local')) local.push({ id: 'local', mode: 'solo', code: null, lot: 0, offline: true, at: old.savedAt || 1 }); } catch { /* rien */ }
   games = mergeGames(local, net.sb ? await myOnlineGames(net.sb) : []);
+  if (store) games = visibleGames(games, readTomb(store));   // parties effacées sur cet appareil
   if (games.length) title.setSave(true, games.length);
 })();
