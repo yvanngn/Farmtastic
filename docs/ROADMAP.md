@@ -110,6 +110,7 @@ La liste détaillée est dans `docs/CARNET.md`, section « Chantier graphique ni
 ---
 
 ## Lot 8 — Expérience et niveaux du joueur (demande du 17/11)
+- [ ] **À faire en premier (note du 17/11)** : **plus de gare dans les fermes** — retirer l'ancienne petite gare et la voie ferrée de la ferme (la gare est désormais une zone à part, à l'ouest du centre-ville).
 - [ ] Le joueur gagne de l'**expérience (XP)** : **1 point** par petit objet cassé (arbre, caillou), par **fleur** ou champignon cueilli ; **5 points** par **objet fabriqué** ; **plusieurs dizaines** par **quête** résolue, **plus pour une quête principale**.
 - [ ] **Niveaux** : le niveau 1 s'atteint vite, puis la courbe est **exponentielle** ; **niveau 10 maximum** pour l'instant.
 - [ ] Les niveaux **débloquent naturellement** des zones et des choses (ex. caverne, recettes, magasins, objet pour parler au fantôme).
@@ -117,6 +118,23 @@ La liste détaillée est dans `docs/CARNET.md`, section « Chantier graphique ni
 
 ## Lot 9 — Quêtes secondaires de fabrication (demande du 17/11)
 - [ ] Quêtes de **craft** secondaires, par exemple **de cuisine** (confitures, plats au chaudron), données par les habitants ou le panneau.
+
+## Lot 10 — Carte de la région refaite comme l'image (demande du 17/11)
+Objectif : le plan 🗺️ → Région doit ressembler à `docs/carte-region-farmwest.jpg` (même disposition, même niveau de détail).
+- [ ] Carte pré-rendue en grand (≈ 1400 × 770 px), dessinée par le code avec les mêmes peintres que le jeu.
+- [ ] Forêts en **canopée continue** (amas d'arbres fusionnés, ombrés), rivière bleue avec berges et ponts, **falaises en terrasses** autour du centre-ville, **montagnes en 3/4** enneigées, caverne dans la roche.
+- [ ] Mini-bâtiments reconnaissables (gare, centre-ville, 4 fermes avec champs, maisons, ranch et enclos, fête foraine, cabines et parasols, port, voiliers).
+- [ ] Étiquettes en police western, position du joueur, zoom et déplacement au doigt.
+
+## Lot 11 — Deuxième passe graphique « niveau de l'image » (demande du 17/11)
+Pour que **les scènes du jeu** atteignent le niveau de détail de l'image, scène par scène :
+- [ ] 11a. **Auto-tuilage** des sols : bords propres herbe ↔ terre ↔ sable ↔ eau (coins intérieurs et extérieurs), au lieu de bords aléatoires.
+- [ ] 11b. **Forêts denses** : canopée continue qui recouvre les bords des zones, avec lisière ombrée.
+- [ ] 11c. **Falaises en terrasses** partout où le relief change (paroi texturée, bord herbeux, ombre portée).
+- [ ] 11d. **Eau** : berges, écume, profondeur en dégradé, reflets animés, ponts et pontons.
+- [ ] 11e. **Bâtiments en 3/4** : toits en tuiles ou bardeaux avec volume, façades détaillées, perrons, cheminées ; contours colorés (pas noirs).
+- [ ] 11f. **Décor dense** : tonneaux, caisses, clôtures, fleurs, rochers, champs cultivés, parasols, bateaux.
+- [ ] 11g. **Palette unique** (~48 couleurs) et lumière en haut à gauche partout, pour l'harmonie de l'ensemble.
 
 ## Plus tard (déjà noté dans le carnet)
 - Pièce secrète dans chaque maison.
