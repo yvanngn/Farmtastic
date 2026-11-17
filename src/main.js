@@ -183,8 +183,11 @@ const repairPanel = createRepairPanel(g);
 const input = createInput(cv, g, renderer, { isActive: () => started && !custom.isOpen() && !title.isOpen() && !dialog.isOpen && !introActive(g.S), onMenu: () => menu.open() });
 
 // Bouton d'action : agit sur la tuile en face (ou frappe l'ennemi le plus proche avec l'épée).
+const ACT_COOLDOWN_MS = 300;   // 💡 au plus ~3 actions par seconde en restant appuyé
+let lastAct = -1e9;
 function doAction() {
   if (!started || dialog.isOpen || introActive(g.S)) return;
+  const now = performance.now(); if (now - lastAct < ACT_COOLDOWN_MS) return; lastAct = now;   // petit délai caché : doigt / clic / espace maintenus ne s'emballent plus
   const S = g.S;
   const ft = facingTile(S);
   if (findNPCAt(g, ft.tx, ft.ty)) { act(g, ft.tx, ft.ty); return; } // parler / offrir avant de manger

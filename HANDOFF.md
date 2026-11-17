@@ -1,4 +1,4 @@
-# Farmwest — reprise du projet (à jour le 17/11/2026, v0.1.26)
+# Farmwest — reprise du projet (à jour le 17/11/2026, v0.1.27)
 
 Pour reprendre dans n'importe quel compte Claude : « Reprends Farmwest depuis le dépôt yvanngn/farmwest, lis CLAUDE.md, HANDOFF.md, docs/ROADMAP.md et docs/CARNET.md, puis demande la suite (feuille de route terminée, voir « Plus tard »). »
 
