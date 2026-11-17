@@ -95,3 +95,8 @@ test('énergie : affichée par défaut en arc autour du bouton d’action', asyn
   const { nrjMode } = await import('../src/ui/hud.js');
   assert.equal(nrjMode(), 'arc');
 });
+
+test('zoom « Loin » par défaut', async () => {
+  const { ZOOM_DEFAULT, ZOOMS } = await import('../src/ui/settingsPanel.js');
+  assert.equal(ZOOMS[ZOOM_DEFAULT], 'Loin');
+});
