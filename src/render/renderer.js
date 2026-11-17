@@ -228,7 +228,7 @@ let swing = null;
     const S = g.S, fireflies = (S.scene || 'farm') === 'farm' && darkness(S) > .3 && S.season < 2 && S.weather !== 'rain' && S.weather !== 'storm';
     if (fireflies && worldFx.filter(f => f.k === 'fly').length < 14)
       worldFx.push({ k: 'fly', x: (S.x + (Math.random() - .5) * 18) * T, y: (S.y + (Math.random() - .5) * 12) * T, ph: Math.random() * 6, life: 6 + Math.random() * 6 });
-    if (swing) { swing.p += dt / .36; if (swing.p >= 1) swing = null; }
+    if (swing) { swing.p += dt / (['axe', 'pick'].includes(swing.tool) ? CFG.HIT_MS / 1000 * .9 : .36);   /* hache et pioche : geste plus lent, calé sur le délai entre deux coups */ if (swing.p >= 1) swing = null; }
     for (let i = worldFx.length - 1; i >= 0; i--) {
       const f = worldFx[i]; f.life -= dt;
       if (f.k === 'chip') { f.vy += 160 * dt; f.x += f.vx * dt; f.y += f.vy * dt; if (f.y > f.floor) { f.y = f.floor; f.vx *= .5; f.vy *= -.3; } }

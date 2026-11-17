@@ -18,6 +18,7 @@ export const CFG = {
   INV_MAX: 36,               // places max après agrandissements
   BOARD_OPEN: false,         // panneau d'affichage vide au début (les demandes existent, gardées de côté)
   CAVE_OPEN: false,          // la Caverne sombre est fermée pour l'instant (pas d'épée non plus)
+  HIT_MS: 650,               // délai entre deux coups de hache / pioche (ms) : un meilleur outil casse en moins de coups, donc plus vite
   ACCES_TEST: false,          // TEST : portail des Caverne sombre ouvert dès le début + épée posée devant (mettre false pour le jeu normal)
   VERSION: 1,
   LSKEY: 'ferme_save_v1'

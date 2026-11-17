@@ -8,7 +8,7 @@ import { NATURE, VEINS, VEIN_HP, VEIN_ORE, ROCK_HP, P_RARE_FLOWER, P_MID_FLOWER,
 import { add, scatter } from './inventory.js';
 import { useEnergy } from './player.js';
 import { gainXp, toolTier, hasTool } from './skills.js';
-import { MINING_GAIN, energyCost } from '../data/tools.js';
+import { MINING_GAIN, energyCost, hitReady } from '../data/tools.js';
 import { isWet } from './weather.js';
 import { gainPxp, XP } from './level.js';
 
@@ -99,6 +99,7 @@ export function hitNature(g, x, y) {
   if (!o) return false;
   if (S.sel !== 'pick') { g.bus.emit('sfx', 'denied'); g.bus.emit('toast', hasTool(S, 'pick') ? 'Il faut la pioche ⛏️' : 'Il te faut une pioche.'); return false; }
   const tier = toolTier(S, 'pick');
+  if (!hitReady(g)) return 'wait';   // le geste précédent n'est pas fini
   if (!useEnergy(g, energyCost(tier))) return false;
   o.hp -= tier; o.shake = 0.25;
   g.bus.emit('swing', 'pick'); g.bus.emit('objHit', { x, y, t: 'rock', broken: o.hp <= 0 });

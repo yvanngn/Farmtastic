@@ -93,7 +93,7 @@ test('un outil amélioré coûte moins d’énergie et frappe plus fort', () => 
   S.sel = 'axe'; S.tools.axe = 3; S.objs['30,20'] = { t: 'tree', hp: 3 };
   hitObject(g, 30, 20);
   assert.equal(S.objs['30,20'], undefined, 'abattu en un coup');
-  assert.equal(S.energy, 99.5);
+  assert.equal(S.energy, 99.7);
   const e = { x: S.x + 1, y: S.y, hp: 100, cd: 0, hit: 0 };
   g.enemies.push(e); S.tools.sword = 3;
   attack(g, e);

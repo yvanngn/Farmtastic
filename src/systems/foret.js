@@ -49,7 +49,7 @@ import { TREE_HP } from '../world/map.js';
 import { scatter } from './inventory.js';
 import { useEnergy } from './player.js';
 import { toolTier, hasTool } from './skills.js';
-import { energyCost } from '../data/tools.js';
+import { energyCost, hitReady } from '../data/tools.js';
 const dayN = S => (S.year - 1) * 112 + S.season * 28 + S.day;
 const W = () => LAYOUTS.foret[0].length, H = () => LAYOUTS.foret.length;
 export const isForestTree = (x, y) => x > 0 && y > 0 && x < W() - 1 && y < H() - 1 && LAYOUTS.foret[y][x] === 'T';
@@ -60,6 +60,7 @@ export function chopForest(g, x, y) {
   if (!forestTreeAt(S, x, y)) return false;
   if (S.sel !== 'axe') { g.bus.emit('sfx', 'denied'); g.bus.emit('toast', hasTool(S, 'axe') ? 'Il faut la hache 🪓 : ouvre la roue des outils 🛠️' : 'Il me faudrait une hache pour couper ces arbres.'); return false; }
   const tier = toolTier(S, 'axe');
+  if (!hitReady(g)) return 'wait';   // le geste précédent n'est pas fini
   if (!useEnergy(g, energyCost(tier))) return false;
   S.foret ||= { day: null, shrooms: {} }; const hits = (S.foret.hits ||= {}), cut = (S.foret.cut ||= {});
   hits[k] = (hits[k] || 0) + tier;

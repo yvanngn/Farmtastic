@@ -1,5 +1,5 @@
 import { CFG } from '../src/config.js';
-CFG.ACCES_TEST = false; CFG.BOARD_OPEN = true;   // les tests décrivent le jeu normal ; le panneau (gardé de côté) reste testé
+CFG.ACCES_TEST = false; CFG.BOARD_OPEN = true; CFG.HIT_MS = 0;   // (lot du 17/11 : délai entre deux coups testé à part)   // les tests décrivent le jeu normal ; le panneau (gardé de côté) reste testé
 // Outils communs : partie déterministe, horloge contrôlable, capture des événements.
 import { createGame } from '../src/core/game.js';
 import { defaultState } from '../src/core/state.js';

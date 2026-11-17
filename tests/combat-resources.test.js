@@ -40,7 +40,7 @@ test('arbre : hache obligatoire, 3 coups, bois récolté', () => {
   assert.equal(S.objs['30,20'], undefined);
   assert.ok(S.drops.some(d => d.id === 'wood'), 'le bois tombe par terre');
   ramasse(g); assert.equal(S.inv.wood, 5);
-  assert.equal(S.energy, 97, '1 énergie par coup');
+  assert.equal(S.energy, 98.5, '0,5 énergie par coup (coups plus lents depuis la v0.1.26)');
 });
 
 test('énergie insuffisante bloque l’action', () => {
@@ -139,4 +139,25 @@ test('lot 8 : beaucoup plus d’arbres et de cailloux au départ, et autant remi
   assert.ok(m(['tree']) >= n(['tree']) * .8 && m(['rock', 'rock_big']) >= n(['rock', 'rock_big']) * .8, `remis : ${m(['tree'])} / ${m(['rock', 'rock_big'])}`);
   assert.ok(m(['tree']) <= n(['tree']) && m(['rock', 'rock_big']) <= n(['rock', 'rock_big']) + 10, 'jamais plus qu’au départ');
   assert.equal(seasonRestock(g), 0, 'ferme déjà pleine : rien de plus');
+});
+
+test('coups de hache et de pioche plus lents (un geste à la fois) ; un meilleur outil va plus vite ; moins d’énergie par coup', async () => {
+  const { CFG } = await import('../src/config.js');
+  const { energyCost } = await import('../src/data/tools.js');
+  const old = CFG.HIT_MS; CFG.HIT_MS = 650;
+  try {
+    const timeToFell = tier => {
+      const { g, S, clock } = makeGame({ state: { sel: 'axe', energy: 100, tools: { axe: tier } } });
+      S.objs = { '20,20': { t: 'tree', k: 'oak', g: 3, hp: 8 } }; S.x = 20.5; S.y = 21; const t0 = clock.t;
+      while (S.objs['20,20']) { hitObject(g, 20, 20); clock.t += 50; }
+      return { ms: clock.t - t0, e: 100 - S.energy };
+    };
+    const base = timeToFell(1), fer = timeToFell(3);
+    assert.ok(base.ms >= 7 * 650, 'arbre à la hache de base : 8 coups, au moins 4,5 s');
+    assert.ok(fer.ms < base.ms / 2, 'la hache en fer fait gagner beaucoup de temps');
+    assert.equal(base.e, 8 * energyCost(1)); assert.ok(base.e <= 4, 'un arbre coûte au plus 4 ⚡ avec la hache de base');
+    const { g, S, clock } = makeGame({ state: { sel: 'pick', energy: 100 } }); S.objs = { '20,20': { t: 'rock', hp: 6 } }; S.x = 20.5; S.y = 21;
+    hitObject(g, 20, 20); assert.equal(hitObject(g, 20, 20), 'wait', 'pas de second coup avant la fin du geste');
+    clock.t += 650; assert.equal(hitObject(g, 20, 20), true);
+  } finally { CFG.HIT_MS = old; }
 });

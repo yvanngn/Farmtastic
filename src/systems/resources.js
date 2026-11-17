@@ -3,7 +3,7 @@
 import { CFG } from '../config.js';
 import { freeForObj, key, isForest, newTree, newRock, genObjects, isSolid } from '../world/map.js';
 import { TREE_KINDS, TREE_KIND_IDS, TREE_GROW_DAYS, ROCK_DAYS, STONE_YIELD, FOREST } from '../data/forest.js';
-import { MIN_PICK, MINING_GAIN, TIER_NAMES, energyCost } from '../data/tools.js';
+import { MIN_PICK, MINING_GAIN, TIER_NAMES, energyCost, hitReady } from '../data/tools.js';
 import { add, scatter } from './inventory.js';
 import { useEnergy } from './player.js';
 import { gainXp, toolTier, hasTool } from './skills.js';
@@ -32,6 +32,7 @@ export function hitObject(g, x, y) {
   }
   const tier = toolTier(S, tool), need = MIN_PICK[o.t] || 1;
   if (tier < need) { g.bus.emit('sfx', 'denied'); g.bus.emit('toast', `Pioche « ${TIER_NAMES[need]} » requise (forge)`); return false; }
+  if (!hitReady(g)) return 'wait';   // le geste précédent n'est pas fini
   if (!useEnergy(g, energyCost(tier))) return false;
   o.hp -= tier; o.shake = 0.25;
   g.bus.emit('swing', tool);

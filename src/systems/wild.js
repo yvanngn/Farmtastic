@@ -8,7 +8,7 @@ import { damage, useEnergy } from './player.js';
 import { gainXp, toolTier, hasTool } from './skills.js';
 import { ROOMS_X, ROOM_W, ROOM_H, MOBS, ROOM_MOBS, ZROCKS, ZROCK_COUNT, ZROCK_P3, ZROCK_P2, ORES, GATE } from '../data/wild.js';
 import { CFG } from '../config.js';
-import { MINING_GAIN, energyCost } from '../data/tools.js';
+import { MINING_GAIN, energyCost, hitReady } from '../data/tools.js';
 
 export const roomOf = (x, y) => (Math.floor(y / ROOM_H) * ROOMS_X + Math.floor(x / ROOM_W));
 export const isOpen = S => ADMIN.on || (CFG.CAVE_OPEN && (!!S.wildOpen || CFG.ACCES_TEST));
@@ -60,6 +60,7 @@ export function hitZRock(g, x, y) {
   if (!o) return false;
   if (S.sel !== 'pick') { g.bus.emit('sfx', 'denied'); g.bus.emit('toast', hasTool(S, 'pick') ? 'Il faut la pioche ⛏️' : 'Il te faut une pioche.'); return false; }
   const tier = toolTier(S, 'pick');
+  if (!hitReady(g)) return 'wait';   // le geste précédent n'est pas fini
   if (!useEnergy(g, energyCost(tier))) return false;
   o.hp -= tier; o.shake = 0.25;
   g.bus.emit('swing', 'pick'); g.bus.emit('objHit', { x, y, t: 'rock', broken: o.hp <= 0 });
