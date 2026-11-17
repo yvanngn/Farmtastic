@@ -5,7 +5,7 @@ import { LEVELS } from '../systems/level.js';
 export function defaultState() {
   return {
     v: CFG.VERSION, name: 'Cloud Jimny',   // nom par défaut (modifiable à la création)
-    look: { body: 'h', bottom: 'pant', skin: '#f6d2b0', hair: 0, hairC: '#7a4a22', shirt: '#a8432f', pants: '#3a5a9a', overalls: '#3a5a9a', plaid: true, backpack: '#a8774a', sheet: 'heros' },   // sheet : planche de sprites (enlevée dès qu'on personnalise)   // planche docs/personnages-reference.jpg : salopette bleue, chemise à carreaux, sac à dos
+    look: { body: 'h', bottom: 'pant', skin: '#f6d2b0', hair: 0, hairC: '#7a4a22', shirt: '#a8432f', pants: '#3a5a9a', overalls: '#3a5a9a', plaid: true, backpack: '#a8774a', hero: true },   // hero : dessiné depuis la planche de sprites, recolorée selon la personnalisation   // planche docs/personnages-reference.jpg : salopette bleue, chemise à carreaux, sac à dos
     money: 500, energy: 100, maxE: 100, hp: 100, maxHp: 100,
     day: 1, season: 0, year: 1, minute: CFG.DAY_START, weather: 'sun',
     inv: { tent: 1 },   // 17/11 : seulement la tente au départ (plus de graines, de foin ni de sac à dos)
@@ -41,7 +41,7 @@ export function migrate(raw) {
   if (!raw || typeof raw !== 'object') return null;
   const s = Object.assign(defaultState(), raw);
   const d = defaultState();
-  s.look = Object.assign(d.look, raw.look || {});
+  s.look = Object.assign(d.look, raw.look || {}); s.look.hero = true; delete s.look.sheet;   // le héros : planche de sprites recolorée
   // Avant le lot 8, on avait tous les outils et pas d'accueil : on garde ça pour les anciennes parties.
   s.tools = raw.tools ? { ...raw.tools } : { axe: 1, pick: 1, sickle: 1, sword: 1 };
   if (!s.tools.hammer) s.tools.hammer = 1;   // tout le monde a un marteau

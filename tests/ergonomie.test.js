@@ -108,3 +108,13 @@ test('chaque niveau de zoom montre plus loin que le précédent (« Loin » ≠ 
     for (let i = 1; i < 4; i++) assert.ok(s[i] < s[i - 1] || s[i] === 1, `écran ${side} : ${s}`);
   }
 });
+
+test('héros : dessiné depuis la planche (recolorée) tant que ses options le permettent', async () => {
+  const { heroCanUseSheet } = await import('../src/render/sprites.js');
+  const { defaultState, migrate } = await import('../src/core/state.js');
+  const L = defaultState().look;
+  assert.equal(L.hero, true); assert.equal(heroCanUseSheet(L), true);
+  assert.equal(heroCanUseSheet({ ...L, shirt: '#00ff00', hat: 'cowboy' }), true, 'couleurs et chapeau : planche');
+  assert.equal(heroCanUseSheet({ ...L, vest: '#5a3a2a' }), false, 'gilet : dessin par code');
+  assert.equal(migrate({ name: 'x', look: { body: 'h', shirt: '#123456' } }).look.hero, true, 'anciennes parties aussi');
+});

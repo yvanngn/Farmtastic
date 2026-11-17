@@ -183,9 +183,54 @@ function drawSheet(c, ox, oy, L, d, f) {
   else c.drawImage(img, col * S.fw, row * S.fh, S.fw, S.fh, x, y, S.fw, S.fh);
   return true;
 }
+// Héros personnalisable dessiné depuis la planche de sprites (même style que les habitants) : la planche de base
+// (heros pour la silhouette homme, luna pour la silhouette femme) est recolorée zone par zone (peau, cheveux, haut, bas)
+// selon les choix du joueur, et le chapeau éventuel est posé par-dessus. Les options qu'une planche ne sait pas montrer
+// (autres coiffures, jupe, gilet, bandana…) repassent au dessin par code.
+export const HERO_BASE = { h: 'heros', f: 'luna' };
+export const HERO_DEFAULT = {   // couleurs d'origine des planches (pas de recoloration si le joueur les garde)
+  heros: { skin: '#f6d2b0', hairC: '#7a4a22', shirt: '#a8432f', pants: '#3a5a9a' },
+  luna: { skin: '#f1c7a5', hairC: '#7a4a22', shirt: '#2a6ad0', pants: '#5a7aa8' }
+};
+export const heroCanUseSheet = L => !!HERO_BASE[L.body] && !L.vest && !L.bandana && !L.chaps && !L.spurs && !L.coat && L.bottom !== 'skirt' && L.bottom !== 'robe' && (L.hair === 0 || L.hair === undefined || (L.body === 'f' && L.hair === 3));
+const RECOLORED = makeCache(40);
+function zoneOf(r, g, b, y, fy, FH) {   // zone d'un pixel de la planche du héros
+  const lum = .3 * r + .59 * g + .11 * b, rel = fy / FH;
+  if (lum < 42) return null;                                   // contour
+  if (r > 170 && g > 110 && r > b + 45 && r - g < 90) return 'skin';
+  if (rel < .36) return 'hairC';
+  if (rel > .86) return null;                                  // bottes
+  if (b > r + 8 && rel > .55) return 'pants';
+  if (rel < .62) return 'shirt';
+  return b > r + 8 ? 'pants' : null;
+}
+function recoloredSheet(base, L) {
+  const img = sheetImage(base); if (!img) return null;
+  const D = HERO_DEFAULT[base], col = L.overalls || L.pants, want = { skin: L.skin, hairC: L.hairC, shirt: L.shirt, pants: col }, key = base + JSON.stringify(want);
+  return RECOLORED(key, () => {
+    const S = SHEETS[base], cv = canvas(img.width, img.height), x = cv.getContext('2d'); x.drawImage(img, 0, 0);
+    const id = x.getImageData(0, 0, cv.width, cv.height), d = id.data, sums = {}, zones = new Int8Array(cv.width * cv.height).fill(-1), Z = ['skin', 'hairC', 'shirt', 'pants'];
+    for (let i = 0; i < d.length; i += 4) { if (!d[i + 3]) continue; const p = i / 4, y = p / cv.width | 0, z = zoneOf(d[i], d[i + 1], d[i + 2], y, y % S.fh, S.fh); if (!z) continue; zones[p] = Z.indexOf(z); const s = sums[z] ||= [0, 0]; s[0] += .3 * d[i] + .59 * d[i + 1] + .11 * d[i + 2]; s[1]++; }
+    for (let i = 0; i < d.length; i += 4) {
+      const zi = zones[i / 4]; if (zi < 0) continue; const z = Z[zi], target = want[z]; if (!target || target.toLowerCase() === (D[z] || '').toLowerCase()) continue;
+      const T6 = hex6(target), tr = parseInt(T6.slice(1, 3), 16), tg = parseInt(T6.slice(3, 5), 16), tb = parseInt(T6.slice(5, 7), 16), mean = sums[z][0] / sums[z][1], k = (.3 * d[i] + .59 * d[i + 1] + .11 * d[i + 2]) / mean;
+      d[i] = Math.min(255, tr * k); d[i + 1] = Math.min(255, tg * k); d[i + 2] = Math.min(255, tb * k);
+    }
+    x.putImageData(id, 0, 0); return cv;
+  });
+}
+function drawHeroSheet(c, ox, oy, L, d, f) {
+  const base = HERO_BASE[L.body], im = recoloredSheet(base, L); if (!im) return false;
+  const S = SHEETS[base], n = S.n || 4, col = f ? ((f - 1) * n / WALK_N | 0) % n : 0, row = d === 0 ? 0 : d === 1 ? 1 : 2, x = Math.round(ox + 6 - S.fw / 2), y = oy + 19 - S.fh;
+  if (d === 3) { c.save(); c.translate(x + S.fw, y); c.scale(-1, 1); c.drawImage(im, col * S.fw, row * S.fh, S.fw, S.fh, 0, 0, S.fw, S.fh); c.restore(); }
+  else c.drawImage(im, col * S.fw, row * S.fh, S.fw, S.fh, x, y, S.fw, S.fh);
+  if (L.hat) { const h = cache('hat' + L.hat + d + (f || 0), () => { const s = canvas(18, 33), k = s.getContext('2d'); if (d === 2) { k.translate(18, 0); k.scale(-1, 1); } drawHat(k, L, d === 2 ? 3 : d, f || 0); return outline(s, '#2a1a10'); }); c.drawImage(h, x + Math.round((S.fw - 18) / 2), y); }
+  return true;
+}
 export function drawChar(c, ox, oy, L, d, f, t = 0, noArm = false) {
   groundShadow(c, ox + 6, oy + 19, 6, 2);
-  if (L.sheet && drawSheet(c, ox, oy, L, d, f)) return;   // planche de sprites si elle existe
+  if (L.sheet && drawSheet(c, ox, oy, L, d, f)) return;
+  if (L.hero && heroCanUseSheet(L) && drawHeroSheet(c, ox, oy, L, d, f)) return;   // héros : planche recolorée   // planche de sprites si elle existe
   const blink = (t % 4200) < 130, spr = charSprite(L, d, f || 0, blink, noArm), x = ox - 3, y = oy - 12;
   if (L.kid) {   // enfant : tête entière, buste et jambes raccourcis
     c.drawImage(spr, 0, 0, 18, 15, x, y + 6, 18, 15);

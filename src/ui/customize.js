@@ -36,7 +36,7 @@ export function createCustomizer({ getLook, getName, onStart, onContinue, onBack
   }
   $('#lookOpts').onclick = e => {
     const { k, v, b } = e.target.dataset; if (!k) return;
-    const L = getLook(); delete L.sheet;   // personnalisé : on repasse au dessin par code
+    const L = getLook(); delete L.sheet; L.hero = true;   // le héros reste dessiné depuis la planche, recolorée
     L[k] = b != null ? b === '1' : k === 'hair' ? +v : v; buildOpts();
   };
   $('#rotL').onclick = () => { dir = ROT_L[dir]; };
