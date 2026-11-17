@@ -1,4 +1,4 @@
-import { paintGrass, paintOchre, paintRoad, paintPlanks, softEdge, OCHRE, paintRiver, paintBridge, paintCliff } from './terrain.js';
+import { paintGrass, paintOchre, paintRoad, paintPlanks, softEdge, OCHRE, paintRiver, paintBridge, paintCliff, autotile, ROAD, canopy, dress } from './terrain.js';
 // Centre du village pré-rendu : place pavée, halle du marché, panneau d'affichage,
 // fontaine, lampadaires, bancs, jardinières et arbres. Reconstruit à chaque saison.
 import { CFG } from '../config.js';
@@ -39,8 +39,6 @@ export function buildTown(season) {
     const plaza = x >= 12 && x <= 21 && y >= 5 && y <= 9;
     if (!plaza) {
       paintRoad(R, r, px, py, x, y, (y === 10 || y === 11 || y === 24) ? 1 : (x === 20 || x === 21) ? 2 : 0);
-      const oc = shade(OCHRE[season] || OCHRE[0], 1);
-      for (const [dx, dy, sd] of [[0, -1, 'n'], [0, 1, 's'], [-1, 0, 'w'], [1, 0, 'e']]) { const n = (L[y + dy] || '')[x + dx]; if (n === 'g') softEdge(R, r, px, py, sd, oc); }
       continue;
     }
     R(px, py, T, T, '#a9a29a');
@@ -49,6 +47,9 @@ export function buildTown(season) {
       R(sx + 1, sy + 1, 6, 6, ['#bcb5ac', '#b3aca2', '#c6c0b7'][r() * 3 | 0]); R(sx + 1, sy + 6, 6, 1, '#8f887f'); R(sx + 1, sy + 1, 6, 1, '#d4cec6');
     }
   }
+  // lot 11a : bords propres entre terre ocre et rues (coins arrondis)
+  { const isB = (a, b) => 'MUJAOVZRYE'.includes((L[b] || '')[a] || ''), plank = (x, y) => isB(x, y - 1) || isB(x - 1, y - 1) || isB(x + 1, y - 1);
+    autotile(g, W, H, (x, y) => { const ch = (L[y] || '')[x]; if (ch == null) return null; if ('gTE'.includes(ch)) return 'ocre'; if (ch === '.' && !plank(x, y) && !(x >= 12 && x <= 21 && y >= 5 && y <= 9)) return 'rue'; return null; }, { rue: 1, ocre: 2 }, { ocre: shade(OCHRE[season] || OCHRE[0], 1) }); }
   // bordure de la place
 
   // halle du marché (x4-10, y2-4) : socle de pierre, poteaux, auvent rayé, étal garni
@@ -97,7 +98,7 @@ export function buildTown(season) {
   const OUT = '#2a1a10';
   function western(x0, y0, w, trim, trim2, sign, deco, opt = {}) {
     const ux = x0 * T, uy = y0 * T, uw = w * T, top = uy - 28 - (opt.tall || 0);
-    const wall = opt.wall || '#9a6a3c', wallD = shade(wall, 0.82), wallL = shade(wall, 1.12);
+    const wall = opt.wall || '#9a6a3c', wallD = shade(wall, 0.82), wallL = shade(wall, 1.12), OUT = shade(wall, 0.42);   // lot 11e : contour coloré (teinte du mur), plus de noir
     // ombre portée au sol
     g.fillStyle = 'rgba(40,20,10,.22)'; g.fillRect(ux + 4, uy + 46, uw, 4);
     // toit à deux pans qui dépasse derrière la fausse façade
@@ -110,6 +111,7 @@ export function buildTown(season) {
     if (step) { R(ux + 10, top, uw - 20, 8, wall); R(ux + uw / 2 - 8, top - 4, 16, 5, wall); }
     for (let k = 4; k < uw; k += 5) { R(ux + k, top + 7, 1, uy + 46 - top - 7, wallD); if (r() < .5) R(ux + k + 1, top + 9 + (r() * 40 | 0), 1, 3, wallL); }
     if (step) for (let k = 14; k < uw - 10; k += 5) R(ux + k, top, 1, 8, wallD);
+    R(ux, top + 7, 2, uy + 46 - top - 7, wallL); R(ux + uw - 3, top + 7, 3, uy + 46 - top - 7, wallD);   // lot 11g : lumière en haut à gauche, ombre à droite
     // corniche peinte
     R(ux - 2, top + 6, uw + 4, 3, trim); R(ux - 2, top + 9, uw + 4, 1, OUT);
     if (step) { R(ux + 9, top - 1, uw - 18, 2, trim); R(ux + uw / 2 - 9, top - 5, 18, 2, trim2); }
@@ -205,9 +207,12 @@ export function buildTown(season) {
     if (ch === 'f') { R(px + 1, py + 8, 14, 7, '#8a5a32'); R(px + 1, py + 8, 14, 2, '#a8774a'); for (let k = 0; k < 5; k++) { R(px + 2 + k * 3, py + 5, 2, 3, '#3e8a34'); R(px + 2 + k * 3, py + 4, 2, 2, ['#f07ab0', '#f5e050', '#ffffff', '#9ab8ff'][k % 4]); } }
     if (ch === 'L') { R(px + 7, py - 10, 2, 25, '#2b2730'); R(px + 5, py + 13, 6, 2, '#2b2730'); R(px + 4, py - 16, 8, 7, '#2b2730'); R(px + 5, py - 15, 6, 5, '#ffd98a'); R(px + 3, py - 17, 10, 2, '#3a3540'); }
   }
+  canopy(g, W, H, (x, y) => (L[y] || '')[x] === 'T' && [[1, 0], [-1, 0], [0, 1], [0, -1]].filter(([a, b]) => (L[y + b] || '')[x + a] === 'T').length >= 2, season);   // lot 11b : canopée continue
   for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) if (L[y][x] === 'T') g.drawImage(treeSprite(season, (x + y) % 4), x * T - 9, y * T - 28);
   // (villa du Maire effacée le 17/11 : Manu vit dans son ranch)
   drawHedges(R, LAYOUTS.town);   // haies de bordure
+  // lot 11f : décor dense (tonneaux, caisses, fleurs, cailloux)
+  dress(g, W, H, (x, y) => 'gT'.includes((L[y] || '')[x] || '-') && (L[y] || '')[x] !== 'T', (x, y) => 'MUJAOVZRYE'.includes((L[y] || '')[x] || '-'), 3);
   return c;
 }
 
@@ -222,7 +227,6 @@ export function buildQuartier(season) {
     const px = x * T, py = y * T, ch = L[y][x];
     if (ch === '.' || ch === 'D') {   // Farmwest (7a) : allées de sable tassé, bords adoucis
       paintRoad(R, r, px, py, x, y, (y === 8 || y === 9 || y === 17 || y === 18) ? 1 : 0);
-      for (const [dx, dy, sd] of [[0, -1, 'n'], [0, 1, 's'], [-1, 0, 'w'], [1, 0, 'e']]) { const n = (L[y + dy] || '')[x + dx]; if (n && n !== '.' && n !== 'D' && n !== 'X') softEdge(R, r, px, py, sd, shade(B, .95)); }
       continue;
     }
     if (false) {
@@ -233,6 +237,8 @@ export function buildQuartier(season) {
     paintGrass(R, r, px, py, x, y, B, season);
     if (r() < .02) { const col = ['#ffffff', '#f5e050', '#f07ab0'][r() * 3 | 0]; R(px + 7, py + 7, 3, 1, col); R(px + 8, py + 6, 1, 3, col); }
   }
+  // lot 11a : herbe ↔ allées, coins arrondis
+  autotile(g, W, H, (x, y) => { const ch = (L[y] || '')[x]; return ch == null ? null : ch === '.' || ch === 'D' ? 'allee' : 'gTk'.includes(ch) ? 'herbe' : null; }, { allee: 1, herbe: 2 }, { herbe: shade(B, .97) });
   // haies et boîtes aux lettres devant chaque maison, bordure de trottoir
   // (bordures de trottoir gris retirées : allées de sable au lot 7a)
   const shift = (dx, dy) => (x, y, w, h, col) => R(x + dx, y + dy, w, h, col);
@@ -295,6 +301,7 @@ export function buildQuartier(season) {
   // bancs et lampadaires le long de la rue
   for (const [x, yb] of [[3 * T, 10], [33 * T, 10], [20 * T, 19], [28 * T, 19]]) { const by = yb * T; R(x, by + 6, 22, 3, '#8a5a32'); R(x, by + 6, 22, 1, '#c99560'); R(x + 1, by + 9, 2, 3, '#5b3a22'); R(x + 19, by + 9, 2, 3, '#5b3a22'); } for (const x of []) { R(x, 10 * T + 6, 22, 3, '#8a5a32'); R(x, 10 * T + 6, 22, 1, '#c99560'); R(x + 1, 10 * T + 9, 2, 3, '#5b3a22'); R(x + 19, 10 * T + 9, 2, 3, '#5b3a22'); }
   drawHedges(R, L);
+  canopy(g, W, H, (x, y) => (L[y] || '')[x] === 'T' && [[1, 0], [-1, 0], [0, 1], [0, -1]].filter(([a, b]) => (L[y + b] || '')[x + a] === 'T').length >= 2, season);   // lot 11b : canopée continue
   for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) if (L[y][x] === 'T') g.drawImage(treeSprite(season, (x + y) % 4), x * T - 9, y * T - 28);
   return c;
 }
@@ -374,6 +381,7 @@ export function buildParc(season) {
   { const [x, y, w, h] = box('u'); R(x, y + 10, w, h - 10, '#f4b0c8'); for (let i = 0; i < w; i += 6) R(x + i, y + 4, 3, 7, '#f07ab0'), R(x + i + 3, y + 4, 3, 7, '#fff'); R(x + 6, y - 2, 8, 6, '#ffd0e8'); R(x + 9, y + 4, 1, 6, '#c9a330'); }
   for (let k = 0; k < W * T; k += 12) { R(k, 8 * T + 2 + Math.round(Math.sin(k / 30) * 3), 2, 2, ['#f2c832', '#e8402a', '#3a8ae0', '#4ab04a'][(k / 12 | 0) % 4]); }   // guirlande
   signBoard(R, 17 * T, 21 * T, 'FÊTE FORAINE');
+  canopy(g, W, H, (x, y) => (L[y] || '')[x] === 'T' && [[1, 0], [-1, 0], [0, 1], [0, -1]].filter(([a, b]) => (L[y + b] || '')[x + a] === 'T').length >= 2, season);   // lot 11b : canopée continue
   for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) if (L[y][x] === 'T') g.drawImage(treeSprite(season, (x + y) % 4), x * T - 9, y * T - 28);
   return c;
 }

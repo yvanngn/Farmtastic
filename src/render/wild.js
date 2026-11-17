@@ -1,4 +1,4 @@
-import { paintGrass } from './terrain.js';
+import { paintGrass, canopy } from './terrain.js';
 // Terres sauvages pré-rendues : herbe plus sombre et touffue, arbres serrés en bordure,
 // rochers, sortie vers la ferme. Reconstruites à chaque saison.
 import { CFG } from '../config.js';
@@ -65,6 +65,7 @@ export function buildWild(season, name = 'wild') {
   for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) if (L[y][x] === '#') {
     const px = x * T + 8, py = y * T + 9; disc(g, px, py + 1, 8, '#3c3843'); disc(g, px - 1, py, 7, '#6a6672'); disc(g, px - 3, py - 3, 3, '#9a96a2');
   }
+  canopy(g, W, H, (x, y) => (L[y] || '')[x] === 'T' && (name !== 'foret' || x === 0 || y === 0 || x === W - 1 || y === H - 1), season);   // lot 11b : canopée continue sur la bordure
   for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) if (L[y][x] === 'T' && !(name === 'foret' && x > 0 && y > 0 && x < W - 1 && y < H - 1)) {   // forêt : arbres intérieurs dessinés à part (on peut les couper)
     const v = (x * 7 + y * 3) % 4, im = (x + y) % 3 === 0 || (name === 'foret' && (x * y) % 5 === 1) ? pineSprite(season, v) : treeSprite(season, v);
     g.drawImage(im, x * T - 9, y * T - 26);

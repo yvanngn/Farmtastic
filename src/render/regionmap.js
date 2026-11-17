@@ -4,7 +4,7 @@
 // Une fois par saison (cache). Le DOM n'est utilisé que pour créer le canvas.
 import { rng } from '../world/map.js';
 import { shade, disc } from './pixel.js';
-import { paintGrass, paintOchre, paintRoad, paintRiver, paintBridge, paintCliff, paintPlanks, softEdge, WEST_GRASS } from './terrain.js';
+import { paintGrass, paintOchre, paintRoad, paintRiver, paintBridge, paintCliff, paintPlanks, autotile, WEST_GRASS } from './terrain.js';
 import { treeSprite, pineSprite, cactusSprite } from './sprites.js';
 import { FARM_LOTS } from '../data/buildings.js';
 
@@ -113,8 +113,7 @@ export function buildRegionMap(season = 0) {
     const ch = L[y][x], px = x * RT, py = y * RT;
     if (ch === 'g' || ch === 'F') paintGrass(R, r, px, py, x, y, shade(B, ch === 'F' ? .8 : 1), season);
     else if (ch === 's') paintOchre(R, r, px, py, x, y, season);
-    else if (ch === '.') { paintRoad(R, r, px, py, x, y, at(x - 1, y) === '.' && at(x + 1, y) === '.' ? 1 : at(x, y - 1) === '.' && at(x, y + 1) === '.' ? 2 : 0);
-      for (const [dx, dy, sd] of [[0, -1, 'n'], [0, 1, 's'], [-1, 0, 'w'], [1, 0, 'e']]) { const n = at(x + dx, y + dy); if (n && '.=p'.indexOf(n) < 0) softEdge(R, r, px, py, sd, n === 'g' || n === 'F' ? shade(B, .9) : '#c9a062'); } }
+    else if (ch === '.') { paintRoad(R, r, px, py, x, y, at(x - 1, y) === '.' && at(x + 1, y) === '.' ? 1 : at(x, y - 1) === '.' && at(x, y + 1) === '.' ? 2 : 0); }
     else if (ch === 'w') { paintRiver(R, r, px, py, x, y, L); if (y >= 38 && at(x, y - 1) === 'w') R(px, py, RT, RT, shade('#3a7ec0', 1 - (y - 38) * .02)), r() < .3 && R(px + (r() * 12 | 0), py + (r() * 14 | 0), 4, 1, '#7cc0ec'); }
     else if (ch === '=') paintBridge(R, r, px, py, x, y, L);
     else if (ch === '^') paintCliff(R, r, px, py, x, y, L, season);
@@ -124,6 +123,8 @@ export function buildRegionMap(season = 0) {
     else if (ch === 'r') { paintOchre(R, r, px, py, x, y, season); const v = at(x, y - 1) === 'r' || at(x, y + 1) === 'r'; if (v) { for (let k = 0; k < RT; k += 4) R(px + 2, py + k, 12, 2, '#6a4a30'); R(px + 4, py, 1, RT, '#9aa0a8'); R(px + 11, py, 1, RT, '#9aa0a8'); } else { for (let k = 0; k < RT; k += 4) R(px + k, py + 2, 2, 12, '#6a4a30'); R(px, py + 4, RT, 1, '#9aa0a8'); R(px, py + 11, RT, 1, '#9aa0a8'); } }
     else if (ch === 'u') { R(px, py, RT, RT, '#7a5232'); for (let k = 1; k < RT; k += 4) R(px, py + k, RT, 2, '#5e3e24'); if ((x + y) % 3) for (let k = 2; k < RT; k += 4) for (let j = 1; j < RT; j += 3) R(px + j, py + k - 1, 2, 2, season === 2 ? '#e0b040' : season === 3 ? '#e8eef2' : '#6aa84a'); }
   }
+  // lot 11a : bords propres herbe ↔ terre ↔ chemins ↔ sable
+  autotile(g, RW, RH, (x, y) => { const ch = at(x, y); return ch === '.' ? 'chemin' : ch === 'b' ? 'sable' : ch === 's' || ch === 'r' ? 'ocre' : ch === 'g' ? 'herbe' : ch === 'F' ? 'foret' : null; }, { chemin: 1, sable: 1, ocre: 2, herbe: 3, foret: 4 }, { ocre: '#d4a868', herbe: B, foret: shade(B, .8) });
   // 2. le rond-point : fontaine
   { const cx = 44 * RT, cy = 20 * RT; disc(g, cx, cy + 2, 20, 'rgba(40,20,10,.25)'); disc(g, cx, cy, 20, '#a8a29a'); disc(g, cx, cy, 16, '#5aa0d8'); disc(g, cx - 3, cy - 3, 6, '#9ad0f0'); disc(g, cx, cy, 5, '#c8c2ba'); R(cx - 1, cy - 12, 2, 10, '#e8f4fc'); }
   // 3. caverne : entrée dans la roche, éboulis

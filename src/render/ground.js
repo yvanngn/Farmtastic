@@ -5,6 +5,7 @@ import { ground, isFence, isPond, rng, isHedge } from '../world/map.js';
 import { shade, disc } from './pixel.js';
 import { BUILDINGS } from '../data/buildings.js';
 import { signBoard } from './pixfont.js';
+import { autotile, paintRiver } from './terrain.js';
 const T = CFG.T;
 
 export const GRASS = ['#86ae46', '#9aac44', '#b2a048', '#e4ecef'];   // Farmwest (7a) : herbe plus chaude et sèche (voir terrain.js)
@@ -18,18 +19,11 @@ export function buildGround(season, built = {}, fixed = { house: true, grange: t
   const R = (x, y, w, h, col) => { g.fillStyle = col; g.fillRect(x, y, w, h); };
   const B = GRASS[season], tones = [B, B, B, shade(B, .93), shade(B, 1.06)];
   const water = (x, y) => isPond(x, y);
+  const POND = Array.from({ length: CFG.H }, (_, y) => Array.from({ length: CFG.W }, (_, x) => isPond(x, y) ? 'w' : 'g').join(''));
 
   for (let y = 0; y < CFG.H; y++) for (let x = 0; x < CFG.W; x++) {
     const t0 = ground(x, y), t = t0 === 'soil' ? 'grass' : t0, px = x * T, py = y * T; // le champ est en herbe tant qu'il n'est pas bêché
-    if (t === 'water') {
-      const deep = water(x - 1, y) && water(x + 1, y) && water(x, y - 1) && water(x, y + 1);
-      R(px, py, T, T, deep ? shade(WATER, .88) : WATER);
-      if (!water(x, y - 1)) { R(px, py, T, 2, '#d8c38a'); R(px, py + 2, T, 1, '#bfe3f5'); }
-      if (!water(x, y + 1)) R(px, py + T - 2, T, 2, shade(WATER, .75));
-      if (!water(x - 1, y)) { R(px, py, 2, T, '#d8c38a'); R(px + 2, py, 1, T, '#bfe3f5'); }
-      if (!water(x + 1, y)) { R(px + T - 2, py, 2, T, '#d8c38a'); R(px + T - 3, py, 1, T, '#bfe3f5'); }
-      continue;
-    }
+    if (t === 'water') { paintRiver(R, r, px, py, x, y, POND); continue; }   // lot 11d : même eau que la rivière (dégradé, écume, berges arrondies)
     if (t === 'soil') {
       R(px, py, T, T, '#7a4c2a');
       for (let k = 2; k < T; k += 4) { R(px + 1, py + k, T - 2, 1, '#5e391e'); R(px + 1, py + k + 1, T - 2, 1, '#94643a'); }
@@ -40,14 +34,6 @@ export function buildGround(season, built = {}, fixed = { house: true, grange: t
       R(px, py, T, T, '#c9a66a');
       for (let k = 0; k < 6; k++) R(px + (r() * 15 | 0), py + (r() * 15 | 0), 1, 1, r() < .5 ? '#b08e56' : '#dcbf86');
       for (let k = 0; k < 2; k++) { const sx = px + 1 + (r() * 9 | 0), sy = py + 1 + (r() * 10 | 0); R(sx, sy, 5, 3, '#dcc394'); R(sx, sy + 3, 5, 1, '#a88650'); R(sx + 1, sy, 2, 1, '#eedcb2'); }
-      // bord du chemin : liseré plus sombre et brins d'herbe qui débordent (transition douce, plus de bord droit)
-      const gr = (a, c) => ground(a, c) === 'grass' || ground(a, c) === 'soil', bl = shade(B, .86), bt = shade(B, 1.1);
-      const fringe = (horiz, x0, y0, dir) => { for (let k = 0; k < T; k++) { const len = r() < .55 ? 1 + (r() * 3 | 0) : 0; if (!len) continue;
-        if (horiz) { R(x0 + k, dir > 0 ? y0 : y0 - len + 1, 1, len, r() < .3 ? bt : bl); } else { R(dir > 0 ? x0 : x0 - len + 1, y0 + k, len, 1, r() < .3 ? bt : bl); } } };
-      if (gr(x, y - 1)) { R(px, py, T, 1, '#a88650'); fringe(true, px, py, 1); }
-      if (gr(x, y + 1)) { R(px, py + T - 1, T, 1, '#b8975e'); fringe(true, px, py + T - 1, -1); }
-      if (gr(x - 1, y)) { R(px, py, 1, T, '#a88650'); fringe(false, px, py, 1); }
-      if (gr(x + 1, y)) { R(px + T - 1, py, 1, T, '#a88650'); fringe(false, px + T - 1, py, -1); }
       continue;
     }
     // herbe (16/11, essai « façon Stardew ») : grandes nappes de tons qui varient doucement d'une case à l'autre,
@@ -75,6 +61,8 @@ export function buildGround(season, built = {}, fixed = { house: true, grange: t
     if (water(x, y + 1)) R(px, py + T - 2, T, 2, '#d8c38a');
   }
 
+  // lot 11a : bords propres herbe ↔ chemins (coins arrondis)
+  autotile(g, CFG.W, CFG.H, (x, y) => x < 0 || y < 0 || x >= CFG.W || y >= CFG.H ? null : (t => t === 'path' ? 'chemin' : t === 'water' ? null : 'herbe')(ground(x, y)), { chemin: 1, herbe: 2 }, { herbe: shade(B, .98) });
   // clôtures
   for (let y = 0; y < CFG.H; y++) for (let x = 0; x < CFG.W; x++) {
     if (!isFence(x, y, built)) continue;

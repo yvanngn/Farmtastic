@@ -4,6 +4,7 @@ import { CFG } from '../config.js';
 import { LAYOUTS } from '../world/scenes.js';
 import { rng } from '../world/map.js';
 import { shade, disc } from './pixel.js';
+import { autotile, canopy, paintRiver, dress } from './terrain.js';
 import { GRASS } from './ground.js';
 import { treeSprite, pineSprite, cactusSprite, pebbleSprite } from './sprites.js';
 
@@ -22,12 +23,7 @@ export function buildWest(name, season) {
   // 1. sols
   for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
     const ch = at(x, y), px = x * T, py = y * T;
-    if (ch === 'w') {   // mer : bleu profond, reflets, écume au bord du quai
-      R(px, py, T, T, y > 15 ? '#2f6aa8' : '#3a7ec0');
-      for (let k = 0; k < 2; k++) R(px + (r() * 12 | 0), py + (r() * 14 | 0), 4, 1, '#7cc0ec');
-      if (at(x, y - 1) !== 'w') { R(px, py, T, 2, '#e8f4fc'); R(px, py + 2, T, 1, '#9ad0f0'); }
-      continue;
-    }
+    if (ch === 'w') { paintRiver(R, r, px, py, x, y, L); continue; }   // lot 11d : mer (dégradé de profondeur, écume, reflets)
     if (ch === '=') {   // planches du quai et des pontons
       R(px, py, T, T, '#a8774a');
       for (let k = 0; k < T; k += 4) { R(px, py + k, T, 1, '#7a5232'); R(px + ((y * 5 + k) % 12), py + k + 1, 1, 3, '#7a5232'); }
@@ -52,16 +48,13 @@ export function buildWest(name, season) {
     for (let k = 0; k < 6; k++) R(px + (r() * 16 | 0), py + (r() * 16 | 0), 1, 1, shade(base, r() < .5 ? .88 : 1.08));
     if (ch === 's' && r() < .12) { const sx = px + 3 + (r() * 9 | 0), sy = py + 5 + (r() * 7 | 0); R(sx, sy, 1, 3, '#9a7a3a'); R(sx + 2, sy - 1, 1, 4, '#b8923e'); R(sx + 4, sy, 1, 3, '#9a7a3a'); }
     if (ch === 's' && r() < .05) { R(px + 6, py + 9, 4, 2, '#a08a6a'); R(px + 6, py + 9, 2, 1, '#d4c0a0'); }
-    if (ch === '.' || ch === 'D') {   // chemin de sable tassé, bords adoucis
+    if (ch === '.' || ch === 'D' || ch === 'F') {   // chemin de sable tassé (et sous la fontaine du rond-point)
       R(px, py, T, T, '#e8cf98');
       for (let k = 0; k < 5; k++) R(px + (r() * 15 | 0), py + (r() * 15 | 0), 2, 1, r() < .5 ? '#d4b47a' : '#f4e0b4');
-      for (const [dx, dy] of [[0, -1], [0, 1], [-1, 0], [1, 0]]) {
-        const n = at(x + dx, y + dy); if (n === '.' || n === 'D' || n === 'F' || n === 'P') continue;
-        for (let k = 0; k < T; k += 2) { const len = r() < .6 ? 1 + (r() * 2 | 0) : 0; if (!len) continue;
-          if (dy) R(px + k, dy < 0 ? py : py + T - len, 1, len, base); else R(dx < 0 ? px : px + T - len, py + k, len, 1, base); }
-      }
     }
   }
+  // lot 11a : bords propres herbe ↔ terre ocre ↔ chemins (coins arrondis)
+  autotile(g, W, H, (x, y) => { const ch = (L[y] || '')[x]; return ch == null ? null : ch === '.' || ch === 'D' || ch === 'F' ? 'chemin' : ch === 's' || ch === 'T' ? 'ocre' : ch === 'g' ? 'herbe' : null; }, { chemin: 1, ocre: 2, herbe: 3 }, { ocre: SAND, herbe: GR });
   // 2. fontaine du rond-point (disque de pierre, eau, jet)
   if (name === 'rondpoint') {
     const cx = 12.5 * T + 8, cy = 8.5 * T + 8;
@@ -131,6 +124,7 @@ export function buildWest(name, season) {
   // 5 bis (7d) : petites pierres ocre éparses sur les sols de terre (décor, sans collision)
   if (DESERT.includes(name)) for (let y = 1; y < H - 1; y++) for (let x = 1; x < W - 1; x++) if (at(x, y) === 'g' && r() < .035) g.drawImage(pebbleSprite((x + y) % 2), x * T + (r() * 6 | 0), y * T + 4 + (r() * 4 | 0));
   // 6. arbres (bords et bosquets), triés de haut en bas
+  canopy(g, W, H, (x, y) => (L[y] || '')[x] === 'T' && [[1, 0], [-1, 0], [0, 1], [0, -1]].filter(([a, b]) => (L[y + b] || '')[x + a] === 'T').length >= 2, season);   // lot 11b : canopée continue
   for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) if (at(x, y) === 'T') {
     const v = (x * 7 + y * 3) % 4;
     // 7d : côté désert (gare, rond-point, ranch), des cactus se mêlent aux arbres de bordure
@@ -144,6 +138,8 @@ export function buildWest(name, season) {
     for (const [hx, hy, col] of [[9, 13, '#7a4a2a'], [14, 15, '#3a2a20'], [20, 12, '#c8a070']]) drawHorse(R, hx * T, hy * T, col);
   }
   if (name === 'port') for (const [bx, by] of [[3, 15], [12, 16], [22, 14], [31, 16]]) drawBoat(R, bx * T, by * T);
+  // lot 11f : décor dense
+  dress(g, W, H, (x, y) => 'sg'.includes((L[y] || '')[x] || '-'), (x, y) => 'HBEG'.includes((L[y] || '')[x] || '-'), name.length);
   return c;
 }
 
