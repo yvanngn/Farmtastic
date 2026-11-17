@@ -34,6 +34,8 @@ def crisp(im, k, C):
             dark = C.sum(1) < 150; best = cnt.argmax()
             dk = np.where(dark, cnt, 0).argmax()
             if dark[dk] and cnt[dk] >= len(op) * 0.3: best = dk
+            sat = (C.max(1) - C.min(1)) / np.maximum(C.max(1), 1); vv = np.where(sat > 0.5, cnt, 0).argmax()   # couleurs vives (yeux, bandana)
+            if sat[vv] > 0.5 and cnt[vv] >= len(op) * 0.25 and sat[best] < 0.5: best = vv
             out[y, x, :3] = C[best]; out[y, x, 3] = 255
     return Image.fromarray(out, 'RGBA')
 def outline(s):
