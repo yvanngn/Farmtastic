@@ -22,7 +22,7 @@ export const QUESTS = {
       { id: 'hache', t: 'Trouver la hache, au pied du grand arbre de la ferme', done: S => !!S.tools?.axe },
       { id: 'feu', t: 'Faire un feu de camp (📜 Recettes : 5 bois + 2 cailloux)', done: S => (S.fires || []).length > 0 || (S.inv?.campfire || 0) > 0 || isRepaired(S, 'house') },
       { id: 'cabane', t: 'Retaper la cabane : 80 bois et 30 pierres (marteau 🔨)', done: S => isRepaired(S, 'house') },
-      { id: 'coffre', t: 'Construire un coffre (📜 Recettes : 80 bois + 20 pierres)', done: S => (S.chests || []).length > 0 || (S.inv?.chest || 0) > 0 },
+      { id: 'coffre', t: 'Construire un coffre : Harry Fordson, le charpentier (centre-ville), t’apprend à le faire (80 bois + 20 pierres)', done: S => (S.chests || []).length > 0 || (S.inv?.chest || 0) > 0 },
       { id: 'four', t: 'Aider le cuistot du restaurant (centre-ville) : réparer son four au marteau (30 pierres + 15 bois) — il te donnera son couteau', done: S => !!S.resto?.knife || !!S.tools?.knife },
       { id: 'grange', t: 'Rafistoler la grange (100 bois et 60 pierres) et y trouver la pelle, pour bêcher et planter', done: S => !!S.tools?.shovel }
     ]

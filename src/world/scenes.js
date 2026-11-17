@@ -89,6 +89,16 @@ export const LAYOUTS = {
     '#P......#....#',
     '######D#######'
   ],
+  // Maison de Remy Gusto : cuisine de chef (K), table (T), lit (B), plante (P)
+  remy: [
+    '#########',
+    '#WWWWWWW#',
+    '#KKK...B#',
+    '#......B#',
+    '#P.TT...#',
+    '#.......#',
+    '####D####'
+  ],
   // Maison du Maire au ranch : bureau (K), fauteuil (A), lit (B), plante (P), table (T)
   ranch_maison: [
     '#########',
@@ -245,6 +255,7 @@ export const QUARTIER = {
   hailey: { x: 25, y: 12, w: 4, door: 26 },
   myst: { x: 3, y: 23, w: 6, door: 5, porch: true },   // 3 rangées + un porche (rangée 4)
   ed: { x: 32, y: 12, w: 5, door: 34 },   // 16/11 : maison à étages d'Ed, Suzie et Jade (ancien terrain libre)
+  remy: { x: 18, y: 22, w: 5, door: 20 },   // 17/11 : maison de Remy Gusto, le cuistot
   lot: { x: 32, y: 12 }
 };
 LAYOUTS.quartier = (() => {
@@ -253,7 +264,7 @@ LAYOUTS.quartier = (() => {
   for (let y = 0; y < 8; y++) m[y][22] = '.'; m[0][22] = 'D';                       // l'allée qui monte vers la ferme
   m[8][W - 1] = 'D'; m[9][W - 1] = 'D';                                              // à l'est : la montagne gelée
   for (let y = 10; y < 17; y++) m[y][18] = '.';                                       // ruelle entre les deux rues
-  for (const id of ['luna', 'clinique', 'franck', 'hailey', 'myst', 'ed']) {
+  for (const id of ['luna', 'clinique', 'franck', 'hailey', 'myst', 'ed', 'remy']) {
     const h = Q[id], rows = h.porch ? 4 : 3;
     for (let y = h.y; y < h.y + rows; y++) for (let x = h.x; x < h.x + h.w; x++) m[y][x] = 'X';
     const fy = h.y + rows; m[fy][h.door] = '.';                                       // perron devant la porte
@@ -262,6 +273,7 @@ LAYOUTS.quartier = (() => {
   m[QUARTIER.luna.y + 4][QUARTIER.luna.door] = '.'; m[QUARTIER.clinique.y + 4][QUARTIER.clinique.door] = '.';
   m[QUARTIER.franck.y + 4][QUARTIER.franck.door] = '.'; m[QUARTIER.hailey.y + 4][QUARTIER.hailey.door] = '.';
   m[QUARTIER.ed.y + 4][QUARTIER.ed.door] = '.';   // allée d'Ed jusqu'à la 2e rue
+  for (let y = QUARTIER.remy.y + 3; y <= 28; y++) m[y][QUARTIER.remy.door] = '.'; for (let x = 15; x <= QUARTIER.remy.door; x++) m[28][x] = '.';   // allée de Remy jusqu'au chemin
   for (let y = QUARTIER.ed.y - 3; y < QUARTIER.ed.y; y++) for (let x = QUARTIER.ed.x; x < QUARTIER.ed.x + QUARTIER.ed.w; x++) if (m[y][x] === 'T') m[y][x] = 'g';   // rien devant le toit à étages
   // chemin de Myst : de sa porte (en bas), il longe le bas puis remonte jusqu'à la 2e rue
   const my = Q.myst; for (let x = my.door; x <= 14; x++) m[my.y + 5][x] = '.'; for (let y = 19; y <= my.y + 5; y++) m[y][14] = '.';
@@ -395,6 +407,7 @@ export const SCENES = {
     { x: 31, y: 15, to: 'port', spawn: { x: 1.6, y: 7 } }, { x: 31, y: 16, to: 'port', spawn: { x: 1.6, y: 7 } },
     { x: 15, y: 21, to: 'parc', spawn: { x: 16.5, y: 22.2 } }, { x: 16, y: 21, to: 'parc', spawn: { x: 16.5, y: 22.2 } },   // au sud : la fête foraine
     { x: 6, y: 5, to: 'ranch_maison', spawn: { x: 4.5, y: 5.4 } }, { x: 7, y: 5, to: 'ranch_maison', spawn: { x: 4.5, y: 5.4 } }] },
+  remy: { W: 9, H: 7, doors: [{ x: 4, y: 6, to: 'quartier', spawn: { x: 20.5, y: 25.8 } }] },
   resto: { W: 14, H: 7, doors: [{ x: 6, y: 6, to: 'town', spawn: { x: 15.5, y: 29.8 } }] },
   ranch_maison: { W: 9, H: 7, doors: [{ x: 4, y: 6, to: 'ranch', spawn: { x: 7, y: 6.8 } }] },
   port: { W: 36, H: 20, outdoor: true, doors: [{ x: 0, y: 6, to: 'ranch', spawn: { x: 29.4, y: 16 } }, { x: 0, y: 7, to: 'ranch', spawn: { x: 29.4, y: 16 } }] },
@@ -417,7 +430,7 @@ export const SCENES = {
   myst: { W: 9, H: 7, doors: [{ x: 4, y: 6, to: 'quartier', spawn: { x: 5.5, y: 27.8 } }] },
   luna: { W: 9, H: 7, doors: [{ x: 4, y: 6, to: 'quartier', spawn: { x: 8.5, y: 6.8 } }] },
   // Quartier résidentiel, au sud de la ferme : les maisons des habitants.
-  quartier: { W: 40, H: 31, outdoor: true, doors: [{ x: 22, y: 0, to: 'rondpoint', spawn: { x: 23.4, y: 9 } }, { x: 8, y: 5, to: 'luna', spawn: { x: 4.5, y: 5.4 } }, { x: 10, y: 14, to: 'franck', spawn: { x: 4.5, y: 5.4 } }, { x: 28, y: 5, to: 'clinique', spawn: { x: 4.5, y: 5.4 } }, { x: 26, y: 14, to: 'hailey', spawn: { x: 4.5, y: 5.4 } }, { x: 5, y: 26, to: 'myst', spawn: { x: 4.5, y: 5.4 } }, { x: 34, y: 14, to: 'ed', spawn: { x: 4.5, y: 5.4 } }, { x: 39, y: 8, to: 'montagne', spawn: { x: 1.6, y: 8.6 } }, { x: 39, y: 9, to: 'montagne', spawn: { x: 1.6, y: 8.6 } }] },
+  quartier: { W: 40, H: 31, outdoor: true, doors: [{ x: 22, y: 0, to: 'rondpoint', spawn: { x: 23.4, y: 9 } }, { x: 8, y: 5, to: 'luna', spawn: { x: 4.5, y: 5.4 } }, { x: 10, y: 14, to: 'franck', spawn: { x: 4.5, y: 5.4 } }, { x: 28, y: 5, to: 'clinique', spawn: { x: 4.5, y: 5.4 } }, { x: 26, y: 14, to: 'hailey', spawn: { x: 4.5, y: 5.4 } }, { x: 5, y: 26, to: 'myst', spawn: { x: 4.5, y: 5.4 } }, { x: 34, y: 14, to: 'ed', spawn: { x: 4.5, y: 5.4 } }, { x: 20, y: 24, to: 'remy', spawn: { x: 4.5, y: 5.4 } }, { x: 39, y: 8, to: 'montagne', spawn: { x: 1.6, y: 8.6 } }, { x: 39, y: 9, to: 'montagne', spawn: { x: 1.6, y: 8.6 } }] },
   pigsty: { W: 10, H: 7, doors: [{ x: 4, y: 6, to: 'farm', spawn: { x: 20.5, y: 8.9 } }] },
   barn: { W: 12, H: 8, doors: [{ x: 5, y: 7, to: 'farm', spawn: { x: 28.5, y: 8.9 } }] }
 };

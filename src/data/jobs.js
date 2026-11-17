@@ -4,7 +4,8 @@ export const JOBS = {
   alchimiste: { n: 'Alchimiste', i: '⚗️' },
   couturier: { n: 'Couturier', i: '🧵' },
   joaillier: { n: 'Joaillier', i: '💍' },
-  cuisinier: { n: 'Cuisinier', i: '🍳' }
+  cuisinier: { n: 'Cuisinier', i: '🍳' },
+  charpentier: { n: 'Charpentier', i: '🪚' }   // Farmwest (lot 6) : coffre, réparations au marteau
 };
 // XP totale pour atteindre le niveau i+1.
 export const JOB_XP = [0, 40, 120, 250, 450, 700, 1000, 1400, 1900, 2500];

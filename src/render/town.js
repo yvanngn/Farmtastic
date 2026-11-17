@@ -178,7 +178,7 @@ export function buildQuartier(season) {
   drawFranckHouse(shift((Q.franck.x - 25) * T, (Q.franck.y - 29) * T));
   drawMystHouse(shift((Q.myst.x - 40) * T, (Q.myst.y - 1) * T));   // la maison de Myst, tout en bas à gauche, derrière les arbres
   // pancartes : qui habite là (à côté du perron)
-  for (const [id, name] of [['luna', 'LUNA'], ['franck', 'FRANCK'], ['hailey', 'HAILEY'], ['myst', 'MYST'], ['ed', 'FAMILLE ED']]) {
+  for (const [id, name] of [['luna', 'LUNA'], ['franck', 'FRANCK'], ['hailey', 'HAILEY'], ['myst', 'MYST'], ['ed', 'FAMILLE ED'], ['remy', 'REMY']]) {
     const h = Q[id], rows = h.porch ? 4 : 3, sx = (h.door + 1) * T + 10, sy = (h.y + rows) * T + 2;
     R(sx - 1, sy + 4, 2, 10, '#5b3a22'); signBoard(R, sx, sy - 4, name);
   }
@@ -202,6 +202,16 @@ export function buildQuartier(season) {
     R(x0 + T + 2, y0 + 2 * T - 6, 12, T + 6, '#6a4a3e'); R(x0 + T + 3, y0 + 2 * T - 5, 10, T + 5, '#8a5e4a'); R(x0 + T + 10, y0 + 2 * T + 2, 2, 2, '#e8c26a');
     for (const wx of [x0 + 6, x0 + w - 18]) { R(wx, y0 + 8, 12, 11, '#6a4a3e'); R(wx + 1, y0 + 9, 10, 9, '#bfe3f5'); R(wx + 5, y0 + 9, 1, 9, '#6a4a3e'); R(wx - 1, y0 + 19, 14, 3, '#8a5a32'); R(wx, y0 + 17, 3, 2, '#f07ab0'); R(wx + 5, y0 + 17, 3, 2, '#f6d24a'); R(wx + 9, y0 + 17, 3, 2, '#f07ab0'); }
     R(x0 + T, y0 + 3 * T - 1, 16, 3, '#c2bdb4');
+  }
+  { // maison de Remy Gusto (x18-22, y22-24) : planches bleu pâle, toit rouge, cheminée qui fume (on cuisine !), porte x20
+    const h = QUARTIER.remy, x0 = h.x * T, y0 = h.y * T, w = h.w * T;
+    R(x0 - 2, y0 + 3 * T, w + 4, 3, 'rgba(20,12,8,.3)');
+    R(x0 + 2, y0 - 4, w - 4, 3 * T + 4, '#c8d8e4'); for (let k = 0; k < 3 * T; k += 5) R(x0 + 2, y0 - 4 + k, w - 4, 1, '#a8bccc');
+    for (let i = 0; i < 9; i++) R(x0 - 3 + (8 - i) * 2, y0 - 22 + i * 2, w + 6 - (8 - i) * 4, 2, i % 2 ? '#8f3224' : '#a8432f');
+    R(x0 - 4, y0 - 5, w + 8, 3, '#5a2a22'); R(x0 + w - 18, y0 - 26, 7, 14, '#6a6a72'); R(x0 + w - 19, y0 - 27, 9, 2, '#4a4a52');
+    const dx = h.door * T + 1; R(dx, y0 + 2 * T - 6, 14, T + 6, '#3b2414'); R(dx + 2, y0 + 2 * T - 4, 10, T + 4, '#8a5a32'); R(dx + 9, y0 + 2 * T + 4, 2, 2, '#e8c26a');
+    for (const wx of [x0 + 6, x0 + w - 18]) { R(wx, y0 + 10, 12, 11, '#3b2414'); R(wx + 1, y0 + 11, 10, 9, '#ffd98a'); R(wx + 5, y0 + 11, 1, 9, '#3b2414'); }
+    R(x0 + 4, y0 + 3 * T - 8, 10, 6, '#7a4f2e'); R(x0 + 5, y0 + 3 * T - 11, 2, 3, '#5aa040'); R(x0 + 9, y0 + 3 * T - 12, 2, 4, '#5aa040'); R(x0 + 12, y0 + 3 * T - 10, 2, 2, '#e0402a');   // herbes aromatiques
   }
   { // maison d'Ed, Suzie et Jade (x32-36, y12-14) : grande maison à étages, briques, deux rangées de fenêtres, toit d'ardoise
     const h = QUARTIER.ed, x0 = h.x * T, y0 = h.y * T, w = h.w * T, top = y0 - 2 * T, bot = y0 + 3 * T;

@@ -2,6 +2,7 @@
 // (30 pierres + 15 bois) rapporte le couteau, qui sert à cueillir les fleurs et les champignons. Logique pure.
 import { has, add } from './inventory.js';
 import { hasTool } from './skills.js';
+import { isRepaired } from './repair.js';
 
 export const OVEN_COST = { stone: 30, wood: 15 };
 export const restoQ = S => (S.resto ||= { asked: false, oven: false, knife: false });
@@ -32,4 +33,14 @@ export function repairOven(g) {
   g.bus.emit('swing', 'hammer'); g.bus.emit('sfx', 'craft'); g.bus.emit('toast', '🔥 Le four est réparé ! Va le dire au cuistot.');
   g.bus.emit('ovenFixed');
   return 'fixed';
+}
+
+// Farmwest (lot 6) : Harry Fordson, le charpentier, apprend à faire le coffre une fois la cabane retapée (quête principale).
+export function harryTalk(g, n) {
+  const S = g.S;
+  if ((S.recipes || []).includes('chest') || !isRepaired(S, 'house')) return false;
+  S.recipes = [...(S.recipes || []), 'chest'];
+  g.bus.emit('say', { name: n.name, title: n.title, color: n.color, voice: n.voice, lines: n.chest });
+  g.bus.emit('sfx', 'levelup'); g.bus.emit('toast', '📦 Nouvelle recette : le coffre (80 bois + 20 pierres) — 📜 Recettes');
+  return true;
 }

@@ -313,5 +313,28 @@ test('Farmwest lot 4 : quêtes principales (cabane, coffre, pioche, hache, pelle
   const { g, S } = start({ repair: { house: { wood: 79, stone: 30 }, grange: { wood: 0, stone: 0 } }, inv: { wood: 5, stone: 5 }, sel: 'hammer' });
   assert.equal(questVisible(S, 'franck'), false, 'secondaire cachée'); assert.ok(questVisible(S, 'debut'));
   for (let i = 0; i < 3 && !isRepaired(S, 'house'); i++) contribute(g, 'house'); assert.ok(isRepaired(S, 'house'));
-  assert.ok(S.recipes.includes('chest'), 'recette du coffre (provisoire) avec la cabane'); assert.ok(questVisible(S, 'franck'));
+  assert.ok(!S.recipes.includes('chest'), 'le coffre s’apprend auprès de Harry (lot 6)'); assert.ok(questVisible(S, 'franck'));
+});
+
+test('Farmwest lot 6 : Harry Fordson apprend le coffre une fois la cabane retapée ; métier de charpentier', async () => {
+  const { HARRY } = await import('../src/data/npcs.js');
+  const { registerNPC, talk, placeNPC } = await import('../src/systems/social.js');
+  const { jobXp } = await import('../src/systems/jobs.js');
+  const { craftHand } = await import('../src/systems/cooking.js');
+  const { contribute } = await import('../src/systems/repair.js');
+  const { g, S } = start({ minute: 600, repair: { house: { wood: 70, stone: 30 }, grange: { wood: 0, stone: 0 } }, inv: { wood: 120, stone: 40 }, sel: 'hammer' });
+  registerNPC(g, HARRY); placeNPC(g.npcs.harry, S, 480, 1140); assert.equal(g.npcs.harry.scene, 'town');
+  talk(g, 'harry'); assert.ok(!S.recipes.includes('chest'), 'pas avant la cabane');
+  for (let i = 0; i < 20 && !isRepaired(S, 'house'); i++) contribute(g, 'house');
+  assert.ok(jobXp(S, 'charpentier') > 0, 'les coups de marteau comptent pour le métier');
+  S.social.harry.talked = false; talk(g, 'harry'); assert.ok(S.recipes.includes('chest'));
+  const before = jobXp(S, 'charpentier'); assert.ok(craftHand(g, 'chest')); assert.ok(jobXp(S, 'charpentier') > before);
+});
+
+test('Farmwest lot 6 : Remy Gusto habite la zone résidentielle', async () => {
+  const { CUISTOT } = await import('../src/data/npcs.js');
+  const { registerNPC, placeNPC } = await import('../src/systems/social.js');
+  const { g, S } = start({ minute: 1400 });
+  registerNPC(g, CUISTOT); placeNPC(g.npcs.cuistot, S, 480, 1140); assert.equal(g.npcs.cuistot.scene, 'remy', 'le soir, chez lui');
+  S.scene = 'quartier'; assert.equal(act(g, 20, 24), 'door'); assert.equal(S.scene, 'remy');
 });

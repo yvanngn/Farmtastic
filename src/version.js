@@ -1,4 +1,4 @@
 // Version du jeu (semver horodaté). Fichier écrit par `node tools/version.mjs` : ne pas modifier à la main.
 // Patch = automatique à chaque publication ; mineure et majeure = seulement quand l'utilisateur le demande.
-export const VERSION = { major: 0, minor: 1, patch: 12, date: '2026-11-17T14:55' };
+export const VERSION = { major: 0, minor: 1, patch: 13, date: '2026-11-17T15:03' };
 export const versionLabel = (v = VERSION) => `v${v.major}.${v.minor}.${v.patch} · ${v.date.slice(8, 10)}/${v.date.slice(5, 7)}/${v.date.slice(0, 4)} ${v.date.slice(11, 16)}`;

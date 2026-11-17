@@ -1,4 +1,4 @@
-import { cuistotTalk } from './resto.js';
+import { cuistotTalk, harryTalk } from './resto.js';
 // Liens sociaux avec les PNJ. Les répliques d'histoire se débloquent avec l'amitié, une par jour.
 // 250 points = 1 cœur. Une discussion et un cadeau par jour.
 export const POINTS_PER_HEART = 250;
@@ -38,6 +38,7 @@ export function talk(g, id) {
   if (!r || !n) return false;
   r.seen ||= []; r.asked ||= []; r.talks ||= 0;
   const say = (lines, extra) => g.bus.emit('say', { name: n.name, title: n.title, color: n.color, voice: n.voice, lines, ...extra });
+  if (id === 'harry' && harryTalk(g, n)) { if (!r.talked) { r.points += 20; r.talked = true; r.talks++; } return true; }   // le coffre (lot 6)
   if (id === 'cuistot' && cuistotTalk(g, n)) { if (!r.talked) { r.points += 20; r.talked = true; r.talks++; } return true; }   // quête du four (lot 5)
   // une question de temps en temps (1 discussion sur 3), une seule fois chacune
   const q = !r.talked && r.talks % 3 === 2 && (n.questions || []).find(x => !r.asked.includes(x.id) && x.h <= hearts(r));

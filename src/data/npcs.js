@@ -342,13 +342,24 @@ export const INTRO_MYST = {
   ]
 };
 
-// Farmwest (lot 5) : le cuistot du restaurant (centre-ville). 💡 nom, apparence et répliques proposés par Claude, à valider.
-// Son four est en panne : le réparer (marteau, 30 pierres + 15 bois) rapporte le couteau (quête principale « Premiers pas »).
+// Remy Gusto, le cuistot du restaurant (décrit par l'utilisateur le 17/11). Fils abandonné d'un cuisinier renommé : partout,
+// on ne voyait en lui que « le fils de », il a perdu beaucoup de concours à cause de son nom. Il est venu à Farmwest, loin de tout,
+// pour vivre de sa passion. Il déteste son père ; quand celui-ci sera mort, il essaiera de percer à nouveau. Maison : zone résidentielle.
+// Son four est en panne : le réparer (marteau, 30 pierres + 15 bois) rapporte le couteau (quête principale). Répliques 🆕.
 export const CUISTOT = {
-  id: 'cuistot', name: 'Le cuistot', de: 'de lui', color: '#f2a03a', voice: 'voiceFranck',
+  id: 'cuistot', name: 'Remy Gusto', title: 'cuistot', de: 'de lui', color: '#f2a03a', voice: 'voiceFranck',
   look: { body: 'h', bottom: 'pant', skin: '#e8b48c', hair: 0, hairC: '#3a2a20', shirt: '#f4f4f0', pants: '#3a3a44' },
-  home: null, dayScene: 'resto', day: { x: 11.5, y: 4.6 },   // 💡 en cuisine toute la journée
-  traits: ['Cuisinier du restaurant', 'Son four est en panne'], taste: {},
+  home: 'remy', inside: { x: 3.5, y: 4.6 }, worker: { scene: 'resto', at: { x: 11.5, y: 4.6 }, from: 420, to: 1320 },   // 💡 en cuisine de 7 h à 22 h
+  traits: ['Cuisinier du restaurant', 'Fils abandonné d’un cuisinier renommé', 'On ne voyait en lui que « le fils de »', 'Vit de sa passion, loin de tout', 'Déteste son père'],
+  taste: { adore: [], aime: ['confiture_baies', 'confiture_mures'], naime: ['slime'], deteste: [] },   // 💡
+  story: [
+    { h: 0, t: "Remy Gusto, cuisinier. Ici, on vient pour manger, pas pour poser des questions. … Enfin, sauf toi, apparemment." },
+    { h: 1, t: "Mon père est un cuisinier très connu. Il m'a abandonné quand j'étais petit." },
+    { h: 2, t: "J'ai essayé de percer. Mais pour tout le monde, je n'étais que « le fils de ». Alors j'ai travaillé, encore et encore." },
+    { h: 3, t: "J'ai perdu beaucoup de concours à cause de mon nom. Alors je suis venu à Farmwest, loin de tout, pour cuisiner en paix." },
+    { h: 4, t: "Je le déteste pour ça. Le jour où il ne sera plus là… je retenterai ma chance. Sous mon nom." }
+  ],
+  topics: [{ t: 'Pourquoi Farmwest ?', h: 1, lines: ["Loin de tout. Ici, personne ne me compare à personne. Je fais juste à manger."] }],
   ask: [
     "Ah, un client ! Désolé, la cuisine est fermée… Mon four a rendu l'âme ce matin.",
     "Si tu sais manier un marteau, tu pourrais le réparer ? Il faudrait 30 pierres et 15 bois.",
@@ -362,4 +373,28 @@ export const CUISTOT = {
   chat: ["Le four ronronne comme au premier jour.", "Un jour, je ferai une carte avec les légumes de ta ferme."],
   questions: []
 };
-NPCS.cuistot = CUISTOT;
+// Harry Fordson, le charpentier (décrit par l'utilisateur le 17/11) : charpentier de père en fils, très doué. Il a une maladie
+// dont on ne sait rien, sans symptôme visible. Il aimerait se marier un jour, mais il travaille beaucoup et a beaucoup de dettes
+// envers Manu, le Maire. C'est lui qui apprend à faire le coffre (quête principale). Répliques 🆕.
+export const HARRY = {
+  id: 'harry', name: 'Harry Fordson', title: 'charpentier', de: 'de lui', color: '#c99560', voice: 'voiceChef',
+  look: { body: 'h', bottom: 'pant', skin: '#e8b48c', hair: 2, hairC: '#a86a32', shirt: '#7a4a2a', pants: '#3a4a6a', tall: true },   // 💡 chemise de travail
+  home: null, dayScene: 'town', day: { x: 7.5, y: 16.6 },   // devant son atelier
+  traits: ['Charpentier de père en fils', 'Très doué', 'Malade, sans symptôme visible', 'Aimerait se marier un jour', 'Beaucoup de dettes envers Manu, le Maire'],
+  taste: { adore: [], aime: ['wood'], naime: ['slime'], deteste: [] },   // 💡
+  story: [
+    { h: 0, t: "Harry Fordson, charpentier. Chez nous, le bois, c'est de père en fils." },
+    { h: 1, t: "Mon père disait que j'avais ça dans les mains. Moi, j'aime juste le bruit du rabot." },
+    { h: 2, t: "Je travaille beaucoup. Trop, sûrement. J'ai des dettes envers Manu, le Maire… et elles ne se paient pas toutes seules." },
+    { h: 3, t: "Un jour, j'aimerais me marier. Encore faudrait-il que je lève le nez de mon établi." },
+    { h: 4, t: "Je suis malade. Personne ne sait ce que c'est, et ça ne se voit pas. Alors je n'en parle pas." }
+  ],
+  topics: [{ t: 'Tu construis quoi ?', lines: ['Des bâtiments pour les fermes, et des meubles quand j’ai le temps. Regarde.'], open: 'carpenter' }],
+  chest: [
+    "Ta cabane tient debout ? Joli travail, pour un débutant.",
+    "Tiens, je te montre comment faire un coffre. Tu y rangeras tes affaires : un vrai fermier ne garde pas tout sur son dos."
+  ],
+  chat: ["Le bois, ça se respecte : il a mis des années à pousser.", "Encore une commande pour Manu… Elles ne finissent jamais."],
+  questions: []
+};
+NPCS.cuistot = CUISTOT; NPCS.harry = HARRY;

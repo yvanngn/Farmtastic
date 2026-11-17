@@ -1,3 +1,4 @@
+import { gainJob } from './jobs.js';
 // Réparation des bâtiments délabrés (cabane, grange) et outils trouvés dehors. Logique pure.
 import { REPAIRS, REPAIR_STEP, FIELD_TOOLS } from '../data/repairs.js';
 import { inRect } from '../world/map.js';
@@ -24,14 +25,12 @@ export function contribute(g, id) {
     if (give > 0) { add(g, k, -give); st[k] = (st[k] || 0) + give; moved += `+${give}${k === 'wood' ? '🪵' : '🪨'} `; }
   }
   if (!moved) { g.bus.emit('sfx', 'denied'); g.bus.emit('toast', 'Il te manque du bois ou des pierres : va en chercher !'); return false; }
-  (S.tips ||= {}).hammer = true;   // l'explication « reste appuyé avec le marteau » n'est plus utile
+  (S.tips ||= {}).hammer = true;
+  gainJob(g, 'charpentier', 1);   // métier de charpentier : chaque coup de marteau compte   // l'explication « reste appuyé avec le marteau » n'est plus utile
   g.bus.emit('sfx', 'pick'); g.bus.emit('pop', { t: moved.trim(), x: (R.x0 + R.x1) / 2, y: R.y1 });
   if (isRepaired(S, id)) {
     g.bus.emit('sfx', 'levelup'); g.bus.emit('toast', `✅ ${R.n} est réparée !`); g.bus.emit('repaired', id);
-    if (id === 'house' && !(S.recipes || []).includes('chest')) {   // ⏳ provisoire (17/11) : la quête du coffre est à repenser ; en attendant, la recette vient avec la cabane
-      S.recipes = [...(S.recipes || []), 'chest'];
-      g.bus.emit('toast', '📦 Nouvelle recette : le coffre (80 bois + 20 pierres) — 📜 Recettes');
-    }
+    if (id === 'house') g.bus.emit('toast', '📦 Harry Fordson, le charpentier du centre-ville, pourra t’apprendre à faire un coffre.');
   }
   return true;
 }

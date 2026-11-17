@@ -16,6 +16,7 @@ export const EXAMINE = {
     houseRuin: "Ma future maison ... enfin cabane pour le moment… Avec du bois et des pierres, je peux la rafistoler.",
     grangeRuin: "La grange tient à peine debout. Impossible d'entrer pour l'instant.",
     hailey: 'Une petite maison rose, avec des fleurs aux fenêtres.',
+    remy: 'La maison de Remy. Ça sent les herbes fraîches et le bouillon.',
     ed: 'Une grande maison à étages. Un petit vélo rose attend devant la porte.',
     clinic: 'La clinique du quartier. On y soigne les bobos… et les gens épuisés.',
     myst: "Une vieille maison sombre, un peu à l'écart. Les rideaux sont tirés.",

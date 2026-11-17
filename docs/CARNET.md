@@ -497,3 +497,8 @@ Chaque ligne = un lot indépendant, à demander quand il y a des crédits.
 - ✅ Restaurant au sud du centre-ville (ancienne villa), salle + cuisine ; **le cuistot** (💡 nom à trouver) ; four en panne → réparé → couteau. Fleurs et champignons : couteau + jauge (rester appuyé).
 - ⏳ Roadmap : **lot 8 expérience et niveaux** (1 XP par petit objet cassé / fleur, 5 par objet fabriqué, dizaines par quête, plus pour les principales ; courbe exponentielle ; niveau 10 max ; déblocages) ; **lot 9 quêtes de craft secondaires** (cuisine…).
 - ❓ Nom et personnalité du cuistot.
+
+## Séance 17/11/2026 (15h05) — Farmwest, lot 6 (v0.1.13)
+- ✅ **Remy Gusto** (le cuistot) : fils abandonné d'un cuisinier renommé, « le fils de » partout, concours perdus à cause de son nom, venu à Farmwest loin de tout pour vivre de sa passion, déteste son père et retentera sa chance à sa mort. Maison dans la zone résidentielle (x18-22, y22-24).
+- ✅ **Harry Fordson** (le charpentier) : de père en fils, très doué ; maladie inconnue sans symptôme visible ; voudrait se marier ; travaille beaucoup ; beaucoup de dettes envers Manu. Devant son atelier du centre-ville.
+- ✅ Métier **charpentier** ; Harry apprend le **coffre** une fois la cabane retapée (💡 remplace le provisoire).

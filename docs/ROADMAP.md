@@ -82,11 +82,16 @@ Décisions : le couteau fait partie d'une **quête principale** ; un **restauran
 - [x] **Fleurs et champignons** : il faut le couteau, et une **jauge** se remplit en restant appuyé (3 coups d'action).
 - [x] Étape « Aider le cuistot » dans « Premiers pas » ; « grange + pelle » en une seule étape ; plus de confiture.
 
-## Lot 6 — Métier de charpentier
-- [ ] Nouveau métier **charpentier** (avec forgeron, alchimiste, couturier, joaillier, cuisinier), 10 niveaux.
-- [ ] Le **charpentier** donne le **patron du coffre** après la **première quête secondaire** (donnée plus tard).
-- [ ] Le coffre ne s'apprend plus chez Igor (voir ❓ du lot 4).
-- ❓ Quel PNJ est le charpentier (celui qui construit les bâtiments aujourd'hui ?) et quelle est cette 1re quête secondaire ?
+## Lot 6 — Métier de charpentier, Harry Fordson et Remy Gusto ✅ (17/11/2026, v0.1.13)
+Décrits par l'utilisateur :
+- **Harry Fordson**, le charpentier : charpentier de père en fils, très doué ; une maladie inconnue, sans symptôme visible ; aimerait se marier un jour ; travaille beaucoup et a beaucoup de dettes envers Manu, le Maire.
+- **Remy Gusto**, le cuistot : fils abandonné d'un cuisinier renommé ; vu partout comme « le fils de », il a perdu beaucoup de concours à cause de son nom ; venu à Farmwest, loin de tout, pour vivre de sa passion ; déteste son père et retentera sa chance à sa mort. Maison dans la zone résidentielle.
+
+- [x] Nouveau métier **charpentier** (10 niveaux) : XP en fabriquant le coffre et à chaque coup de marteau sur la cabane ou la grange.
+- [x] **Harry Fordson** devant son atelier du centre-ville ; son sujet « Tu construis quoi ? » ouvre la boutique du charpentier ; histoire en 5 étapes d'amitié.
+- [x] **Quête principale du coffre** : une fois la cabane retapée, **Harry apprend à faire le coffre** (remplace la solution provisoire du lot 4). 💡 à confirmer.
+- [x] **Remy Gusto** : nom, histoire en 5 étapes, au restaurant de 7 h à 22 h, puis chez lui ; **maison** (bleu pâle, toit rouge, herbes aromatiques) dans la zone résidentielle.
+- ❓ La « première quête secondaire » qui devait donner le coffre n'est plus nécessaire : à confirmer.
 
 ## Lot 7 et suivants — Grand upgrade graphique (style de l'image et de Stardew Valley)
 Objectif : le rendu de `docs/carte-region-farmwest.jpg` : terre ocre et chemins de sable, rivière bleue avec ponts en bois, forêts denses en grappes, falaises en terrasses, bâtiments de l'Ouest en planches avec toits colorés, plage et pontons.

@@ -1,7 +1,7 @@
 // Recettes qu'on connaît et qu'on fabrique n'importe où (onglet « Recettes »). Au début : seulement le feu.
 export const HAND_RECIPES = {
   campfire: { out: 'campfire', q: 1, in: { wood: 5, stone: 2 }, cat: 'feu' },
-  chest: { out: 'chest', q: 1, in: { wood: 80, stone: 20 }, cat: 'rangement' },   // appris auprès d'Igor
+  chest: { out: 'chest', q: 1, in: { wood: 80, stone: 20 }, cat: 'rangement', job: 'charpentier' },   // appris auprès de Harry Fordson   // appris auprès d'Igor
   chaudron: { out: 'chaudron', q: 1, in: { stone: 20, wood: 10 }, cat: 'feu', job: 'forgeron' },   // 💡 patron acheté à la forge
   bague_cuivre: { out: 'bague_cuivre', q: 1, in: { copper_ore: 3, stone: 2 }, cat: 'bijoux', job: 'joaillier' },
   tisane: { out: 'tisane', q: 1, in: { berry: 2, paquerette: 2 }, cat: 'potions', job: 'alchimiste' },
