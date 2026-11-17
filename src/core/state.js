@@ -5,7 +5,7 @@ import { LEVELS } from '../systems/level.js';
 export function defaultState() {
   return {
     v: CFG.VERSION, name: 'Cloud Jimny',   // nom par défaut (modifiable à la création)
-    look: { body: 'h', bottom: 'pant', skin: '#f6d2b0', hair: 0, hairC: '#7a4a22', shirt: '#a8432f', pants: '#3a5a9a', overalls: '#3a5a9a', plaid: true, backpack: '#a8774a', hero: true },   // hero : dessiné depuis la planche de sprites, recolorée selon la personnalisation   // planche docs/personnages-reference.jpg : salopette bleue, chemise à carreaux, sac à dos
+    look: { doll: true, skin: '#f6d2b0', eye: '#3a6aa8', hair: 0, hairC: '#7a4626', top: 'plaid', shirt: '#b8302a', overalls: '#3a5a9a', bottom: 'pant', pants: '#3a5a8a', hat: '', body: 'h' },   // héros en poupée de sprites (src/render/heroDoll.js)   // hero : dessiné depuis la planche de sprites, recolorée selon la personnalisation   // planche docs/personnages-reference.jpg : salopette bleue, chemise à carreaux, sac à dos
     money: 500, energy: 100, maxE: 100, hp: 100, maxHp: 100,
     day: 1, season: 0, year: 1, minute: CFG.DAY_START, weather: 'sun',
     inv: { tent: 1 },   // 17/11 : seulement la tente au départ (plus de graines, de foin ni de sac à dos)
@@ -37,11 +37,17 @@ export function defaultState() {
 }
 
 // Migration douce : les champs absents d'une vieille sauvegarde prennent la valeur par défaut.
+// Ancien look (dessin par code) → poupée de sprites : on garde les couleurs proches et la coiffure si elle existe.
+export function toDoll(L) {
+  const H = [0, 1, 3, 4], out = { doll: true, body: L.body || 'h', skin: L.skin || '#f6d2b0', eye: L.eye || '#3a6aa8', hair: H.includes(L.hair) ? L.hair : L.hair === 5 ? 4 : 0, hairC: L.hairC || '#7a4626',
+    top: L.top || (L.plaid === false ? 'plain' : 'plaid'), shirt: L.shirt || '#b8302a', overalls: L.overalls || '', bottom: L.bottom === 'skirt' || L.bottom === 'robe' ? 'skirt' : 'pant', pants: L.pants || '#3a5a8a', hat: L.hat === 'cowboy' || L.hat === 'paille' ? L.hat : '' };
+  return out;
+}
 export function migrate(raw) {
   if (!raw || typeof raw !== 'object') return null;
   const s = Object.assign(defaultState(), raw);
   const d = defaultState();
-  s.look = Object.assign(d.look, raw.look || {}); s.look.hero = true; delete s.look.sheet;   // le héros : planche de sprites recolorée
+  s.look = toDoll(Object.assign(d.look, raw.look || {}));   // le héros : poupée de sprites (choix ramenés aux options disponibles)
   // Avant le lot 8, on avait tous les outils et pas d'accueil : on garde ça pour les anciennes parties.
   s.tools = raw.tools ? { ...raw.tools } : { axe: 1, pick: 1, sickle: 1, sword: 1 };
   if (!s.tools.hammer) s.tools.hammer = 1;   // tout le monde a un marteau

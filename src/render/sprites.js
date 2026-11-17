@@ -5,6 +5,7 @@ import { cropProgress } from '../systems/farming.js';
 import { shade, disc, canvas, outline, makeCache, groundShadow, hex6, harmonize } from './pixel.js';
 import { rng } from '../world/map.js';
 import { SHEETS } from './sheets.js';
+import { drawDoll } from './heroDoll.js';
 const T = CFG.T;
 const cache = makeCache(400);
 const SHOE = '#4a2e1e', EYE = '#2a1d18';
@@ -230,6 +231,7 @@ function drawHeroSheet(c, ox, oy, L, d, f) {
 export function drawChar(c, ox, oy, L, d, f, t = 0, noArm = false) {
   groundShadow(c, ox + 6, oy + 19, 6, 2);
   if (L.sheet && drawSheet(c, ox, oy, L, d, f)) return;
+  if (L.doll) { drawDoll(c, ox, oy, L, d, f); return; }   // héros : poupée de sprites (calques)
   if (L.hero && heroCanUseSheet(L) && drawHeroSheet(c, ox, oy, L, d, f)) return;   // héros : planche recolorée   // planche de sprites si elle existe
   const blink = (t % 4200) < 130, spr = charSprite(L, d, f || 0, blink, noArm), x = ox - 3, y = oy - 12;
   if (L.kid) {   // enfant : tête entière, buste et jambes raccourcis

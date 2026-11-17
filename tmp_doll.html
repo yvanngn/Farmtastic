@@ -1,0 +1,10 @@
+<!DOCTYPE html><html><body style="margin:0;background:#86ae46"><canvas id="c" width="300" height="130" style="width:1500px;height:650px;image-rendering:pixelated"></canvas>
+<script type="module">
+import { dollFrame } from './src/render/heroDoll.js';
+const c = document.getElementById('c').getContext('2d'); c.imageSmoothingEnabled = false;
+const V = [{ skin: '#f6d2b0', eye: '#3a6aa8', hair: 0, hairC: '#7a4626', top: 'plaid', shirt: '#b8302a', overalls: '#3a5a9a', bottom: 'pant', pants: '#3a5a8a' },
+  { skin: '#c8906a', eye: '#6a4a2a', hair: 1, hairC: '#2a2026', top: 'plain', shirt: '#2f7a46', overalls: '', bottom: 'skirt', pants: '#6a5236' },
+  { skin: '#e8b48c', eye: '#4a8a4a', hair: 3, hairC: '#c88a3a', top: 'plaid', shirt: '#3a5a9a', overalls: '', bottom: 'pant', pants: '#4a4a52', hat: 'paille' },
+  { skin: '#8a5a3a', eye: '#5a5a6a', hair: 4, hairC: '#a8432f', top: 'plain', shirt: '#e8dcc4', overalls: '#8a5a32', bottom: 'pant', pants: '#3a5a8a', hat: 'cowboy' }];
+V.forEach((L, i) => { [[0, 0], [0, 1], [0, 5], [2, 0], [2, 3], [1, 0]].forEach(([d, f], j) => c.drawImage(dollFrame(L, d, f), 4 + j * 24 + (i % 2) * 150, 4 + (i >> 1) * 62)); });
+</script></body></html>

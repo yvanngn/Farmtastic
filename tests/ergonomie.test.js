@@ -36,7 +36,7 @@ test('apparence : silhouette et bas par défaut, conservés au chargement', () =
   assert.equal(s.look.body, 'h');
   assert.equal(s.look.bottom, 'pant');
   const f = migrate({ look: { body: 'f', bottom: 'skirt', hair: 5 } });
-  assert.deepEqual([f.look.body, f.look.bottom, f.look.hair], ['f', 'skirt', 5]);
+  assert.deepEqual([f.look.body, f.look.bottom, f.look.hair], ['f', 'skirt', 4], 'couettes → queue de cheval (options de la poupée)');
 });
 
 test('menu titre : Continuer seulement avec une sauvegarde', async () => {
@@ -109,12 +109,13 @@ test('chaque niveau de zoom montre plus loin que le précédent (« Loin » ≠ 
   }
 });
 
-test('héros : dessiné depuis la planche (recolorée) tant que ses options le permettent', async () => {
-  const { heroCanUseSheet } = await import('../src/render/sprites.js');
+test('héros : poupée de sprites, choix limités, anciens looks convertis', async () => {
+  const { DOLL_OPTS, dollFrame } = await import('../src/render/heroDoll.js');
   const { defaultState, migrate } = await import('../src/core/state.js');
   const L = defaultState().look;
-  assert.equal(L.hero, true); assert.equal(heroCanUseSheet(L), true);
-  assert.equal(heroCanUseSheet({ ...L, shirt: '#00ff00', hat: 'cowboy' }), true, 'couleurs et chapeau : planche');
-  assert.equal(heroCanUseSheet({ ...L, vest: '#5a3a2a' }), false, 'gilet : dessin par code');
-  assert.equal(migrate({ name: 'x', look: { body: 'h', shirt: '#123456' } }).look.hero, true, 'anciennes parties aussi');
+  assert.equal(L.doll, true);
+  for (const k of ['skin', 'eye', 'hairC', 'shirt', 'pants']) assert.ok(DOLL_OPTS[k].includes(L[k]), k);
+  const m = migrate({ name: 'x', look: { body: 'h', hair: 2, shirt: '#123456', hat: 'melon', vest: '#5a3a2a' } }).look;
+  assert.equal(m.doll, true); assert.equal(m.hair, 0, 'coiffure inconnue → courts'); assert.equal(m.hat, '', 'chapeau absent des options → aucun'); assert.equal(m.shirt, '#123456');
+  assert.equal(typeof dollFrame, 'function');
 });

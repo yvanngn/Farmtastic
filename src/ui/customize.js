@@ -2,6 +2,7 @@
 import { $ } from './dom.js';
 import { LOOK_OPTS, HAIR_NAMES, BODY_NAMES, BOTTOM_NAMES, WEST_OPTS, HAT_NAMES, YESNO } from '../data/look.js';
 import { drawChar } from '../render/sprites.js';
+import { DOLL_OPTS, HAIR_LABELS, TOP_LABELS } from '../render/heroDoll.js';
 import { GRASS } from '../render/ground.js';
 
 const ROT_L = [2, 3, 1, 0], ROT_R = [3, 2, 0, 1];
@@ -16,19 +17,19 @@ export function createCustomizer({ getLook, getName, onStart, onContinue, onBack
     const sec = (title, k, vals, labels) => `<div style="margin-top:8px"><b>${title}</b><div class="row">` + vals.map((v, i) => labels === 1
       ? `<div class="chip ${L[k] === v ? 'sel' : ''}" style="background:${v}" data-k="${k}" data-v="${v}"></div>`
       : `<button class="${L[k] === v ? 'on' : ''}" data-k="${k}" data-v="${v}">${labels[v] ?? labels[i]}</button>`).join('') + '</div></div>';
-    $('#lookOpts').innerHTML = sec('Silhouette', 'body', LOOK_OPTS.body, BODY_NAMES) + sec('Peau', 'skin', LOOK_OPTS.skin, 1)
-      + sec('Coiffure', 'hair', LOOK_OPTS.hair, HAIR_NAMES) + sec('Cheveux', 'hairC', LOOK_OPTS.hairC, 1)
-      + sec('Haut', 'shirt', LOOK_OPTS.shirt, 1) + sec('Bas', 'bottom', LOOK_OPTS.bottom, BOTTOM_NAMES) + sec('Couleur du bas', 'pants', LOOK_OPTS.pants, 1)
-      // 7e bis : tenue western
-      + '<div class="sous-titre" style="margin-top:10px">🤠 Tenue western</div>'
-      + opt('Salopette', 'overalls') + opt('Sac à dos', 'backpack') + sec('Chapeau', 'hat', WEST_OPTS.hat, HAT_NAMES) + opt('Gilet', 'vest') + opt('Bandana', 'bandana')
-      + yn('Chemise', 'plaid') + yn('Jambes', 'chaps') + yn('Bottes', 'spurs');
+    // 17/11 : héros en poupée de sprites — choix en nombre limité (src/render/heroDoll.js, DOLL_OPTS)
+    const D = DOLL_OPTS;
+    $('#lookOpts').innerHTML = sec('Peau', 'skin', D.skin, 1) + sec('Yeux', 'eye', D.eye, 1)
+      + sec('Coiffure', 'hair', D.hair, HAIR_LABELS) + sec('Cheveux', 'hairC', D.hairC, 1)
+      + sec('Chemise', 'top', D.top, TOP_LABELS) + sec('Couleur de la chemise', 'shirt', D.shirt, 1)
+      + opt('Salopette', 'overalls', D.overalls) + sec('Bas', 'bottom', D.bottom, { pant: 'Pantalon', skirt: 'Jupe' }) + sec('Couleur du bas', 'pants', D.pants, 1)
+      + sec('Chapeau', 'hat', D.hat, { '': 'Aucun', cowboy: 'Cow-boy', paille: 'Paille' });
   }
   // couleur facultative : « Aucun » puis le nuancier
-  function opt(title, k) {
+  function opt(title, k, vals = WEST_OPTS[k]) {
     const L = getLook(), cur = L[k] || '';
     return `<div style="margin-top:8px"><b>${title}</b><div class="row"><button class="${cur ? '' : 'on'}" data-k="${k}" data-v="">Aucun</button>`
-      + WEST_OPTS[k].filter(Boolean).map(v => `<div class="chip ${cur === v ? 'sel' : ''}" style="background:${v}" data-k="${k}" data-v="${v}"></div>`).join('') + '</div></div>';
+      + vals.filter(Boolean).map(v => `<div class="chip ${cur === v ? 'sel' : ''}" style="background:${v}" data-k="${k}" data-v="${v}"></div>`).join('') + '</div></div>';
   }
   function yn(title, k) {
     const L = getLook();
@@ -36,7 +37,7 @@ export function createCustomizer({ getLook, getName, onStart, onContinue, onBack
   }
   $('#lookOpts').onclick = e => {
     const { k, v, b } = e.target.dataset; if (!k) return;
-    const L = getLook(); delete L.sheet; L.hero = true;   // le héros reste dessiné depuis la planche, recolorée
+    const L = getLook(); delete L.sheet; L.doll = true;
     L[k] = b != null ? b === '1' : k === 'hair' ? +v : v; buildOpts();
   };
   $('#rotL').onclick = () => { dir = ROT_L[dir]; };
@@ -60,7 +61,7 @@ export function createCustomizer({ getLook, getName, onStart, onContinue, onBack
       pctx.fillStyle = GRASS[0]; pctx.fillRect(0, 0, 36, 45);
       pctx.fillStyle = '#5a9a3e'; for (const [x, y] of [[4, 8], [27, 6], [6, 36], [29, 33], [17, 4]]) { pctx.fillRect(x, y + 1, 1, 2); pctx.fillRect(x + 2, y + 1, 1, 2); pctx.fillRect(x + 1, y, 1, 3); }
       pctx.fillStyle = '#f07ab0'; pctx.fillRect(30, 40, 2, 2); pctx.fillStyle = '#f5e050'; pctx.fillRect(3, 24, 2, 2);
-      drawChar(pctx, 12, 14, getLook(), dir, dir >= 2 ? 1 + ((t / 85 | 0) % 8) : 0, t);
+      drawChar(pctx, 12, 17, getLook(), dir, dir >= 2 ? 1 + ((t / 85 | 0) % 8) : 0, t);
     }
   };
 }
