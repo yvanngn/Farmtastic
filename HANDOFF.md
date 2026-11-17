@@ -1,4 +1,4 @@
-# Farmwest — reprise du projet (à jour le 17/11/2026, v0.1.33)
+# Farmwest — reprise du projet (à jour le 17/11/2026, v0.1.34)
 
 Pour reprendre dans n'importe quel compte Claude : « Reprends Farmwest depuis le dépôt yvanngn/farmwest, lis CLAUDE.md, HANDOFF.md, docs/ROADMAP.md et docs/CARNET.md, puis demande la suite (feuille de route terminée, voir « Plus tard »). »
 
@@ -6,6 +6,7 @@ Pour reprendre dans n'importe quel compte Claude : « Reprends Farmwest depuis l
 - **Code** : dépôt GitHub `yvanngn/farmwest` (branche `main`). CLAUDE.md et README.md font foi.
 - **Jeu en ligne** : GitHub Pages https://yvanngn.github.io/farmwest/ (index.html généré depuis play.html par `node tools/build-index.mjs`).
 - **Page claude.ai « Farmwest »** : appartient au compte personnel. Depuis un autre compte, ne pas la republier : pousser sur GitHub ; elle sera republiée au retour sur le compte personnel.
+- **Personnages** : planche de référence `docs/personnages-reference.jpg` (règle dans CLAUDE.md).
 - **Feuille de route** : `docs/ROADMAP.md` (lots 8-11 faits). **Mémoire** : `docs/CARNET.md` (questions ❓, idées 💡, abandons ❌). **Versions** : `docs/VERSIONS.md`. **Dialogues** : `docs/DIALOGUES.md` (138 répliques 🆕 en attente de relecture).
 - **Tests** : `npm test` (node:test, 237 tests).
 

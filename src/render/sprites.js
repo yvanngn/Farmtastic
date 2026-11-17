@@ -17,7 +17,7 @@ const f4 = f => f ? [1, 2, 3, 0][(f - 1) >> 1] : 0;   // face / dos : 4 poses ti
 function rawChar(c, L, d, f, blink, noArm = false) {
   const r = (x, y, w, h, col) => { c.fillStyle = col; c.fillRect(1 + x, 1 + y, w, h); };
   const S = hex6(L.skin), Sd = shade(S, .84), Sh = hex6(L.shirt), Shd = shade(Sh, .74), Shl = shade(Sh, 1.2);
-  const P = hex6(L.overalls || L.pants), Pd = shade(P, .72), Pl = shade(P, 1.18), H = hex6(L.hairC), Hl = shade(H, 1.4), Hd = shade(H, .7);
+  const P = hex6(L.overalls || L.pants), Pd = shade(P, .72), Pl = shade(P, 1.18), H = hex6(L.bald ? L.skin : L.hairC), Hl = shade(H, 1.4), Hd = shade(H, .7);
   const fem = L.body === 'f', robe = L.bottom === 'robe', skirt = L.bottom === 'skirt' || robe, st = L.hair, long = st === 1;
   const CH = '#8a5a32', SP = '#e8c26a', B = L.shoes || SHOE, Bl = shade(SHOE, 1.4), LIPS = '#c8586a', BLUSH = '#f0907a';
   const walking = !!f, ph = walking ? (f - 1) / WALK_N * Math.PI * 2 : 0;
@@ -125,6 +125,13 @@ function rawChar(c, L, d, f, blink, noArm = false) {
     if (L.mask) { const M = L.mask; if (front) { u(4, 7, 8, 5, M); u(5, 12, 6, 1, M); u(5, 8, 6, 1, shade(M, 1.3)); } else if (side) { u(7, 7, 6, 5, M); } }   // foulard qui cache le bas du visage
     if (L.pipe && (front || side)) { u(side ? 12 : 10, 9, 3, 1, '#5a3a22'); u(side ? 14 : 12, 7, 2, 2, '#5a3a22'); }
     if (L.pencil && L.hair === 3) u(9, -3, 4, 1, '#f2c832');
+    if (L.hood) { const Hc = shade(Sh, .8); if (front) { u(4, 12, 8, 2, Hc); u(7, 14, 1, 3, '#f4f4f0'); u(8, 14, 1, 3, '#f4f4f0'); u(5, 18, 6, 3, Hc); } else if (d === 1) { u(4, 11, 8, 4, Hc); u(5, 11, 6, 1, shade(Sh, 1.1)); } else u(4, 12, 4, 3, Hc); }   // sweat à capuche, poche
+    if (L.gloves) { const G = L.gloves; if (!side) { u(1, 20, 2, 2, G); u(13, 20, 2, 2, G); } else u(7, 20, 2, 2, G); }
+    if (L.apronFlowers && L.apron && front) for (const [x, y, c2] of [[5, 17, '#e07ab0'], [8, 19, '#6aa84a'], [10, 16, '#e8c04a'], [6, 22, '#e07ab0'], [9, 23, '#6aa84a']]) u(x, y, 1, 1, c2);
+    if (L.backpack) { const Bp = L.backpack, Bd = shade(Bp, .72);   // sac à dos du héros
+      if (d === 1) { u(4, 13, 8, 8, Bp); u(4, 13, 8, 1, shade(Bp, 1.2)); u(5, 16, 6, 3, Bd); u(7, 17, 2, 1, '#e8c26a'); }
+      else if (side) { u(2, 13, 3, 8, Bp); u(2, 13, 1, 8, Bd); }
+      else { u(3, 13, 1, 6, Bd); u(12, 13, 1, 6, Bd); } }
   };
   legs(); body(); head(); extras();
 }
@@ -141,7 +148,7 @@ function charSprite(L, d, f, blink, noArm = false) {
 }
 
 // Farmwest (7e) : chapeaux western — 'cowboy' (bords relevés, ruban), 'melon' (rond, noir), 'paille'.
-export const HATS = { cowboy: ['#8a5a32', '#6a4426', '#3a2a20'], melon: ['#2a2630', '#1a1820', '#8a2a2a'], paille: ['#e6c870', '#c9a84a', '#a83a2a'], blanc: ['#f2ead8', '#d8ccb0', '#8a2a2a'], large: ['#24222a', '#18161c', '#3a3640'], cap: ['#8a5a3a', '#f2ead8', '#c0392b'], plat: ['#5a5a5e', '#3e3e44', '#2a2a2e'], toque: ['#ffffff', '#e4e4ea', '#c8c8d0'], bandeau: ['#d8d0c0', '#a8a090', '#8a8070'], haut: ['#2a2428', '#1a161a', '#6a2a2a'] };
+export const HATS = { cowboy: ['#8a5a32', '#6a4426', '#3a2a20'], melon: ['#2a2630', '#1a1820', '#8a2a2a'], paille: ['#e6c870', '#c9a84a', '#a83a2a'], blanc: ['#f2ead8', '#d8ccb0', '#8a2a2a'], large: ['#24222a', '#18161c', '#3a3640'], cap: ['#3a5a9a', '#f2ead8', '#2a3a6a'], plat: ['#6a6a6e', '#4a4a50', '#2a2a2e'], toque: ['#ffffff', '#e4e4ea', '#c8c8d0'], bandeau: ['#2a2a2e', '#1a1a1e', '#3a3a40'], haut: ['#2a2428', '#1a161a', '#6a2a2a'] };
 function drawHat(c, L, d, f) {
   const [A, Bc, rib] = HATS[L.hat] || HATS.cowboy, r = (x, y, w, h, col) => { c.fillStyle = col; c.fillRect(1 + x, 1 + y, w, h); };
   const ph = f ? (f - 1) / WALK_N * Math.PI * 2 : 0, by = f && Math.abs(Math.sin(ph)) > .7 ? 1 : 0;

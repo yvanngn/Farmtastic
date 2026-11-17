@@ -42,8 +42,7 @@ function drawGhost(c, x, y, now) {   // l'esprit de la vieille femme (planche de
   c.save(); c.globalAlpha = .55 + Math.sin(now / 700) * .12;
   c.fillStyle = 'rgba(120,190,255,.25)'; c.beginPath(); c.ellipse(px + 8, py + 30, 7, 2, 0, 0, 7); c.fill();   // halo au sol
   const L = '#d8ecff', M = '#a8d0f4', D = '#6a9ad0', O = '#4a7ab0';
-  R(6, 0, 4, 3, M); R(7, -1, 2, 1, L);                                   // chignon
-  R(4, 2, 8, 7, O); R(5, 3, 6, 6, L); R(5, 3, 6, 1, M); R(4, 3, 1, 4, M); R(11, 3, 1, 4, M);   // tête et cheveux
+  R(3, 1, 10, 3, M); R(3, 3, 2, 12, M); R(11, 3, 2, 12, M); R(4, 2, 8, 7, O); R(5, 3, 6, 6, L); R(5, 2, 6, 1, M);   // tête, longs cheveux qui tombent
   R(6, 5, 1, 1, '#3a5a8a'); R(9, 5, 1, 1, '#3a5a8a'); R(7, 7, 2, 1, D);   // yeux baissés, bouche
   R(6, 9, 4, 2, L); R(6, 9, 4, 1, M);                                    // col montant
   R(3, 10, 10, 7, O); R(4, 11, 8, 6, M); R(7, 11, 2, 6, L); for (const y of [12, 14]) R(7, y, 2, 1, D);   // corsage boutonné
@@ -174,7 +173,7 @@ function drawCoach(c, wx, wy, now) {   // diligence détaillée (vue de 3/4, ver
   R(14, -29, 9, 10, '#8a6a48'); R(14, -29, 2, 10, '#a8865e'); R(14, -29, 9, 2, '#e8dcc4'); R(17, -27, 1, 8, '#e8dcc4');   // manteau, col de laine
   R(16, -35, 6, 6, '#e8b48c'); R(16, -32, 6, 3, '#9a9a9a'); R(17, -33, 4, 1, '#7a7a7a'); R(20, -34, 1, 1, '#2a2030');   // visage, barbe grise
   R(21, -32, 3, 1, '#5a3a22'); R(23, -34, 2, 2, '#5a3a22');   // pipe
-  R(14, -36, 10, 1, '#1a161a'); R(16, -44, 6, 8, '#2a2428'); R(16, -38, 6, 1, '#6a2a2a'); R(17, -43, 1, 5, '#4a4448');   // haut-de-forme
+  R(13, -36, 12, 2, '#4a3020'); R(15, -41, 8, 5, '#5a3a26'); R(16, -42, 6, 1, '#5a3a26'); R(15, -37, 8, 1, '#2a1a10'); R(16, -40, 2, 2, '#7a5236');   // chapeau melon brun
   c.strokeStyle = '#3a2414'; c.lineWidth = 1; c.beginPath(); c.moveTo(X + 21, Y - 24); c.lineTo(X + 40, Y - 12 + k1); c.stroke();   // rênes
   // ---- roues à rayons qui tournent (arrière grande, avant petite), ressorts
   R(-26, -2, 36, 2, '#3a2414');

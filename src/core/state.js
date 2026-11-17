@@ -5,7 +5,7 @@ import { LEVELS } from '../systems/level.js';
 export function defaultState() {
   return {
     v: CFG.VERSION, name: 'Cloud Jimny',   // nom par défaut (modifiable à la création)
-    look: { body: 'h', bottom: 'pant', skin: '#f6d2b0', hair: 0, hairC: '#7a4a22', shirt: '#b08a5a', pants: '#3a4a8a', overalls: '#4a8a3a' },   // 17/11 : salopette verte (planche de l'utilisateur)
+    look: { body: 'h', bottom: 'pant', skin: '#f6d2b0', hair: 0, hairC: '#7a4a22', shirt: '#a8432f', pants: '#3a5a9a', overalls: '#3a5a9a', plaid: true, backpack: '#a8774a' },   // planche docs/personnages-reference.jpg : salopette bleue, chemise à carreaux, sac à dos
     money: 500, energy: 100, maxE: 100, hp: 100, maxHp: 100,
     day: 1, season: 0, year: 1, minute: CFG.DAY_START, weather: 'sun',
     inv: { tent: 1 },   // 17/11 : seulement la tente au départ (plus de graines, de foin ni de sac à dos)

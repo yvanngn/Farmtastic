@@ -12,7 +12,8 @@ export const WEST_OPTS = {
   hat: ['', 'cowboy', 'melon', 'paille'],
   vest: ['', '#5a3a2a', '#2a2a2a', '#a8432f', '#c9a84a', '#3a5a3a'],
   bandana: ['', '#a8302b', '#3a5a8a', '#e8c04a', '#2a2a2a', '#e07ab0'],
-  overalls: ['', '#4a8a3a', '#3a5a8a', '#8a5a32', '#a8302b'],   // 17/11 : salopette (verte par défaut)
+  overalls: ['', '#3a5a9a', '#4a8a3a', '#8a5a32', '#a8302b'],
+  backpack: ['', '#a8774a', '#5a3a22', '#3a5a3a'],   // 17/11 : salopette (verte par défaut)
   plaid: [false, true], chaps: [false, true], spurs: [false, true]
 };
 export const HAT_NAMES = { '': 'Aucun', cowboy: 'Cow-boy', melon: 'Melon', paille: 'Paille' };
