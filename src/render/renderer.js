@@ -37,7 +37,9 @@ function drawChest(c, x, y) {
 }
 // Feu de camp : pierres en cercle, bûches, flammes qui dansent.
 // Esprit d'une vieille femme qui pleure : silhouette pâle et transparente qui flotte, chignon, châle, larmes.
-function drawGhost(c, x, y, now) {   // l'esprit de la vieille femme (planche de l'utilisateur) : robe d'époque bleutée, chignon, translucide, flotte
+function drawGhost(c, x, y, now) {
+  { const im = ghostSheet(); if (im) { const S = SHEETS.esprit, px = x * T + 8 - S.fw / 2, py = y * T + 14 - S.fh + Math.round(Math.sin(now / 500) * 1.5) - 3;   // planche de référence
+    c.save(); c.globalAlpha = .6 + Math.sin(now / 700) * .12; c.fillStyle = 'rgba(120,190,255,.25)'; c.beginPath(); c.ellipse(x * T + 8, y * T + 15, 7, 2, 0, 0, 7); c.fill(); c.drawImage(im, 0, 0, S.fw, S.fh, px, py, S.fw, S.fh); c.restore(); return; } }   // l'esprit de la vieille femme (planche de l'utilisateur) : robe d'époque bleutée, chignon, translucide, flotte
   const px = x * T, py = y * T + Math.round(Math.sin(now / 500) * 1.5) - 14, R = (a, b, w, h, col) => { c.fillStyle = col; c.fillRect(px + a, py + b, w, h); };
   c.save(); c.globalAlpha = .55 + Math.sin(now / 700) * .12;
   c.fillStyle = 'rgba(120,190,255,.25)'; c.beginPath(); c.ellipse(px + 8, py + 30, 7, 2, 0, 0, 7); c.fill();   // halo au sol
@@ -190,6 +192,8 @@ import { ANIMALS } from '../data/animals.js';
 import { ITEMS } from '../data/items.js';
 import { darkness, timeTint, sunShadow } from '../systems/weather.js';
 import { SHADOW, harmonize, shade } from './pixel.js';
+import { SHEETS } from './sheets.js';
+let GHOST_IMG; const ghostSheet = () => { if (GHOST_IMG === undefined && typeof Image !== 'undefined') { GHOST_IMG = null; const im = new Image(); im.onload = () => { GHOST_IMG = im; }; im.src = SHEETS.esprit.url; } return GHOST_IMG; };
 import { SIGN_SINK } from './pixfont.js';
 const T = CFG.T;
 const MAX_FX = 160;

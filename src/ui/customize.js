@@ -36,7 +36,8 @@ export function createCustomizer({ getLook, getName, onStart, onContinue, onBack
   }
   $('#lookOpts').onclick = e => {
     const { k, v, b } = e.target.dataset; if (!k) return;
-    getLook()[k] = b != null ? b === '1' : k === 'hair' ? +v : v; buildOpts();
+    const L = getLook(); delete L.sheet;   // personnalisé : on repasse au dessin par code
+    L[k] = b != null ? b === '1' : k === 'hair' ? +v : v; buildOpts();
   };
   $('#rotL').onclick = () => { dir = ROT_L[dir]; };
   $('#rotR').onclick = () => { dir = ROT_R[dir]; };
