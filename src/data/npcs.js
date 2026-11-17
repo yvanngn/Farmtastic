@@ -322,3 +322,33 @@ export const GHOST_LINES = {
   pleure: "On dirait… une vieille femme. Transparente. Elle pleure.",
   vanish: ["Elle a disparu dès que je me suis approché(e)…", "Il me faudrait un moyen de lui parler. Mais lequel ?"]
 };
+
+// Farmwest, lot 3 : nouveau début (répliques de Myst 🆕). Gare → diligence à travers le centre-ville → rond-point → choix de la ferme.
+// Chaque arrêt de la diligence (x, en cases, dans le centre-ville) dure le temps que Myst parle.
+export const INTRO_MYST = {
+  gare: [
+    "Bienvenue à Farmwest. Tu dois être la personne de l'annonce. Moi, c'est Myst.",
+    "La diligence nous attend. Monte, je t'accompagne jusqu'aux fermes."
+  ],
+  legende: [
+    "Tu sais pourquoi les fermes du Nord sont vides ? On raconte qu'un fantôme rôde là-haut, la nuit.",
+    "Depuis, personne n'a osé s'y installer. Moi, je n'y crois pas trop."
+  ],
+  arrets: [
+    { x: 5, t: "À droite, l'atelier du charpentier : c'est lui qui construit les bâtiments. En face, la halle du marché et le panneau d'affichage, où les habitants laissent leurs demandes." },
+    { x: 11, t: "Le saloon d'Ed. Un ancien routier : il connaît tout le monde, et toutes les nouvelles passent par son comptoir." },
+    { x: 17, t: "La place et sa fontaine. Manu, le Maire, y passe ses journées. Il te serrera la main… et te parlera des impôts." },
+    { x: 27, t: "Là-haut, le magasin d'outils ; en face, le marchand d'animaux. Plus au sud, la rue des commerces : boulangerie, boucherie, poissonnerie et magasin général." },
+    { x: 31, t: "Après le pont, c'est le rond-point. Les fermes sont juste au nord." }
+  ],
+  rond: [
+    "Nous y voilà. Les quatre fermes du Nord sont là-haut, autour du chemin en croix.",
+    "Choisis celle qui te plaît."
+  ],
+  fin: [
+    "Bon choix. Le cocher va te déposer devant chez toi.",
+    "Ta cabane ne tiendra pas la nuit. Ouvre ton sac 🎒, choisis la tente et appuie sur « Déployer », juste à côté de la cabane.",
+    "Ta liste des tâches 📜, en haut à droite, te dira quoi faire. Et le plan est dans 🗺️.",
+    "Moi, j'habite au fond de la zone résidentielle, à l'est du rond-point. … Et si tu entends des bruits la nuit, ce n'est sûrement rien. À plus tard."
+  ]
+};

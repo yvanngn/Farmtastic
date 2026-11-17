@@ -54,13 +54,16 @@ Zones de l'image → scènes du jeu :
 - Le tunnel de l'ouest reste tel quel pour l'instant (décision du 17/11).
 - [x] Le Maire **vit dans son ranch** (maison avec intérieur) ; la **villa du centre-ville est effacée** (décision du 17/11). Il passe toujours ses journées sur la place.
 
-## Lot 3 — Nouveau début de partie
-- [ ] Arrivée en **locomotive** (train à vapeur qui entre en gare, fumée, sifflet).
-- [ ] **Myst** nous accueille sur le quai, comme avant.
-- [ ] Une **diligence** nous fait traverser le **centre-ville** (petite scène où l'on voit la ville défiler).
-- [ ] Arrêt au **premier rond-point** : Myst explique qu'il faut **choisir une des 4 fermes**.
-- [ ] Choix de la ferme (les fermes prises par d'autres joueurs en multijoueur sont grisées), puis arrivée sur sa ferme.
-- ❓ Qui conduit la diligence (Myst ou un cocher) ? Peut-on reprendre la diligence plus tard (transport payant entre les zones) ?
+## Lot 3 — Nouveau début de partie ✅ (17/11/2026, v0.1.10)
+Réponses de l'utilisateur : un **cocher** conduit la diligence (peut-être un PNJ plus tard) ; **Myst est assis à côté** du héros, raconte la **légende du fantôme** (personne n'a osé habiter les fermes du Nord) et **présente les bâtiments** du centre-ville ; le rythme suit ses explications ; la diligence aura des **arrêts plus tard**.
+- [x] Nouvelle scène **Gare** (à l'ouest du centre-ville) : voie ferrée, quai en planches, gare « FARMWEST » avec horloge, bancs.
+- [x] Une **locomotive à vapeur** entre en gare (fumée, sifflet) ; pensées du héros.
+- [x] **Myst** accueille le héros sur le quai.
+- [x] **Diligence** (deux chevaux, cocher au chapeau, roues qui tournent) : traversée du centre-ville d'ouest en est ; Myst raconte la légende, puis la diligence **s'arrête devant chaque bâtiment le temps de son explication** (charpentier et halle, saloon, place et fontaine, magasin d'outils et marchand d'animaux, pont) ; elle passe le pont et entre au rond-point.
+- [x] Au **rond-point**, Myst fait **choisir une des 4 fermes** (en multijoueur, une ferme prise par un autre joueur est indiquée et refusée).
+- [x] Conseils de fin (tente, liste des tâches, plan, où habite Myst), puis le héros est **déposé devant sa ferme** et le plan s'ouvre.
+- Les parties déjà commencées ne rejouent pas ce début.
+- [ ] Plus tard : le **cocher** en PNJ ; des **arrêts de diligence** pour voyager entre les zones (payants ?).
 
 ## Lot 4 — Nouvelles quêtes du début
 - [ ] Quêtes **principales** de départ : **retaper la cabane**, **construire un coffre**, **trouver la pelle**, **trouver la pioche**.

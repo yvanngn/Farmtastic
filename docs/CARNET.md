@@ -7,7 +7,7 @@ Légende : ✅ fait · 🔨 en cours · ⏳ à faire · 💡 idée de Claude (à
 ## ⭐ Farmwest (17/11/2026) — à lire en premier
 - Le jeu **Farm'tastic devient Farmwest**, une ferme au **Far West**. Dépôt `yvanngn/farmwest`, GitHub Pages https://yvanngn.github.io/farmwest/, même page claude.ai.
 - **Toute la suite est dans `docs/ROADMAP.md`** (lots 0 à 7, questions ❓ à trancher avant chaque lot). Carte de référence : `docs/carte-region-farmwest.jpg`.
-- Nouveau début prévu : arrivée en **locomotive**, accueil de **Myst**, traversée du centre-ville en **diligence**, choix d'une des **4 fermes** au premier rond-point.
+- Nouveau début (fait le 17/11, v0.1.10) : arrivée en **locomotive**, accueil de **Myst**, traversée du centre-ville en **diligence**, choix d'une des **4 fermes** au premier rond-point.
 - Nom du joueur par défaut : **Cloud Jimny** (avant : Claude Gémini).
 - Ce qui suit dans ce carnet (sections 1 et plus, séances) décrit le jeu tel qu'il était avant le passage à Farmwest ; on le corrige au fur et à mesure des lots.
 
@@ -480,3 +480,9 @@ Chaque ligne = un lot indépendant, à demander quand il y a des crédits.
 ## Séance 17/11/2026 (14h30) — Farmwest, lot 2d (v0.1.9)
 - ✅ Décisions : le **Maire vit dans son ranch** (maison avec intérieur, porte sous la véranda) ; **villa du centre-ville effacée**. ⏳ Ajouté à la roadmap : **personnaliser les vêtements de style western** (7e bis).
 - ✅ Liaisons comme sur la carte : ferme → forêt (est) ; centre-ville ↔ rond-point par un pont sur la rivière ; station balnéaire au sud du centre-ville (mer au sud) ; fête foraine au sud du ranch (plus cachée) ; entrée ouest du centre-ville fermée jusqu'à la gare (lot 3).
+
+## Séance 17/11/2026 (14h40) — Farmwest, lot 3 « Nouveau début » (v0.1.10)
+- ✅ Décisions : un **cocher** conduit (PNJ possible plus tard) ; Myst est à côté du héros, raconte la légende du fantôme (personne n'a osé habiter les fermes du Nord) et présente les bâtiments ; la diligence aura des arrêts plus tard.
+- ✅ Nouvelle partie : **gare** (scène à l'ouest du centre-ville) → locomotive à vapeur qui entre en gare (sifflet, fumée) → pensées du héros → **Myst** sur le quai → **diligence** à travers le centre-ville, arrêtée devant chaque bâtiment le temps de l'explication → pont → **rond-point** → **choix d'une des 4 fermes** → conseils → dépôt devant la ferme. Code : `src/systems/intro.js`, répliques `INTRO_MYST` dans `src/data/npcs.js` (🆕).
+- ⚠️ Ancien accueil de Myst sur le quai de la ferme : gardé seulement pour les vieilles parties en cours d'accueil.
+- Dialogues : 99 répliques 🆕 (envoi pour relecture à 100).

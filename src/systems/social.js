@@ -147,6 +147,11 @@ export const MYST_WAKE = 3.5;
 export function placeMyst(n, S) {
   const st = S.intro && S.intro.myst, R = n.route;
   n.sleeping = false;
+  const step = S.intro && S.intro.step;
+  if (step && step !== 'done') {   // Farmwest : sur le quai de la gare, puis assis dans la diligence (on ne le voit pas)
+    n.walking = false; if (step === 'train' || step === 'myst') { n.scene = 'gare'; n.x = 4.5; n.y = 5.8; n.dir = 0; } else n.scene = 'none';
+    return;
+  }
   if (st === 'sleep' || st === 'wait' || st === 'talk') {   // il attend le joueur sur le quai
     n.scene = 'farm'; Object.assign(n, n.waitAt); n.walking = false; n.leg = R.length - 1;
     if (st !== 'talk' && S.intro.arrived && (S.scene || 'farm') === 'farm') S.intro.myst = 'talk';

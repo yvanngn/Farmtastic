@@ -34,6 +34,12 @@ export function buildWest(name, season) {
       if (at(x, y + 1) === 'w') { R(px, py + T - 3, T, 3, '#5b3a22'); R(px + 2, py + T, 2, 6, '#4a2e1a'); R(px + 12, py + T, 2, 6, '#4a2e1a'); }   // poteaux
       continue;
     }
+    if (ch === 'r') {   // voie ferrée : ballast, traverses, rails
+      R(px, py, T, T, '#8a7a68'); for (let k = 0; k < 6; k++) R(px + (r() * 15 | 0), py + (r() * 15 | 0), 2, 1, '#6a5a4a');
+      for (let k = 2; k < T; k += 5) R(px, py + k, T, 2, '#5b3a22');
+      R(px + (x % 2 ? 2 : 11), py, 2, T, '#b8bcc4'); R(px + (x % 2 ? 2 : 11), py, 1, T, '#e8ecf0');
+      continue;
+    }
     if (ch === 'g') {   // herbe de l'enclos
       R(px, py, T, T, GR);
       for (let k = 0; k < 9; k++) { const bx = px + (r() * 16 | 0), by = py + 1 + (r() * 14 | 0); R(bx, by, 1, 1 + (r() * 3 | 0), shade(GR, r() < .6 ? .82 : 1.14)); }
@@ -93,6 +99,18 @@ export function buildWest(name, season) {
     const dx = px + w / 2 - 14, dy = py + h - 30; R(dx, dy, 28, 30, '#f4ead2'); R(dx + 2, dy + 2, 24, 28, '#8f3224');
     for (let k = 0; k < 24; k++) { R(dx + 2 + k, dy + 2 + k * 1.15, 1, 1, '#f4ead2'); R(dx + 25 - k, dy + 2 + k * 1.15, 1, 1, '#f4ead2'); }
     R(px + w / 2 - 6, py + 6, 12, 8, '#f4ead2'); R(px + w / 2 - 5, py + 7, 10, 6, '#ffd77a');
+  }
+  for (const [x0, y0, x1, y1] of block('G')) {   // gare de l'Ouest : planches, auvent sur le quai, horloge, enseigne
+    const px = x0 * T, py = y0 * T, w = (x1 - x0 + 1) * T, h = (y1 - y0 + 1) * T;
+    R(px - 2, py + h, w + 4, 3, 'rgba(30,15,5,.3)');
+    planks(px, py + 14, w, h - 14, '#b88a5a', '#8a6a3c'); roof(px, py - 6, w, 20, '#3e5a7a');
+    win(px + 10, py + 30); win(px + w - 20, py + 30);
+    R(px + w / 2 - 7, py + h - 24, 14, 24, '#5b3a22'); R(px + w / 2 - 5, py + h - 22, 10, 22, '#8a5a32');
+    disc(g, px + w / 2, py + 6, 6, '#3f2615'); disc(g, px + w / 2, py + 6, 5, '#f4ead2'); R(px + w / 2, py + 2, 1, 4, '#3b2414'); R(px + w / 2, py + 6, 3, 1, '#3b2414');   // horloge
+    R(px + w / 2 - 18, py + 15, 36, 9, '#3f2615'); R(px + w / 2 - 17, py + 16, 34, 7, '#e8c26a');
+    g.fillStyle = '#3b2414'; g.font = 'bold 6px Georgia'; g.textAlign = 'center'; g.fillText('FARMWEST', px + w / 2, py + 22); g.textAlign = 'start';
+    R(3 * T, py + h - 4, 3 * T, 4, '#6a4426'); for (let k = 0; k < 3; k++) R(3 * T + 4 + k * 16, py + h, 2, 10, '#5b3a22');   // auvent du quai
+    for (const bx of [3 * T + 6, 5 * T + 2]) { R(bx, 10 * T, 10, 4, '#8a5a32'); R(bx, 10 * T + 4, 1, 3, '#5b3a22'); R(bx + 9, 10 * T + 4, 1, 3, '#5b3a22'); }   // bancs
   }
   const ROOFS = ['#3e6a8a', '#a8432f', '#5a8a4a'];
   block('E').forEach(([x0, y0, x1, y1], i) => {   // entrepôts du port

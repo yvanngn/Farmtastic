@@ -105,6 +105,33 @@ import { MUSHROOMS } from '../data/items.js';
 import { LAYOUTS } from '../world/scenes.js';
 import { toolIcon, drawToolPix } from './sprites.js';
 // Train de l'arrivée (voie x0) : à quai 3 s, puis repart vers le sud en accélérant.
+// Farmwest : locomotive à vapeur qui entre en gare par le nord sur la voie (x1-2) et s'arrête le long du quai.
+function drawLoco(c, t, now) {
+  const x = 16 + 1, stopY = 2 * 16, y0 = stopY - (t < 3 ? (3 - t) * (3 - t) * 50 : 0);
+  const R = (a, b, w, h, col) => { c.fillStyle = col; c.fillRect(Math.round(a), Math.round(b), w, h); };
+  for (const [k, col] of [[0, '#7a3a2a'], [1, '#7a3a2a']]) { const y = y0 - 52 - k * 46; R(x + 2, y + 2, 28, 44, 'rgba(0,0,0,.3)'); R(x, y, 28, 44, col); R(x, y, 28, 3, '#3a2a20'); R(x, y + 41, 28, 3, '#3a2a20'); for (let w = 8; w < 38; w += 10) R(x + 22, y + w, 4, 6, '#ffd98a'); R(x + 3, y + 4, 2, 36, '#a8574a'); }   // wagons bois
+  R(x + 2, y0 + 2, 28, 72, 'rgba(0,0,0,.3)');
+  R(x, y0, 28, 70, '#2a2a30'); R(x + 3, y0 + 4, 22, 40, '#3a3a44'); R(x + 3, y0 + 4, 4, 40, '#5a5a66');   // chaudière
+  for (const b of [12, 24, 36]) R(x + 1, y0 + b, 26, 2, '#e8c26a');   // cerclages laiton
+  R(x + 8, y0 + 46, 12, 4, '#3a3a44'); R(x + 9, y0 + 50, 10, 10, '#a8302b'); R(x + 11, y0 + 52, 6, 4, '#ffd98a');   // cabine et lanterne
+  R(x + 4, y0 + 62, 20, 8, '#a8302b'); for (let k = 0; k < 5; k++) R(x + 6 + k * 4, y0 + 66, 2, 6, '#5a5a66');   // chasse-buffle
+  R(x + 10, y0 + 14, 8, 8, '#1a1a20'); R(x + 9, y0 + 12, 10, 3, '#3a3a44');   // cheminée
+  const puff = t < 6 ? 1 : .35;   // fumée : forte en arrivant, légère à l'arrêt
+  for (let k = 0; k < 5; k++) { const ph = (now / 600 + k * .2) % 1, py = y0 + 10 - ph * 40, sz = 5 + ph * 10; c.fillStyle = `rgba(235,235,235,${(1 - ph) * .55 * puff})`; c.fillRect(Math.round(x + 14 - sz / 2 + Math.sin(k * 2 + now / 400) * 4), Math.round(py), Math.round(sz), Math.round(sz)); }
+}
+// Farmwest : diligence tirée par deux chevaux, cocher en chapeau sur le siège ; roues qui tournent.
+function drawCoach(c, wx, wy, now) {
+  const x = Math.round(wx * 16), y = Math.round(wy * 16), R = (a, b, w, h, col) => { c.fillStyle = col; c.fillRect(x + a, y + b, w, h); }, trot = Math.round(Math.sin(now / 90)), spin = (now / 120 | 0) % 2;
+  R(-30, 6, 76, 4, 'rgba(30,15,5,.3)');
+  for (const hx of [22, 32]) { R(hx, -8 + trot, 12, 8, '#6a4426'); R(hx + 9, -14 + trot, 4, 8, '#6a4426'); R(hx + 10, -16 + trot, 6, 4, '#6a4426'); R(hx + 8, -15 + trot, 2, 8, '#3a2a20'); for (const lx of [1, 9]) R(hx + lx, 0, 2, 6 - (spin ? trot : -trot), '#4a2e1a'); }   // chevaux
+  R(14, -6, 12, 1, '#3a2a20');   // timon
+  R(-26, -26, 40, 26, '#7a3a2a'); R(-26, -26, 40, 3, '#5a2a1e'); R(-28, -28, 44, 3, '#3a2a20');   // caisse
+  R(-22, -20, 12, 10, '#ffd98a'); R(-6, -20, 12, 10, '#ffd98a'); R(-16, -20, 1, 10, '#5a2a1e'); R(0, -20, 1, 10, '#5a2a1e');   // fenêtres
+  R(-20, -18, 4, 6, '#3a2a20'); R(-4, -18, 4, 6, '#3a2a20');   // silhouettes (le héros et Myst)
+  R(-26, -4, 40, 2, '#e8c26a');
+  for (const wxx of [-22, 6]) { R(wxx - 1, -4, 12, 12, '#3a2a20'); R(wxx + 1, -2, 8, 8, '#a8774a'); R(wxx + 4, spin ? -2 : 1, 2, spin ? 8 : 2, '#3a2a20'); R(wxx + (spin ? 1 : 4), 1, spin ? 8 : 2, 2, '#3a2a20'); }   // roues
+  R(12, -20, 8, 8, '#5b3a22'); R(13, -28 + trot, 6, 7, '#e8b48c'); R(10, -31 + trot, 12, 2, '#5a3a22'); R(12, -35 + trot, 8, 4, '#5a3a22');   // cocher au chapeau
+}
 function drawTrain(c, t) {
   const T2 = 16, y0 = 16.5 * T2 + (t > 3 ? (t - 3) * (t - 3) * 40 : 0);
   const car = (y, col, loco) => {
@@ -229,7 +256,7 @@ let swing = null;
     const scene = S.scene || 'farm', outside = scene === 'farm', sky = outside || !!SCENES[scene].outdoor, SC = SCENES[scene];
     if (scene === 'house' && cacheScene === 'house' && cache !== interiors['house' + !!S.workbench + (S.bed !== false)]) cacheScene = ''; // établi réparé
     if (cacheSeason !== S.season || cacheScene !== scene) {
-      cache = outside ? farmGround() : scene === 'wild' ? (interiors['wild' + S.season] ||= buildWild(S.season)) : scene === 'foret' ? (interiors['foret' + S.season] ||= buildWild(S.season, 'foret')) : scene === 'town' ? (interiors['town' + S.season] ||= buildTown(S.season)) : scene === 'quartier' ? (interiors['quartier' + S.season] ||= buildQuartier(S.season)) : (scene === 'montagne' || scene === 'plage') ? (interiors[scene] ||= buildBiome(scene, S.season)) : scene === 'parc' ? (interiors['parc' + S.season] ||= buildParc(S.season)) : (scene === 'rondpoint' || scene === 'ranch' || scene === 'port') ? (interiors[scene + S.season] ||= buildWest(scene, S.season)) : (scene === 'house' ? (interiors['house' + !!S.workbench + (S.bed !== false)] ||= buildInterior(scene, S)) : (interiors[scene] ||= buildInterior(scene, S)));
+      cache = outside ? farmGround() : scene === 'wild' ? (interiors['wild' + S.season] ||= buildWild(S.season)) : scene === 'foret' ? (interiors['foret' + S.season] ||= buildWild(S.season, 'foret')) : scene === 'town' ? (interiors['town' + S.season] ||= buildTown(S.season)) : scene === 'quartier' ? (interiors['quartier' + S.season] ||= buildQuartier(S.season)) : (scene === 'montagne' || scene === 'plage') ? (interiors[scene] ||= buildBiome(scene, S.season)) : scene === 'parc' ? (interiors['parc' + S.season] ||= buildParc(S.season)) : (scene === 'rondpoint' || scene === 'ranch' || scene === 'port' || scene === 'gare') ? (interiors[scene + S.season] ||= buildWest(scene, S.season)) : (scene === 'house' ? (interiors['house' + !!S.workbench + (S.bed !== false)] ||= buildInterior(scene, S)) : (interiors[scene] ||= buildInterior(scene, S)));
       if (cacheSeason !== S.season) initWeather();
       cacheSeason = S.season; cacheScene = scene;
     }
@@ -314,7 +341,7 @@ let swing = null;
         ctx.fillStyle = 'rgba(0,0,0,.55)'; ctx.fillRect(x - 1, y - 1, 18, 5); ctx.fillStyle = '#f2a03a'; ctx.fillRect(x, y, Math.round(16 * p), 3); } });
     }
     if (sky) { // sorties : flèches animées et nom de la destination, au bord de l'écran
-      const NAMES = { farm: 'Ma ferme', quartier: 'Zone résidentielle', rondpoint: 'Rond-point', ranch: 'Ranch du Maire', port: 'Zone portuaire', town: 'Centre-ville', foret: 'Forêt', wild: 'Caverne sombre' }, seen = new Set();
+      const NAMES = { farm: 'Ma ferme', quartier: 'Zone résidentielle', gare: 'Gare', rondpoint: 'Rond-point', ranch: 'Ranch du Maire', port: 'Zone portuaire', town: 'Centre-ville', foret: 'Forêt', wild: 'Caverne sombre' }, seen = new Set();
       for (const d of SC.doors || []) {
         const W = SC.W, H = SC.H, edge = d.x === 0 ? 'g' : d.x === W - 1 ? 'd' : d.y === 0 ? 'h' : d.y === H - 1 ? 'b' : null;
         if (!edge || !NAMES[d.to] || seen.has(d.to + edge)) continue; seen.add(d.to + edge);
@@ -375,6 +402,8 @@ let swing = null;
       ctx.fillStyle = '#fff'; if (tw === 0) { ctx.fillRect(x + 2, y - 5, 1, 3); ctx.fillRect(x + 1, y - 4, 3, 1); } else if (tw === 1) ctx.fillRect(x - 3, y - 4, 1, 1);
     } });
     if (scene === 'farm' && g.trainT && now - g.trainT < 9000) list.push({ z: 9998, d: () => drawTrain(ctx, (now - g.trainT) / 1000) });
+    if (scene === 'gare') list.push({ z: 0.5, d: () => drawLoco(ctx, S.intro && S.intro.step === 'train' ? (g.introT || 0) / 1000 : 99, now) });   // Farmwest : la locomotive à quai
+    if (g.ride && g.ride.scene === scene) list.push({ z: g.ride.y + .2, d: () => drawCoach(ctx, g.ride.x, g.ride.y, now) });   // la diligence
     if (scene === 'farm' && testSwordHere(S)) list.push({ z: TEST_SWORD.y + .4, d: () => {
       const b = Math.round(Math.sin(now / 250) * 1.5), x = TEST_SWORD.x * T, y = TEST_SWORD.y * T;
       ctx.fillStyle = 'rgba(0,0,0,.25)'; ctx.fillRect(x + 3, y + 12, 10, 2);
@@ -412,7 +441,7 @@ let swing = null;
     for (const id in g.npcs) { const n = g.npcs[id]; if ((n.scene || 'farm') !== scene) continue; list.push({ z: n.y, d: () => { drawChar(ctx, Math.round(n.x * T - 6), Math.round(n.y * T - 19), n.look, n.dir || 0, n.walking ? ((now / 150 | 0) % 4) : 0, now); label(n.name, n.x * T, n.y * T - (n.look.tall ? 28 : 25));
       if (n.sleeping) { const t = now / 600; ctx.fillStyle = '#e8f0ff'; ctx.font = 'bold 7px Nunito, sans-serif'; ctx.fillText('z', n.x * T + 6 + (t % 1) * 3, n.y * T - 30 - (t % 1) * 6); ctx.font = 'bold 9px Nunito, sans-serif'; ctx.fillText('Z', n.x * T + 10 + ((t + .5) % 1) * 3, n.y * T - 34 - ((t + .5) % 1) * 7); } } }); }
     for (const id in g.others) { const o = g.others[id]; if (!o.look || (o.scene || 'farm') !== scene) continue; list.push({ z: o.y, d: () => { drawChar(ctx, Math.round(o.x * T - 6), Math.round(o.y * T - 19), o.look, o.dir, o.f, now + 777); label(o.name, o.x * T, o.y * T - 25); } }); }
-    list.push({ z: S.y, d: () => {
+    if (!g.ride) list.push({ z: S.y, d: () => {   // pendant la diligence, le héros est dedans
       if (swing && S.dir === 1) drawSwing(ctx, S, swing.tool, swing.p);
       if (!(g.player.iframe > 0 && ((now / 80) | 0) % 2)) drawChar(ctx, Math.round(S.x * T - 6), Math.round(S.y * T - 19), S.look, S.dir, g.player.walkFrame, now, !!swing);
       if (document.body.dataset.nrj === 'tete' || S.energy / S.maxE <= .3) { // alerte : jauge au-dessus du héros quand l'énergie devient basse

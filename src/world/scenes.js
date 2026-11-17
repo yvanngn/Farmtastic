@@ -172,7 +172,7 @@ function buildTown() {
   pave(7, 12, 7, 16); pave(30, 12, 30, 16); pave(4, 17, 4, 19); pave(28, 17, 28, 19); pave(15, 12, 15, 19);   // ruelles
   for (const [k, b] of Object.entries(TOWN_B)) put(k, b.x, b.y, b.w, b.h);
   put('D', 20, H - 1); put('D', 21, H - 1);   // au sud : le pont vers la station balnéaire
-  put('g', 0, 10); put('D', W - 1, 10); put('g', 0, 11); put('g', W - 1, 11);   // Farmwest : à l'est le pont vers le rond-point ; l'ouest (gare) s'ouvrira au lot 3
+  put('D', 0, 10); put('D', W - 1, 10); put('g', 0, 11); put('g', W - 1, 11);   // Farmwest : à l'ouest la gare, à l'est le pont vers le rond-point
   for (let y = 0; y < H; y++) for (const x of [0, W - 1]) if (m[y][x] === 'g' || (m[y][x] === '.' && y !== 10)) m[y][x] = y % 3 === 1 ? 'T' : 'h';   // bordures : arbres et haies
   for (let x = 0; x < W; x++) for (const y of [0, H - 1]) if (m[y][x] === 'g' || (m[y][x] === '.' && m[y][x] !== 'D')) m[y][x] = x % 3 === 0 ? 'T' : 'h';
   for (const [x, y] of [[9, 3], [23, 3], [10, 15], [24, 15], [9, 21], [23, 21], [8, 28], [26, 28], [12, 14], [18, 16]]) if (m[y][x] === 'g') m[y][x] = 'T';
@@ -305,6 +305,16 @@ LAYOUTS.foret = LAYOUTS.foret.map((r, y) => y === 9 ? 'D' + '.'.repeat(r.length 
 // E entrepôt du port, = planches (quai, ponton), w eau
 const grid = (W, H, ch) => Array.from({ length: H }, () => Array.from({ length: W }, () => ch));
 const border = (m, exits) => { const H = m.length, W = m[0].length; for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) if (x === 0 || y === 0 || x === W - 1 || y === H - 1) m[y][x] = 'T'; for (const [x, y] of exits) m[y][x] = 'D'; };
+// Gare (24 × 14) : voie ferrée à l'ouest (r), quai en planches (=), bâtiment de la gare (G), route vers le centre-ville à l'est
+LAYOUTS.gare = (() => {
+  const W = 24, H = 14, m = grid(W, H, 's');
+  for (let y = 0; y < H; y++) { m[y][1] = 'r'; m[y][2] = 'r'; for (let x = 3; x <= 5; x++) m[y][x] = '='; }
+  for (let y = 1; y <= 4; y++) for (let x = 7; x <= 12; x++) m[y][x] = 'G';
+  for (let x = 6; x < W; x++) { m[8][x] = '.'; m[9][x] = '.'; } for (let y = 5; y <= 7; y++) { m[y][9] = '.'; m[y][10] = '.'; }
+  for (const [x, y] of [[16, 3], [19, 5], [15, 12], [20, 12], [8, 12]]) m[y][x] = 'T';
+  for (let x = 6; x < W; x++) { m[0][x] = 'T'; m[H - 1][x] = 'T'; } for (let y = 0; y < H; y++) m[y][W - 1] = y === 8 || y === 9 ? 'D' : 'T';
+  return m.map(r => r.join(''));
+})();
 // Rond-point (26 × 18) : chemins en croix, anneau autour de la fontaine, panneaux vers chaque zone
 LAYOUTS.rondpoint = (() => {
   const W = 26, H = 18, m = grid(W, H, 's');
@@ -359,6 +369,8 @@ export const SCENES = {
     { x: 16, y: 35, to: 'rondpoint', spawn: { x: 13, y: 1.8 } }, { x: 15, y: 35, to: 'rondpoint', spawn: { x: 13, y: 1.8 } }, { x: 17, y: 35, to: 'rondpoint', spawn: { x: 13, y: 1.8 } },   // Farmwest : au sud des fermes, le rond-point
     { x: 47, y: 5, to: 'foret', spawn: { x: 1.6, y: 9.6 } }, { x: 47, y: 4, to: 'foret', spawn: { x: 1.6, y: 9.6 } }, { x: 47, y: 6, to: 'foret', spawn: { x: 1.6, y: 9.6 } }   // Farmwest : à l'est des fermes, la forêt
   ] },
+  // Farmwest (lot 3) : la gare, à l'ouest du centre-ville
+  gare: { W: 24, H: 14, outdoor: true, doors: [{ x: 23, y: 8, to: 'town', spawn: { x: 1.6, y: 10.6 } }, { x: 23, y: 9, to: 'town', spawn: { x: 1.6, y: 10.6 } }] },
   // Farmwest (lot 2) : rond-point (carrefour), ranch du Maire, zone portuaire
   rondpoint: { W: 26, H: 18, outdoor: true, doors: [
     { x: 12, y: 0, to: 'farm', spawn: { x: 16.5, y: 33.8 } }, { x: 13, y: 0, to: 'farm', spawn: { x: 16.5, y: 33.8 } },
@@ -374,7 +386,7 @@ export const SCENES = {
   port: { W: 36, H: 20, outdoor: true, doors: [{ x: 0, y: 6, to: 'ranch', spawn: { x: 29.4, y: 16 } }, { x: 0, y: 7, to: 'ranch', spawn: { x: 29.4, y: 16 } }] },
   montagne: { W: 36, H: 24, outdoor: true, cold: true, doors: [{ x: 0, y: 8, to: 'quartier', spawn: { x: 38.2, y: 8.6 } }, { x: 0, y: 9, to: 'quartier', spawn: { x: 38.2, y: 8.6 } }] },
   plage: { W: 40, H: 20, outdoor: true, doors: [{ x: 19, y: 0, to: 'town', spawn: { x: 20.5, y: 29.8 } }, { x: 20, y: 0, to: 'town', spawn: { x: 20.5, y: 29.8 } }] },
-  town: { W: 34, H: 32, outdoor: true, doors: [{ x: 20, y: 31, to: 'plage', spawn: { x: 19.5, y: 1.8 } }, { x: 21, y: 31, to: 'plage', spawn: { x: 20.5, y: 1.8 } }, { x: 33, y: 10, to: 'rondpoint', spawn: { x: 1.6, y: 9 } }, { x: 11, y: 15, to: 'bar', spawn: { x: 4.5, y: 5.4 } }] },
+  town: { W: 34, H: 32, outdoor: true, doors: [{ x: 20, y: 31, to: 'plage', spawn: { x: 19.5, y: 1.8 } }, { x: 21, y: 31, to: 'plage', spawn: { x: 20.5, y: 1.8 } }, { x: 33, y: 10, to: 'rondpoint', spawn: { x: 1.6, y: 9 } }, { x: 0, y: 10, to: 'gare', spawn: { x: 21.4, y: 9 } }, { x: 11, y: 15, to: 'bar', spawn: { x: 4.5, y: 5.4 } }] },
   house: { W: 12, H: 9, doors: [{ x: 5, y: 8, to: 'farm', spawn: { x: 5.5, y: 5.9 } }] },
   coop: { W: 10, H: 7, doors: [{ x: 4, y: 6, to: 'farm', spawn: { x: 24.5, y: 8.9 } }] },
   // Forêt : à l'est du centre-ville ; au-delà (est), la zone de la Caverne sombre (fermée pour l'instant).

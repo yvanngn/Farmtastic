@@ -9,16 +9,16 @@ export function defaultState() {
     day: 1, season: 0, year: 1, minute: CFG.DAY_START, weather: 'sun',
     inv: { wheat_seed: 10, hay: 5, backpack: 1, tent: 1 }, sel: 'hand', invOrder: [], saleLog: [], chests: [], fishLog: {}, parc: {},   // poissons pêchés : { id: { n, best, first, last } }   // coffres posés { x, y, items }   // ordre des cases choisi par le joueur
     tent: null, bed: false, recipes: ['campfire'], fires: [], bushes: {}, tips: {}, pots: [],   // recettes connues, feux posés, buissons cueillis (jour)          // tente posée {x,y} ; lit de la maison à construire
-    x: 2.0, y: 20.6, dir: 3,         // on descend du train, sur le quai de la gare
+    x: 4.5, y: 7.6, dir: 3,          // Farmwest : on descend de la locomotive, sur le quai de la gare (scène « gare »)
     plots: {}, objs: null,
     animals: [],
     built: { coop: false, pigsty: false, kennel: false, barn: false },
     social: {}, savedAt: 0,
-    scene: 'farm', invSlots: CFG.INV_SLOTS, stackLvl: 0, rockQueue: [],
+    scene: 'gare', invSlots: CFG.INV_SLOTS, stackLvl: 0, rockQueue: [],
     village: { done: [], progress: 0 }, festival: null, caravan: { tokens: 0, unlocked: [] },
     skills: { mining: { xp: 0 } }, jobs: {},   // métiers { forgeron: { xp } … }
     tools: { hammer: 1 },            // seulement le marteau au départ (réparations) ; les autres outils se trouvent
-    intro: { met: true, myst: 'wait', arrived: false },   // arrivée en train ; Myst attend sur le quai et accueille le joueur
+    intro: { met: true, myst: 'wait', arrived: false, step: 'train' },   // Farmwest : train → Myst → diligence → choix de la ferme   // arrivée en train ; Myst attend sur le quai et accueille le joueur
     repair: { house: { wood: 0, stone: 0 }, grange: { wood: 0, stone: 0 } },   // cabane et grange délabrées au début
     tilled: {},
     farmLot: 0, game: null,          // partie en cours { id, code, mode: 'solo'|'multi' }                      // emplacement de ferme de ce joueur (multijoueur : un par joueur)

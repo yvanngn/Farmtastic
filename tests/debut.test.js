@@ -3,6 +3,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { makeGame } from './helpers.js';
 import { defaultState, migrate } from '../src/core/state.js';
+import { createGame } from '../src/core/game.js';
 import { act } from '../src/systems/actions.js';
 import { hasTool, canUpgrade } from '../src/systems/skills.js';
 import { autoPickup, PICKUPS } from '../src/systems/grange.js';
@@ -16,7 +17,7 @@ test('nouvelle partie : aucun outil, arrivée en train, cabane et grange délabr
   const S = defaultState();
   assert.deepEqual(S.tools, { hammer: 1 }, 'seulement le marteau');
   assert.equal(S.intro.arrived, false);
-  assert.ok(isPlatform(Math.floor(S.x), Math.floor(S.y)), 'sur le quai de la gare');
+  assert.equal(S.scene, 'gare'); assert.equal(LAY.gare[Math.floor(S.y)][Math.floor(S.x)], '=', 'sur le quai de la gare (Farmwest)');
   assert.equal(isRepaired(S, 'house'), false);
   assert.equal(isRepaired(S, 'grange'), false);
   assert.equal(hasTool(S, 'hand'), true);
@@ -262,4 +263,27 @@ test('Farmwest 2d : plage au sud (mer en bas), rivière et pont au rond-point, m
   assert.equal(act(g, 19, 0), 'door'); assert.equal(S.scene, 'town');
   S.scene = 'rondpoint'; assert.ok(isSolid(S, 3, 4), 'la rivière'); assert.ok(!isSolid(S, 3, 8), 'le pont');
   S.scene = 'ranch'; assert.equal(act(g, 6, 5), 'door'); assert.equal(S.scene, 'ranch_maison');
+});
+
+test('Farmwest lot 3 : train → Myst → diligence (arrêts le temps des explications) → choix de la ferme → ferme', async () => {
+  const { introTick, introActive, TRAIN_MS, RIDE } = await import('../src/systems/intro.js');
+  const { INTRO_MYST } = await import('../src/data/npcs.js');
+  const g = createGame({ state: defaultState(), rnd: () => .5, now: () => 0 });
+  const said = [], sfx = []; g.bus.on('say', d => said.push(d)); g.bus.on('sfx', s => sfx.push(s));
+  const end = () => { const d = said.at(-1); d.onEnd && d.onEnd(); };
+  assert.ok(introActive(g.S)); assert.equal(g.S.scene, 'gare');
+  introTick(g, TRAIN_MS / 1000 + .1); assert.ok(sfx.includes('whistle'), 'sifflet du train');
+  introTick(g, .1); assert.equal(said.length, 1, 'pensées du héros'); end();
+  introTick(g, .1); assert.equal(said.at(-1).name, 'Myst'); end();
+  assert.equal(g.S.scene, 'town'); assert.ok(g.ride, 'en diligence');
+  let stops = 0, guard = 0;
+  while (g.S.intro.step === 'diligence' && guard++ < 2000) {
+    const before = said.length, x = g.ride && g.ride.x; introTick(g, .1);
+    if (said.length > before) { stops++; assert.equal(g.ride.x, x, 'la diligence attend pendant l’explication'); assert.equal(introTick(g, 1), null, 'toujours à l’arrêt'); end(); }
+  }
+  assert.equal(stops, 1 + INTRO_MYST.arrets.length, 'la légende puis un arrêt par bâtiment');
+  assert.equal(g.S.scene, 'rondpoint');
+  introTick(g, .1); const ask = said.at(-1); assert.equal(ask.choices.length, 4);
+  ask.onChoose(2); assert.equal(g.S.farmLot, 2); end();
+  assert.equal(introActive(g.S), false); assert.equal(g.S.scene, 'farm'); assert.equal(g.S.intro.myst, 'done');
 });

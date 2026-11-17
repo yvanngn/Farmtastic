@@ -17,6 +17,7 @@ import { createMapView } from './ui/mapView.js';
 import { createBoard } from './ui/board.js';
 import { createTitle } from './ui/title.js';
 import { createHotbar } from './ui/hotbar.js';
+import { introTick, introActive } from './systems/intro.js';
 import { createDialog } from './ui/dialog.js';
 import { NPCS, OUT_FROM, OUT_TO, INTRO_LINES } from './data/npcs.js';
 import { placeNPC, findNPCAt, mystTick } from './systems/social.js';
@@ -228,7 +229,7 @@ async function begin() {
   for (const [x, y] of BUSHES) delete g.S.objs[x + ',' + y];   // les buissons à baies gardent leur place
   for (const id in NPCS) registerNPC(g, NPCS[id]);
   for (const id in g.npcs) placeNPC(g.npcs[id], g.S, OUT_FROM, OUT_TO);
-  if (!g.S.intro.arrived) { // arrivée en train : le train repart pendant que le héros repense à l'annonce
+  if (!g.S.intro.arrived && !g.S.intro.step) { // (anciennes parties) arrivée en train : le train repart pendant que le héros repense à l'annonce
     g.trainT = performance.now();
     setTimeout(() => g.bus.emit('say', { name: g.S.name, color: '#ffdf8a', lines: INTRO_LINES, onEnd: () => { g.S.intro.arrived = true; } }), 2600);
   }
@@ -250,7 +251,8 @@ let last = performance.now(), hudT = 0, lastFrame = 0;
 function loop(now) {
   const dt = Math.min(0.05, (now - last) / 1000); last = now;
   if (started) {
-    const arrivee = g.S.intro && ['wait', 'sleep', 'talk'].includes(g.S.intro.myst);   // sur le quai, jusqu'à la fin de l'accueil de Myst
+    const arrivee = (g.S.intro && ['wait', 'sleep', 'talk'].includes(g.S.intro.myst)) || introActive(g.S);   // Farmwest : pendant le nouveau début aussi
+    if (introActive(g.S)) introTick(g, dt);   // sur le quai, jusqu'à la fin de l'accueil de Myst
     if (g.fishing || g.parcGame) { g.player.target = null; g.player.walkFrame = 0; }   // on ne bouge pas en pêchant
     else if (g.talking || arrivee) { g.player.target = null; g.player.walkFrame = 0; }   // pendant un dialogue ou l'arrivée, on ne bouge pas
     else updatePlayer(g, dt, input.keys, (tx, ty) => act(g, tx, ty));
