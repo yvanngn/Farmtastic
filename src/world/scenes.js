@@ -177,6 +177,7 @@ export const TOWN_B = {
   F: { x: 15, y: 6, w: 3, h: 3 }, J: { x: 3, y: 13, w: 4, h: 3 }, A: { x: 27, y: 13, w: 3, h: 3 },
   O: { x: 3, y: 20, w: 4, h: 3 }, V: { x: 13, y: 20, w: 4, h: 3 }, Z: { x: 26, y: 20, w: 4, h: 3 },
   R: { x: 9, y: 13, w: 4, h: 3 },   // 16/11 : le bar d'Ed (porte x11)
+  E: { x: 3, y: 26, w: 4, h: 3 },   // Farmwest (7c) : bureau du shérif (décor)
   Y: { x: 13, y: 26, w: 5, h: 3 }   // Farmwest (lot 5) : le restaurant (porte x15), à la place de l'ancienne villa
 };
 export const TOWN_LAMPS = [[10, 8], [23, 8], [8, 12], [23, 12], [10, 25], [24, 25]];
@@ -190,7 +191,7 @@ function buildTown() {
   pave(2, 24, 31, 24);                    // rue des commerces
   pave(18, 29, 19, 29);   // trottoir du restaurant jusqu'à l'avenue
   pave(20, 12, 21, 30);   // avenue jusqu'à la sortie sud (pont → station balnéaire) ; la villa du Maire est effacée (il vit au ranch)
-  for (const k of 'MUJAOVZRY') { const b = TOWN_B[k]; pave(b.x - 1, b.y + b.h, b.x + b.w, b.y + b.h); }   // trottoir devant chaque porte
+  for (const k of 'MUJAOVZRYE') { const b = TOWN_B[k]; pave(b.x - 1, b.y + b.h, b.x + b.w, b.y + b.h); }   // trottoir devant chaque porte
   pave(6, 5, 6, 9); pave(26, 5, 26, 9);   // halle et magasin → grande rue
   pave(7, 12, 7, 16); pave(30, 12, 30, 16); pave(4, 17, 4, 19); pave(28, 17, 28, 19); pave(15, 12, 15, 19);   // ruelles
   for (const [k, b] of Object.entries(TOWN_B)) put(k, b.x, b.y, b.w, b.h);

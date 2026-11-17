@@ -98,8 +98,8 @@ Objectif : le rendu de `docs/carte-region-farmwest.jpg` : terre ocre et chemins 
 La liste détaillée est dans `docs/CARNET.md`, section « Chantier graphique niveau Stardew ». Ordre proposé :
 - [x] 7a. Palette Far West et sols (v0.1.14) : herbe plus chaude en brins partout (ferme, zone résidentielle, forêt), **centre-ville en terre ocre** avec **rues de sable à ornières**, **trottoirs en planches** devant chaque commerce, place pavée gardée ; allées de sable aux bords adoucis dans la zone résidentielle ; peintres de sol partagés (`src/render/terrain.js`).
 - [x] 7b. Falaises, rivière et ponts (v0.1.14) : le centre-ville sur son **plateau** — **falaise de terre rouge en terrasses** au nord, **rivière** à l'est et au sud, **ponts en bois** vers le rond-point et la station balnéaire ; panneau « ROND-POINT → ». (Rond-point : rivière et pont depuis le lot 2.)
-- [ ] 7c. Bâtiments western (saloon, banque, shérif, magasins en planches avec auvents).
-- [ ] 7d. Arbres et forêts denses, cactus, rochers.
+- [x] 7c. Bâtiments western (v0.1.15) : **fausses façades en planches** à gradins et corniche, **auvent sur poteaux** au-dessus du trottoir, contours sombres, ombre au sol ; **saloon** plus haut avec balcon, rideaux rouges et **portes battantes** ; nouveau **bureau du shérif** (décor : étoile, barreaux, avis de recherche) au sud-ouest.
+- [x] 7d. Arbres, cactus, rochers (v0.1.15) : chênes plus volumineux (lumière en haut à gauche, ombre en dessous) ; rochers avec reflets, facettes et mousse ; **cactus saguaro** (fleur au printemps, neige l'hiver) et cailloux ocre à la gare, au rond-point et au ranch.
 - [ ] 7e. Personnages et animaux redessinés (chapeaux de cow-boy, bottes…).
 - [ ] 7e bis. **Personnalisation des vêtements de style western** (demande du 17/11) : chapeaux (cow-boy, melon…), bandanas, gilets, chemises à carreaux, jambières, bottes à éperons, robes de saloon ; dans l'écran de création et dans 👕 plus tard.
 - [ ] 7f. Intérieurs, icônes d'objets en pixel art, interface en bois / affiche.

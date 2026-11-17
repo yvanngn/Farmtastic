@@ -199,16 +199,19 @@ const TREE_PAL = [
 ];
 export function treeSprite(season, v) {
   return cache('t' + season + v, () => {
-    const s = canvas(34, 44), c = s.getContext('2d'), p = TREE_PAL[season], r = rng(v * 97 + 3);
+    const s = canvas(34, 44), c = s.getContext('2d'), p = TREE_PAL[season], r = rng(v * 97 + 3);   // 7d : canopée sur 0-31
     // tronc + racines
     c.fillStyle = '#5b3a22'; c.fillRect(14, 26, 6, 16); c.fillRect(11, 39, 12, 3);
     c.fillStyle = '#7a4f2e'; c.fillRect(15, 26, 2, 15);
     c.fillStyle = '#3f2615'; c.fillRect(19, 27, 1, 14); c.fillRect(16, 32, 1, 2);
-    // feuillage en grappes
-    const cx = 17 + (v % 3) - 1;
-    for (const [x, y, rad] of [[cx, 19, 12], [cx - 8, 22, 8], [cx + 8, 22, 8], [cx, 11, 10]]) disc(c, x, y, rad, p[0]);
-    for (const [x, y, rad] of [[cx - 1, 17, 10], [cx - 8, 20, 6], [cx + 7, 20, 6], [cx - 1, 10, 8]]) disc(c, x, y, rad, p[1]);
-    for (const [x, y, rad] of [[cx - 4, 9, 4], [cx - 9, 18, 3], [cx + 3, 14, 3], [cx + 6, 18, 2]]) disc(c, x, y, rad, p[2]);
+    // Farmwest (7d) : feuillage plus volumineux, lumière en haut à gauche, ombre en bas à droite
+    const cx = 17 + (v % 3) - 1, dk = shade(p[0], .78);
+    c.fillStyle = '#7a4f2e'; c.fillRect(11, 25, 4, 2); c.fillRect(20, 24, 4, 2);   // branches
+    for (const [x, y, rad] of [[cx, 18, 13], [cx - 9, 21, 8], [cx + 9, 21, 8], [cx, 9, 10], [cx - 7, 12, 7], [cx + 7, 12, 7]]) disc(c, x, y, rad, dk);
+    for (const [x, y, rad] of [[cx, 17, 12], [cx - 9, 20, 7], [cx + 8, 20, 7], [cx, 9, 9], [cx - 6, 12, 6], [cx + 7, 12, 6]]) disc(c, x, y, rad, p[0]);
+    for (const [x, y, rad] of [[cx - 2, 15, 9], [cx - 9, 18, 5], [cx + 5, 17, 5], [cx - 1, 8, 7], [cx - 7, 11, 4]]) disc(c, x, y, rad, p[1]);
+    for (const [x, y, rad] of [[cx - 4, 6, 4], [cx - 9, 15, 3], [cx + 1, 12, 3], [cx - 5, 13, 2], [cx + 4, 8, 2]]) disc(c, x, y, rad, p[2]);
+    for (const [x, y] of [[cx + 4, 25], [cx - 3, 26], [cx + 10, 23]]) { c.fillStyle = dk; c.fillRect(x, y, 3, 1); }   // dessous dans l'ombre
     // tramage pour la texture
     for (let i = 0; i < 40; i++) { const x = 6 + r() * 22 | 0, y = 2 + r() * 26 | 0; c.fillStyle = r() < .5 ? p[0] : p[2]; if (c.getImageData(x, y, 1, 1).data[3]) c.fillRect(x, y, 1, 1); }
     if (p[3]) for (let i = 0; i < 8; i++) { const x = 6 + r() * 22 | 0, y = 4 + r() * 20 | 0; if (c.getImageData(x, y, 1, 1).data[3]) { c.fillStyle = p[3]; c.fillRect(x, y, 2, 2); } }
@@ -255,6 +258,28 @@ export function birchSprite(season, v) {
     return outline(s, '#1e2a17');
   });
 }
+// Farmwest (7d) : cactus saguaro (bras levés, côtes, épines, fleur au printemps) et petites pierres du désert.
+export function cactusSprite(season, v) {
+  return cache('cac' + season + v, () => {
+    const s = canvas(22, 34), c = s.getContext('2d'), G = '#3f8a4a', D = '#2c6638', Lt = '#6cb86a';
+    const col = (x, y, w, h) => { c.fillStyle = G; c.fillRect(x, y, w, h); c.fillStyle = D; c.fillRect(x + w - 2, y, 2, h); c.fillStyle = Lt; c.fillRect(x + 1, y + 1, 1, h - 2); disc(c, x + w / 2, y, w / 2, G); c.fillStyle = Lt; c.fillRect(x + 1, y - 1, 2, 1); };
+    col(8, 6, 6, 27);
+    if (v % 2 === 0) { col(2, 12, 4, 8); c.fillStyle = G; c.fillRect(2, 18, 7, 3); }
+    if (v !== 1) { col(16, 9, 4, 9 + v); c.fillStyle = G; c.fillRect(13, 16 + v, 7, 3); }
+    c.fillStyle = '#f0ecd0'; for (const [x, y] of [[9, 10], [12, 15], [9, 21], [12, 27], [3, 15], [17, 13]]) c.fillRect(x, y, 1, 1);
+    if (season === 0) { disc(c, 11, 4, 2, '#f07ab0'); c.fillStyle = '#ffe07a'; c.fillRect(11, 4, 1, 1); }
+    if (season === 3) { c.fillStyle = '#eef5f7'; c.fillRect(8, 3, 6, 2); }
+    return outline(s, '#16301c');
+  });
+}
+export function pebbleSprite(v) {
+  return cache('peb' + v, () => {
+    const s = canvas(14, 10), c = s.getContext('2d');
+    disc(c, 6, 6, 4, '#a0663e'); disc(c, 5, 5, 3, '#c98a56'); c.fillStyle = '#e0aa78'; c.fillRect(4, 3, 2, 1);
+    if (v) { disc(c, 11, 7, 2, '#8a5a36'); c.fillStyle = '#b07a48'; c.fillRect(10, 6, 1, 1); }
+    return outline(s, '#4a2a18');
+  });
+}
 export const KIND_SPRITE = { oak: treeSprite, pine: pineSprite, birch: birchSprite };
 const KIND_IDS = ['oak', 'pine', 'birch'];
 // Jeune arbre : pousse (jour 0), arbuste (jour 1), petit arbre (jour 2), puis adulte.
@@ -299,6 +324,9 @@ function boulderSprite() {
     disc(c, 12, 12, 9, '#4d4955'); disc(c, 11, 11, 8, '#76727f'); disc(c, 8, 8, 4, '#a7a2ad'); disc(c, 15, 13, 3, '#5d5966');
     c.fillStyle = '#3c3843'; c.fillRect(13, 7, 1, 5); c.fillRect(14, 12, 3, 1); c.fillRect(7, 14, 4, 1);
     c.fillStyle = '#c98a4a'; c.fillRect(6, 11, 2, 1); c.fillRect(16, 9, 1, 2);
+    c.fillStyle = '#3a3641'; c.fillRect(6, 19, 13, 1); c.fillRect(17, 16, 3, 3);   // 7d : base dans l'ombre
+    c.fillStyle = '#d9d4de'; c.fillRect(6, 5, 4, 1); c.fillRect(5, 6, 1, 2);
+    c.fillStyle = '#5f8a3a'; c.fillRect(4, 15, 4, 2); c.fillRect(5, 14, 2, 1);   // mousse
     return outline(s, '#25222b');
   });
 }
@@ -307,6 +335,8 @@ function bigRockSprite(v) {
     const s = canvas(22, 18), c = s.getContext('2d');
     disc(c, 11, 11, 7, '#524e5a'); disc(c, 10, 10, 6, '#7b7784'); disc(c, 15, 12, 4, '#6a6672'); disc(c, 7, 7, 3, '#aba6b2');
     c.fillStyle = '#423e48'; c.fillRect(12, 6, 1, 4); c.fillRect(13, 10, 3, 1); c.fillRect(6, 13, 3, 1);
+    c.fillStyle = '#433f4a'; c.fillRect(6, 16, 11, 1); c.fillRect(15, 14, 3, 2);   // 7d : ombre et facettes
+    c.fillStyle = '#d6d1db'; c.fillRect(6, 5, 3, 1); c.fillRect(5, 6, 1, 2);
     if (v) { c.fillStyle = '#6f9a45'; c.fillRect(3, 15, 4, 1); c.fillRect(17, 15, 3, 1); c.fillRect(4, 14, 1, 1); }
     return outline(s, '#27232c');
   });
@@ -316,6 +346,8 @@ function rockSprite(v) {
     const s = canvas(18, 15), c = s.getContext('2d');
     disc(c, 9, 9, 6, '#57535e'); disc(c, 8, 8, 5, '#827e8a'); disc(c, 6, 6, 2, '#b4afba');
     c.fillStyle = '#4a4650'; c.fillRect(10, 7, 1, 3); c.fillRect(11, 10, 2, 1);
+    c.fillStyle = '#45414c'; c.fillRect(5, 13, 8, 1); c.fillRect(12, 11, 2, 2);   // 7d : dessous dans l'ombre
+    c.fillStyle = '#d6d1db'; c.fillRect(5, 5, 2, 1); c.fillRect(4, 6, 1, 1);   // reflet
     if (v) { c.fillStyle = '#6f9a45'; c.fillRect(4, 12, 3, 1); c.fillRect(5, 11, 1, 1); }
     return outline(s, '#2a2630');
   });

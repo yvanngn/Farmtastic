@@ -25,6 +25,7 @@ export const EXAMINE = {
   },
   tiles: {
     villa: 'Très belle villa.',
+    sheriff: 'Le bureau du shérif. Une étoile dorée, des barreaux à la fenêtre… et personne derrière.',
     K: 'Le plan de travail. Il ne manque plus qu\'un bon repas.',
     T: 'Une table en bois, avec une tasse oubliée dessus.',
     P: "Une plante verte. Elle a l'air de bien se porter.",

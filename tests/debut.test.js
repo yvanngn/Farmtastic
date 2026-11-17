@@ -338,3 +338,8 @@ test('Farmwest lot 6 : Remy Gusto habite la zone résidentielle', async () => {
   registerNPC(g, CUISTOT); placeNPC(g.npcs.cuistot, S, 480, 1140); assert.equal(g.npcs.cuistot.scene, 'remy', 'le soir, chez lui');
   S.scene = 'quartier'; assert.equal(act(g, 20, 24), 'door'); assert.equal(S.scene, 'remy');
 });
+
+test('7c : bureau du shérif au centre-ville (bloquant, commentaire du héros)', async () => {
+  const { LAYOUTS, SOLID_TILES } = await import('../src/world/scenes.js');
+  assert.equal(LAYOUTS.town[27][4], 'E'); assert.ok(SOLID_TILES.includes('E'));
+});

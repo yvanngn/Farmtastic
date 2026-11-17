@@ -28,12 +28,12 @@ export function buildTown(season) {
     if (ch === '=') { paintBridge(R, r, px, py, x, y, L); continue; }
     if (ch === '^') { paintCliff(R, r, px, py, x, y, L, season); continue; }
     // Farmwest (7a) : terre ocre, rues de sable avec ornières, trottoirs en planches devant les commerces, place pavée
-    if (ch === 'g' || ch === 'T' || ch === 'D' || ch === 'W') {
+    if (ch === 'g' || ch === 'T' || ch === 'D' || ch === 'E') {
       if (ch === 'D') { paintRoad(R, r, px, py, x, y); continue; }
       paintOchre(R, r, px, py, x, y, season);
       continue;
     }
-    const isB = (a, b) => 'MUJAOVZRY'.includes((L[b] || '')[a] || '');
+    const isB = (a, b) => 'MUJAOVZRYE'.includes((L[b] || '')[a] || '');
     if (isB(x, y - 1) || isB(x - 1, y - 1) || isB(x + 1, y - 1)) { paintPlanks(R, r, px, py, x, y); continue; }   // trottoir de bois
     const plaza = x >= 12 && x <= 21 && y >= 5 && y <= 9;
     if (!plaza) {
@@ -92,20 +92,48 @@ export function buildTown(season) {
   R(ux + 46, uy + 32, 12, 10, '#a8774a'); R(ux + 46, uy + 32, 12, 2, '#c99560'); R(ux + 51, uy + 32, 2, 10, '#7a4f2e');
   signBoard(R, ux + uw / 2, uy - 3, 'AMÉLIORATIONS');
 
-  // échoppe générique : murs de planches, toit, fenêtres, enseigne
-  function shop(x0, y0, w, roofA, roofB, sign, deco) {
-    const ux = x0 * T, uy = y0 * T, uw = w * T;
-    R(ux + 2, uy - 4, uw - 4, 3 * T + 2, '#9a6a3c');
-    for (let k = 0; k < 3 * T; k += 4) R(ux + 2, uy - 4 + k, uw - 4, 1, '#7e5430');
-    R(ux + uw - 10, uy - 4, 8, 3 * T + 2, '#7a4e2a');
-    for (let i = 0; i < 9; i++) R(ux - 3 + (8 - i) * 2, uy - 24 + i * 2, uw + 6 - (8 - i) * 4, 2, i % 2 ? roofA : roofB); // pointe en haut
-    R(ux - 4, uy - 6, uw + 8, 3, '#3b2414');
-    const dx = ux + uw / 2 - 8; R(dx, uy + 14, 16, 26, '#4a2c18'); R(dx + 2, uy + 16, 12, 24, '#6e4426'); R(dx + 11, uy + 28, 2, 2, '#e8c26a');
-    R(ux + 5, uy + 8, 12, 12, '#3b2414'); R(ux + 6, uy + 9, 10, 10, '#ffd98a'); R(ux + 10, uy + 9, 1, 10, '#3b2414');
-    if (w > 3) { R(ux + uw - 19, uy + 8, 12, 12, '#3b2414'); R(ux + uw - 18, uy + 9, 10, 10, '#ffd98a'); R(ux + uw - 14, uy + 9, 1, 10, '#3b2414'); }
-    signBoard(R, ux + uw / 2, uy - 3, sign);
-    deco(ux, uy, uw);
+  // Farmwest (7c) : bâtiment western — fausse façade en planches verticales, corniche, auvent sur poteaux, contours sombres
+  const OUT = '#2a1a10';
+  function western(x0, y0, w, trim, trim2, sign, deco, opt = {}) {
+    const ux = x0 * T, uy = y0 * T, uw = w * T, top = uy - 28 - (opt.tall || 0);
+    const wall = opt.wall || '#9a6a3c', wallD = shade(wall, 0.82), wallL = shade(wall, 1.12);
+    // ombre portée au sol
+    g.fillStyle = 'rgba(40,20,10,.22)'; g.fillRect(ux + 4, uy + 46, uw, 4);
+    // toit à deux pans qui dépasse derrière la fausse façade
+    for (let i = 0; i < 6; i++) R(ux + 6 + i, top + 12 - i * 2, uw - 12 - i * 2, 2, i % 2 ? shade(trim, 0.7) : shade(trim, 0.8));
+    // fausse façade : silhouette en gradins
+    const step = opt.step !== false;
+    R(ux - 1, top + 6, uw + 2, uy + 48 - top - 6, OUT);
+    if (step) { R(ux + 9, top - 1, uw - 18, 8, OUT); R(ux + uw / 2 - 9, top - 5, 18, 5, OUT); }
+    R(ux, top + 7, uw, uy + 46 - top - 7, wall);
+    if (step) { R(ux + 10, top, uw - 20, 8, wall); R(ux + uw / 2 - 8, top - 4, 16, 5, wall); }
+    for (let k = 4; k < uw; k += 5) { R(ux + k, top + 7, 1, uy + 46 - top - 7, wallD); if (r() < .5) R(ux + k + 1, top + 9 + (r() * 40 | 0), 1, 3, wallL); }
+    if (step) for (let k = 14; k < uw - 10; k += 5) R(ux + k, top, 1, 8, wallD);
+    // corniche peinte
+    R(ux - 2, top + 6, uw + 4, 3, trim); R(ux - 2, top + 9, uw + 4, 1, OUT);
+    if (step) { R(ux + 9, top - 1, uw - 18, 2, trim); R(ux + uw / 2 - 9, top - 5, 18, 2, trim2); }
+    for (let k = 0; k < uw; k += 6) R(ux + k, top + 10, 2, 2, shade(trim, 0.75));   // denticules
+    // enseigne peinte sur la façade
+    signBoard(R, ux + uw / 2, top + 20, sign);
+    // fenêtres de l'étage
+    if (!opt.balcony) for (const wx of (w > 3 ? [ux + 7, ux + uw - 19] : [ux + uw / 2 - 6])) {
+      R(wx - 1, top + 27, 14, 12, OUT); R(wx, top + 28, 12, 10, '#6a90a8'); R(wx, top + 28, 12, 3, '#9cc4d8');
+      R(wx + 5, top + 28, 2, 10, wallD); R(wx - 2, top + 38, 16, 2, trim);
+    }
+    // auvent en planches sur poteaux, au-dessus du trottoir
+    const ay = uy + 10;
+    R(ux - 4, ay, uw + 8, 6, OUT); R(ux - 3, ay + 1, uw + 6, 4, shade(trim2, 0.95));
+    for (let k = 0; k < uw + 6; k += 4) R(ux - 3 + k, ay + 1, 1, 4, shade(trim2, 0.7));
+    R(ux - 3, ay + 1, uw + 6, 1, shade(trim2, 1.25));
+    for (const px of [ux - 2, ux + uw - 1]) { R(px, ay + 6, 3, 40 - 6, OUT); R(px + 1, ay + 6, 1, 34, '#8a5a32'); }
+    // rez-de-chaussée : vitrines et porte
+    const dx = ux + uw / 2 - 8;
+    if (opt.door) opt.door(dx, uy); else { R(dx - 1, uy + 19, 18, 28, OUT); R(dx, uy + 20, 16, 26, '#5b3a22'); R(dx + 2, uy + 22, 5, 10, '#7a4f2e'); R(dx + 9, uy + 22, 5, 10, '#7a4f2e'); R(dx + 12, uy + 33, 2, 2, '#e8c26a'); }
+    const win = (wx, ww) => { R(wx - 1, uy + 20, ww + 2, 15, OUT); R(wx, uy + 21, ww, 13, '#ffd98a'); R(wx, uy + 21, ww, 4, '#fff0c0'); R(wx + (ww >> 1), uy + 21, 1, 13, OUT); R(wx - 2, uy + 34, ww + 4, 2, wallD); };
+    if (uw - 16 > 34) { win(ux + 4, 13); win(ux + uw - 17, 13); } else win(ux + 3, 9);
+    deco(ux, uy, uw, top);
   }
+  const shop = (x0, y0, w, roofA, roofB, sign, deco) => western(x0, y0, w, roofA, roofB, sign, deco);
   // charpentier (x4-7, y11-13) : planches empilées, scie, rondins
   shop(TOWN_B.J.x, TOWN_B.J.y, 4, '#7a3a22', '#94482a', 'CHARPENTIER', (ux, uy, uw) => {
     for (let k = 0; k < 3; k++) { R(ux - 2, uy + 36 - k * 3, 18, 3, ['#c99560', '#b07a48', '#d9a870'][k]); R(ux - 2, uy + 36 - k * 3, 18, 1, '#e8c08a'); }
@@ -136,18 +164,34 @@ export function buildTown(season) {
     R(ux + uw - 10, uy + 36, 8, 6, '#3a5a7a'); R(ux + uw - 9, uy + 37, 6, 2, '#6aa0c8');
   });
 
-  // saloon d'Ed (x9-12, y13-15) : façade sombre, enseigne, tonneau et chope devant
-  shop(TOWN_B.R.x, TOWN_B.R.y, 4, '#5a2a3a', '#7a3a4a', 'SALOON', (ux, uy, uw) => {
+  // saloon d'Ed (x9-12, y13-15) : grande fausse façade, balcon, portes battantes, tonneau et chope
+  western(TOWN_B.R.x, TOWN_B.R.y, 4, '#7a2a3a', '#a8453a', 'SALOON', (ux, uy, uw, top) => {
+    // balcon de l'étage avec garde-corps
+    R(ux - 3, top + 38, uw + 6, 3, OUT); R(ux - 2, top + 38, uw + 4, 2, '#8a5a32');
+    for (let k = 0; k < uw + 4; k += 4) R(ux - 2 + k, top + 30, 1, 8, '#5b3a22');
+    R(ux - 2, top + 29, uw + 4, 2, '#7a4f2e');
+    for (const wx of [ux + 6, ux + uw - 18]) { R(wx - 1, top + 24, 14, 14, OUT); R(wx, top + 25, 12, 13, '#ffcf7a'); R(wx + 2, top + 25, 3, 13, '#c84a4a'); R(wx + 7, top + 25, 3, 13, '#c84a4a'); }   // rideaux rouges
     R(ux - 3, uy + 32, 10, 11, '#7a4f2e'); R(ux - 3, uy + 34, 10, 1, '#3a2a20'); R(ux - 3, uy + 39, 10, 1, '#3a2a20'); R(ux - 1, uy + 30, 6, 2, '#5b3a22');   // tonneau
-    R(ux + uw - 9, uy + 34, 6, 7, '#e8c26a'); R(ux + uw - 9, uy + 33, 6, 2, '#fff6e0'); R(ux + uw - 4, uy + 35, 2, 4, '#e8c26a');   // chope mousseuse
-    for (const k of [6, uw - 18]) { R(ux + k, uy + 9, 12, 1, '#ffd98a'); R(ux + k, uy + 20, 12, 1, '#ffd98a'); }   // vitres éclairées
-  });
+    R(ux + uw - 9, uy + 38, 6, 6, '#e8c26a'); R(ux + uw - 9, uy + 37, 6, 2, '#fff6e0'); R(ux + uw - 4, uy + 39, 2, 3, '#e8c26a');   // chope
+  }, { tall: 6, balcony: true, door: (dx, uy) => {
+    R(dx - 1, uy + 19, 18, 28, OUT); R(dx, uy + 20, 16, 26, '#2a1810');   // intérieur sombre
+    R(dx + 1, uy + 25, 6, 12, '#a8774a'); R(dx + 9, uy + 25, 6, 12, '#a8774a');   // portes battantes (avec un jour au milieu)
+    for (const k of [1, 9]) { R(dx + k, uy + 25, 6, 1, '#d9a870'); R(dx + k + 1, uy + 28, 4, 1, '#7a4f2e'); R(dx + k + 1, uy + 31, 4, 1, '#7a4f2e'); R(dx + k, uy + 36, 6, 1, '#5b3a22'); }
+  } });
   // restaurant (x13-17, y26-28) : façade crème, auvent rayé rouge et blanc, menu sur ardoise, tonneau de fleurs
   shop(TOWN_B.Y.x, TOWN_B.Y.y, 5, '#a8432f', '#c85a3a', 'RESTAURANT', (ux, uy, uw) => {
     for (let k = 0; k < uw; k += 8) R(ux + k, uy + 4, 4, 5, '#f4ead2');   // auvent rayé
     R(ux + uw + 2, uy + 30, 10, 13, '#3a3a3a'); R(ux + uw + 3, uy + 31, 8, 11, '#2a2a2a'); for (let k = 0; k < 3; k++) R(ux + uw + 4, uy + 33 + k * 3, 6, 1, '#f4ead2');   // ardoise du menu
     R(ux - 12, uy + 34, 10, 9, '#7a4f2e'); R(ux - 11, uy + 31, 3, 3, '#e05a9a'); R(ux - 7, uy + 30, 3, 3, '#f2c832');   // fleurs
   });
+  // bureau du shérif (x3-6, y26-28) : étoile, fenêtre à barreaux, avis de recherche
+  western(TOWN_B.E.x, TOWN_B.E.y, 4, '#5a4a3a', '#7a6a52', 'SHÉRIF', (ux, uy, uw, top) => {
+    const sx = ux + uw / 2, sy = top + 33;   // étoile dorée
+    R(sx - 1, sy - 5, 2, 10, '#f2c832'); R(sx - 5, sy - 1, 10, 2, '#f2c832'); R(sx - 3, sy - 3, 6, 6, '#f2c832'); R(sx - 1, sy - 1, 2, 2, '#b08a20');
+    for (let k = 1; k < 9; k += 3) R(ux + 4 + k, uy + 21, 1, 13, '#2a2a2a');   // barreaux
+    R(ux + uw - 15, uy + 21, 10, 12, '#efe2c0'); R(ux + uw - 13, uy + 23, 6, 5, '#8a6a4a'); R(ux + uw - 14, uy + 30, 8, 1, '#8a3a2a');   // avis de recherche
+    R(ux - 6, uy + 38, 4, 6, '#5b3a22'); R(ux - 7, uy + 37, 6, 1, '#3f2615');   // poteau d'attache
+  }, { wall: '#8a6a4a' });
   // fontaine (x11-13, y8-10)
   const fx = TOWN_B.F.x * T + 24, fy = TOWN_B.F.y * T + 24;
   disc(g, fx, fy + 2, 23, '#6f6a73'); disc(g, fx, fy, 22, '#9a958c'); disc(g, fx, fy, 18, '#3a7cc2'); disc(g, fx - 4, fy - 5, 6, '#6aa8e0');

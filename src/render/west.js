@@ -5,12 +5,13 @@ import { LAYOUTS } from '../world/scenes.js';
 import { rng } from '../world/map.js';
 import { shade, disc } from './pixel.js';
 import { GRASS } from './ground.js';
-import { treeSprite, pineSprite } from './sprites.js';
+import { treeSprite, pineSprite, cactusSprite, pebbleSprite } from './sprites.js';
 
 const T = CFG.T;
 // Panneaux du rond-point : position → texte (vers quelle zone mène la sortie la plus proche)
 const SIGNS = { rondpoint: { '11,2': 'FERMES', '15,6': 'RÉSIDENCES', '16,11': 'RANCH', '9,12': 'CENTRE-VILLE' } };
 
+const DESERT = ['gare', 'rondpoint', 'ranch'];
 export function buildWest(name, season) {
   const L = LAYOUTS[name], H = L.length, W = L[0].length;
   const c = document.createElement('canvas'); c.width = W * T; c.height = H * T;
@@ -127,9 +128,14 @@ export function buildWest(name, season) {
     R(px + 7, py + 4, 2, 12, '#5b3a22'); R(px + 8 - tw / 2 - 1, py - 2, tw + 2, 9, '#3f2615'); R(px + 8 - tw / 2, py - 1, tw, 7, '#c99560');
     g.fillStyle = '#3b2414'; g.textAlign = 'center'; g.fillText(txt, px + 8, py + 4.5); g.textAlign = 'start';
   }
+  // 5 bis (7d) : petites pierres ocre éparses sur les sols de terre (décor, sans collision)
+  if (DESERT.includes(name)) for (let y = 1; y < H - 1; y++) for (let x = 1; x < W - 1; x++) if (at(x, y) === 'g' && r() < .035) g.drawImage(pebbleSprite((x + y) % 2), x * T + (r() * 6 | 0), y * T + 4 + (r() * 4 | 0));
   // 6. arbres (bords et bosquets), triés de haut en bas
   for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) if (at(x, y) === 'T') {
-    const v = (x * 7 + y * 3) % 4, im = (x + y) % 2 ? pineSprite(season, v) : treeSprite(season, v);
+    const v = (x * 7 + y * 3) % 4;
+    // 7d : côté désert (gare, rond-point, ranch), des cactus se mêlent aux arbres de bordure
+    if (DESERT.includes(name) && (x * 5 + y * 3) % 4 === 0) { g.drawImage(cactusSprite(season, v), x * T - 3, y * T - 18); continue; }
+    const im = (x + y) % 2 ? pineSprite(season, v) : treeSprite(season, v);
     g.drawImage(im, x * T - 9, y * T - 26);
   }
   // 7. décor : chevaux dans l'enclos, abreuvoir, voiliers au port
