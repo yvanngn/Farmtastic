@@ -81,12 +81,13 @@ Légende : ✅ fait · ⏳ à faire · ❓ question pour l'utilisateur · 💡 i
 - ⏳ **Routines quotidiennes** pour tous les PNJ, sur le modèle de Hailey.
 - ⏳ **Patrons « Bientôt »** (bague, tisane, bonnet, pain, ragoût, soupe de poisson) : à ouvrir plus tard ; boutiques propres pour l'alchimiste, le couturier, le joaillier (PNJ à décrire).
 - ⏳ **Bouclier** (zone de combat) ; **épée** à l'ouverture de la caverne ; étages suivants de la caverne ; suite des tunnels de la grange (grand éboulement).
-- ⏳ **Silhouettes** d'enfant (Jade) et de personnes âgées (lot 7e).
+- ✅ Silhouette d'enfant (Jade, v0.1.16). ⏳ Personnes âgées : aucun PNJ âgé décrit pour l'instant.
 - ⏳ `docs/PARCOURS.md` à refaire pour le nouveau début (skill `parcours-debut`).
 
 ## 5. Idées de Claude (💡 à valider)
 - Toutes les valeurs chiffrées non données par l'utilisateur (prix, temps, quantités, horaires, positions) sont des 💡 : chaudron 20 🪨 + 10 🪵, louche 30 $, quêtes du jour (50-90 $), métiers 15 XP par fabrication, mûres +2 / +6 ⚡, emplacements des buissons, horaires d'Ed (11 h-23 h 30) et de Remy (7 h-22 h), routine de Hailey, maisons de Remy et d'Ed, apparences de Remy et Harry, répliques 🆕.
 - Noms de lieux western : Saloon, Magasin général, Zone résidentielle, Caverne sombre.
+- Tenues western des PNJ (17/11) : Manu chapeau + gilet + bandana, Harry chapeau + bandana, Myst chapeau melon, Ed gilet.
 - **Bureau du shérif** (décor, 17/11) au sud-ouest du centre-ville : pas de shérif pour l'instant (PNJ à décrire si besoin).
 - Luna et le héros se comprennent (« tout recommencer ») ; Myst témoin de l'enquête sur Manu ; Igor forge pour Manu ; Igor motive Franck à marcher ; Hailey et Franck.
 
@@ -96,7 +97,7 @@ Principe : étapes « à partir de telle heure → tel lieu », avec variantes s
 - **Repos (jours 7, 14, 21, 28)** : grasse matinée ; 14 h-17 h balade en forêt ; 17 h-18 h 30 devant chez elle ; puis chez elle.
 
 ## 7. Chantier graphique « niveau Stardew » (lot 7, liste à faire petit à petit)
-Fait : sol de la ferme (v0.1.5) ; **7a** palette Far West et sols (centre-ville ocre, rues à ornières, trottoirs en planches, herbe en brins partout) et **7b** falaise, rivière et ponts autour du centre-ville (v0.1.14). **7c** bâtiments western et **7d** arbres, cactus, rochers (v0.1.15). Suite : 7e personnages.
+Fait : sol de la ferme (v0.1.5) ; **7a** palette Far West et sols (centre-ville ocre, rues à ornières, trottoirs en planches, herbe en brins partout) et **7b** falaise, rivière et ponts autour du centre-ville (v0.1.14). **7c** bâtiments western et **7d** arbres, cactus, rochers (v0.1.15) ; **7e** personnages et animaux, **7f** intérieurs, icônes, interface en bois (v0.1.16). Suite : 7e bis vêtements, 7g lumière.
 - **Sols et décors** : même herbe partout ; transitions douces herbe ↔ terre ↔ pavés ↔ sable ↔ eau ; pavés variés ; eau animée (reflets, écume, nénuphars) ; herbe qui ondule ; saisons plus marquées.
 - **Personnages** : sprites plus détaillés avec contour ; marche en 8 images ; animations d'outils ; portraits dans les dialogues ; enfant et personnes âgées ; animaux animés ; **vêtements western**.
 - **Objets et bâtiments** : arbres plus volumineux qui tombent ; contours sombres ; façades détaillées, fumée des cheminées ; intérieurs meublés pièce par pièce ; icônes en pixel art à la place des émojis.
@@ -115,4 +116,4 @@ Fait : sol de la ferme (v0.1.5) ; **7a** palette Far West et sols (centre-ville 
 ## 9. Historique (une ligne par séance ; détail dans Git et `docs/VERSIONS.md`)
 - 15/11 : écran titre, inventaire, arbres et pierres, charpentier, commerces, Luna, panneau d'affichage, début sans outils, champ, zone de combat, Franck, établi, discussions façon Witch'rok, objets au sol, mode en ligne préparé.
 - 16/11 : lots 1-4 (tuto des baies, rappel 18 h, clinique à 1 h, patrons, chaudron, quête du jour, métiers), Ghostbuster, équilibrage, versions, objets qui tombent, forêt coupable, maisons ouvertes, Hailey (routine), Ed et sa famille, barre d'outils, essai d'herbe façon Stardew.
-- 17/11 : **Farmwest** — renommage, lot 1 ambiance western, lot 2 nouvelle carte (rond-point, ranch, port, liaisons), lot 3 nouveau début (gare, diligence, choix de la ferme), lot 4 quêtes principales (grand arbre, outils uniques, plus de bijou), lot 5 restaurant et couteau (cueillette à la jauge), lot 6 charpentier Harry Fordson, Remy Gusto ; carnet nettoyé ; lots 7a-7b (sols Far West, falaise, rivière, ponts) ; lots 7c-7d (façades western, saloon, shérif, arbres, cactus, rochers).
+- 17/11 : **Farmwest** — renommage, lot 1 ambiance western, lot 2 nouvelle carte (rond-point, ranch, port, liaisons), lot 3 nouveau début (gare, diligence, choix de la ferme), lot 4 quêtes principales (grand arbre, outils uniques, plus de bijou), lot 5 restaurant et couteau (cueillette à la jauge), lot 6 charpentier Harry Fordson, Remy Gusto ; carnet nettoyé ; lots 7a-7b (sols Far West, falaise, rivière, ponts) ; lots 7c-7d (façades western, saloon, shérif, arbres, cactus, rochers) ; arrivée dans le train ; lots 7e-7f (marche en 8 images, chapeaux, icônes pixel art, interface en bois).

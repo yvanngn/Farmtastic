@@ -45,7 +45,7 @@ export function createCustomizer({ getLook, getName, onStart, onContinue, onBack
       pctx.fillStyle = GRASS[0]; pctx.fillRect(0, 0, 36, 45);
       pctx.fillStyle = '#5a9a3e'; for (const [x, y] of [[4, 8], [27, 6], [6, 36], [29, 33], [17, 4]]) { pctx.fillRect(x, y + 1, 1, 2); pctx.fillRect(x + 2, y + 1, 1, 2); pctx.fillRect(x + 1, y, 1, 3); }
       pctx.fillStyle = '#f07ab0'; pctx.fillRect(30, 40, 2, 2); pctx.fillStyle = '#f5e050'; pctx.fillRect(3, 24, 2, 2);
-      drawChar(pctx, 12, 14, getLook(), dir, dir >= 2 ? (t / 160 | 0) % 4 : 0, t);
+      drawChar(pctx, 12, 14, getLook(), dir, dir >= 2 ? 1 + ((t / 85 | 0) % 8) : 0, t);
     }
   };
 }

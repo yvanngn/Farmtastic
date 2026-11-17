@@ -63,7 +63,7 @@ export const LUNA = {
 // en vacances ; les gens croient qu'il travaille dur pour eux. Une enquête sur lui viendra plus tard.
 export const CHEF = {
   id: 'chef', name: 'Manuel', title: 'Maire', color: '#e8c26a', voice: 'voiceChef', de: 'de lui',
-  look: { body: 'h', bottom: 'pant', skin: '#e2b48c', hair: 0, hairC: '#b8b4ae', shirt: '#7a4a2a', pants: '#3a3a4a' },
+  look: { body: 'h', bottom: 'pant', skin: '#e2b48c', hair: 0, hairC: '#b8b4ae', shirt: '#7a4a2a', pants: '#3a3a4a', hat: 'cowboy', vest: '#c9a84a', bandana: '#a8302b' },
   home: 'ranch_maison', inside: { x: 3.5, y: 4.6 }, outScene: 'town', day: { x: 18.5, y: 8.6 },   // 17/11 : il vit dans son ranch, passe ses journées sur la place
   // trajet villa → place (le matin) et retour (le soir), à pied : porte de la villa, allée est, place
   walks: [{ scene: 'foret', from: 780, to: 840, every: 3, at: { x: 18.5, y: 13.5 } }],  // promenade digestive, un jour sur trois, 13 h – 14 h (💡)
@@ -139,7 +139,7 @@ export const FRANCK = {
 // (trop antisocial) : il est content qu'on arrive bousculer un peu les choses.
 export const MYST = {
   id: 'myst', name: 'Myst', de: 'de lui', color: '#a99ad0', voice: 'voiceFranck',
-  look: { body: 'h', bottom: 'pant', skin: '#e2cfc0', hair: 0, hairC: '#1c181c', shirt: '#1d1b22', pants: '#141218', tall: true, coat: true },
+  look: { body: 'h', bottom: 'pant', skin: '#e2cfc0', hair: 0, hairC: '#1c181c', shirt: '#1d1b22', pants: '#141218', tall: true, coat: true, hat: 'melon' },
   home: null, mystic: true,
   // trajet du quartier jusqu'à la cabane : du portail sud de la ferme, on remonte le grand chemin
   route: [{ x: 16.5, y: 34.4 }, { x: 16.5, y: 20.6 }, { x: 3.6, y: 20.6 }],   // de la gare au quartier par le grand chemin
@@ -264,7 +264,7 @@ export const INTRO_LINES = [
 // des gens. Rêve d'ouvrir un jour un magasin en ville (future quête). Marié à Suzie, papa de Jade. Répliques 🆕 à valider.
 export const ED = {
   id: 'ed', name: 'Ed', de: 'de lui', color: '#e0a84a', voice: 'voiceChef',
-  look: { body: 'h', bottom: 'pant', skin: '#e8b48c', hair: 0, hairC: '#5a3a22', shirt: '#3a6a9a', pants: '#3a3a44' },   // 💡 chemise de routier
+  look: { body: 'h', bottom: 'pant', skin: '#e8b48c', hair: 0, hairC: '#5a3a22', shirt: '#3a6a9a', pants: '#3a3a44', vest: '#5a3a2a' },   // 💡 chemise de routier
   home: 'ed', inside: { x: 3.5, y: 4.6 }, worker: { scene: 'bar', at: { x: 3.5, y: 3.7 }, from: 660, to: 1410 },   // 💡 au bar de 11 h à 23 h 30
   traits: ['Barman du saloon', 'Ancien chauffeur routier', 'Aime le contact des gens', 'Rêve d’ouvrir un magasin en ville', 'Mari de Suzie, papa de Jade'],
   taste: { adore: [], aime: ['berry_cooked', 'confiture_baies'], naime: ['slime'], deteste: [] },   // 💡 en attendant les boissons
@@ -291,7 +291,7 @@ export const SUZIE = {
 };
 export const JADE = {
   id: 'jade', name: 'Jade', de: "d'elle", color: '#8ad0a0', voice: 'voiceLuna',
-  look: { body: 'f', bottom: 'skirt', skin: '#f1c7a5', hair: 5, hairC: '#c0402a', shirt: '#e07ab0', pants: '#4a7a4a' },
+  look: { body: 'f', bottom: 'skirt', skin: '#f1c7a5', hair: 5, hairC: '#c0402a', shirt: '#e07ab0', pants: '#4a7a4a', kid: true },
   home: 'ed_etage', stay: true, inside: { x: 3.5, y: 4.6 },
   traits: ['Fille d’Ed et Suzie'], taste: {},
   chat: ["T'es qui, toi ? Moi c'est Jade !", "Papa, il dit qu'un jour il aura un magasin. Avec plein de bonbons dedans."],
@@ -378,7 +378,7 @@ export const CUISTOT = {
 // envers Manu, le Maire. C'est lui qui apprend à faire le coffre (quête principale). Répliques 🆕.
 export const HARRY = {
   id: 'harry', name: 'Harry Fordson', title: 'charpentier', de: 'de lui', color: '#c99560', voice: 'voiceChef',
-  look: { body: 'h', bottom: 'pant', skin: '#e8b48c', hair: 2, hairC: '#a86a32', shirt: '#7a4a2a', pants: '#3a4a6a', tall: true },   // 💡 chemise de travail
+  look: { body: 'h', bottom: 'pant', skin: '#e8b48c', hair: 2, hairC: '#a86a32', shirt: '#c84a3a', pants: '#3a4a6a', tall: true, hat: 'cowboy', bandana: '#3a5a8a' },   // 💡 chemise de travail
   home: null, dayScene: 'town', day: { x: 7.5, y: 16.6 },   // devant son atelier
   traits: ['Charpentier de père en fils', 'Très doué', 'Malade, sans symptôme visible', 'Aimerait se marier un jour', 'Beaucoup de dettes envers Manu, le Maire'],
   taste: { adore: [], aime: ['wood'], naime: ['slime'], deteste: [] },   // 💡

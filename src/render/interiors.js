@@ -44,14 +44,24 @@ export function buildInterior(name, S = {}) {
       else for (let k = 0; k < T; k += 4) R(px + k, py, 1, T, th.wallD);
       R(px, py + 11, T, 5, th.trim); R(px, py + 11, T, 1, shade(th.trim, 1.25));
       if (name === 'grange') { if (x % 5 === 2) { R(px + 6, py + 2, 3, 6, '#5b3a22'); R(px + 5, py, 5, 3, '#ffb347'); R(px + 6, py - 1, 3, 2, '#ffe08a'); } continue; }
-      if (x % 4 === 2) { R(px + 2, py + 1, 12, 9, '#f0e6d0'); R(px + 3, py + 2, 10, 7, '#8fc4e2'); R(px + 3, py + 2, 10, 2, '#bfe0f2'); R(px + 7, py + 2, 1, 7, '#f0e6d0'); }
+      if (x % 4 === 2) { R(px + 2, py + 1, 12, 9, '#f0e6d0'); R(px + 3, py + 2, 10, 7, '#8fc4e2'); R(px + 3, py + 2, 10, 2, '#bfe0f2'); R(px + 7, py + 2, 1, 7, '#f0e6d0'); R(px + 1, py + 9, 14, 2, th.trim); }   // fenêtre et rebord
+      else if (x % 6 === 5) {   // 7f : petit tableau western (mesa au couchant) dans un cadre doré
+        R(px + 3, py + 1, 10, 8, '#8a6a2a'); R(px + 4, py + 2, 8, 6, '#f2a85a'); R(px + 4, py + 2, 8, 2, '#f6d08a'); R(px + 5, py + 5, 4, 3, '#a8432f'); R(px + 9, py + 6, 3, 2, '#8a3a2a');
+      } else if (x % 6 === 0 && name !== 'clinique') {   // étagère avec bocaux
+        R(px + 1, py + 7, 14, 2, th.beam); R(px + 2, py + 3, 3, 4, '#e8c26a'); R(px + 6, py + 4, 3, 3, '#8ac06a'); R(px + 10, py + 2, 3, 5, '#c84a4a'); R(px + 2, py + 3, 3, 1, '#f4ead2'); R(px + 10, py + 2, 3, 1, '#f4ead2');
+      }
       continue;
     }
     // sol
-    if (name === 'house' || name === 'luna' || name === 'franck') {
+    if (name !== 'grange' && name !== 'clinique' && name !== 'coop' && name !== 'barn' && name !== 'pigsty') {   // 7f : parquet en lames décalées, clous, nuances
       R(px, py, T, T, th.floor);
-      for (let k = 0; k < T; k += 4) R(px, py + k, T, 1, th.seam);
-      R(px + ((x * 5 + y * 3) % 12), py + 1, 1, 3, th.seam);
+      for (let k = 0; k < T; k += 4) {
+        const row = y * 4 + k / 4, tone = ((row * 7 + x * 3) % 5) - 2;
+        if (tone) R(px, py + k, T, 4, shade(th.floor, 1 + tone * .035));
+        R(px, py + k, T, 1, th.seam);
+        const cut = (row * 11) % T; R(px + cut, py + k, 1, 4, th.seam); R(px + cut + 2, py + k + 2, 1, 1, shade(th.seam, .8));
+        if ((row + x) % 3 === 0) R(px + ((row * 5) % 14) + 1, py + k + 1, 2, 1, shade(th.floor, 1.12));
+      }
     } else if (name === 'grange') {
       R(px, py, T, T, th.floor);
       for (let k = 0; k < 8; k++) R(px + (r() * 14 | 0), py + (r() * 15 | 0), 2, 1, r() < .5 ? th.seam : '#86684a');
@@ -104,7 +114,10 @@ export function buildInterior(name, S = {}) {
   for (const ch of Object.keys(draw)) {
     if (seen.has(ch)) continue; seen.add(ch);
     const pts = block(ch);
-    if (pts.length) draw[ch](bbox(pts));
+    if (!pts.length) continue;
+    const bb = bbox(pts);
+    if (!'XRD'.includes(ch)) { g.fillStyle = 'rgba(30,15,5,.22)'; g.fillRect(bb[0] + 2, bb[1] + bb[3] - 2, bb[2] - 1, 3); }   // 7f : ombre des meubles au sol
+    draw[ch](bb);
   }
   return c;
 }

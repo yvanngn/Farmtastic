@@ -8,6 +8,8 @@ import { FARM_LOTS } from '../data/buildings.js';
 export const TRAIN_MS = 3200;            // la locomotive entre en gare et s'arrête
 export const COACH_SPEED = 3.2;          // cases par seconde
 export const GARE_QUAI = { x: 4.5, y: 7.6 }, MYST_QUAI = { x: 4.5, y: 5.8 };
+export const TRAIN_DOOR = { x: 2.9, y: 4.6 };   // porte du wagon, une fois le train à quai (le héros est assis dedans)
+export const STEP_SPEED = 2.4;                    // cases par seconde quand il descend sur le quai
 export const RIDE = {
   town: { y: 10.6, from: -.5, to: 33.6 },
   rondpoint: { y: 9, from: -.5, to: 8.5 }
@@ -29,13 +31,21 @@ export function introTick(g, dt) {
   if (!introActive(S) || g.introWait) return null;
   const I = S.intro;
   if (I.step === 'train') {
-    if (S.scene !== 'gare') { S.scene = 'gare'; Object.assign(S, GARE_QUAI); g.bus.emit('scene', 'gare'); }
+    if (S.scene !== 'gare') { S.scene = 'gare'; g.bus.emit('scene', 'gare'); }
+    Object.assign(S, TRAIN_DOOR); g.introHidden = true;   // le héros arrive DANS le train
     g.introT = (g.introT || 0) + dt * 1000;
     if (!g.whistled && g.introT > 500) { g.whistled = true; g.bus.emit('sfx', 'whistle'); }
     if (g.introT < TRAIN_MS) return 'train';
     g.introWait = true;
-    g.bus.emit('say', { name: S.name, color: '#ffdf8a', lines: INTRO_LINES, onEnd: () => { g.introWait = false; I.step = 'myst'; } });
+    g.bus.emit('say', { name: S.name, color: '#ffdf8a', lines: INTRO_LINES, onEnd: () => { g.introWait = false; I.step = 'descente'; } });
     return 'thoughts';
+  }
+  if (I.step === 'descente') {   // il descend du wagon et marche jusqu'au quai, où Myst l'attend
+    g.introHidden = false; Object.assign(S, S.scene === 'gare' && S.x >= TRAIN_DOOR.x - .01 ? {} : TRAIN_DOOR); S.scene = 'gare';
+    const dx = GARE_QUAI.x - S.x, dy = GARE_QUAI.y - S.y, d = Math.hypot(dx, dy), st = STEP_SPEED * dt;
+    const P = g.player || (g.player = {}); P.walkT = (P.walkT || 0) + dt;
+    if (d > st) { S.x += dx / d * st; S.y += dy / d * st; S.dir = Math.abs(dx) > Math.abs(dy) ? 3 : 0; P.walkFrame = 1 + ((P.walkT * 1000 / 85 | 0) % 8); return 'descente'; }
+    Object.assign(S, GARE_QUAI); S.dir = 2; P.walkFrame = 0; I.step = 'myst'; return 'quai';
   }
   if (I.step === 'myst') {
     myst(g, INTRO_MYST.gare, () => { I.step = 'diligence'; startRide(g, 'town'); g.bus.emit('sfx', 'spurs'); });

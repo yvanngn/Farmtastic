@@ -273,7 +273,10 @@ test('Farmwest lot 3 : train → Myst → diligence (arrêts le temps des explic
   const end = () => { const d = said.at(-1); d.onEnd && d.onEnd(); };
   assert.ok(introActive(g.S)); assert.equal(g.S.scene, 'gare');
   introTick(g, TRAIN_MS / 1000 + .1); assert.ok(sfx.includes('whistle'), 'sifflet du train');
-  introTick(g, .1); assert.equal(said.length, 1, 'pensées du héros'); end();
+  assert.ok(g.introHidden, 'le héros est dans le train'); assert.ok(g.S.x < 3.5, 'à la porte du wagon, pas sur le quai');
+  introTick(g, .1); assert.equal(said.length, 1, 'pensées du héros (encore dans le train)'); end();
+  let n = 0; while (g.S.intro.step === 'descente' && n++ < 100) introTick(g, .1);
+  assert.equal(g.introHidden, false); assert.equal(g.S.x, 4.5, 'descendu sur le quai');
   introTick(g, .1); assert.equal(said.at(-1).name, 'Myst'); end();
   assert.equal(g.S.scene, 'town'); assert.ok(g.ride, 'en diligence');
   let stops = 0, guard = 0;
@@ -342,4 +345,16 @@ test('Farmwest lot 6 : Remy Gusto habite la zone résidentielle', async () => {
 test('7c : bureau du shérif au centre-ville (bloquant, commentaire du héros)', async () => {
   const { LAYOUTS, SOLID_TILES } = await import('../src/world/scenes.js');
   assert.equal(LAYOUTS.town[27][4], 'E'); assert.ok(SOLID_TILES.includes('E'));
+});
+
+test('7e : marche en 8 images (héros qui descend du train)', async () => {
+  const { WALK_N } = await import('../src/render/sprites.js');
+  assert.equal(WALK_N, 8);
+  const { introTick } = await import('../src/systems/intro.js');
+  const g = createGame({ state: defaultState(), rnd: () => .5, now: () => 0 });
+  g.S.intro.step = 'descente'; g.S.scene = 'gare'; Object.assign(g.S, { x: 2.9, y: 4.6 });
+  const seen = new Set(); let n = 0;
+  while (g.S.intro.step === 'descente' && n++ < 200) { introTick(g, .02); if (g.player.walkFrame) seen.add(g.player.walkFrame); }
+  assert.ok(seen.size >= 6, 'au moins 6 images différentes : ' + seen.size);
+  assert.ok([...seen].every(f => f >= 1 && f <= 8));
 });

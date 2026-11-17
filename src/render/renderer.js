@@ -118,10 +118,13 @@ function drawBigTree(c, x, y, season, now) {
   for (const [bx, by, r] of [[-17, -44, 4], [9, -46, 5], [-5, -60, 4], [3, -52, 3]]) blob(bx, by, r, L[2]);
 }
 // Farmwest : locomotive à vapeur qui entre en gare par le nord sur la voie (x1-2) et s'arrête le long du quai.
-function drawLoco(c, t, now) {
-  const x = 16 + 1, stopY = 2 * 16, y0 = stopY - (t < 3 ? (3 - t) * (3 - t) * 50 : 0);
+function drawLoco(c, t, now, hero) {
+  const x = 16 + 1, stopY = 6 * 16, y0 = stopY - (t < 3 ? (3 - t) * (3 - t) * 50 : 0);
   const R = (a, b, w, h, col) => { c.fillStyle = col; c.fillRect(Math.round(a), Math.round(b), w, h); };
-  for (const [k, col] of [[0, '#7a3a2a'], [1, '#7a3a2a']]) { const y = y0 - 52 - k * 46; R(x + 2, y + 2, 28, 44, 'rgba(0,0,0,.3)'); R(x, y, 28, 44, col); R(x, y, 28, 3, '#3a2a20'); R(x, y + 41, 28, 3, '#3a2a20'); for (let w = 8; w < 38; w += 10) R(x + 22, y + w, 4, 6, '#ffd98a'); R(x + 3, y + 4, 2, 36, '#a8574a'); }   // wagons bois
+  for (const [k, col] of [[0, '#7a3a2a'], [1, '#7a3a2a']]) { const y = y0 - 52 - k * 46; R(x + 2, y + 2, 28, 44, 'rgba(0,0,0,.3)'); R(x, y, 28, 44, col); R(x, y, 28, 3, '#3a2a20'); R(x, y + 41, 28, 3, '#3a2a20'); for (let w = 8; w < 38; w += 10) R(x + 22, y + w, 4, 6, '#ffd98a'); R(x + 3, y + 4, 2, 36, '#a8574a');
+    if (!k) { R(x + 27, y + 14, 2, 18, '#3a2a20'); R(x + 28, y + 15, 1, 16, '#5a3a2a'); }   // porte du wagon, côté quai
+    if (!k && hero) { R(x + 22, y + 18, 4, 6, '#ffd98a'); R(x + 23, y + 19, 3, 3, hero.skin || '#e8b48c'); R(x + 23, y + 18, 3, 1, hero.hairC || '#5a3a22'); }   // le héros à la fenêtre
+  }   // wagons bois
   R(x + 2, y0 + 2, 28, 72, 'rgba(0,0,0,.3)');
   R(x, y0, 28, 70, '#2a2a30'); R(x + 3, y0 + 4, 22, 40, '#3a3a44'); R(x + 3, y0 + 4, 4, 40, '#5a5a66');   // chaudière
   for (const b of [12, 24, 36]) R(x + 1, y0 + b, 26, 2, '#e8c26a');   // cerclages laiton
@@ -226,7 +229,7 @@ let swing = null;
     }
     // poussière de pas
     const P = g.player;
-    if (P.walkFrame && P.walkFrame !== lastStep && (P.walkFrame === 1 || P.walkFrame === 3) && worldFx.length < MAX_FX)
+    if (P.walkFrame && P.walkFrame !== lastStep && (P.walkFrame === 1 || P.walkFrame === 5) && worldFx.length < MAX_FX)
       worldFx.push({ k: 'dust', x: g.S.x * T + (Math.random() * 4 - 2), y: g.S.y * T + 1, life: .45 });
     lastStep = P.walkFrame;
     // lucioles la nuit (printemps / été, temps sec)
@@ -410,7 +413,7 @@ let swing = null;
     } });
     // (bijou d'Igor retiré le 17/11 : quête supprimée)
     if (scene === 'farm' && g.trainT && now - g.trainT < 9000) list.push({ z: 9998, d: () => drawTrain(ctx, (now - g.trainT) / 1000) });
-    if (scene === 'gare') list.push({ z: 0.5, d: () => drawLoco(ctx, S.intro && S.intro.step === 'train' ? (g.introT || 0) / 1000 : 99, now) });   // Farmwest : la locomotive à quai
+    if (scene === 'gare') list.push({ z: 0.5, d: () => drawLoco(ctx, S.intro && S.intro.step === 'train' ? (g.introT || 0) / 1000 : 99, now, g.introHidden ? S.look : null) });   // Farmwest : la locomotive à quai
     if (g.cueille && g.cueille.scene === scene) { const q = g.cueille; list.push({ z: 9990, d: () => { const x = q.x * T, y = q.y * T - 6; ctx.fillStyle = 'rgba(0,0,0,.6)'; ctx.fillRect(x - 1, y - 1, 18, 5); ctx.fillStyle = '#7ad04a'; ctx.fillRect(x, y, Math.round(16 * q.n / CUEILLE_HITS), 3); } }); }   // jauge de cueillette
     if (g.ride && g.ride.scene === scene) list.push({ z: g.ride.y + .2, d: () => drawCoach(ctx, g.ride.x, g.ride.y, now) });   // la diligence
     if (scene === 'farm' && testSwordHere(S)) list.push({ z: TEST_SWORD.y + .4, d: () => {
@@ -447,10 +450,10 @@ let swing = null;
         } });
       }));
     }
-    for (const id in g.npcs) { const n = g.npcs[id]; if ((n.scene || 'farm') !== scene) continue; list.push({ z: n.y, d: () => { drawChar(ctx, Math.round(n.x * T - 6), Math.round(n.y * T - 19), n.look, n.dir || 0, n.walking ? ((now / 150 | 0) % 4) : 0, now); label(n.name, n.x * T, n.y * T - (n.look.tall ? 28 : 25));
+    for (const id in g.npcs) { const n = g.npcs[id]; if ((n.scene || 'farm') !== scene) continue; list.push({ z: n.y, d: () => { drawChar(ctx, Math.round(n.x * T - 6), Math.round(n.y * T - 19), n.look, n.dir || 0, n.walking ? 1 + ((now / 85 | 0) % 8) : 0, now); label(n.name, n.x * T, n.y * T - (n.look.tall ? 28 : 25));
       if (n.sleeping) { const t = now / 600; ctx.fillStyle = '#e8f0ff'; ctx.font = 'bold 7px Nunito, sans-serif'; ctx.fillText('z', n.x * T + 6 + (t % 1) * 3, n.y * T - 30 - (t % 1) * 6); ctx.font = 'bold 9px Nunito, sans-serif'; ctx.fillText('Z', n.x * T + 10 + ((t + .5) % 1) * 3, n.y * T - 34 - ((t + .5) % 1) * 7); } } }); }
     for (const id in g.others) { const o = g.others[id]; if (!o.look || (o.scene || 'farm') !== scene) continue; list.push({ z: o.y, d: () => { drawChar(ctx, Math.round(o.x * T - 6), Math.round(o.y * T - 19), o.look, o.dir, o.f, now + 777); label(o.name, o.x * T, o.y * T - 25); } }); }
-    if (!g.ride) list.push({ z: S.y, d: () => {   // pendant la diligence, le héros est dedans
+    if (!g.ride && !g.introHidden) list.push({ z: S.y, d: () => {   // pendant la diligence (et l'arrivée en train), le héros est dedans
       if (swing && S.dir === 1) drawSwing(ctx, S, swing.tool, swing.p);
       if (!(g.player.iframe > 0 && ((now / 80) | 0) % 2)) drawChar(ctx, Math.round(S.x * T - 6), Math.round(S.y * T - 19), S.look, S.dir, g.player.walkFrame, now, !!swing);
       if (document.body.dataset.nrj === 'tete' || S.energy / S.maxE <= .3) { // alerte : jauge au-dessus du héros quand l'énergie devient basse

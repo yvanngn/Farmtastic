@@ -39,10 +39,10 @@ export function createMenu(g, opts) {
   const card = (h, cls = '') => `<div class="card ${cls}">${h}</div>`;
   // grille d'achat d'un commerce (×1 et ×5)
   const shopGrid = (S, id) => '<div class="grid">' + SHOPS[id].sells.filter(k => isUnlocked(S, k)).map(k => { const x = it(k);
-    return card(`<div class="t">${x.i} <b>${x.n}</b></div><div>${x.buy} $${x.eat ? ' · se mange' : ''}</div><div class="row" style="margin:0"><button data-buy="${k}" ${S.money >= x.buy ? '' : 'disabled'}>Acheter</button><button data-buy5="${k}" ${S.money >= x.buy * 5 ? '' : 'disabled'}>×5</button></div>`); }).join('') + '</div>';
+    return card(`<div class="t">${iconHTML(k)} <b>${x.n}</b></div><div>${x.buy} $${x.eat ? ' · se mange' : ''}</div><div class="row" style="margin:0"><button data-buy="${k}" ${S.money >= x.buy ? '' : 'disabled'}>Acheter</button><button data-buy5="${k}" ${S.money >= x.buy * 5 ? '' : 'disabled'}>×5</button></div>`); }).join('') + '</div>';
   const patternGrid = (S, shop) => { const ps = Object.entries(PATTERNS).filter(([, p]) => p.shop === shop); if (!ps.length) return '';
     return '<h3>📜 Patrons</h3><div class="grid">' + ps.map(([id, p]) => { const r = p.pot ? POT_RECIPES[p.recipe] : HAND_RECIPES[p.recipe], o = it(r.out), own = hasPattern(S, id);
-      return card(`<div class="t">📜 <b>${p.n}</b></div><div>${o.i} ${o.n} : ${Object.entries(r.in).map(([k, n]) => `${it(k).i}${n}`).join(' ')}</div><div>${p.price} $ · ${JOBS[p.job].i} ${JOBS[p.job].n}${p.pot ? ' · chaudron 🍲' : ''}</div>${own ? '<small>✅ Déjà appris</small>' : p.soon ? '<button disabled>⏳ Bientôt</button>' : `<button data-pattern="${id}" ${S.money >= p.price ? '' : 'disabled'}>Acheter le patron</button>`}`); }).join('') + '</div>'; };
+      return card(`<div class="t">📜 <b>${p.n}</b></div><div>${o.i} ${o.n} : ${Object.entries(r.in).map(([k, n]) => `${iconHTML(k)}${n}`).join(' ')}</div><div>${p.price} $ · ${JOBS[p.job].i} ${JOBS[p.job].n}${p.pot ? ' · chaudron 🍲' : ''}</div>${own ? '<small>✅ Déjà appris</small>' : p.soon ? '<button disabled>⏳ Bientôt</button>' : `<button data-pattern="${id}" ${S.money >= p.price ? '' : 'disabled'}>Acheter le patron</button>`}`); }).join('') + '</div>'; };
   const views = {
     igorShop: S => `<p class="info">Patrons et outils du forgeron.</p>${patternGrid(S, 'forge')}${shopGrid(S, 'forge')}`,
     bakery: S => `<p class="info">Farine et patrons : le pain se prépare au chaudron.</p>${patternGrid(S, 'bakery')}${shopGrid(S, 'bakery')}`,
@@ -63,15 +63,15 @@ export function createMenu(g, opts) {
       if (!cats.includes(recCat)) recCat = cats[0];
       const tabsH = '<div class="rec-tabs">' + cats.map(c => `<button data-rcat="${c}" class="${c === recCat ? 'on' : ''}">${RECIPE_CATS[c]}</button>`).join('') + '</div>';
       return '<p class="info">Les recettes que tu connais, rangées par type. On les fabrique n\'importe où, avec ce qu\'on a sur soi.</p>' + tabsH + '<div class="grid">' + known.filter(id => HAND_RECIPES[id].cat === recCat).map(id => { const r = HAND_RECIPES[id];
-        return card(`<div class="t">${it(r.out).i} <b>${it(r.out).n}</b> ×${r.q}</div><div>${Object.entries(r.in).map(([k, n]) => `${it(k).i}${n} <small>(${S.inv[k] || 0})</small>`).join(' ')}</div><button data-hcraft="${id}" ${canCraftHand(S, id) ? '' : 'disabled'}>Fabriquer</button>`); }).join('') + '</div>';
+        return card(`<div class="t">${iconHTML(r.out)} <b>${it(r.out).n}</b> ×${r.q}</div><div>${Object.entries(r.in).map(([k, n]) => `${iconHTML(k)}${n} <small>(${S.inv[k] || 0})</small>`).join(' ')}</div><button data-hcraft="${id}" ${canCraftHand(S, id) ? '' : 'disabled'}>Fabriquer</button>`); }).join('') + '</div>';
     },
     sac(S) {
       const ids = Object.keys(S.inv);
-      return `<p class="info">${usedSlots(S)}/${slots(S)} cases utilisées · ${stackSize(S)} objets max par case</p>` + (ids.length ? '<div class="grid">' + ids.map(id => card(`<div class="t">${it(id).i} <b>${it(id).n}</b></div><div>×${S.inv[id]} · ${Math.ceil(S.inv[id] / stackSize(S))} case(s) · ${it(id).p}$/u</div>${it(id).eat ? `<button data-use="${id}">Utiliser</button>` : it(id).tent ? `<button data-deploy="${id}" class="primaire">⛺ Déployer</button>` : ''}`)).join('') + '</div>' : 'Sac vide.');
+      return `<p class="info">${usedSlots(S)}/${slots(S)} cases utilisées · ${stackSize(S)} objets max par case</p>` + (ids.length ? '<div class="grid">' + ids.map(id => card(`<div class="t">${iconHTML(id)} <b>${it(id).n}</b></div><div>×${S.inv[id]} · ${Math.ceil(S.inv[id] / stackSize(S))} case(s) · ${it(id).p}$/u</div>${it(id).eat ? `<button data-use="${id}">Utiliser</button>` : it(id).tent ? `<button data-deploy="${id}" class="primaire">⛺ Déployer</button>` : ''}`)).join('') + '</div>' : 'Sac vide.');
     },
     workshop(S) { return '<p class="info">Ton établi, à la maison. D\'autres plans viendront plus tard.</p>' + views.craft(S); },
     craft(S) {
-      return '<div class="grid">' + RECIPES.map((r, i) => card(`<div class="t">${it(r.out).i} <b>${it(r.out).n}</b> ×${r.q}</div><div>${Object.entries(r.in).map(([k, n]) => `${it(k).i}${n} <small>(${S.inv[k] || 0})</small>`).join(' ')}</div><button data-craft="${i}" ${canCraft(S, r) ? '' : 'disabled'}>Fabriquer</button>`)).join('') + '</div>';
+      return '<div class="grid">' + RECIPES.map((r, i) => card(`<div class="t">${iconHTML(r.out)} <b>${it(r.out).n}</b> ×${r.q}</div><div>${Object.entries(r.in).map(([k, n]) => `${iconHTML(k)}${n} <small>(${S.inv[k] || 0})</small>`).join(' ')}</div><button data-craft="${i}" ${canCraft(S, r) ? '' : 'disabled'}>Fabriquer</button>`)).join('') + '</div>';
     },
     forge(S) {
       const lvl = miningLevel(S), xp = S.skills.mining.xp, nx = nextXp(xp), pct = nx ? Math.round(xp / nx * 100) : 100;
@@ -100,7 +100,7 @@ export function createMenu(g, opts) {
       return shopGrid(S, 'feed') + '<h3>🐾 Animaux</h3><div class="grid">' + Object.entries(ANIMALS).filter(([id]) => isUnlocked(S, id)).map(([id, a]) => {
         const r = canBuyAnimal(S, id), home = a.home && BUILDINGS[a.home];
         const why = { home: `Il faut d'abord ${home ? home.un : ''} (charpentier)`, full: home ? home.plein : '', money: "Pas assez d'argent" };
-        return card(`<div class="t">${a.i} <b>${a.n}</b></div><div>${a.buy} $${a.prod ? ` · ${it(a.prod).i} tous les ${a.every} j` : ' · compagnon'}</div>`
+        return card(`<div class="t">${a.i} <b>${a.n}</b></div><div>${a.buy} $${a.prod ? ` · ${iconHTML(a.prod)} tous les ${a.every} j` : ' · compagnon'}</div>`
           + (home ? `<small>${home.i} ${home.n} : ${homeCount(S, a.home)}/${home.cap}</small>` : '<small>Vit en liberté</small>')
           + `<button data-animal="${id}" ${r.ok ? '' : 'disabled'}>Acheter</button>${r.ok ? '' : `<small>${why[r.why]}</small>`}`);
       }).join('') + '</div>' + (['rabbit', 'pig', 'sheep'].some(k => !isUnlocked(S, k)) ? '<p class="info">D\'autres animaux arriveront avec la caravane 🐪 (panneau d\'affichage).</p>' : '');
@@ -163,11 +163,11 @@ export function createMenu(g, opts) {
     const S = g.S, [list, mine] = await Promise.all([opts.market.list(), opts.market.mine()]);
     if (tab !== 'market' || !$('#pm')) return;
     const own = Object.keys(S.inv).filter(id => ITEMS[id]);
-    const form = own.length ? `<div class="vente"><select id="mkItem">${own.map(id => `<option value="${id}">${it(id).i} ${it(id).n} (${S.inv[id]})</option>`).join('')}</select><input id="mkQty" type="number" min="1" value="1" inputmode="numeric" aria-label="Quantité"><input id="mkPrice" type="number" min="1" value="10" inputmode="numeric" aria-label="Prix unitaire"><button data-mksell="1">Mettre en vente</button></div>` : '';
+    const form = own.length ? `<div class="vente"><select id="mkItem">${own.map(id => `<option value="${id}">${iconHTML(id)} ${it(id).n} (${S.inv[id]})</option>`).join('')}</select><input id="mkQty" type="number" min="1" value="1" inputmode="numeric" aria-label="Quantité"><input id="mkPrice" type="number" min="1" value="10" inputmode="numeric" aria-label="Prix unitaire"><button data-mksell="1">Mettre en vente</button></div>` : '';
     const others = list.filter(l => l.seller_id !== opts.market.uid);
-    const offers = others.length ? '<div class="grid">' + others.map(l => card(`<div class="t">${it(l.item).i} <b>${l.qty} ${it(l.item).n}</b></div><div>${esc(l.seller_name)}</div><div>${l.price}$/u · ${l.qty * l.price}$</div><button data-mkbuy="${l.id}" ${S.money >= l.qty * l.price ? '' : 'disabled'}>Acheter</button>`)).join('') + '</div>' : '<p class="info">Aucune annonce pour le moment.</p>';
+    const offers = others.length ? '<div class="grid">' + others.map(l => card(`<div class="t">${iconHTML(l.item)} <b>${l.qty} ${it(l.item).n}</b></div><div>${esc(l.seller_name)}</div><div>${l.price}$/u · ${l.qty * l.price}$</div><button data-mkbuy="${l.id}" ${S.money >= l.qty * l.price ? '' : 'disabled'}>Acheter</button>`)).join('') + '</div>' : '<p class="info">Aucune annonce pour le moment.</p>';
     const sold = mine.filter(m => m.status === 'sold' && !m.claimed).reduce((n, m) => n + m.qty * m.price, 0);
-    const mineHtml = mine.filter(m => m.status === 'open').map(m => card(`<div class="t">${it(m.item).i} ${m.qty} ${it(m.item).n}</div><div>${m.price}$/u</div><button data-mkcancel="${m.id}">Retirer</button>`)).join('');
+    const mineHtml = mine.filter(m => m.status === 'open').map(m => card(`<div class="t">${iconHTML(m.item)} ${m.qty} ${it(m.item).n}</div><div>${m.price}$/u</div><button data-mkcancel="${m.id}">Retirer</button>`)).join('');
     box.innerHTML = form + '<h4>Annonces</h4>' + offers + '<h4>Mes ventes</h4>' + (mineHtml ? `<div class="grid">${mineHtml}</div>` : '<p class="info">Aucune annonce en cours.</p>') + `<button data-mkclaim="1" ${sold ? 'class="primaire"' : ''}>Encaisser${sold ? ' ' + sold + '$' : ''}</button>`;
     box.onclick = async e => {
       const d = e.target.dataset;
