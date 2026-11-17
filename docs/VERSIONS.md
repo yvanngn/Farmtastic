@@ -1,3 +1,8 @@
+# Versions de Farm'tastic
+
+Semver horodaté (heure de Paris). Patch automatique à chaque publication ; mineure et majeure sur décision de l'utilisateur.
+
+- **0.1.6** — 2026-11-17 13:55
 # Versions de Farmwest
 
 Semver horodaté (heure de Paris). Patch automatique à chaque publication ; mineure et majeure sur décision de l'utilisateur.
