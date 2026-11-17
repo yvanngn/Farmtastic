@@ -131,12 +131,12 @@ La liste détaillée est dans `docs/CARNET.md`, section « Chantier graphique ni
 - [x] **Une par habitant et par semaine** (le panneau aussi) ; seulement des objets que le joueur **sait fabriquer** à son niveau (feu de camp, confitures et plats du chaudron, grillades, objets de l'établi).
 - [x] Récompense : argent (💡 2 × prix de vente + 20 $), **40 XP** (quête secondaire), **+60 points d'amitié** pour un habitant (💡).
 
-## Lot 10 — Carte de la région refaite comme l'image (demande du 17/11)
+## Lot 10 — Carte de la région refaite comme l'image (demande du 17/11) ✅ v0.1.20
 Objectif : le plan 🗺️ → Région doit ressembler à `docs/carte-region-farmwest.jpg` (même disposition, même niveau de détail).
-- [ ] Carte pré-rendue en grand (≈ 1400 × 770 px), dessinée par le code avec les mêmes peintres que le jeu.
-- [ ] Forêts en **canopée continue** (amas d'arbres fusionnés, ombrés), rivière bleue avec berges et ponts, **falaises en terrasses** autour du centre-ville, **montagnes en 3/4** enneigées, caverne dans la roche.
-- [ ] Mini-bâtiments reconnaissables (gare, centre-ville, 4 fermes avec champs, maisons, ranch et enclos, fête foraine, cabines et parasols, port, voiliers).
-- [ ] Étiquettes en police western, position du joueur, zoom et déplacement au doigt.
+- [x] Carte pré-rendue en grand (≈ 1400 × 770 px), dessinée par le code avec les mêmes peintres que le jeu.
+- [x] Forêts en **canopée continue** (amas d'arbres fusionnés, ombrés), rivière bleue avec berges et ponts, **falaises en terrasses** autour du centre-ville, **montagnes en 3/4** enneigées, caverne dans la roche.
+- [x] Mini-bâtiments reconnaissables (gare, centre-ville, 4 fermes avec champs, maisons, ranch et enclos, fête foraine, cabines et parasols, port, voiliers).
+- [x] Étiquettes en police western, position du joueur, zoom et déplacement au doigt.
 
 ## Lot 11 — Deuxième passe graphique « niveau de l'image » (demande du 17/11)
 Pour que **les scènes du jeu** atteignent le niveau de détail de l'image, scène par scène :
