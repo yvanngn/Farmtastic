@@ -13,9 +13,17 @@ const CH = [
 
 // Zoom : nombre de cases visibles sur le petit côté de l'écran (mémorisé sur cet appareil).
 export const ZOOMS = { 9: 'Proche', 12: 'Normal', 15: 'Loin', 20: 'Très loin' };   // 16/11 : un niveau de plus
+// Taille des pixels pour chaque niveau : chaque niveau montre vraiment plus loin que le précédent
+// (avant, l'arrondi donnait parfois la même taille pour « Loin » et « Très loin »).
+export function zoomScale(minSide, zoom, T = 16) {
+  let prev = Infinity, s = 1;
+  for (const z of Object.keys(ZOOMS).map(Number).sort((a, b) => a - b)) { s = Math.max(1, Math.min(8, Math.round(minSide / (T * z)), prev === Infinity ? 8 : prev - 1)); if (z >= zoom) return s; prev = s; }
+  return s;
+}
 export const ZOOM_DEFAULT = 15;   // 17/11 : « Loin » par défaut (demande de l'utilisateur)
-export function getZoom() { try { const v = +localStorage.getItem('ferme_zoom'); return ZOOMS[v] ? v : ZOOM_DEFAULT; } catch { return ZOOM_DEFAULT; } }
-function setZoom(v) { try { localStorage.setItem('ferme_zoom', v); } catch {} window.dispatchEvent(new Event('ferme-zoom')); }
+const ZOOM_KEY = 'ferme_zoom_v2';   // 17/11 : nouvelle clé → tout le monde repart sur « Loin »
+export function getZoom() { try { const v = +localStorage.getItem(ZOOM_KEY); return ZOOMS[v] ? v : ZOOM_DEFAULT; } catch { return ZOOM_DEFAULT; } }
+function setZoom(v) { try { localStorage.setItem(ZOOM_KEY, v); } catch {} window.dispatchEvent(new Event('ferme-zoom')); }
 import { versionLabel } from '../version.js';
 export function createSettingsPanel(audio, g) {
   const body = $('#setBody');

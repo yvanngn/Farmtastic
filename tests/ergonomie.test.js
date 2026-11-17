@@ -100,3 +100,11 @@ test('zoom « Loin » par défaut', async () => {
   const { ZOOM_DEFAULT, ZOOMS } = await import('../src/ui/settingsPanel.js');
   assert.equal(ZOOMS[ZOOM_DEFAULT], 'Loin');
 });
+
+test('chaque niveau de zoom montre plus loin que le précédent (« Loin » ≠ « Très loin »)', async () => {
+  const { zoomScale } = await import('../src/ui/settingsPanel.js');
+  for (const side of [600, 800, 1080, 1600, 2160]) {
+    const s = [9, 12, 15, 20].map(z => zoomScale(side, z));
+    for (let i = 1; i < 4; i++) assert.ok(s[i] < s[i - 1] || s[i] === 1, `écran ${side} : ${s}`);
+  }
+});

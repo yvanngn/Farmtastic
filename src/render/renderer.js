@@ -1,5 +1,5 @@
 import { disc } from './pixel.js';
-import { getZoom } from '../ui/settingsPanel.js';
+import { getZoom, zoomScale } from '../ui/settingsPanel.js';
 import { QUARTIER, PARC_B } from '../world/scenes.js';
 // Caverne : la lumière du jour entre par la sortie ; quelques cristaux luisent.
 const CAVE_LIGHTS = [{ x: 8, y: 72, r: 60 }, { x: 25 * 16, y: 12 * 16, r: 18 }, { x: 44 * 16, y: 20 * 16, r: 18 }];
@@ -228,7 +228,7 @@ let swing = null;
     const w = cv.clientWidth || innerWidth, h = cv.clientHeight || innerHeight;   // lot 8 : la scène s'arrête au-dessus de la bande d'outils
     cv.width = Math.round(w * dpr); cv.height = Math.round(h * dpr);
     // ~12 tuiles sur le plus petit côté (réglable : Proche 9 / Normal 12 / Loin 15)
-    scale = Math.max(1, Math.min(8, Math.round(Math.min(cv.width, cv.height) / (T * getZoom()))));   // 1 possible : « Très loin » sur petit écran
+    scale = zoomScale(Math.min(cv.width, cv.height), getZoom(), T);   // 1 possible : « Très loin » sur petit écran
     ctx.imageSmoothingEnabled = false;
     vignette = document.createElement('canvas'); vignette.width = cv.width; vignette.height = cv.height;
     const v = vignette.getContext('2d'), gr = v.createRadialGradient(cv.width / 2, cv.height / 2, Math.min(cv.width, cv.height) * .35, cv.width / 2, cv.height / 2, Math.hypot(cv.width, cv.height) / 2);

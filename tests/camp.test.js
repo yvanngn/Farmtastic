@@ -6,9 +6,9 @@ import { act } from '../src/systems/actions.js';
 import { sleepTent, foldTent, TENT_ENERGY } from '../src/systems/camp.js';
 import { isSolid } from '../src/world/map.js';
 
-test('nouvelle partie : un sac à dos et une tente dans l’inventaire, pas encore de lit', () => {
+test('nouvelle partie : seulement une tente dans le sac, pas encore de lit', () => {
   const S = defaultState();
-  assert.equal(S.inv.backpack, 1); assert.equal(S.inv.tent, 1); assert.equal(S.bed, false);
+  assert.deepEqual(S.inv, { tent: 1 }, 'au départ : seulement la tente'); assert.equal(S.inv.tent, 1); assert.equal(S.bed, false);
   assert.equal(migrate({ name: 'x' }).bed, true, 'anciennes parties : le lit existe');
 });
 

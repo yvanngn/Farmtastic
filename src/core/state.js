@@ -8,7 +8,8 @@ export function defaultState() {
     look: { body: 'h', bottom: 'pant', skin: '#f6d2b0', hair: 0, hairC: '#7a4a22', shirt: '#b08a5a', pants: '#3a4a8a', overalls: '#4a8a3a' },   // 17/11 : salopette verte (planche de l'utilisateur)
     money: 500, energy: 100, maxE: 100, hp: 100, maxHp: 100,
     day: 1, season: 0, year: 1, minute: CFG.DAY_START, weather: 'sun',
-    inv: { wheat_seed: 10, hay: 5, backpack: 1, tent: 1 }, sel: 'hand', invOrder: [], saleLog: [], chests: [], fishLog: {}, parc: {},   // poissons pêchés : { id: { n, best, first, last } }   // coffres posés { x, y, items }   // ordre des cases choisi par le joueur
+    inv: { tent: 1 },   // 17/11 : seulement la tente au départ (plus de graines, de foin ni de sac à dos)
+    sel: 'hand', invOrder: [], saleLog: [], chests: [], fishLog: {}, parc: {},   // poissons pêchés : { id: { n, best, first, last } }   // coffres posés { x, y, items }   // ordre des cases choisi par le joueur
     tent: null, bed: false, recipes: ['campfire'], fires: [], bushes: {}, tips: {}, pots: [],   // recettes connues, feux posés, buissons cueillis (jour)          // tente posée {x,y} ; lit de la maison à construire
     x: 4.5, y: 7.6, dir: 3,          // Farmwest : on descend de la locomotive, sur le quai de la gare (scène « gare »)
     plots: {}, objs: null,
