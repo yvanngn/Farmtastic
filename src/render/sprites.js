@@ -17,9 +17,9 @@ const f4 = f => f ? [1, 2, 3, 0][(f - 1) >> 1] : 0;   // face / dos : 4 poses ti
 function rawChar(c, L, d, f, blink, noArm = false) {
   const r = (x, y, w, h, col) => { c.fillStyle = col; c.fillRect(1 + x, 1 + y, w, h); };
   const S = hex6(L.skin), Sd = shade(S, .84), Sh = hex6(L.shirt), Shd = shade(Sh, .74), Shl = shade(Sh, 1.2);
-  const P = hex6(L.pants), Pd = shade(P, .72), Pl = shade(P, 1.18), H = hex6(L.hairC), Hl = shade(H, 1.4), Hd = shade(H, .7);
+  const P = hex6(L.overalls || L.pants), Pd = shade(P, .72), Pl = shade(P, 1.18), H = hex6(L.hairC), Hl = shade(H, 1.4), Hd = shade(H, .7);
   const fem = L.body === 'f', robe = L.bottom === 'robe', skirt = L.bottom === 'skirt' || robe, st = L.hair, long = st === 1;
-  const CH = '#8a5a32', SP = '#e8c26a', B = SHOE, Bl = shade(SHOE, 1.4), LIPS = '#c8586a', BLUSH = '#f0907a';
+  const CH = '#8a5a32', SP = '#e8c26a', B = L.shoes || SHOE, Bl = shade(SHOE, 1.4), LIPS = '#c8586a', BLUSH = '#f0907a';
   const walking = !!f, ph = walking ? (f - 1) / WALK_N * Math.PI * 2 : 0;
   const bob = walking && Math.abs(Math.sin(ph)) > .7 ? 1 : 0;   // le corps descend quand les jambes sont écartées
   const u = (x, y, w, h, col) => r(x, y + bob, w, h, col);
@@ -94,11 +94,43 @@ function rawChar(c, L, d, f, blink, noArm = false) {
     if (st === 4) { u(12, 4, 2, 7, H); u(13, 4, 1, 7, Hd); }
     if (st === 5) { u(1, 5, 2, 7, H); u(13, 5, 2, 7, H); u(1, 5, 2, 1, '#e8c26a'); u(13, 5, 2, 1, '#e8c26a'); }
   };
-  legs(); body(); head();
+  // ----- détails des tenues (d'après la planche de personnages de l'utilisateur, 17/11)
+  const extras = () => {
+    const front = d === 0, side = d === 3, X = side ? 5 : 3, W = side ? 6 : 10;
+    if (L.stout) { if (!side) { u(2, 14, 1, 8, Sh); u(13, 14, 1, 8, Shd); r(3, 22, 1, 5, P); r(12, 22, 1, 5, Pd); } }   // carrure large
+    if (L.tank) { if (!side) { u(1, 14, 2, 7, L.muscle ? S : S); u(13, 14, 2, 7, Sd); u(1, 14, 1, 7, shade(S, 1.08)); if (L.muscle) { u(0, 15, 1, 5, S); u(15, 15, 1, 5, Sd); } } else u(7, 14, 2, 6, S); }   // bras nus
+    if (L.bandage) { if (!side) { u(1, 19, 2, 2, '#f4f0e6'); u(13, 19, 2, 2, '#e4ddd0'); } }
+    if (L.jacket) { const J = L.jacket, Jd = shade(J, .72), Jl = shade(J, 1.2);   // veste / sweat ouvert sur le haut
+      if (side) { u(5, 13, 6, 9, J); u(5, 13, 1, 9, Jl); u(7, 14, 2, 6, Jd); }
+      else if (front) { u(3, 13, 3, 9, J); u(10, 13, 3, 9, J); u(3, 13, 1, 9, Jl); u(12, 13, 1, 9, Jd); u(1, 14, 2, 7, J); u(13, 14, 2, 7, Jd); u(5, 12, 6, 1, J); u(5, 21, 1, 1, Jd); u(10, 21, 1, 1, Jd); }
+      else { u(3, 13, 10, 9, J); u(4, 12, 8, 2, Jd); u(1, 14, 2, 7, J); u(13, 14, 2, 7, Jd); } }
+    if (L.knit) { for (let y = 14; y < 22; y += 2) u(X, y, W, 1, Shd); if (!side) { u(5, 12, 6, 2, Sh); u(5, 12, 6, 1, Shl); } }   // pull en maille, col roulé
+    if (L.overalls) { const O = L.overalls, Od = shade(O, .72);   // salopette
+      if (front) { u(5, 16, 6, 6, O); u(5, 13, 1, 3, O); u(10, 13, 1, 3, O); u(5, 16, 1, 1, '#e8c26a'); u(10, 16, 1, 1, '#e8c26a'); u(7, 17, 2, 2, Od); }
+      else if (d === 1) { u(5, 13, 1, 4, O); u(10, 13, 1, 4, O); u(6, 16, 4, 1, O); u(3, 18, 10, 4, O); }
+      else { u(6, 13, 1, 4, O); u(5, 16, 6, 6, O); } }
+    if (L.apron) { const A = L.apron;   // tablier de cuir
+      if (front) { u(4, 15, 8, 10, A); u(4, 15, 1, 10, shade(A, 1.15)); u(5, 13, 1, 2, A); u(10, 13, 1, 2, A); u(6, 18, 4, 2, shade(A, .78)); }
+      else if (side) u(9, 15, 3, 10, A); }
+    if (L.suspenders && !side) { u(5, 13, 1, 9, L.suspenders); u(10, 13, 1, 9, L.suspenders); }
+    if (L.towel && !side) { u(10, 12, 3, 6, '#f4f4ee'); u(10, 14, 3, 1, '#a8c0d8'); u(12, 12, 1, 6, '#d8d8d0'); }
+    if (L.stetho && front) { u(5, 13, 1, 3, '#8a8f96'); u(10, 13, 1, 3, '#8a8f96'); u(6, 16, 4, 1, '#8a8f96'); u(7, 17, 1, 3, '#8a8f96'); u(6, 20, 3, 2, '#c2c6cc'); }
+    if (L.buttons && front) { for (const y of [14, 16, 18, 20]) { u(6, y, 1, 1, shade(Sh, .7)); u(9, y, 1, 1, shade(Sh, .7)); } u(3, 13, 10, 1, shade(Sh, .9)); }   // veste de chef croisée
+    if (L.toolbelt) { u(X, 21, W, 1, '#4a2e1a'); if (!side) { u(3, 21, 2, 3, '#8a5a32'); u(11, 21, 2, 3, '#8a5a32'); u(12, 22, 1, 2, '#c2c6cc'); } else u(9, 21, 2, 3, '#8a5a32'); }
+    if (L.checkPants && !skirt) { const g4 = walking ? [1, 2, 3, 0][(f - 1) >> 1] : 0; if (!side) for (let y = 22; y < 27; y += 2) { r(4, y, 8, 1, shade(P, 1.35)); } for (const x of side ? [7] : [5, 9]) r(x, 22, 1, 5, shade(P, 1.35)); }
+    if (L.fur && L.coat) { if (!side) { u(2, 12, 12, 2, L.fur); u(6, 14, 1, 13, L.fur); u(9, 14, 1, 13, L.fur); u(2, 25, 12, 2, L.fur); } else { u(4, 12, 7, 2, L.fur); u(4, 25, 7, 2, L.fur); } }
+    // visage : barbe, moustache, masque
+    if (L.beard) { const Bd = L.beard; if (front) { u(4, 8, 8, 4, Bd); u(5, 12, 6, 1, Bd); u(7, 9, 2, 1, '#8a3a2a'); u(4, 7, 1, 1, Bd); u(11, 7, 1, 1, Bd); } else if (side) { u(6, 8, 6, 4, Bd); u(7, 12, 4, 1, Bd); } }
+    if (L.mustache) { if (front) { u(5, 8, 6, 1, L.mustache); u(5, 9, 1, 1, L.mustache); u(10, 9, 1, 1, L.mustache); } else if (side) u(10, 8, 3, 1, L.mustache); }
+    if (L.mask) { const M = L.mask; if (front) { u(4, 7, 8, 5, M); u(5, 12, 6, 1, M); u(5, 8, 6, 1, shade(M, 1.3)); } else if (side) { u(7, 7, 6, 5, M); } }   // foulard qui cache le bas du visage
+    if (L.pipe && (front || side)) { u(side ? 12 : 10, 9, 3, 1, '#5a3a22'); u(side ? 14 : 12, 7, 2, 2, '#5a3a22'); }
+    if (L.pencil && L.hair === 3) u(9, -3, 4, 1, '#f2c832');
+  };
+  legs(); body(); head(); extras();
 }
 
 function charSprite(L, d, f, blink, noArm = false) {
-  const k = (noArm ? 'n' : 'c') + L.body + L.bottom + L.skin + L.hair + L.hairC + L.shirt + L.pants + (L.sad ? 's' : '') + (L.coat ? 'k' : '') + (L.hat || '') + (L.vest || '') + (L.bandana || '') + (L.plaid ? 'p' : '') + (L.chaps ? 'j' : '') + (L.spurs ? 'e' : '') + d + f + blink;
+  const k = (noArm ? 'n' : 'c') + JSON.stringify(L) + d + f + blink;   // toutes les pièces de la tenue
   return cache(k, () => {
     const s = canvas(18, 33), c = s.getContext('2d');
     if (d === 2) { c.translate(18, 0); c.scale(-1, 1); }
@@ -109,10 +141,16 @@ function charSprite(L, d, f, blink, noArm = false) {
 }
 
 // Farmwest (7e) : chapeaux western — 'cowboy' (bords relevés, ruban), 'melon' (rond, noir), 'paille'.
-export const HATS = { cowboy: ['#8a5a32', '#6a4426', '#3a2a20'], melon: ['#2a2630', '#1a1820', '#8a2a2a'], paille: ['#e6c870', '#c9a84a', '#a83a2a'] };
+export const HATS = { cowboy: ['#8a5a32', '#6a4426', '#3a2a20'], melon: ['#2a2630', '#1a1820', '#8a2a2a'], paille: ['#e6c870', '#c9a84a', '#a83a2a'], blanc: ['#f2ead8', '#d8ccb0', '#8a2a2a'], large: ['#24222a', '#18161c', '#3a3640'], cap: ['#8a5a3a', '#f2ead8', '#c0392b'], plat: ['#5a5a5e', '#3e3e44', '#2a2a2e'], toque: ['#ffffff', '#e4e4ea', '#c8c8d0'], bandeau: ['#d8d0c0', '#a8a090', '#8a8070'], haut: ['#2a2428', '#1a161a', '#6a2a2a'] };
 function drawHat(c, L, d, f) {
   const [A, Bc, rib] = HATS[L.hat] || HATS.cowboy, r = (x, y, w, h, col) => { c.fillStyle = col; c.fillRect(1 + x, 1 + y, w, h); };
   const ph = f ? (f - 1) / WALK_N * Math.PI * 2 : 0, by = f && Math.abs(Math.sin(ph)) > .7 ? 1 : 0;
+  if (L.hat === 'large') { r(-2, 2 + by, 20, 2, Bc); r(-2, 2 + by, 20, 1, shade(A, 1.4)); r(3, -3 + by, 10, 5, A); r(4, -4 + by, 8, 1, A); r(3, 0 + by, 10, 1, rib); r(4, -3 + by, 2, 2, shade(A, 1.5)); return; }   // grand chapeau noir (Myst)
+  if (L.hat === 'cap') { r(3, -1 + by, 10, 4, A); r(4, -2 + by, 8, 1, A); r(4, -1 + by, 3, 1, shade(A, 1.3)); if (d === 0) { r(5, 0 + by, 6, 2, Bc); r(7, 0 + by, 2, 1, rib); r(3, 3 + by, 10, 1, shade(A, .7)); } else if (d === 3) r(11, 2 + by, 4, 1, shade(A, .7)); return; }   // casquette (Ed)
+  if (L.hat === 'plat') { r(3, -1 + by, 10, 3, A); r(2, 0 + by, 12, 2, A); r(4, -1 + by, 4, 1, shade(A, 1.35)); for (let k = 3; k < 13; k += 2) r(k, 0 + by, 1, 1, Bc); if (d !== 1) r(d === 3 ? 10 : 3, 2 + by, d === 3 ? 5 : 10, 1, Bc); return; }   // casquette plate (Harry)
+  if (L.hat === 'toque') { r(4, -7 + by, 8, 7, A); r(3, -6 + by, 10, 5, A); r(3, -6 + by, 3, 3, '#ffffff'); r(9, -5 + by, 3, 4, Bc); r(4, 0 + by, 8, 2, Bc); r(4, 0 + by, 8, 1, rib); return; }   // toque de chef (Remy)
+  if (L.hat === 'bandeau') { r(3, 3 + by, 10, 2, A); r(3, 3 + by, 10, 1, shade(A, 1.12)); if (d !== 0) { r(d === 3 ? 3 : 7, 4 + by, 2, 3, Bc); } return; }   // bandeau (Igor)
+  if (L.hat === 'haut') { r(2, 2 + by, 12, 1, Bc); r(4, -7 + by, 8, 9, A); r(4, -7 + by, 8, 1, shade(A, 1.4)); r(4, 0 + by, 8, 1, rib); r(5, -6 + by, 1, 6, shade(A, 1.5)); return; }   // haut-de-forme (cocher)
   if (L.hat === 'melon') { r(3, 2 + by, 10, 1, A); r(4, -2 + by, 8, 4, A); r(5, -3 + by, 6, 1, A); r(4, 1 + by, 8, 1, rib); r(5, -2 + by, 2, 1, shade(A, 1.7)); return; }
   if (d === 3) { r(1, 2 + by, 14, 1, Bc); r(1, 1 + by, 1, 1, Bc); r(14, 1 + by, 1, 1, Bc); r(4, -2 + by, 9, 4, A); r(6, -3 + by, 5, 1, A); r(4, 1 + by, 9, 1, rib); r(5, -2 + by, 2, 1, shade(A, 1.3)); return; }
   r(1, 2 + by, 14, 1, Bc); r(1, 1 + by, 1, 1, Bc); r(14, 1 + by, 1, 1, Bc); r(4, -2 + by, 8, 4, A); r(4, -3 + by, 3, 1, A); r(9, -3 + by, 3, 1, A); r(3, 1 + by, 10, 1, rib); r(4, -2 + by, 2, 1, shade(A, 1.3));

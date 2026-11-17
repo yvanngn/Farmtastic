@@ -21,7 +21,7 @@ export function createCustomizer({ getLook, getName, onStart, onContinue, onBack
       + sec('Haut', 'shirt', LOOK_OPTS.shirt, 1) + sec('Bas', 'bottom', LOOK_OPTS.bottom, BOTTOM_NAMES) + sec('Couleur du bas', 'pants', LOOK_OPTS.pants, 1)
       // 7e bis : tenue western
       + '<div class="sous-titre" style="margin-top:10px">🤠 Tenue western</div>'
-      + sec('Chapeau', 'hat', WEST_OPTS.hat, HAT_NAMES) + opt('Gilet', 'vest') + opt('Bandana', 'bandana')
+      + opt('Salopette', 'overalls') + sec('Chapeau', 'hat', WEST_OPTS.hat, HAT_NAMES) + opt('Gilet', 'vest') + opt('Bandana', 'bandana')
       + yn('Chemise', 'plaid') + yn('Jambes', 'chaps') + yn('Bottes', 'spurs');
   }
   // couleur facultative : « Aucun » puis le nuancier

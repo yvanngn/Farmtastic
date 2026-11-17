@@ -5,7 +5,7 @@ import { LEVELS } from '../systems/level.js';
 export function defaultState() {
   return {
     v: CFG.VERSION, name: 'Cloud Jimny',   // nom par défaut (modifiable à la création)
-    look: { body: 'h', bottom: 'pant', skin: '#f6d2b0', hair: 0, hairC: '#7a4a22', shirt: '#d04a3a', pants: '#3a4a8a' },
+    look: { body: 'h', bottom: 'pant', skin: '#f6d2b0', hair: 0, hairC: '#7a4a22', shirt: '#b08a5a', pants: '#3a4a8a', overalls: '#4a8a3a' },   // 17/11 : salopette verte (planche de l'utilisateur)
     money: 500, energy: 100, maxE: 100, hp: 100, maxHp: 100,
     day: 1, season: 0, year: 1, minute: CFG.DAY_START, weather: 'sun',
     inv: { wheat_seed: 10, hay: 5, backpack: 1, tent: 1 }, sel: 'hand', invOrder: [], saleLog: [], chests: [], fishLog: {}, parc: {},   // poissons pêchés : { id: { n, best, first, last } }   // coffres posés { x, y, items }   // ordre des cases choisi par le joueur

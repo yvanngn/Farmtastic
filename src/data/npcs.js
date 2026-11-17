@@ -3,7 +3,7 @@
 // Toutes les répliques sont à faire valider par l'utilisateur (liste numérotée dans docs/CARNET.md).
 export const LUNA = {
   id: 'luna', name: 'Luna', de: "d'elle", color: '#c9a0ff', voice: 'voiceLuna',
-  look: { body: 'f', bottom: 'pant', skin: '#f1c7a5', hair: 1, hairC: '#3a2a3e', shirt: '#5aa88a', pants: '#4a4a6a' },
+  look: { body: 'f', bottom: 'pant', skin: '#f1c7a5', hair: 3, hairC: '#6a4a2a', pencil: true, shirt: '#f4f4f0', jacket: '#2a6ad0', pants: '#5a7aa8', shoes: '#e8e8ec' },   // 17/11 : d'après la planche de l'utilisateur (sweat bleu, chignon et crayon)
   home: 'luna', outScene: 'quartier', day: { x: 9.5, y: 7.4 }, inside: { x: 5.5, y: 4.6 },
   walks: [{ scene: 'foret', from: 960, to: 1020, every: 2, at: { x: 10.5, y: 7.5 } }],   // balade en forêt, un jour sur deux, 16 h – 17 h (💡)
   // Personnalité (💡 proposée par Claude, à valider) : ancienne informaticienne, rêve d'une ferme, budget serré, bricole sa maison.
@@ -63,7 +63,7 @@ export const LUNA = {
 // en vacances ; les gens croient qu'il travaille dur pour eux. Une enquête sur lui viendra plus tard.
 export const CHEF = {
   id: 'chef', name: 'Manuel', title: 'Maire', color: '#e8c26a', voice: 'voiceChef', de: 'de lui',
-  look: { body: 'h', bottom: 'pant', skin: '#e2b48c', hair: 0, hairC: '#b8b4ae', shirt: '#7a4a2a', pants: '#3a3a4a', hat: 'cowboy', vest: '#c9a84a', bandana: '#a8302b' },
+  look: { body: 'h', bottom: 'pant', skin: '#e2b48c', hair: 0, hairC: '#3a2a1a', shirt: '#f2ead8', pants: '#e8dcc4', hat: 'blanc', vest: '#7a2a3a', mustache: '#3a2a1a', stout: true, shoes: '#5a2a22' },   // 17/11 : costume crème, gilet bordeaux, chapeau blanc
   home: 'ranch_maison', inside: { x: 3.5, y: 4.6 }, outScene: 'town', day: { x: 18.5, y: 8.6 },   // 17/11 : il vit dans son ranch, passe ses journées sur la place
   // trajet villa → place (le matin) et retour (le soir), à pied : porte de la villa, allée est, place
   walks: [{ scene: 'foret', from: 780, to: 840, every: 3, at: { x: 19.5, y: 13.5 } }],  // promenade digestive, un jour sur trois, 13 h – 14 h (💡)
@@ -91,7 +91,7 @@ export const CHEF = {
 export const FRANCK = {
   id: 'franck', name: 'Franck', de: 'de lui', color: '#8ab4d8', voice: 'voiceFranck',
   // décrit par l'utilisateur : grand, cheveux mi-longs, l'air triste
-  look: { body: 'h', bottom: 'pant', skin: '#e8c4a4', hair: 1, hairC: '#5a4636', shirt: '#7d8794', pants: '#3a3f4a', tall: true, sad: true },
+  look: { body: 'h', bottom: 'pant', skin: '#e8c4a4', hair: 0, hairC: '#6a4a2a', shirt: '#c8b48a', pants: '#7a6a3a', knit: true, tall: true, sad: true },   // 17/11 : pull en maille beige
   home: 'franck', outScene: 'quartier', inside: { x: 5.5, y: 2.7 }, day: { x: 11.5, y: 16.4 },
   walks: [{ scene: 'foret', from: 390, to: 450, every: 2, at: { x: 5.5, y: 12.5 } }],   // à l'aube, quand personne ne le voit (à partir de 2 cœurs) (💡)
   shy: { minHearts: 2, from: 1020, to: 1140 },   // à partir de 2 cœurs, il s'assoit devant chez lui en fin de journée
@@ -139,7 +139,7 @@ export const FRANCK = {
 // (trop antisocial) : il est content qu'on arrive bousculer un peu les choses.
 export const MYST = {
   id: 'myst', name: 'Myst', de: 'de lui', color: '#a99ad0', voice: 'voiceFranck',
-  look: { body: 'h', bottom: 'pant', skin: '#e2cfc0', hair: 0, hairC: '#1c181c', shirt: '#1d1b22', pants: '#141218', tall: true, coat: true, hat: 'melon' },
+  look: { body: 'h', bottom: 'pant', skin: '#e2cfc0', hair: 0, hairC: '#1c181c', shirt: '#1d1b22', pants: '#141218', tall: true, coat: true, hat: 'large', mask: '#1c1a20' },   // 17/11 : long manteau, grand chapeau, foulard sur le visage
   home: null, mystic: true,
   // trajet du quartier jusqu'à la cabane : du portail sud de la ferme, on remonte le grand chemin
   route: [{ x: 16.5, y: 34.4 }, { x: 16.5, y: 20.6 }, { x: 3.6, y: 20.6 }],   // de la gare au quartier par le grand chemin
@@ -179,7 +179,7 @@ export const MYST = {
 // saturées et qu'elle reçoit le surplus ; de longues journées… elle frise le burn-out. (Histoire dévoilée par cœurs.)
 export const HAILEY = {
   id: 'hailey', name: 'Hailey', de: "d'elle", color: '#7cc8c0', voice: 'voiceLuna',
-  look: { body: 'f', bottom: 'pant', skin: '#f3d0b4', hair: 1, hairC: '#c8843a', shirt: '#8fd0c8', pants: '#6fb4ac' },   // tenue d'infirmière turquoise 💡
+  look: { body: 'f', bottom: 'pant', skin: '#f3d0b4', hair: 1, hairC: '#8a5a32', shirt: '#f4f4f0', pants: '#3a3a44', stetho: true, shoes: '#f0f0f0' },   // 17/11 : blouse blanche, stéthoscope
   home: 'hailey', inside: { x: 3.5, y: 3.7 },
   // Routine quotidienne (16/11, 💡 à adapter par l'utilisateur) : elle varie un peu chaque jour (voir docs/CARNET.md).
   // Lieux nommés, puis la journée : [heure de début, lieu]. Les variantes sont choisies selon le jour.
@@ -237,7 +237,7 @@ export const HAILEY = {
 // apprendre à faire des armes. Il traîne dans le quartier (sa quête du bijou a été retirée le 17/11).
 export const IGOR = {
   id: 'igor', name: 'Igor', de: 'de lui', color: '#e0884a', voice: 'voiceChef',
-  look: { body: 'h', bottom: 'pant', skin: '#d9a07a', hair: 0, hairC: '#2a1e18', shirt: '#6a4a36', pants: '#3a3632', tall: true },   // 💡 tablier de cuir, carrure d'athlète
+  look: { body: 'h', bottom: 'pant', skin: '#d9a07a', hair: 0, hairC: '#3a2a1e', shirt: '#8a8a8a', pants: '#5a4a3a', tall: true, hat: 'bandeau', tank: true, muscle: true, apron: '#6a4426', bandage: true },   // 17/11 : forgeron, tablier de cuir, bandeau
   home: null, dayScene: 'quartier', day: { x: 18.5, y: 13.5 },   // il traîne dans la ruelle du quartier 💡
   traits: ['Forgeron', 'Ancien sportif de haut niveau', 'Cheville abîmée', 'Fait de bons outils', 'Rêve de forger des armes'],
   taste: { adore: [], aime: ['copper_ore', 'iron_ore'], naime: ['berry'], deteste: [] },   // 💡 un forgeron aime le minerai
@@ -286,7 +286,7 @@ export const INTRO_LINES = [
 // des gens. Rêve d'ouvrir un jour un magasin en ville (future quête). Marié à Suzie, papa de Jade. Répliques 🆕 à valider.
 export const ED = {
   id: 'ed', name: 'Ed', de: 'de lui', color: '#e0a84a', voice: 'voiceChef',
-  look: { body: 'h', bottom: 'pant', skin: '#e8b48c', hair: 0, hairC: '#5a3a22', shirt: '#3a6a9a', pants: '#3a3a44', vest: '#5a3a2a' },   // 💡 chemise de routier
+  look: { body: 'h', bottom: 'pant', skin: '#e8b48c', hair: 0, hairC: '#5a3a22', shirt: '#c8a888', pants: '#3a5a8a', hat: 'cap', beard: '#5a3a22', suspenders: '#5a3a22', towel: true, stout: true, tall: true },   // 17/11 : barbe, casquette, bretelles, torchon
   home: 'ed', inside: { x: 3.5, y: 4.6 }, worker: { scene: 'bar', at: { x: 3.5, y: 3.7 }, from: 660, to: 1410 },   // 💡 au bar de 11 h à 23 h 30
   traits: ['Barman du saloon', 'Ancien chauffeur routier', 'Aime le contact des gens', 'Rêve d’ouvrir un magasin en ville', 'Mari de Suzie, papa de Jade'],
   taste: { adore: [], aime: ['berry_cooked', 'confiture_baies'], naime: ['slime'], deteste: [] },   // 💡 en attendant les boissons
@@ -370,7 +370,7 @@ export const INTRO_MYST = {
 // Son four est en panne : le réparer (marteau, 30 pierres + 15 bois) rapporte le couteau (quête principale). Répliques 🆕.
 export const CUISTOT = {
   id: 'cuistot', name: 'Remy Gusto', title: 'cuistot', de: 'de lui', color: '#f2a03a', voice: 'voiceFranck',
-  look: { body: 'h', bottom: 'pant', skin: '#e8b48c', hair: 0, hairC: '#3a2a20', shirt: '#f4f4f0', pants: '#3a3a44' },
+  look: { body: 'h', bottom: 'pant', skin: '#e8b48c', hair: 0, hairC: '#3a2a20', shirt: '#f4f4f0', pants: '#4a4a56', hat: 'toque', buttons: true, bandana: '#c0392b', checkPants: true },   // 17/11 : toque, veste de chef, foulard rouge
   home: 'remy', inside: { x: 3.5, y: 4.6 }, worker: { scene: 'resto', at: { x: 11.5, y: 4.6 }, from: 420, to: 1320 },   // 💡 en cuisine de 7 h à 22 h
   traits: ['Cuisinier du restaurant', 'Fils abandonné d’un cuisinier renommé', 'On ne voyait en lui que « le fils de »', 'Vit de sa passion, loin de tout', 'Déteste son père'],
   taste: { adore: [], aime: ['confiture_baies', 'confiture_mures'], naime: ['slime'], deteste: [] },   // 💡
@@ -400,7 +400,7 @@ export const CUISTOT = {
 // envers Manu, le Maire. C'est lui qui apprend à faire le coffre (quête principale). Répliques 🆕.
 export const HARRY = {
   id: 'harry', name: 'Harry Fordson', title: 'charpentier', de: 'de lui', color: '#c99560', voice: 'voiceChef',
-  look: { body: 'h', bottom: 'pant', skin: '#e8b48c', hair: 2, hairC: '#a86a32', shirt: '#c84a3a', pants: '#3a4a6a', tall: true, hat: 'cowboy', bandana: '#3a5a8a' },   // 💡 chemise de travail
+  look: { body: 'h', bottom: 'pant', skin: '#e8b48c', hair: 0, hairC: '#a86a32', shirt: '#a8432f', pants: '#6a5a3a', tall: true, hat: 'plat', plaid: true, toolbelt: true, mustache: '#6a4426' },   // 17/11 : chemise à carreaux, ceinture à outils
   home: null, dayScene: 'town', day: { x: 7.5, y: 16.6 },   // devant son atelier
   traits: ['Charpentier de père en fils', 'Très doué', 'Malade, sans symptôme visible', 'Aimerait se marier un jour', 'Beaucoup de dettes envers Manu, le Maire'],
   taste: { adore: [], aime: ['wood'], naime: ['slime'], deteste: [] },   // 💡
