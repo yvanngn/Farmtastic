@@ -238,3 +238,9 @@ test('16/11 : le bar d’Ed au centre-ville et la maison à étages de sa famill
   assert.equal(act(g, 7, 2), 'door'); assert.equal(S.scene, 'ed_etage', 'l’escalier mène à l’étage');
   S.minute = 1430; placeNPC(g.npcs.ed, S, OUT_FROM, OUT_TO); assert.equal(g.npcs.ed.scene, 'ed', 'le soir, chez lui');
 });
+
+test('Farmwest lot 1 : portes battantes en entrant au saloon', () => {
+  const { g, S } = makeGame({ state: { minute: 900, scene: 'town' } });
+  const sfx = []; g.bus.on('sfx', s => sfx.push(s));
+  act(g, 11, 15); assert.equal(S.scene, 'bar'); assert.ok(sfx.includes('saloon'));
+});

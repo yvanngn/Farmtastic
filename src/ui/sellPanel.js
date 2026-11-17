@@ -17,12 +17,12 @@ export function createSellPanel(g, audio) {
     const S = g.S, ids = invOrder(S).filter(sellable);
     const total = ids.reduce((a, id) => a + (pick[id] || 0) * ITEMS[id].p, 0);
     const rows = ids.map(id => { const n = pick[id] || 0, it = ITEMS[id];
-      return `<div class="sell-row${n ? ' on' : ''}"><span class="sell-ic">${iconHTML(id)}</span><div class="sell-n"><b>${it.n}</b><small>×${S.inv[id]} · ${it.p} 🪙/u</small></div>
+      return `<div class="sell-row${n ? ' on' : ''}"><span class="sell-ic">${iconHTML(id)}</span><div class="sell-n"><b>${it.n}</b><small>×${S.inv[id]} · ${it.p} $/u</small></div>
         <div class="sell-q"><button data-m="${id}" aria-label="moins">−</button><b>${n}</b><button data-p="${id}" aria-label="plus">+</button><button data-a="${id}" class="mini">Tout</button></div></div>`; }).join('');
-    const log = (S.saleLog || []).map(x => `<li>${SEASONS[x.season]} j${x.day} : ${x.n} × ${ITEMS[x.id]?.n || x.id} → ${x.v} 🪙</li>`).join('');
+    const log = (S.saleLog || []).map(x => `<li>${SEASONS[x.season]} j${x.day} : ${x.n} × ${ITEMS[x.id]?.n || x.id} → ${x.v} $</li>`).join('');
     body.innerHTML = `<div class="sell-tabs"><button data-t="0" class="${showLog ? '' : 'on'}">Vendre</button><button data-t="1" class="${showLog ? 'on' : ''}">📜 Ventes passées</button></div>`
       + (showLog ? (log ? `<ul class="sell-log">${log}</ul>` : '<p class="info">Rien vendu pour l’instant.</p>')
-        : (ids.length ? `<div class="sell-list">${rows}</div><div class="sell-foot"><span>Total : <b>${total} 🪙</b></span><button data-clear>Rien</button><button data-sell class="primaire" ${total ? '' : 'disabled'}>Vendre la sélection</button></div>`
+        : (ids.length ? `<div class="sell-list">${rows}</div><div class="sell-foot"><span>Total : <b>${total} $</b></span><button data-clear>Rien</button><button data-sell class="primaire" ${total ? '' : 'disabled'}>Vendre la sélection</button></div>`
           : '<p class="info">Rien à vendre dans ton sac. (Les outils, la tente et le sac à dos ne se vendent pas ici.)</p>'));
   }
   body.addEventListener('click', e => {

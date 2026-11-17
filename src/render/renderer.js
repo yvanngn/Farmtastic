@@ -313,7 +313,7 @@ let swing = null;
         ctx.fillStyle = 'rgba(0,0,0,.55)'; ctx.fillRect(x - 1, y - 1, 18, 5); ctx.fillStyle = '#f2a03a'; ctx.fillRect(x, y, Math.round(16 * p), 3); } });
     }
     if (sky) { // sorties : flèches animées et nom de la destination, au bord de l'écran
-      const NAMES = { farm: 'Ma ferme', quartier: 'Quartier', town: 'Centre-ville', foret: 'Forêt', wild: 'Caverne' }, seen = new Set();
+      const NAMES = { farm: 'Ma ferme', quartier: 'Zone résidentielle', town: 'Centre-ville', foret: 'Forêt', wild: 'Caverne sombre' }, seen = new Set();
       for (const d of SC.doors || []) {
         const W = SC.W, H = SC.H, edge = d.x === 0 ? 'g' : d.x === W - 1 ? 'd' : d.y === 0 ? 'h' : d.y === H - 1 ? 'b' : null;
         if (!edge || !NAMES[d.to] || seen.has(d.to + edge)) continue; seen.add(d.to + edge);

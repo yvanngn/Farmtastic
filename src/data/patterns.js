@@ -1,6 +1,6 @@
 // soon: true = patron pas encore disponible (affiché « Bientôt »). Seul le chaudron est en vente pour l'instant.
 // Patrons vendus dans les magasins : acheter un patron apprend une recette (onglet 📜 Recettes).
-// 💡 prix et ingrédients proposés par Claude, sauf le chaudron (50 🪙 chez le forgeron, demande de l'utilisateur).
+// 💡 prix et ingrédients proposés par Claude, sauf le chaudron (50 $ chez le forgeron, demande de l'utilisateur).
 export const PATTERNS = {
   p_chaudron: { n: 'Patron du chaudron', recipe: 'chaudron', price: 50, shop: 'forge', job: 'forgeron' },
   p_bague: { n: 'Patron : bague de cuivre', recipe: 'bague_cuivre', price: 120, shop: 'forge', job: 'joaillier', soon: true },

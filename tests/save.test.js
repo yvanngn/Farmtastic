@@ -100,3 +100,8 @@ test('version : semver horodaté lisible', async () => {
   assert.match(`${VERSION.major}.${VERSION.minor}.${VERSION.patch}`, /^\d+\.\d+\.\d+$/);
   assert.match(versionLabel(), /^v\d+\.\d+\.\d+ · \d\d\/\d\d\/\d{4} \d\d:\d\d$/);
 });
+
+test('Farmwest lot 1 : joueur « Cloud Jimny » par défaut', async () => {
+  const { defaultState } = await import('../src/core/state.js');
+  assert.equal(defaultState().name, 'Cloud Jimny');
+});

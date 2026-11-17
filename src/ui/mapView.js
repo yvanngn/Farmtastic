@@ -88,7 +88,7 @@ export function createMapView(g, renderer, audio) {
       house(x0 + w * .25, y0 + h * .48, 2.4 * u, '#9aa4b0', '#3e5a7a'); house(x0 + w * .65, y0 + h * .48, 2.2 * u, '#f2dce0', '#5aa8a0');
       house(x0 + w * .1, y0 + h * .82, 2.4 * u, '#4a4650', '#24212a');
       for (const f of [.04, .3, .45, .88, .95]) tree(x0 + w * f, y0 + h * .78, 1.4 * u, '#4f8a3a');
-      ribbon(x0 + w * .55, y0 + h * .86, '🏘️ Quartier résidentiel', 'Luna · Franck · Hailey · Igor · Myst · clinique'); }
+      ribbon(x0 + w * .55, y0 + h * .86, '🏘️ Zone résidentielle', 'Luna · Franck · Hailey · Igor · Myst · clinique'); }
     // centre-ville : plan réduit de la vraie ville (34 × 32 cases) — pelouse, rues pavées, bâtiments espacés
     { const x0 = X(.55), y0 = Y(.12), w = X(.75) - X(.55), h = Y(.5) - Y(.12), L = LAYOUTS.town, cw = w / L[0].length, ch = h / L.length;
       ctx.fillStyle = '#a8cc78'; ctx.beginPath(); ctx.roundRect(x0, y0, w, h, 2 * u); ctx.fill();
@@ -129,7 +129,7 @@ export function createMapView(g, renderer, audio) {
       ctx.fillStyle = '#eef0f4'; ctx.beginPath(); ctx.moveTo(cx + 3 * u, by - 16 * u); ctx.lineTo(cx + 1.6 * u, by - 12.5 * u); ctx.lineTo(cx + 4.4 * u, by - 12.5 * u); ctx.fill();
       ctx.fillStyle = '#16141a'; ctx.beginPath(); ctx.arc(cx, by, 2.4 * u, Math.PI, 0); ctx.fill();
       if (!CFG.CAVE_OPEN) { ctx.font = `${3 * u}px serif`; ctx.textAlign = 'center'; ctx.fillText('🔒', cx, by - 3 * u); }
-      ribbon(cx - 1 * u, by + 4 * u, 'Caverne', CFG.CAVE_OPEN ? '' : 'fermée'); }
+      ribbon(cx - 1 * u, by + 4 * u, 'Caverne sombre', CFG.CAVE_OPEN ? '' : 'fermée'); }
     // rose des vents
     { const cx = X(.93), cy = Y(.85), r = 5 * u;
       ctx.fillStyle = 'rgba(255,248,220,.7)'; ctx.beginPath(); ctx.arc(cx, cy, r * 1.2, 0, 7); ctx.fill();

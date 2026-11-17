@@ -137,6 +137,6 @@ export function updateWild(g, dt) {
 export function mobLoot(g, e) {
   const M = MOBS[e.type] || MOBS.slime_v;
   if (M.drop) { add(g, M.drop); g.bus.emit('pop', { t: '+🟢', x: e.x, y: e.y }); }
-  if (M.money) { const n = M.money[0] + (g.rnd() * (M.money[1] - M.money[0] + 1) | 0); g.S.money += n; g.bus.emit('pop', { t: '+' + n + '🪙', x: e.x, y: e.y }); }
+  if (M.money) { const n = M.money[0] + (g.rnd() * (M.money[1] - M.money[0] + 1) | 0); g.S.money += n; g.bus.emit('pop', { t: '+' + n + '$', x: e.x, y: e.y }); }
 }
 export { GATE };

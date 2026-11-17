@@ -23,7 +23,7 @@ export const aimHit = p => p >= AIM_ZONE[0] && p <= AIM_ZONE[1];
 
 function pay(g, price) {
   const S = g.S;
-  if (S.money < price) { g.bus.emit('sfx', 'denied'); g.bus.emit('toast', `Il te faut ${price} 🪙.`); return false; }
+  if (S.money < price) { g.bus.emit('sfx', 'denied'); g.bus.emit('toast', `Il te faut ${price} $.`); return false; }
   S.money -= price; g.bus.emit('sfx', 'coin'); return true;
 }
 export function parcAt(tile) { return RIDES[tile] ? 'ride' : GAMES[tile] ? 'game' : STALL[tile] ? 'stall' : null; }

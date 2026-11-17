@@ -2,6 +2,7 @@
 
 Semver horodaté (heure de Paris). Patch automatique à chaque publication ; mineure et majeure sur décision de l'utilisateur.
 
+- **0.1.7** — 2026-11-17 14:08
 - **0.1.6** — 2026-11-17 13:55
 # Versions de Farmwest
 

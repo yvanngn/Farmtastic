@@ -84,7 +84,7 @@ test('forge : niveau, argent et pierre requis', () => {
   S.skills.mining.xp = 100;
   assert.equal(upgradeTool(g, 'pick'), true);
   assert.equal(S.tools.pick, 2);
-  assert.equal(S.money, 2200, 'plus cher : 600 🪙');
+  assert.equal(S.money, 2200, 'plus cher : 600 $');
   assert.equal(S.inv.stone, 35, '30 pierres');
 });
 

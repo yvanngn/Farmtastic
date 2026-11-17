@@ -277,18 +277,18 @@ export const ED = {
   id: 'ed', name: 'Ed', de: 'de lui', color: '#e0a84a', voice: 'voiceChef',
   look: { body: 'h', bottom: 'pant', skin: '#e8b48c', hair: 0, hairC: '#5a3a22', shirt: '#3a6a9a', pants: '#3a3a44' },   // 💡 chemise de routier
   home: 'ed', inside: { x: 3.5, y: 4.6 }, worker: { scene: 'bar', at: { x: 3.5, y: 3.7 }, from: 660, to: 1410 },   // 💡 au bar de 11 h à 23 h 30
-  traits: ['Barman', 'Ancien chauffeur routier', 'Aime le contact des gens', 'Rêve d’ouvrir un magasin en ville', 'Mari de Suzie, papa de Jade'],
+  traits: ['Barman du saloon', 'Ancien chauffeur routier', 'Aime le contact des gens', 'Rêve d’ouvrir un magasin en ville', 'Mari de Suzie, papa de Jade'],
   taste: { adore: [], aime: ['berry_cooked', 'confiture_baies'], naime: ['slime'], deteste: [] },   // 💡 en attendant les boissons
   story: [
-    { h: 0, t: "Bienvenue au bar ! Moi c'est Ed. Installe-toi, c'est la maison." },
+    { h: 0, t: "Bienvenue au saloon ! Moi c'est Ed. Installe-toi, c'est la maison." },
     { h: 1, t: "Avant, je conduisais des camions. Des milliers de kilomètres, tout seul dans la cabine." },
-    { h: 2, t: "Ce qui me manquait, c'était les gens. Alors j'ai posé le camion et j'ai ouvert ce bar." }
+    { h: 2, t: "Ce qui me manquait, c'était les gens. Alors j'ai posé le camion et j'ai ouvert ce saloon." }
   ],
   topics: [
     { t: 'Tu as besoin d’aide ?', lines: ["Toujours ! Il me faut de quoi servir : de l'alcool, des jus, des boissons…", "Si un jour tu sais en fabriquer, je t'achète tout. Promis."] },
     { t: 'Ta famille ?', lines: ["Suzie, ma femme, et notre petite Jade. On habite la grande maison au bout du quartier."] }
   ],
-  chat: ["Qu'est-ce que je te sers ? …Ah, c'est vrai, la carte est encore vide.", "Un jour, j'aurai mon magasin en ville. Tu verras.", "Un bon bar, c'est un endroit où on se sent attendu."],
+  chat: ["Qu'est-ce que je te sers ? …Ah, c'est vrai, la carte est encore vide.", "Un jour, j'aurai mon magasin en ville. Tu verras.", "Un bon saloon, c'est un endroit où on se sent attendu."],
   questions: []
 };
 // Suzie (femme d'Ed) et Jade (leur enfant) : histoire à écrire plus tard (voir le carnet). Elles restent à la maison pour l'instant.
@@ -297,7 +297,7 @@ export const SUZIE = {
   look: { body: 'f', bottom: 'skirt', skin: '#f1c7a5', hair: 3, hairC: '#c0402a', shirt: '#e8c04a', pants: '#a03a3a' },
   home: 'ed', stay: true, inside: { x: 2.5, y: 3.6 },
   traits: ['Femme d’Ed', 'Maman de Jade'], taste: {},
-  chat: ["Bonjour ! Vous connaissez mon mari, Ed ? Il passe ses journées au bar.", "Jade joue en haut. Elle a toujours mille idées."],
+  chat: ["Bonjour ! Vous connaissez mon mari, Ed ? Il passe ses journées au saloon.", "Jade joue en haut. Elle a toujours mille idées."],
   questions: []
 };
 export const JADE = {

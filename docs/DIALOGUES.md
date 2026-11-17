@@ -188,9 +188,9 @@
 
 ## Ed
 
-167. *(histoire 0 ♥)* Bienvenue au bar ! Moi c'est Ed. Installe-toi, c'est la maison. 🆕
+167. *(histoire 0 ♥)* Bienvenue au saloon ! Moi c'est Ed. Installe-toi, c'est la maison. 🆕
 168. *(histoire 1 ♥)* Avant, je conduisais des camions. Des milliers de kilomètres, tout seul dans la cabine. 🆕
-169. *(histoire 2 ♥)* Ce qui me manquait, c'était les gens. Alors j'ai posé le camion et j'ai ouvert ce bar. 🆕
+169. *(histoire 2 ♥)* Ce qui me manquait, c'était les gens. Alors j'ai posé le camion et j'ai ouvert ce saloon. 🆕
 170. *(sujet (joueur))* Tu as besoin d’aide ? 🆕
 171. *(sujet)* Toujours ! Il me faut de quoi servir : de l'alcool, des jus, des boissons… 🆕
 172. *(sujet)* Si un jour tu sais en fabriquer, je t'achète tout. Promis. 🆕
@@ -198,11 +198,11 @@
 174. *(sujet)* Suzie, ma femme, et notre petite Jade. On habite la grande maison au bout du quartier. 🆕
 175. *(conversation)* Qu'est-ce que je te sers ? …Ah, c'est vrai, la carte est encore vide. 🆕
 176. *(conversation)* Un jour, j'aurai mon magasin en ville. Tu verras. 🆕
-177. *(conversation)* Un bon bar, c'est un endroit où on se sent attendu. 🆕
+177. *(conversation)* Un bon saloon, c'est un endroit où on se sent attendu. 🆕
 
 ## Suzie
 
-178. *(conversation)* Bonjour ! Vous connaissez mon mari, Ed ? Il passe ses journées au bar. 🆕
+178. *(conversation)* Bonjour ! Vous connaissez mon mari, Ed ? Il passe ses journées au saloon. 🆕
 179. *(conversation)* Jade joue en haut. Elle a toujours mille idées. 🆕
 
 ## Jade
@@ -271,7 +271,7 @@
 229. *(b)* Un simple banc.
 230. *(f)* Des fleurs bien entretenues. Quelqu'un en prend soin.
 231. *(treeTown)* Un grand arbre qui fait de l'ombre à la place.
-232. *(bar)* Le bar d’Ed. Ça sent le bois ciré et la limonade. 🆕
+232. *(bar)* Le saloon d’Ed. Ça sent le bois ciré et la limonade. 🆕
 233. *(treeForest)* Un grand arbre de la forêt. Avec la hache, je pourrais le couper… sauf ceux du bord. 🆕
 234. *(treeWild)* Des arbres serrés. Impossible de passer par là.
 235. *(rockWild)* Un rocher énorme. Ma pioche ne lui ferait rien.

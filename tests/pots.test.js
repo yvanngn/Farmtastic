@@ -5,7 +5,7 @@ import { buyPattern, placePot, usePot, potAt } from '../src/systems/pots.js';
 import { craftHand } from '../src/systems/cooking.js';
 import { buy } from '../src/systems/economy.js';
 
-test('lot 2 : patron du chaudron à 50 🪙, louche, jauge de cuisson', () => {
+test('lot 2 : patron du chaudron à 50 $, louche, jauge de cuisson', () => {
   const { g, S } = makeGame({ state: { scene: 'farm', money: 100, x: 20.5, y: 20.5, inv: { stone: 20, wood: 10, berry: 4 } } });
   assert.equal(buyPattern(g, 'p_chaudron'), true); assert.equal(S.money, 50);
   assert.equal(buyPattern(g, 'p_chaudron'), false, 'une seule fois');

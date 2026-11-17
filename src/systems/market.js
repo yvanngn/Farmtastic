@@ -71,13 +71,13 @@ function contribute(g, o) {
     if (S.village.progress >= p.goal) {
       S.village.done.push(p.id); S.village.progress = 0; S.money += p.reward;
       if (p.id === 'lampadaires') openWild(g); // le chef confie la clé des Caverne sombre
-      g.bus.emit('sfx', 'levelup'); g.bus.emit('toast', `🔨 Chantier terminé : ${p.n} ! +${p.reward} 🪙`);
+      g.bus.emit('sfx', 'levelup'); g.bus.emit('toast', `🔨 Chantier terminé : ${p.n} ! +${p.reward} $`);
     }
   } else if (o.kind === 'fete' && !S.festival.done) {
     S.festival.pts += o.qty;
     if (S.festival.pts >= FESTIVAL_GOAL) {
       S.festival.done = true; S.money += FESTIVAL_REWARD;
-      g.bus.emit('sfx', 'levelup'); g.bus.emit('toast', `🎉 ${FESTIVALS[S.season]} prête ! +${FESTIVAL_REWARD} 🪙`);
+      g.bus.emit('sfx', 'levelup'); g.bus.emit('toast', `🎉 ${FESTIVALS[S.season]} prête ! +${FESTIVAL_REWARD} $`);
     }
   } else if (o.kind === 'habitant' && S.social[o.npc]) {
     S.social[o.npc].points += 40;
@@ -120,7 +120,7 @@ export function fulfillOrder(g, id) {
   S.money += o.qty * o.price;
   free(g, s);
   g.bus.emit('sfx', 'coin');
-  g.bus.emit('toast', `${o.bot} vous paie ${o.qty * o.price} 🪙` + (o.tokens ? ` + ${o.tokens} jeton(s) 🐪` : o.kind === 'habitant' ? ' · amitié ❤️' : ''));
+  g.bus.emit('toast', `${o.bot} vous paie ${o.qty * o.price} $` + (o.tokens ? ` + ${o.tokens} jeton(s) 🐪` : o.kind === 'habitant' ? ' · amitié ❤️' : ''));
   contribute(g, o);
   return true;
 }

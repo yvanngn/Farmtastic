@@ -197,12 +197,12 @@ img.pix { width: 1.15em; height: 1.15em; image-rendering: pixelated; vertical-al
 @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important } }
 
 /* ---------- Écran titre ---------- */
-:root { --f-logo: "Lilita One", "Pixelify Sans", sans-serif }
+:root { --f-logo: "Rye", "Lilita One", serif }   /* Farmwest : lettres d’affiche western */
 #ovTitle { background: #1d1a33; flex-direction: column; justify-content: space-between; padding-top: calc(var(--sa-t) + 6vh); padding-bottom: calc(var(--sa-b) + 5vh) }
 #titleCv { position: absolute; inset: 0; width: 100%; height: 100%; image-rendering: pixelated; z-index: -1 }
 #ovTitle::after { content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none; background: radial-gradient(ellipse at 50% 45%, transparent 55%, rgba(20,12,30,.55)) }
 .titre-bloc { text-align: center; animation: apparait 1.4s ease-out both, flotte 3.4s ease-in-out 1.4s infinite }
-.logo { margin: 0; font: 400 clamp(46px, 15vmin, 112px)/1 var(--f-logo); letter-spacing: .02em; white-space: nowrap }
+.logo { margin: 0; font: 400 clamp(40px, 13vmin, 100px)/1 var(--f-logo); letter-spacing: .02em; white-space: nowrap }
 .logo span { display: inline-block; color: #ffd35c;
   background: linear-gradient(180deg, #fff3b0 0%, #ffd35c 45%, #f2a02e 75%, #c8711c 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
   filter: drop-shadow(0 3px 0 #6b3a12) drop-shadow(0 -2px 0 #6b3a12) drop-shadow(2px 0 0 #6b3a12) drop-shadow(-2px 0 0 #6b3a12) drop-shadow(0 6px 0 rgba(60,30,10,.6)) drop-shadow(0 0 14px rgba(255,200,90,.75));

@@ -17,6 +17,6 @@ export function deliverDaily(g) {
   const S = g.S, q = dailyQuest(g);
   if (!q || q.done || !has(S, q.item, q.qty)) { g.bus.emit('sfx', 'denied'); return false; }
   add(g, q.item, -q.qty); S.money += q.reward; q.done = true;
-  g.bus.emit('sfx', 'coin'); g.bus.emit('toast', `📌 Quête du jour réussie : +${q.reward} 🪙. Une nouvelle demain !`);
+  g.bus.emit('sfx', 'coin'); g.bus.emit('toast', `📌 Quête du jour réussie : +${q.reward} $. Une nouvelle demain !`);
   return true;
 }

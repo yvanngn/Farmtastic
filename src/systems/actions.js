@@ -49,10 +49,10 @@ export function smartTool(g, tx, ty) {
 }
 
 export function enterScene(g, to, spawn) {
-  const S = g.S;
+  const S = g.S, from = S.scene;
   S.scene = to; S.x = spawn.x; S.y = spawn.y;
   g.player.target = null;
-  g.bus.emit('sfx', 'door');
+  g.bus.emit('sfx', to === 'bar' || from === 'bar' ? 'saloon' : 'door');   // Farmwest : portes battantes du saloon
   g.bus.emit('scene', to);
 }
 

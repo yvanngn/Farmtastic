@@ -21,7 +21,7 @@ export function createBoard(g, audio) {
       <div class="jauge" style="--k:${KINDS.fete.color}"><b>🎉 ${FESTIVALS[S.season]}</b>${bar(F.pts, FESTIVAL_GOAL, KINDS.fete.color)}<small>${F.done ? 'Tout est prêt ✔' : `${F.pts}/${FESTIVAL_GOAL} objets avant la fin de la saison`}</small></div>
       <div class="jauge" style="--k:${KINDS.caravane.color}"><b>🐪 Caravane : ${S.caravan.tokens} jeton(s)</b><small>À échanger plus bas contre des graines, des animaux et des outils.</small></div>
     </div>`;
-    const dq = dailyQuest(g), dH = dq ? `<h3>📌 Quête du jour</h3><div class="grid affiches"><div class="card affiche" style="--k:#4fb07a"><span class="pastille">📌</span><div class="t">${it(dq.item).i} ${dq.qty} × ${it(dq.item).n}</div><div><b>${dq.reward} 🪙</b></div>`
+    const dq = dailyQuest(g), dH = dq ? `<h3>📌 Quête du jour</h3><div class="grid affiches"><div class="card affiche" style="--k:#4fb07a"><span class="pastille">📌</span><div class="t">${it(dq.item).i} ${dq.qty} × ${it(dq.item).n}</div><div><b>${dq.reward} $</b></div>`
       + (dq.done ? '<small>✅ Faite ! Nouvelle quête demain.</small>' : `<button data-daily="1" ${(S.inv[dq.item] || 0) >= dq.qty ? 'class="primaire"' : 'disabled'}>Livrer (${S.inv[dq.item] || 0}/${dq.qty})</button>`) + '</div></div>' : '';
     if (!CFG.BOARD_OPEN && !slots.length) { body.innerHTML = dH || '<p class="info">📌 Le panneau est vide pour l’instant. Repasse demain !</p>'; return; }
     const cards = '<div class="grid affiches">' + slots.map(s => {
@@ -30,7 +30,7 @@ export function createBoard(g, audio) {
       const K = KINDS[o.kind] || KINDS.caravane, have = S.inv[o.item] || 0, ok = have >= o.qty;
       const bonus = o.kind === 'chantier' ? '+ jauge du village' : o.kind === 'fete' ? '+ jauge de la fête' : o.kind === 'habitant' ? '+ amitié ❤️' : `+ ${o.tokens} jeton(s) 🐪`;
       return `<div class="card affiche" style="--k:${K.color}"><span class="pastille">${K.i}</span><small>${o.bot}</small><div class="t">${it(o.item).i} ${o.qty} × ${it(o.item).n}</div>`
-        + `<div>${o.price} 🪙/u · <b>${o.qty * o.price} 🪙</b></div><small>${bonus}</small>`
+        + `<div>${o.price} $/u · <b>${o.qty * o.price} $</b></div><small>${bonus}</small>`
         + `<div class="row" style="margin:4px 0 0"><button data-give="${o.id}" ${ok ? 'class="primaire"' : 'disabled'}>Livrer (${have}/${o.qty})</button><button data-drop="${o.id}" aria-label="Retirer la demande">🗑️</button></div></div>`;
     }).join('') + '</div><p class="info">Une demande livrée ou retirée laisse sa place vide pendant 2 h.</p>';
     const caravan = '<h3>🐪 Caravane commerciale</h3><div class="grid">' + UNLOCKS.map(u => {

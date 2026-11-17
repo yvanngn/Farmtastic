@@ -121,8 +121,8 @@ export function buildTown(season) {
     R(ux + uw - 10, uy + 36, 8, 6, '#3a5a7a'); R(ux + uw - 9, uy + 37, 6, 2, '#6aa0c8');
   });
 
-  // bar d'Ed (x9-12, y13-15) : façade sombre, enseigne, tonneau et chope devant
-  shop(TOWN_B.R.x, TOWN_B.R.y, 4, '#5a2a3a', '#7a3a4a', 'BAR', (ux, uy, uw) => {
+  // saloon d'Ed (x9-12, y13-15) : façade sombre, enseigne, tonneau et chope devant
+  shop(TOWN_B.R.x, TOWN_B.R.y, 4, '#5a2a3a', '#7a3a4a', 'SALOON', (ux, uy, uw) => {
     R(ux - 3, uy + 32, 10, 11, '#7a4f2e'); R(ux - 3, uy + 34, 10, 1, '#3a2a20'); R(ux - 3, uy + 39, 10, 1, '#3a2a20'); R(ux - 1, uy + 30, 6, 2, '#5b3a22');   // tonneau
     R(ux + uw - 9, uy + 34, 6, 7, '#e8c26a'); R(ux + uw - 9, uy + 33, 6, 2, '#fff6e0'); R(ux + uw - 4, uy + 35, 2, 4, '#e8c26a');   // chope mousseuse
     for (const k of [6, uw - 18]) { R(ux + k, uy + 9, 12, 1, '#ffd98a'); R(ux + k, uy + 20, 12, 1, '#ffd98a'); }   // vitres éclairées

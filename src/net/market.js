@@ -48,7 +48,7 @@ export function createPlayerMarket(sb, uid, g) {
       if (error) return fail('Encaissement impossible');
       const n = data || 0;
       if (n > 0) { S().money += n; g.bus.emit('sfx', 'coin'); }
-      g.bus.emit('toast', n > 0 ? `Ventes encaissées : +${n} 🪙` : 'Aucune vente à encaisser');
+      g.bus.emit('toast', n > 0 ? `Ventes encaissées : +${n} $` : 'Aucune vente à encaisser');
       return n;
     }
   };

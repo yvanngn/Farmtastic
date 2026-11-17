@@ -1,5 +1,5 @@
 import { versionLabel } from '../version.js';
-// Écran titre façon Witch'rok : décor de ferme animé dessiné par le code,
+// Écran titre façon Witch'rok, version Far West : coucher de soleil, mesas, cactus, virevoltant, dessinés par le code,
 // titre lumineux qui apparaît (flou → net) puis flotte, « Toucher pour commencer », menu de jeu.
 import { $ } from './dom.js';
 
@@ -15,7 +15,8 @@ export function titleMenu(hasSave, many = false) {
 }
 
 const BH = 144; // hauteur de la scène ; en portrait le ciel s'allonge au-dessus
-const SKY = ['#3b3f8c', '#4f56a6', '#6a6fbc', '#8a86c8', '#b293c6', '#d9a2b8', '#f2b7a0', '#ffcf9a', '#ffe0a8'];
+// Farmwest : coucher de soleil du Far West (violet → orange → or)
+const SKY = ['#2e2350', '#4a2c5e', '#6e3460', '#9a3f5a', '#c2554a', '#e0743c', '#f09a40', '#f8bf5a', '#ffd98a'];
 
 export function createTitle({ audio, onContinue, onNew, onGames = () => {}, onSettings }) {
   { const ov = document.getElementById('ovTitle'); if (ov && !ov.querySelector('.version')) { const v = document.createElement('div'); v.className = 'version'; v.textContent = versionLabel();
@@ -80,42 +81,42 @@ export function createTitle({ audio, onContinue, onNew, onGames = () => {}, onSe
     const dy = Math.round((H - BH) * 0.45), band = Math.ceil((dy + BH * 0.62) / SKY.length);
     SKY.forEach((c, i) => { R(0, i * band, W, band + 1, c); if (i) for (let x = (i % 2) * 2; x < W; x += 4) R(x, i * band, 1, 1, SKY[i - 1]); });
     ctx.save(); ctx.translate(0, dy);
-    // soleil levant + rayons
-    const sx = W * 0.7 | 0, sy = 50;
-    ctx.globalAlpha = 0.18;
-    for (let k = 0; k < 12; k++) { const a = t / 9000 + k * Math.PI / 6; for (let l = 18; l < 60; l += 2) R(sx + Math.cos(a) * l, sy + Math.sin(a) * l, 2, 2, '#fff2c0'); }
-    disc(sx, sy, 22, '#ffe7a8'); ctx.globalAlpha = 1;
-    disc(sx, sy, 13, '#fff1b8'); disc(sx - 3, sy - 3, 8, '#fffbe6');
-    cloud(t / 260, 22, 1); cloud(t / 380 + 150, 36, 1); cloud(t / 200 + 260, 14, 1);
-    // collines : le lointain glisse doucement
-    hill(78, 7, 0.03, 4, 0.071, t / 900, '#7d7fb8');
-    hill(86, 6, 0.045, 3, 0.11, t / 600, '#5d8f7a');
-    hill(93, 4, 0.02, 2, 0.09, 0, '#4f9a4c');
-    for (const [fx, r] of [[0.06, 7], [0.14, 6], [0.5, 5], [0.9, 7], [0.97, 6]]) tree(W * fx | 0, 92, r);
+    // grand soleil couchant posé sur l'horizon + rayons
+    const sx = W * 0.62 | 0, sy = 76;
+    ctx.globalAlpha = 0.16;
+    for (let k = 0; k < 12; k++) { const a = t / 9000 + k * Math.PI / 6; for (let l = 26; l < 80; l += 2) R(sx + Math.cos(a) * l, sy + Math.sin(a) * l, 2, 2, '#ffe2a0'); }
+    disc(sx, sy, 30, '#ffc070'); ctx.globalAlpha = 1;
+    disc(sx, sy, 20, '#ffd27a'); disc(sx - 4, sy - 4, 12, '#ffe8a8');
+    for (let k = 0; k < 4; k++) R(sx - 22, sy + 6 + k * 4, 44, 1, SKY[6]);   // bandes de chaleur
+    // mesas (buttes rouges à sommet plat), la lointaine glisse doucement
+    const mesa = (x0, w, h, top, col, shadow) => { R(x0, 96 - h, w, h + 4, col); R(x0 - 3, 96 - h + 3, 3, h, col); R(x0 + w, 96 - h + 5, 4, h, col); R(x0 + w - 6, 96 - h, 6, h + 4, shadow); R(x0 - 1, 96 - h - 1, w + 2, top, shade2(col)); };
+    const shade2 = c => c === '#8a3e3a' ? '#a24e40' : '#c26a48';
+    const off = (t / 120) % (W + 160);
+    mesa(((W * .05 - off) % (W + 160) + W + 160) % (W + 160) - 80, 46, 24, 2, '#8a3e3a', '#6e2e2e');
+    mesa(W * .72 | 0, 58, 30, 3, '#a8503e', '#7e3a30'); mesa(W * .3 | 0, 30, 16, 2, '#8a3e3a', '#6e2e2e');
     const gy = 100;
-    R(0, gy - 2, W, 4, '#6cbf55');
-    barn(W * 0.22 | 0, gy); windmill(W * 0.8 | 0, gy, t);
-    // champ au premier plan
-    R(0, gy + 2, W, H, '#7a5232');
-    for (let row = 0, y = gy + 4; y < H; row++, y += 5 + row) {
-      R(0, y + 2, W, 2, '#5f3e25');
-      const wheat = row % 2 === 0;
-      for (let x = (row % 2) * 3; x < W; x += 6) {
-        const sway = Math.round(Math.sin(t / 700 + x * 0.15 + row) * 0.8);
-        if (wheat) { R(x + sway, y - 3 - row / 2, 1, 4 + row / 2, '#c9a23e'); R(x + sway - 1, y - 4 - row / 2, 3, 2, '#f2cf5a'); }
-        else { R(x, y - 1, 4, 3, '#3f8a45'); R(x + 1, y - 2, 2, 2, '#73c25e'); }
-      }
-    }
-    // clôture
-    for (let x = 2; x < W; x += 12) { R(x, gy - 6, 2, 9, '#e6d3b0'); R(x + 1, gy - 6, 1, 9, '#b8a07a'); }
-    R(0, gy - 4, W, 1, '#e6d3b0'); R(0, gy - 1, W, 1, '#e6d3b0');
-    // oiseaux
-    for (let k = 0; k < 3; k++) { const bx = ((t / 50 + k * 70) % (W + 40)) - 20, by = 30 + k * 7 + Math.sin(t / 300 + k) * 3, f = (t / 180 + k) % 2 < 1; R(bx - 2, by - (f ? 1 : 0), 2, 1, '#3a2f4a'); R(bx + 1, by - (f ? 1 : 0), 2, 1, '#3a2f4a'); R(bx, by, 1, 1, '#3a2f4a'); }
+    // désert ocre au premier plan, touffes sèches et cailloux
+    R(0, 94, W, H, '#c98a4a');
+    for (let k = 0; k < 6; k++) R(0, 96 + k * 9, W, 2, k % 2 ? '#b8783e' : '#d89a58');
+    for (let x = 5; x < W; x += 17) { const y = gy + 8 + (x * 7) % 30; R(x, y, 1, 3, '#8a6a2a'); R(x + 2, y - 1, 1, 4, '#a07a30'); R(x + 4, y, 1, 3, '#8a6a2a'); }
+    for (let x = 11; x < W; x += 29) { const y = gy + 14 + (x * 13) % 26; R(x, y, 4, 2, '#a07858'); R(x, y, 2, 1, '#d8b088'); }
+    // cactus
+    const cactus = (x, gy2, h) => { R(x, gy2 - h, 5, h, '#3f7a3a'); R(x + 1, gy2 - h, 2, h, '#5aa04a'); R(x - 5, gy2 - h * .6, 5, 3, '#3f7a3a'); R(x - 5, gy2 - h * .95, 3, h * .38, '#3f7a3a'); R(x + 5, gy2 - h * .45, 5, 3, '#3f7a3a'); R(x + 7, gy2 - h * .8, 3, h * .38, '#3f7a3a'); R(x - 1, gy2, 7, 2, 'rgba(60,30,10,.35)'); };
+    cactus(W * .08 | 0, gy + 18, 26); cactus(W * .9 | 0, gy + 12, 20); cactus(W * .48 | 0, gy + 2, 12);
+    barn(W * .2 | 0, gy); windmill(W * .8 | 0, gy, t);
+    // clôture de ranch
+    for (let x = 2; x < W; x += 12) { R(x, gy - 6, 2, 9, '#8a5a32'); R(x + 1, gy - 6, 1, 9, '#5b3a22'); }
+    R(0, gy - 4, W, 1, '#a8774a'); R(0, gy - 1, W, 1, '#a8774a');
+    // virevoltant (tumbleweed) qui roule et rebondit
+    { const tx = ((t / 14) % (W + 60)) - 30, ty = gy + 22 - Math.abs(Math.sin(t / 260)) * 8, a = t / 140;
+      for (let k = 0; k < 14; k++) { const ang = a + k * 0.9, rr = 3 + (k % 3); R(tx + Math.cos(ang) * rr, ty + Math.sin(ang) * rr, 1, 1, k % 2 ? '#8a6a3a' : '#b8925a'); } }
+    // vautours au loin
+    for (let k = 0; k < 2; k++) { const bx = W * .3 + Math.cos(t / 2400 + k * 3) * 26, by = 28 + k * 9 + Math.sin(t / 1900 + k) * 4, f = (t / 260 + k) % 2 < 1; R(bx - 3, by - (f ? 1 : 0), 3, 1, '#2a1a2a'); R(bx, by, 1, 1, '#2a1a2a'); R(bx + 1, by - (f ? 1 : 0), 3, 1, '#2a1a2a'); }
     ctx.restore();
-    // pollen doré
+    // poussière dorée qui flotte
     for (const p of pollen) {
       const x = (p.x + Math.sin(t / 900 + p.p) * 6) % W, y = ((p.y - t / (90 * p.s)) % H + H) % H;
-      ctx.globalAlpha = 0.45 + 0.45 * Math.sin(t / 300 + p.p); R(x, y, 1, 1, '#ffe9a0');
+      ctx.globalAlpha = 0.45 + 0.45 * Math.sin(t / 300 + p.p); R(x, y, 1, 1, '#ffd9a0');
     }
     ctx.globalAlpha = 1;
   }

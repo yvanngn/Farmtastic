@@ -39,10 +39,10 @@ export function createMenu(g, opts) {
   const card = (h, cls = '') => `<div class="card ${cls}">${h}</div>`;
   // grille d'achat d'un commerce (×1 et ×5)
   const shopGrid = (S, id) => '<div class="grid">' + SHOPS[id].sells.filter(k => isUnlocked(S, k)).map(k => { const x = it(k);
-    return card(`<div class="t">${x.i} <b>${x.n}</b></div><div>${x.buy} 🪙${x.eat ? ' · se mange' : ''}</div><div class="row" style="margin:0"><button data-buy="${k}" ${S.money >= x.buy ? '' : 'disabled'}>Acheter</button><button data-buy5="${k}" ${S.money >= x.buy * 5 ? '' : 'disabled'}>×5</button></div>`); }).join('') + '</div>';
+    return card(`<div class="t">${x.i} <b>${x.n}</b></div><div>${x.buy} $${x.eat ? ' · se mange' : ''}</div><div class="row" style="margin:0"><button data-buy="${k}" ${S.money >= x.buy ? '' : 'disabled'}>Acheter</button><button data-buy5="${k}" ${S.money >= x.buy * 5 ? '' : 'disabled'}>×5</button></div>`); }).join('') + '</div>';
   const patternGrid = (S, shop) => { const ps = Object.entries(PATTERNS).filter(([, p]) => p.shop === shop); if (!ps.length) return '';
     return '<h3>📜 Patrons</h3><div class="grid">' + ps.map(([id, p]) => { const r = p.pot ? POT_RECIPES[p.recipe] : HAND_RECIPES[p.recipe], o = it(r.out), own = hasPattern(S, id);
-      return card(`<div class="t">📜 <b>${p.n}</b></div><div>${o.i} ${o.n} : ${Object.entries(r.in).map(([k, n]) => `${it(k).i}${n}`).join(' ')}</div><div>${p.price} 🪙 · ${JOBS[p.job].i} ${JOBS[p.job].n}${p.pot ? ' · chaudron 🍲' : ''}</div>${own ? '<small>✅ Déjà appris</small>' : p.soon ? '<button disabled>⏳ Bientôt</button>' : `<button data-pattern="${id}" ${S.money >= p.price ? '' : 'disabled'}>Acheter le patron</button>`}`); }).join('') + '</div>'; };
+      return card(`<div class="t">📜 <b>${p.n}</b></div><div>${o.i} ${o.n} : ${Object.entries(r.in).map(([k, n]) => `${it(k).i}${n}`).join(' ')}</div><div>${p.price} $ · ${JOBS[p.job].i} ${JOBS[p.job].n}${p.pot ? ' · chaudron 🍲' : ''}</div>${own ? '<small>✅ Déjà appris</small>' : p.soon ? '<button disabled>⏳ Bientôt</button>' : `<button data-pattern="${id}" ${S.money >= p.price ? '' : 'disabled'}>Acheter le patron</button>`}`); }).join('') + '</div>'; };
   const views = {
     igorShop: S => `<p class="info">Patrons et outils du forgeron.</p>${patternGrid(S, 'forge')}${shopGrid(S, 'forge')}`,
     bakery: S => `<p class="info">Farine et patrons : le pain se prépare au chaudron.</p>${patternGrid(S, 'bakery')}${shopGrid(S, 'bakery')}`,
@@ -52,7 +52,7 @@ export function createMenu(g, opts) {
       const L = S.fishLog || {}, got = FISH.filter(f => L[f.id]).length, SAI = ['Printemps', 'Été', 'Automne', 'Hiver'], hh = m => `${Math.floor(m / 60) % 24}h`;
       const when = w => `${SAI[w.season]} j${w.day}, an ${w.year || 1}, ${hh(w.minute)} · ${ZONE_NAMES[w.zone] || w.zone}`;
       return `<p class="info">Carnet de pêche : ${got}/${FISH.length} espèces.</p><div class="fish-list">` + FISH.map(f => { const e = L[f.id];
-        return e ? `<div class="fish-row"><span class="fi">${f.i}</span><div><b>${f.n}</b> <small>×${e.n} · record ${e.best} cm · ${f.p} 🪙</small>
+        return e ? `<div class="fish-row"><span class="fi">${f.i}</span><div><b>${f.n}</b> <small>×${e.n} · record ${e.best} cm · ${f.p} $</small>
           <small>Où : ${f.zones.map(z => ZONE_NAMES[z]).join(', ')} · ${f.seasons.map(s => SAI[s]).join(', ')} · de ${hh(f.from)} à ${hh(f.to)}</small>
           <small>1re prise : ${when(e.first)}${e.last && e.n > 1 ? ` · dernière : ${when(e.last)}` : ''}</small></div></div>`
           : `<div class="fish-row inconnu"><span class="fi">❔</span><div><b>???</b> <small>On dit qu'il vit dans ${f.zones.map(z => ZONE_NAMES[z]).join(' ou ')}.</small></div></div>`; }).join('') + '</div>';
@@ -67,7 +67,7 @@ export function createMenu(g, opts) {
     },
     sac(S) {
       const ids = Object.keys(S.inv);
-      return `<p class="info">${usedSlots(S)}/${slots(S)} cases utilisées · ${stackSize(S)} objets max par case</p>` + (ids.length ? '<div class="grid">' + ids.map(id => card(`<div class="t">${it(id).i} <b>${it(id).n}</b></div><div>×${S.inv[id]} · ${Math.ceil(S.inv[id] / stackSize(S))} case(s) · ${it(id).p}🪙/u</div>${it(id).eat ? `<button data-use="${id}">Utiliser</button>` : it(id).tent ? `<button data-deploy="${id}" class="primaire">⛺ Déployer</button>` : ''}`)).join('') + '</div>' : 'Sac vide.');
+      return `<p class="info">${usedSlots(S)}/${slots(S)} cases utilisées · ${stackSize(S)} objets max par case</p>` + (ids.length ? '<div class="grid">' + ids.map(id => card(`<div class="t">${it(id).i} <b>${it(id).n}</b></div><div>×${S.inv[id]} · ${Math.ceil(S.inv[id] / stackSize(S))} case(s) · ${it(id).p}$/u</div>${it(id).eat ? `<button data-use="${id}">Utiliser</button>` : it(id).tent ? `<button data-deploy="${id}" class="primaire">⛺ Déployer</button>` : ''}`)).join('') + '</div>' : 'Sac vide.');
     },
     workshop(S) { return '<p class="info">Ton établi, à la maison. D\'autres plans viendront plus tard.</p>' + views.craft(S); },
     craft(S) {
@@ -80,7 +80,7 @@ export function createMenu(g, opts) {
         + '<div class="grid">' + UPGRADABLE.filter(id => hasTool(S, id)).map(id => {
           const t = TOOLS.find(x => x.id === id), ic = iconHTML(id), tier = toolTier(S, id), r = canUpgrade(S, id), c = r.cost;
           return card(`<div class="t">${ic} <b>${t.n}</b></div><div class="tierlbl t${tier}">${TIER_NAMES[tier]}</div>`
-            + (tier >= MAX_TIER ? '<div>Palier maximum ✨</div>' : `<div>→ ${TIER_NAMES[tier + 1]}</div><div>${c.money}🪙 · ${c.stone}🪨 · niv. ${c.minLvl}</div><button data-up="${id}" ${r.ok ? '' : 'disabled'}>Améliorer</button>${r.ok ? '' : `<small>${why[r.why]}</small>`}`));
+            + (tier >= MAX_TIER ? '<div>Palier maximum ✨</div>' : `<div>→ ${TIER_NAMES[tier + 1]}</div><div>${c.money}$ · ${c.stone}🪨 · niv. ${c.minLvl}</div><button data-up="${id}" ${r.ok ? '' : 'disabled'}>Améliorer</button>${r.ok ? '' : `<small>${why[r.why]}</small>`}`));
         }).join('') + '</div>';
     },
     carpenter(S) {
@@ -89,18 +89,18 @@ export function createMenu(g, opts) {
         const r = canBuild(S, id), c = b.cost;
         return card(`<div class="t">${b.i} <b>${b.n}</b></div><div>Pour les ${b.for} · ${b.cap} places</div>`
           + (S.built && S.built[id] ? '<div>Construit ✔</div>'
-            : `<div>${c.money} 🪙 · ${c.wood} 🪵 <small>(${S.inv.wood || 0})</small> · ${c.stone} 🪨 <small>(${S.inv.stone || 0})</small></div><button data-build="${id}" ${r.ok ? '' : 'disabled'}>Construire</button>${r.ok ? '' : `<small>${why[r.why] || ''}</small>`}`));
+            : `<div>${c.money} $ · ${c.wood} 🪵 <small>(${S.inv.wood || 0})</small> · ${c.stone} 🪨 <small>(${S.inv.stone || 0})</small></div><button data-build="${id}" ${r.ok ? '' : 'disabled'}>Construire</button>${r.ok ? '' : `<small>${why[r.why] || ''}</small>`}`));
       }).join('') + (() => {
         const r = canRepairBench(S), c = WORKBENCH.cost;
         return card(`<div class="t">${WORKBENCH.i} <b>${WORKBENCH.n}</b></div><div>L'établi de ta maison, pour fabriquer des objets</div>`
-          + (S.workbench ? '<div>Réparé ✔</div>' : `<div>${c.money} 🪙 · ${c.wood} 🪵 · ${c.stone} 🪨</div><button data-bench="1" ${r.ok ? '' : 'disabled'}>Réparer</button>${r.ok ? '' : `<small>${why[r.why] || ''}</small>`}`));
+          + (S.workbench ? '<div>Réparé ✔</div>' : `<div>${c.money} $ · ${c.wood} 🪵 · ${c.stone} 🪨</div><button data-bench="1" ${r.ok ? '' : 'disabled'}>Réparer</button>${r.ok ? '' : `<small>${why[r.why] || ''}</small>`}`));
       })() + '</div>';
     },
     animals(S) {
       return shopGrid(S, 'feed') + '<h3>🐾 Animaux</h3><div class="grid">' + Object.entries(ANIMALS).filter(([id]) => isUnlocked(S, id)).map(([id, a]) => {
         const r = canBuyAnimal(S, id), home = a.home && BUILDINGS[a.home];
         const why = { home: `Il faut d'abord ${home ? home.un : ''} (charpentier)`, full: home ? home.plein : '', money: "Pas assez d'argent" };
-        return card(`<div class="t">${a.i} <b>${a.n}</b></div><div>${a.buy} 🪙${a.prod ? ` · ${it(a.prod).i} tous les ${a.every} j` : ' · compagnon'}</div>`
+        return card(`<div class="t">${a.i} <b>${a.n}</b></div><div>${a.buy} $${a.prod ? ` · ${it(a.prod).i} tous les ${a.every} j` : ' · compagnon'}</div>`
           + (home ? `<small>${home.i} ${home.n} : ${homeCount(S, a.home)}/${home.cap}</small>` : '<small>Vit en liberté</small>')
           + `<button data-animal="${id}" ${r.ok ? '' : 'disabled'}>Acheter</button>${r.ok ? '' : `<small>${why[r.why]}</small>`}`);
       }).join('') + '</div>' + (['rabbit', 'pig', 'sheep'].some(k => !isUnlocked(S, k)) ? '<p class="info">D\'autres animaux arriveront avec la caravane 🐪 (panneau d\'affichage).</p>' : '');
@@ -108,10 +108,10 @@ export function createMenu(g, opts) {
     upgrades(S) {
       const bc = bagCost(S), sc = stackCost(S), lvl = S.stackLvl || 0;
       const bag = slots(S) < CFG.INV_MAX
-        ? card(`<div class="t">🎒 <b>Sac plus grand</b></div><div>+6 cases (${slots(S)} → ${slots(S) + 6})</div><div>${bc} 🪙</div><button data-bag="1" ${S.money >= bc ? '' : 'disabled'}>Acheter</button>`)
+        ? card(`<div class="t">🎒 <b>Sac plus grand</b></div><div>+6 cases (${slots(S)} → ${slots(S) + 6})</div><div>${bc} $</div><button data-bag="1" ${S.money >= bc ? '' : 'disabled'}>Acheter</button>`)
         : card('<div class="t">🎒 <b>Sac plus grand</b></div><div>Taille maximale ✨</div>');
       const pile = sc != null
-        ? card(`<div class="t">📦 <b>Piles plus hautes</b></div><div>${stackSize(S)} → ${STACKS[lvl + 1]} objets par case</div><div>${sc} 🪙</div><button data-stack="1" ${S.money >= sc ? '' : 'disabled'}>Acheter</button>`)
+        ? card(`<div class="t">📦 <b>Piles plus hautes</b></div><div>${stackSize(S)} → ${STACKS[lvl + 1]} objets par case</div><div>${sc} $</div><button data-stack="1" ${S.money >= sc ? '' : 'disabled'}>Acheter</button>`)
         : card('<div class="t">📦 <b>Piles plus hautes</b></div><div>Piles maximales ✨</div>');
       return `<p class="info">Votre sac : ${slots(S)} cases, ${stackSize(S)} objets par case.</p><div class="grid">${bag}${pile}</div>`;
     },
@@ -165,10 +165,10 @@ export function createMenu(g, opts) {
     const own = Object.keys(S.inv).filter(id => ITEMS[id]);
     const form = own.length ? `<div class="vente"><select id="mkItem">${own.map(id => `<option value="${id}">${it(id).i} ${it(id).n} (${S.inv[id]})</option>`).join('')}</select><input id="mkQty" type="number" min="1" value="1" inputmode="numeric" aria-label="Quantité"><input id="mkPrice" type="number" min="1" value="10" inputmode="numeric" aria-label="Prix unitaire"><button data-mksell="1">Mettre en vente</button></div>` : '';
     const others = list.filter(l => l.seller_id !== opts.market.uid);
-    const offers = others.length ? '<div class="grid">' + others.map(l => card(`<div class="t">${it(l.item).i} <b>${l.qty} ${it(l.item).n}</b></div><div>${esc(l.seller_name)}</div><div>${l.price}🪙/u · ${l.qty * l.price}🪙</div><button data-mkbuy="${l.id}" ${S.money >= l.qty * l.price ? '' : 'disabled'}>Acheter</button>`)).join('') + '</div>' : '<p class="info">Aucune annonce pour le moment.</p>';
+    const offers = others.length ? '<div class="grid">' + others.map(l => card(`<div class="t">${it(l.item).i} <b>${l.qty} ${it(l.item).n}</b></div><div>${esc(l.seller_name)}</div><div>${l.price}$/u · ${l.qty * l.price}$</div><button data-mkbuy="${l.id}" ${S.money >= l.qty * l.price ? '' : 'disabled'}>Acheter</button>`)).join('') + '</div>' : '<p class="info">Aucune annonce pour le moment.</p>';
     const sold = mine.filter(m => m.status === 'sold' && !m.claimed).reduce((n, m) => n + m.qty * m.price, 0);
-    const mineHtml = mine.filter(m => m.status === 'open').map(m => card(`<div class="t">${it(m.item).i} ${m.qty} ${it(m.item).n}</div><div>${m.price}🪙/u</div><button data-mkcancel="${m.id}">Retirer</button>`)).join('');
-    box.innerHTML = form + '<h4>Annonces</h4>' + offers + '<h4>Mes ventes</h4>' + (mineHtml ? `<div class="grid">${mineHtml}</div>` : '<p class="info">Aucune annonce en cours.</p>') + `<button data-mkclaim="1" ${sold ? 'class="primaire"' : ''}>Encaisser${sold ? ' ' + sold + '🪙' : ''}</button>`;
+    const mineHtml = mine.filter(m => m.status === 'open').map(m => card(`<div class="t">${it(m.item).i} ${m.qty} ${it(m.item).n}</div><div>${m.price}$/u</div><button data-mkcancel="${m.id}">Retirer</button>`)).join('');
+    box.innerHTML = form + '<h4>Annonces</h4>' + offers + '<h4>Mes ventes</h4>' + (mineHtml ? `<div class="grid">${mineHtml}</div>` : '<p class="info">Aucune annonce en cours.</p>') + `<button data-mkclaim="1" ${sold ? 'class="primaire"' : ''}>Encaisser${sold ? ' ' + sold + '$' : ''}</button>`;
     box.onclick = async e => {
       const d = e.target.dataset;
       if (d.mksell) await opts.market.sell($('#mkItem').value, +$('#mkQty').value, +$('#mkPrice').value);

@@ -18,12 +18,13 @@ Les ❓ sont des questions à trancher par l'utilisateur **avant** de lancer le 
 - [x] CLAUDE.md, carnet et roadmap mis à jour.
 - Gardés exprès pour ne pas perdre les parties : la clé de sauvegarde du navigateur (`ferme_save_v1`) et le préfixe des tables Supabase (`ferme_`).
 
-## Lot 1 — Ambiance Far West (textes, titre, son)
-- [ ] Écran titre western : lettres façon bois / affiche « WANTED », poussière, soleil couchant, cactus.
-- [ ] Musique : nouveaux thèmes (guitare, harmonica, banjo en synthèse), bruitages (éperons, porte de saloon, sifflet de train).
-- [ ] Revoir les noms de lieux et d'objets pour le thème (ex. le bar d'Ed → saloon ?).
-- [ ] Revoir le ton des dialogues (relecture par l'utilisateur, règle des 100 répliques).
-- ❓ Quels noms changent (lieux, objets, monnaie : 🪙 → dollars ?) ? Les PNJ actuels (Luna, Franck, Hailey, Myst, Igor, Manuel, Ed…) restent-ils tels quels ?
+## Lot 1 — Ambiance Far West ✅ (17/11/2026, v0.1.7)
+Réponses de l'utilisateur : monnaie en **dollars**, lieux renommés en 💡 western, **PNJ inchangés**, seuls les **nouveaux textes** prennent le ton western (les répliques validées restent).
+- [x] Écran titre : coucher de soleil, mesas rouges, désert ocre, cactus, virevoltant qui roule, vautours, poussière dorée ; logo en police d'affiche western (Rye).
+- [x] Musique : thème du titre à l'harmonica, thème du jour à la guitare « twang », rythme au galop. Nouveaux bruitages : sifflet de locomotive (servira au lot 3), éperons, portes battantes du saloon (en entrant / sortant).
+- [x] Monnaie : 🪙 → **$** partout (HUD, magasins, quêtes, ventes).
+- [x] Lieux renommés (💡, à corriger si besoin) : bar d'Ed → **Saloon**, Étal du marché → **Magasin général**, Quartier → **Zone résidentielle**, Caverne → **Caverne sombre** (noms de la carte).
+- Gardés : « Clinique » (les répliques validées de Hailey en parlent), « Centre-ville », « Forêt », « Montagne ». Le panneau « FARM-LAND » de la fête foraine sera revu au lot 2.
 
 ## Lot 2 — Nouvelle carte de la région (d'après l'image)
 Zones de l'image → scènes du jeu :

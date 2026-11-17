@@ -125,7 +125,7 @@ export function digTreasure(g, x, y) {
   const ore = VEINS[pickVein(0.5 + g.rnd() * 0.5)].ore; add(g, ore, 2);   // plutôt les minerais rares
   const fl = FLOWERS[S.season][2].id; add(g, fl, 1);
   g.bus.emit('sfx', 'levelup');
-  g.bus.emit('toast', `🌈 Trésor ! +${m} 🪙, du minerai et une fleur rare.`);
-  g.bus.emit('pop', { t: '+' + m + '🪙', x, y });
+  g.bus.emit('toast', `🌈 Trésor ! +${m} $, du minerai et une fleur rare.`);
+  g.bus.emit('pop', { t: '+' + m + '$', x, y });
   return { money: m, ore, flower: fl };
 }

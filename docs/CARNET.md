@@ -463,3 +463,10 @@ Chaque ligne = un lot indépendant, à demander quand il y a des crédits.
 - [ ] Cadres de fenêtres et boutons en **pixel art** (bois / parchemin), police pixel partout.
 - [ ] Barre d'outils façon inventaire Stardew (cases dessinées, quantité, case choisie qui brille).
 - [ ] Horloge et date dessinées (cadran soleil / lune).
+
+## Séance 17/11/2026 (14h) — Farmwest, lot 1 « Ambiance Far West » (v0.1.7)
+- ✅ Renommage en Farmwest (v0.1.6) : titre, logo, sous-titre « une ferme au Far West », joueur par défaut **Cloud Jimny**, carte `docs/carte-region-farmwest.jpg`, roadmap `docs/ROADMAP.md`.
+- ✅ Décisions de l'utilisateur : monnaie en **dollars ($)** ; lieux renommés par Claude (💡) ; PNJ inchangés ; ton western seulement pour les nouveaux textes.
+- ✅ Écran titre western (coucher de soleil, mesas, cactus, virevoltant, vautours), police Rye pour le logo.
+- ✅ Musique western (harmonica, guitare twang, galop) ; sons : sifflet de train, éperons, portes du saloon.
+- ✅ 💡 Noms : Saloon (bar d'Ed), Magasin général (étal), Zone résidentielle (quartier), Caverne sombre.

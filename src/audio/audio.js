@@ -8,10 +8,11 @@ const hz = semi => C4 * Math.pow(2, semi / 12);
 
 /* ---------- Musiques (mélodies originales) ---------- */
 const TRACKS = {
-  title: { bpm: 96, steps: 32, roots: [0, 5, -3, 7], inst: 'bell',
-    mel: [12, 16, 19, 24, null, 21, 19, null, 17, null, 16, 14, 12, null, null, null, 14, 16, 19, 21, null, 19, 24, null, 23, null, 21, 19, 19, null, null, null] },
-  day: { bpm: 104, steps: 32, roots: [0, -3, 5, 7], inst: 'pluck',
-    mel: [16, null, 19, 21, 19, null, 16, 14, 12, null, 14, 16, 14, null, null, null, 16, null, 19, 21, 24, null, 21, 19, 21, null, 19, 16, 19, null, null, null] },
+  // Farmwest : thèmes western (harmonica sur guitare au galop, gamme mixolydienne avec la 7e mineure)
+  title: { bpm: 92, steps: 32, roots: [0, 5, -2, 0], inst: 'harmonica', gallop: true,
+    mel: [12, null, 16, 19, 22, null, 19, null, 17, null, 16, null, 14, 12, null, null, 10, null, 12, 14, 17, null, 14, 12, 12, null, null, 10, 12, null, null, null] },
+  day: { bpm: 112, steps: 32, roots: [0, -2, 5, 0], inst: 'twang', gallop: true,
+    mel: [7, null, 12, null, 12, 14, 16, null, 14, null, 12, 10, 12, null, null, null, 7, null, 12, null, 16, 17, 19, null, 17, 16, 14, null, 12, null, null, null] },
   winter: { bpm: 84, steps: 32, roots: [0, -3, 5, 7], inst: 'bell',
     mel: [24, null, null, 19, 21, null, 19, null, 16, null, null, null, 14, null, 16, null, 19, null, null, 16, 14, null, 12, null, 14, null, null, null, null, null, null, null] },
   night: { bpm: 66, steps: 32, roots: [-3, 5, 0, 7], inst: 'bell', minor: true,
@@ -85,6 +86,13 @@ export function createAudio(g, storage) {
       gn.gain.setValueAtTime(0.0001, t); gn.gain.exponentialRampToValueAtTime(0.05 * v, t + dur * 0.35); gn.gain.exponentialRampToValueAtTime(0.0001, t + dur);
       for (const f of freqs) { osc('sawtooth', f, t, dur, gn); osc('sawtooth', f * 1.005, t, dur, gn); }
     },
+    // guitare « twang » : corde pincée brillante qui se pose en glissant légèrement
+    twang(t, f, v, dest) { const lp = ac.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.setValueAtTime(3200, t); lp.frequency.exponentialRampToValueAtTime(700, t + 0.35); lp.connect(dest);
+      osc('sawtooth', f * 1.02, t, 0.45, env(t, 0.003, 0.09 * v, 0.42, lp), f); osc('triangle', f / 2, t, 0.3, env(t, 0.003, 0.06 * v, 0.28, dest)); },
+    // harmonica : souffle carré doux avec vibrato
+    harmonica(t, f, v, dest) { const lp = ac.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 1800; lp.connect(dest);
+      const o = osc('square', f, t, 0.55, env(t, 0.06, 0.05 * v, 0.5, lp)); const l = ac.createOscillator(), d = ac.createGain(); l.frequency.value = 5.5; d.gain.value = f * 0.012; l.connect(d); d.connect(o.frequency); l.start(t); l.stop(t + 0.6);
+      burst(t, 0.3, 'bandpass', f * 2, 0.015 * v, 2); },
     bass(t, f, v, dest) { osc('sine', f, t, 0.5, env(t, 0.01, 0.22 * v, 0.45, dest)); }
   };
 
@@ -107,7 +115,8 @@ export function createAudio(g, storage) {
     if (i % 4 === 0) inst.bass(t, hz(root - 24), name === 'night' ? 0.6 : 1, out);
     const m = tr.mel[i % tr.steps];
     if (m != null) inst[tr.inst](t, hz(m), 1, out);
-    if ((name === 'day' || name === 'title') && i % 2 === 1 && i % 8 !== 7) inst.pluck(t, hz(root + 12 + [0, third, 7][(i >> 1) % 3]), 0.35, out);
+    if (tr.gallop) { if (i % 4 === 2) inst.bass(t, hz(root - 17), 0.7, out); if (i % 2 === 1) inst.pluck(t, hz(root + [0, third, 7][(i >> 1) % 3]), 0.25, out); }   // rythme au galop (« boum-tchic »)
+    else if ((name === 'day' || name === 'title') && i % 2 === 1 && i % 8 !== 7) inst.pluck(t, hz(root + 12 + [0, third, 7][(i >> 1) % 3]), 0.35, out);
   }
   function tick() {
     if (!ac || ac.state !== 'running') return;
@@ -179,6 +188,9 @@ export function createAudio(g, storage) {
     oink: t => { burst(t, 0.12, 'bandpass', 380, 0.35, 3); burst(t + 0.16, 0.1, 'bandpass', 420, 0.3, 3); blip(t, 'sawtooth', 140, 0.12, 0.05, 110); },
     meow: t => { blip(t, 'triangle', 520, 0.12, 0.12, 820); blip(t + 0.12, 'triangle', 820, 0.3, 0.1, 420); },
     levelup: t => [0, 4, 7, 12, 16, 19].forEach((s, k) => blip(t + k * 0.07, 'square', hz(24 + s), 0.25, 0.06)),
+    whistle: t => { for (const [k, f] of [[0, 740], [0, 932], [0, 1109]]) { const o = blip(t + k, 'square', f, 1.1, 0.035); } burst(t, 1.1, 'bandpass', 1500, 0.08, 1); },   // sifflet de locomotive (accord)
+    spurs: t => { for (let k = 0; k < 3; k++) blip(t + k * 0.05, 'sine', 3200 + k * 260, 0.08, 0.03); },   // éperons qui tintent
+    saloon: t => { blip(t, 'sawtooth', 180, 0.25, 0.04, 120); blip(t + 0.18, 'sawtooth', 160, 0.2, 0.03, 110); burst(t + 0.3, 0.08, 'lowpass', 500, 0.2); },   // portes battantes du saloon
     door: t => { burst(t, 0.18, 'lowpass', 400, 0.3); blip(t + 0.05, 'sine', 90, 0.15, 0.25, 60); },
     stars: t => [24, 28, 31, 36, 40, 43, 48, 52].forEach((s, k) => { blip(t + k * 0.06, 'sine', hz(s), 0.7, 0.09); blip(t + k * 0.06 + 0.03, 'triangle', hz(s + 12), 0.3, 0.03); }),
     day: t => [0, 4, 7, 11, 14].forEach((s, k) => blip(t + k * 0.09, 'triangle', hz(12 + s), 0.5, 0.1))
