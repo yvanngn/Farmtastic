@@ -320,15 +320,14 @@ function drawBarn(R) {
 }
 
 // Reflets animés sur l'eau, seulement pour les tuiles visibles.
-export function drawWaterShimmer(c, x0, y0, x1, y1, t) {
-  c.fillStyle = 'rgba(225,244,255,.6)';
+// Lot 11d : reflets animés sur toute l'eau (mare, rivière, mer) : traits clairs qui glissent et scintillent.
+export function drawWaterShimmer(c, x0, y0, x1, y1, t, isWater = isPond) {
   for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) {
-    if (!isPond(x, y)) continue;
-    const ph = Math.sin(t / 700 + x * 1.3 + y * .7);
-    if (ph > .45) {
-      const ox = 3 + ((t / 260 + x * 5) % 8 | 0), oy = 5 + ((x * 7 + y * 3) % 6);
-      c.fillRect(x * T + ox, y * T + oy, ph > .8 ? 5 : 3, 1);
-    }
+    if (!isWater(x, y)) continue;
+    const ph = Math.sin(t / 700 + x * 1.3 + y * .7), ph2 = Math.sin(t / 1100 - x * .9 + y * 1.7);
+    if (ph > .35) { const ox = 2 + ((t / 260 + x * 5) % 9 | 0), oy = 4 + ((x * 7 + y * 3) % 7); c.fillStyle = `rgba(225,244,255,${.35 + ph * .35})`; c.fillRect(x * T + ox, y * T + oy, ph > .8 ? 5 : 3, 1); }
+    if (ph2 > .6) { const ox = 1 + ((x * 11 + (t / 400 | 0)) % 12), oy = 10 + ((x + y) % 4); c.fillStyle = 'rgba(160,210,245,.5)'; c.fillRect(x * T + ox, y * T + oy, 4, 1); }
+    if (ph * ph2 > .7) { c.fillStyle = 'rgba(255,255,255,.9)'; c.fillRect(x * T + 8 + ((x * 3) % 5), y * T + 6, 1, 1); }   // scintillement
   }
 }
 export { disc };

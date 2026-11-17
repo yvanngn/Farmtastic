@@ -320,23 +320,25 @@ LAYOUTS.wild = buildWild();
 // sortie vers la caverne à l'est (29,9), trouée secrète en haut (27,0) et un coffre au bout du labyrinthe.
 // Labyrinthe « parfait » creusé de façon déterministe (toujours au moins un chemin), puis quelques murs ouverts en plus.
 const FW = 30, FH = 18;
-const FOREST_KEEP = [[9, 7], [18, 13], [18, 12], [5, 12]];   // lieux de promenade des habitants (restent ouverts)
-function buildForest() {
+const FOREST_KEEP = [[10, 7], [19, 13], [19, 12], [5, 12]];   // lieux de promenade des habitants (restent ouverts)
+function buildForest() {   // lot 11 : allées de 2 cases (plus lisible), murs d'une case
   const m = Array.from({ length: FH }, () => Array.from({ length: FW }, () => 'T'));
   let s = 8086; const r = () => (s = (s * 1664525 + 1013904223) >>> 0) / 4294967296;
-  const cells = [], seen = new Set([1 + ',' + 9]), stack = [[1, 9]];
-  m[9][1] = '.';
-  while (stack.length) {   // parcours en profondeur : cases impaires, murs entre elles
-    const [x, y] = stack[stack.length - 1];
-    const nb = [[2, 0], [-2, 0], [0, 2], [0, -2]].map(([a, b]) => [x + a, y + b]).filter(([a, b]) => a >= 1 && b >= 1 && a <= FW - 3 && b <= FH - 3 && !seen.has(a + ',' + b));
+  const CX = 9, CY = 5, X0 = c => 1 + c * 3, Y0 = c => 3 + c * 3;   // cases de 2 × 2 : x 1-2, 4-5… 25-26 ; y 3-4, 6-7, 9-10, 12-13, 15-16
+  const open = (x0, y0, w, h) => { for (let y = y0; y < y0 + h; y++) for (let x = x0; x < x0 + w; x++) if (y > 0 && y < FH - 1 && x > 0 && x < FW - 1) m[y][x] = '.'; };
+  const seen = new Set(['0,2']), stack = [[0, 2]]; open(X0(0), Y0(2), 2, 2);
+  while (stack.length) {   // parcours en profondeur : toujours au moins un chemin
+    const [cx, cy] = stack[stack.length - 1];
+    const nb = [[1, 0], [-1, 0], [0, 1], [0, -1]].map(([a, b]) => [cx + a, cy + b]).filter(([a, b]) => a >= 0 && b >= 0 && a < CX && b < CY && !seen.has(a + ',' + b));
     if (!nb.length) { stack.pop(); continue; }
     const [nx, ny] = nb[r() * nb.length | 0];
-    m[(y + ny) / 2][(x + nx) / 2] = '.'; m[ny][nx] = '.'; seen.add(nx + ',' + ny); stack.push([nx, ny]); cells.push([nx, ny]);
+    open(Math.min(X0(cx), X0(nx)), Math.min(Y0(cy), Y0(ny)), cx !== nx ? 5 : 2, cy !== ny ? 5 : 2);   // la case et le mur entre les deux
+    seen.add(nx + ',' + ny); stack.push([nx, ny]);
   }
-  for (let y = 1; y < FH - 1; y++) for (let x = 1; x < FW - 1; x++)   // quelques raccourcis (moins frustrant)
-    if (m[y][x] === 'T' && (x + y) % 2 === 1 && x < FW - 2 && r() < .12) m[y][x] = '.';
-  for (let y = 1; y < FH - 1; y++) m[y][FW - 2] = m[y][FW - 3] === '.' && y % 2 === 1 && r() < .3 ? '.' : 'T';
-  m[9][FW - 2] = '.'; m[1][FW - 3] = '.';
+  for (let cy = 0; cy < CY; cy++) for (let cx = 0; cx < CX - 1; cx++) if (r() < .12) open(X0(cx), Y0(cy), 5, 2);   // quelques raccourcis
+  open(25, 9, 4, 2);                      // vers la sortie est (caverne)
+  open(26, 1, 2, 3); open(25, 1, 3, 1);   // vers la trouée secrète (27, 0)
+  open(1, 9, 2, 2);
   for (const [x, y] of FOREST_KEEP) m[y][x] = '.';
   for (let y = 1; y < FH - 1; y++) for (let x = 1; x < FW - 1; x++)   // des cailloux dans les murs
     if (m[y][x] === 'T' && r() < .22) m[y][x] = '#';

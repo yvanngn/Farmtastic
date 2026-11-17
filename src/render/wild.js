@@ -1,4 +1,4 @@
-import { paintGrass, canopy } from './terrain.js';
+import { paintGrass, canopy, CANOPY } from './terrain.js';
 // Terres sauvages pré-rendues : herbe plus sombre et touffue, arbres serrés en bordure,
 // rochers, sortie vers la ferme. Reconstruites à chaque saison.
 import { CFG } from '../config.js';
@@ -77,8 +77,10 @@ export function buildWild(season, name = 'wild') {
 // Arbre de la forêt (coupable) : même dessin que le fond ; souche quand il est coupé.
 export function drawForestTree(c, x, y, season, cut) {
   if (cut) { c.fillStyle = '#5b3a22'; c.fillRect(x * T + 5, y * T + 9, 6, 4); c.fillStyle = '#c08a54'; c.fillRect(x * T + 5, y * T + 8, 6, 2); c.fillStyle = '#8a5a32'; c.fillRect(x * T + 7, y * T + 8, 2, 1); return; }
-  const v = (x * 7 + y * 3) % 4, im = (x + y) % 3 === 0 || (x * y) % 5 === 1 ? pineSprite(season, v) : treeSprite(season, v);
-  c.drawImage(im, x * T - 9, y * T - 26);
+  // lot 11 : murs du labyrinthe en gros buissons serrés (ils ne débordent plus sur les allées)
+  const P = CANOPY[season] || CANOPY[0], px = x * T + 8, py = y * T + 7, v = (x * 7 + y * 3) % 3, d = (cx, cy, r, col) => { c.fillStyle = col; for (let k = -r; k <= r; k++) { const w = Math.floor(Math.sqrt(r * r - k * k)); c.fillRect(cx - w, cy + k, 2 * w + 1, 1); } };
+  c.fillStyle = 'rgba(20,30,10,.3)'; c.fillRect(x * T, y * T + 13, T, 3);
+  d(px, py + 1, 9, shade(P[0], .8)); d(px, py, 8, P[0]); d(px - 2 + v, py - 2, 6, P[1]); d(px - 3, py - 4, 3, P[2]); c.fillStyle = P[2]; c.fillRect(px + 3, py - 1, 2, 2); c.fillRect(px - 5 + v, py + 2, 1, 1);
 }
 export function drawMob(c, e, now) {
   const px = Math.round(e.x * T), py = Math.round(e.y * T), R = (a, b, w, h, col) => { c.fillStyle = col; c.fillRect(px + a, py + b, w, h); };

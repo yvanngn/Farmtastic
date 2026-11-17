@@ -138,15 +138,16 @@ Objectif : le plan 🗺️ → Région doit ressembler à `docs/carte-region-far
 - [x] Mini-bâtiments reconnaissables (gare, centre-ville, 4 fermes avec champs, maisons, ranch et enclos, fête foraine, cabines et parasols, port, voiliers).
 - [x] Étiquettes en police western, position du joueur, zoom et déplacement au doigt.
 
-## Lot 11 — Deuxième passe graphique « niveau de l'image » (demande du 17/11) ✅ v0.1.21 (11g partiel)
+## Lot 11 — Deuxième passe graphique « niveau de l'image » (demande du 17/11) ✅ v0.1.21 – v0.1.22
 Pour que **les scènes du jeu** atteignent le niveau de détail de l'image, scène par scène :
 - [x] 11a. **Auto-tuilage** des sols : bords propres herbe ↔ terre ↔ sable ↔ eau (coins intérieurs et extérieurs), au lieu de bords aléatoires.
 - [x] 11b. **Forêts denses** : canopée continue qui recouvre les bords des zones, avec lisière ombrée.
 - [x] 11c. **Falaises en terrasses** partout où le relief change (paroi texturée, bord herbeux, ombre portée).
-- [x] 11d. (sans animation des reflets) **Eau** : berges, écume, profondeur en dégradé, reflets animés, ponts et pontons.
-- [x] 11e. (façades western : contours colorés, lumière ; les autres bâtiments restent tels quels) **Bâtiments en 3/4** : toits en tuiles ou bardeaux avec volume, façades détaillées, perrons, cheminées ; contours colorés (pas noirs).
+- [x] 11d. (reflets animés partout depuis v0.1.22) **Eau** : berges, écume, profondeur en dégradé, reflets animés, ponts et pontons.
+- [x] 11e. (v0.1.22 : contours colorés automatiques sur tous les décors extérieurs) **Bâtiments en 3/4** : toits en tuiles ou bardeaux avec volume, façades détaillées, perrons, cheminées ; contours colorés (pas noirs).
 - [x] 11f. (centre-ville et zones de l'Ouest) **Décor dense** : tonneaux, caisses, clôtures, fleurs, rochers, champs cultivés, parasols, bateaux.
-- [ ] 11g. (partiel : lumière en haut à gauche sur les nouveaux peintres ; palette unique de 48 couleurs à faire) **Palette unique** (~48 couleurs) et lumière en haut à gauche partout, pour l'harmonie de l'ensemble.
+- [x] 11g. Palette unique : 48 couleurs tirées des décors (k-moyennes) + 3 accents, tramage léger ; décors, carte et sprites ramenés à la palette (v0.1.22).
+- [x] Forêt-labyrinthe : allées de 2 cases, murs en gros buissons (v0.1.22). **Palette unique** (~48 couleurs) et lumière en haut à gauche partout, pour l'harmonie de l'ensemble.
 
 ## Plus tard (déjà noté dans le carnet)
 - Pièce secrète dans chaque maison.

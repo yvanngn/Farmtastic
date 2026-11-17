@@ -7,6 +7,7 @@ import { SCENES } from '../world/scenes.js';
 import { isRipe } from '../systems/farming.js';
 import { LAYOUTS, TOWN_B } from '../world/scenes.js';
 import { FARM_LOTS } from '../data/buildings.js';
+import { harmonize } from '../render/pixel.js';
 import { buildRegionMap, drawLabel, regionPos, FARM_RECT, LABELS, RW, RH } from '../render/regionmap.js';
 const T = CFG.T, LEVELS = [1, 1.6, 2.6, 4];
 
@@ -33,7 +34,7 @@ export function createMapView(g, renderer, audio) {
   function drawRegion(now) {
     const S = g.S;
     if (!fontAsked && document.fonts) { fontAsked = true; document.fonts.load('24px Rye').catch(() => {}); }   // police western des étiquettes
-    if (!regionCv || regionSeason !== S.season) { regionCv = buildRegionMap(S.season); regionSeason = S.season; }
+    if (!regionCv || regionSeason !== S.season) { regionCv = harmonize(buildRegionMap(S.season), true); regionSeason = S.season; }
     const s = sc(), ox = cv.width / 2 - center.x * T * s, oy = cv.height / 2 - center.y * T * s, P = (x, y) => [ox + x * T * s, oy + y * T * s];
     ctx.fillStyle = '#2a4a6a'; ctx.fillRect(0, 0, cv.width, cv.height);
     ctx.imageSmoothingEnabled = s < 1; ctx.drawImage(regionCv, ox, oy, RW * T * s, RH * T * s);

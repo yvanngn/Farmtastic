@@ -150,7 +150,7 @@ import { SCENES } from '../world/scenes.js';
 import { ANIMALS } from '../data/animals.js';
 import { ITEMS } from '../data/items.js';
 import { darkness, timeTint, sunShadow } from '../systems/weather.js';
-import { SHADOW } from './pixel.js';
+import { SHADOW, harmonize } from './pixel.js';
 const T = CFG.T;
 const MAX_FX = 160;
 // Torches des tunnels (px).
@@ -280,10 +280,12 @@ let swing = null;
     ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.fillStyle = '#16121f'; ctx.fillRect(0, 0, cv.width, cv.height);
     ctx.setTransform(scale, 0, 0, scale, -camX * scale, -camY * scale);
     ctx.imageSmoothingEnabled = false;
+    if (!cache.__pal) harmonize(cache, scene !== 'wild' && scene !== 'grange');   // lot 11g : palette unique + contours colorés (une fois par décor)
     ctx.drawImage(cache, 0, 0);
     const x0 = Math.max(0, (cam.x / T | 0) - 2), y0 = Math.max(0, (cam.y / T | 0) - 1);
     const x1 = Math.min(SC.W - 1, ((cam.x + vw) / T | 0) + 2), y1 = Math.min(SC.H - 1, ((cam.y + vh) / T | 0) + 3);
     if (outside) drawWaterShimmer(ctx, x0, y0, x1, y1, now);
+    else if (LAYOUTS[scene] && SC.outdoor) drawWaterShimmer(ctx, x0, y0, x1, y1, now, (x, y) => (LAYOUTS[scene][y] || '')[x] === 'w');   // lot 11d : rivière et mer animées
     const wall = g.now();
     if (outside) for (const k in S.tilled || {}) { const [x, y] = k.split(',').map(Number); if (x >= x0 && x <= x1 && y >= y0 && y <= y1) drawSoil(ctx, x, y); }
     if (outside) for (const k in S.plots) { const [x, y] = k.split(',').map(Number); if (x >= x0 && x <= x1 && y >= y0 && y <= y1) drawCrop(ctx, x, y, S.plots[k], wall); }
