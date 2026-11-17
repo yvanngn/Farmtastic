@@ -24,7 +24,7 @@ export function pickTestSword(g, x, y) {
   return true;
 }
 
-// Ouverture de la zone : le chef confie la clé du vieux portail et une épée.
+// Ouverture de la zone : le Maire confie la clé du vieux portail et une épée.
 export function openWild(g) {
   const S = g.S;
   if (S.wildOpen || !CFG.CAVE_OPEN) return false;   // caverne fermée pour l'instant
@@ -32,7 +32,7 @@ export function openWild(g) {
   S.tools = { ...S.tools, sword: Math.max(1, S.tools.sword || 0) };
   g.bus.emit('sfx', 'levelup');
   const n = g.npcs && g.npcs.chef;
-  g.bus.emit('say', { name: n ? n.name : 'Le chef du village', color: n ? n.color : '#e8c26a', voice: 'voiceChef', lines: [
+  g.bus.emit('say', { name: n ? n.name : 'Le Maire', color: n ? n.color : '#e8c26a', voice: 'voiceChef', lines: [
     'Les lampadaires brillent de nouveau, grâce à toi ! Tiens, voici la clé de la vieille grille, tout à l\'est de ta ferme.',
     'Derrière, il y a la Caverne sombre. Des slimes et des cochons pas commodes y rôdent : prends cette épée.'] });
   g.bus.emit('inv');

@@ -62,7 +62,7 @@
 53. *(sujet (joueur))* Parlez-moi du village.
 54. *(sujet)* Un village magnifique, avec des gens formidables. Il a juste besoin de quelques réparations.
 55. *(sujet)* Grâce aux demandes du panneau, on avance un peu chaque jour !
-56. *(sujet (joueur))* Comment êtes-vous devenu chef ?
+56. *(sujet (joueur))* Comment êtes-vous devenu maire ?
 57. *(sujet)* Élu à l'unanimité ! Les gens m'ont fait confiance tout de suite.
 58. *(sujet)* Et depuis, je me donne corps et âme pour eux. Corps et âme !
 59. *(sujet (joueur))* Et les impôts, ça sert à quoi ?
@@ -272,8 +272,14 @@
 230. *(f)* Des fleurs bien entretenues. Quelqu'un en prend soin.
 231. *(treeTown)* Un grand arbre qui fait de l'ombre à la place.
 232. *(bar)* Le saloon d’Ed. Ça sent le bois ciré et la limonade. 🆕
-233. *(treeForest)* Un grand arbre de la forêt. Avec la hache, je pourrais le couper… sauf ceux du bord. 🆕
-234. *(treeWild)* Des arbres serrés. Impossible de passer par là.
-235. *(rockWild)* Un rocher énorme. Ma pioche ne lui ferait rien.
-236. *(rockGrange)* De la roche dure.
-237. *(wallGrange)* Des planches couvertes de toiles d'araignée.
+233. *(signWest)* Un panneau en bois. Les flèches indiquent les fermes, les résidences, le ranch et le centre-ville. 🆕
+234. *(fenceRanch)* Une solide clôture de ranch. Les chevaux ont de la place pour galoper. 🆕
+235. *(ranchHouse)* La maison du Maire. Une belle véranda… Manu ne se refuse rien. 🆕
+236. *(ranchBarn)* La grange du ranch. Ça sent le foin et le cheval. 🆕
+237. *(warehouse)* Un entrepôt du port. Des caisses partout, des noms de villes lointaines peints dessus. 🆕
+238. *(sea)* La mer. Des voiliers attendent la marée. 🆕
+239. *(treeForest)* Un grand arbre de la forêt. Avec la hache, je pourrais le couper… sauf ceux du bord. 🆕
+240. *(treeWild)* Des arbres serrés. Impossible de passer par là.
+241. *(rockWild)* Un rocher énorme. Ma pioche ne lui ferait rien.
+242. *(rockGrange)* De la roche dure.
+243. *(wallGrange)* Des planches couvertes de toiles d'araignée.

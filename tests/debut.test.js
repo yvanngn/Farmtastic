@@ -185,9 +185,10 @@ import { SCENES } from '../src/world/scenes.js';
 import { LUNA, FRANCK } from '../src/data/npcs.js';
 
 
-test('quartier au sud de la ferme : Luna et Franck y habitent', () => {
+test('Farmwest : ferme → rond-point → zone résidentielle, où habitent Luna et Franck', () => {
   const { g, S } = start({ minute: 600 });
-  assert.equal(act(g, 16, 35), 'door'); assert.equal(S.scene, 'quartier');
+  assert.equal(act(g, 16, 35), 'door'); assert.equal(S.scene, 'rondpoint');
+  assert.equal(act(g, 25, 8), 'door'); assert.equal(S.scene, 'quartier');
   assert.ok(LAY.quartier.some(r => r.includes('X')));
   registerNPC(g, LUNA); placeNPC(g.npcs.luna, S, OUT_FROM, OUT_TO);
   assert.equal(g.npcs.luna.scene, 'quartier', 'Luna sort dans le quartier');
@@ -201,7 +202,7 @@ test('le centre-ville est à droite : la route de l’est y mène', () => {
   const { g, S } = start();
   for (let x = 2; x <= 46; x++) assert.equal(ground(x, 5), 'path');
   assert.equal(act(g, 47, 5), 'door'); assert.equal(S.scene, 'town');
-  assert.ok(SCENES.town.doors.some(d => d.x === 0 && d.to === 'farm'), 'on arrive en ville par l’ouest');
+  assert.ok(SCENES.town.doors.some(d => d.x === 0 && d.to === 'rondpoint'), 'à l’ouest du centre-ville : le rond-point');
 });
 
 test('la route de l’est va jusqu’au bord de la ferme (on voit qu’elle continue)', () => {
@@ -237,4 +238,18 @@ test('mode test : outils, caverne, vitesse ; plage ouverte, pas de canne sinon',
     assert.ok(isOpen(g.S));
     assert.equal(act(g, 16, 0), 'door');
   } finally { ADMIN.on = false; }
+});
+
+test('Farmwest lot 2 : rond-point, ranch du Maire et port reliés', () => {
+  const { g, S } = start({ minute: 600 });
+  act(g, 16, 35); assert.equal(S.scene, 'rondpoint');
+  assert.ok(isSolid(S, 12, 8), 'la fontaine au centre');
+  assert.equal(act(g, 0, 8), 'door'); assert.equal(S.scene, 'town');
+  S.scene = 'rondpoint'; assert.equal(act(g, 12, 17), 'door'); assert.equal(S.scene, 'ranch');
+  assert.ok(isSolid(S, 5, 12), 'la clôture de l’enclos');
+  assert.equal(act(g, 31, 15), 'door'); assert.equal(S.scene, 'port');
+  assert.ok(!isSolid(S, 18, 14), 'on marche sur le ponton'); assert.ok(isSolid(S, 15, 14), 'pas dans l’eau');
+  assert.equal(act(g, 0, 6), 'door'); assert.equal(S.scene, 'ranch');
+  assert.equal(act(g, 15, 0), 'door'); assert.equal(S.scene, 'rondpoint');
+  assert.equal(act(g, 12, 0), 'door'); assert.equal(S.scene, 'farm');
 });

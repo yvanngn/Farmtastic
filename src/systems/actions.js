@@ -108,7 +108,7 @@ function act0(g, tx, ty) {
   if (pickFlower(g, tx, ty)) return 'pick';
   { const N = natureAt(S, sc); if (N && N.rocks[key(tx, ty)]) return hitNature(g, tx, ty) ? 'hit' : 'none'; }
   const d = doorAt(sc, tx, ty);
-  if (d && d.to === 'wild' && !isOpen(S)) { g.bus.emit('sfx', 'denied'); g.bus.emit('toast', 'La grille de la caverne est fermée à clé. Le chef du village saura peut-être…'); return 'locked'; }
+  if (d && d.to === 'wild' && !isOpen(S)) { g.bus.emit('sfx', 'denied'); g.bus.emit('toast', 'La grille de la caverne est fermée à clé. Le Maire saura peut-être…'); return 'locked'; }
   if (d && d.to === 'plage' && !seaOpen(S)) { g.bus.emit('sfx', 'denied'); g.bus.emit('toast', '🚧 Le chemin de la plage est barré pour l’instant.'); return 'locked'; }
   if (d && HOME_OWNER[d.to] && !canEnterHome(S, HOME_OWNER[d.to])) return knock(g, HOME_OWNER[d.to]);
   if (d && !(sc === 'farm' && BUILDINGS[d.to] && !(S.built && S.built[d.to]))) { enterScene(g, d.to, d.spawn); return 'door'; }

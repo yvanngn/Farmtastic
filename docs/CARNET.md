@@ -470,3 +470,9 @@ Chaque ligne = un lot indépendant, à demander quand il y a des crédits.
 - ✅ Écran titre western (coucher de soleil, mesas, cactus, virevoltant, vautours), police Rye pour le logo.
 - ✅ Musique western (harmonica, guitare twang, galop) ; sons : sifflet de train, éperons, portes du saloon.
 - ✅ 💡 Noms : Saloon (bar d'Ed), Magasin général (étal), Zone résidentielle (quartier), Caverne sombre.
+
+## Séance 17/11/2026 (14h20) — Farmwest, lot 2 « Nouvelle carte » (v0.1.8)
+- ✅ Décisions : le Maire est **Manu (Manuel)** — toutes les références « chef du village » changées ; le tunnel de l'ouest reste tel quel.
+- ✅ Carte de la région redessinée comme `docs/carte-region-farmwest.jpg` (fermes au nord, rond-point au centre, centre-ville dans la boucle de la rivière, zone résidentielle, ranch du Maire, fête foraine et station balnéaire au sud, port au sud-est, forêt, montagne, caverne sombre).
+- ✅ Nouvelles zones : **rond-point** (fontaine, panneaux FERMES / RÉSIDENCES / RANCH / CENTRE-VILLE), **ranch du Maire** (maison, grange rouge, enclos, 3 chevaux, abreuvoir), **zone portuaire** (3 entrepôts, quai, 3 pontons, voiliers). Sortie sud de la ferme → rond-point ; rond-point → centre-ville, zone résidentielle, ranch ; ranch → port.
+- ⏳ Lot 2d (voir roadmap) : finir d'aligner les liaisons sur l'image (plage, fête foraine, route de l'est, rivière).

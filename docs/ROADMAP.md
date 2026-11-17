@@ -26,7 +26,7 @@ Réponses de l'utilisateur : monnaie en **dollars**, lieux renommés en 💡 wes
 - [x] Lieux renommés (💡, à corriger si besoin) : bar d'Ed → **Saloon**, Étal du marché → **Magasin général**, Quartier → **Zone résidentielle**, Caverne → **Caverne sombre** (noms de la carte).
 - Gardés : « Clinique » (les répliques validées de Hailey en parlent), « Centre-ville », « Forêt », « Montagne ». Le panneau « FARM-LAND » de la fête foraine sera revu au lot 2.
 
-## Lot 2 — Nouvelle carte de la région (d'après l'image)
+## Lot 2 — Nouvelle carte de la région (d'après l'image) ✅ en grande partie (17/11, v0.1.8)
 Zones de l'image → scènes du jeu :
 
 | Zone de la carte | Aujourd'hui | À faire |
@@ -45,10 +45,13 @@ Zones de l'image → scènes du jeu :
 | Caverne sombre (nord-est, en haut) | `wild` | entrée dans la falaise |
 | Tunnel (ouest, dans la colline) | — | **nouveau** (à définir) |
 
-- [ ] 2a. Carte de la région (🗺️ Région) redessinée comme l'image, avec les noms des zones.
-- [ ] 2b. Liaisons entre les scènes (sorties, ponts, rond-point).
-- [ ] 2c. Nouvelles zones jouables vides : rond-point, ranch du Maire, port.
-- ❓ Qui est le Maire ? Qu'y a-t-il dans le tunnel de l'ouest ?
+- [x] 2a. Carte de la région (🗺️ → Région) redessinée comme l'image : terre ocre, rivière et ponts, océan au sud, 13 zones nommées (v0.1.8).
+- [x] 2b. Le **rond-point** devient le carrefour : fermes au nord, centre-ville à l'ouest, zone résidentielle à l'est, ranch au sud (v0.1.8).
+- [x] 2c. Nouvelles zones jouables (encore vides de PNJ) : **rond-point** (fontaine, panneaux), **ranch du Maire** (maison « MAIRE », grange, enclos à chevaux, abreuvoir), **zone portuaire** (entrepôts, quai, pontons, voiliers) (v0.1.8).
+- [x] Le « chef du village » devient **le Maire, Manu (Manuel)** partout.
+- [ ] 2d. Reste à aligner sur l'image (petits lots) : la route de l'est de la ferme mène encore directement au centre-ville ; la plage est encore au nord du centre-ville ; la fête foraine (panneau « FARM-LAND ») est encore cachée derrière la forêt au lieu d'être sur la plage ; la montagne s'ouvre depuis la zone résidentielle ; la rivière n'existe pas encore dans les scènes.
+- Le tunnel de l'ouest reste tel quel pour l'instant (décision du 17/11).
+- ❓ Le Maire vit-il au ranch (nouvelle maison) ou garde-t-il sa villa du centre-ville ? Pour l'instant : ranch dessiné, villa gardée, Manuel passe ses journées sur la place.
 
 ## Lot 3 — Nouveau début de partie
 - [ ] Arrivée en **locomotive** (train à vapeur qui entre en gare, fumée, sifflet).

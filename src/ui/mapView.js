@@ -35,105 +35,97 @@ export function createMapView(g, renderer, audio) {
     const rnd = (k => () => ((k = (k * 9301 + 49297) % 233280) / 233280))(7);
     const F = (c, x, y, w, h) => { ctx.fillStyle = c; ctx.fillRect(x, y, w, h); };
     const circ = (c, x, y, r) => { ctx.fillStyle = c; ctx.beginPath(); ctx.arc(x, y, r, 0, 7); ctx.fill(); };
-    // parchemin
+    // Farmwest (lot 2) : carte de la région d'après docs/carte-region-farmwest.jpg — terre ocre, rivière, océan au sud.
     F('#e9d6a8', 0, 0, W, H);
     const pg = ctx.createRadialGradient(W / 2, H / 2, Math.min(W, H) * .3, W / 2, H / 2, Math.max(W, H) * .75);
     pg.addColorStop(0, 'rgba(255,248,220,0)'); pg.addColorStop(1, 'rgba(120,80,30,.45)'); F(pg, 0, 0, W, H);
-    // prairie peinte
-    ctx.fillStyle = '#9cc46a'; ctx.beginPath(); ctx.roundRect(X(-.01), Y(-.01), X(1.01) - X(-.01), Y(1.01) - Y(-.01), 4 * u); ctx.fill();
-    for (let k = 0; k < 260; k++) { const x = X(rnd()), y = Y(rnd()); F(rnd() < .5 ? '#8ab85a' : '#acd07a', x, y, 1.2 * u, .6 * u); }
-    // chemins de terre (bordure foncée puis terre claire)
-    const road = pts => { for (const [w, c] of [[3.2, '#8a6a3a'], [2.2, '#d9b878']]) { ctx.strokeStyle = c; ctx.lineWidth = w * u; ctx.lineCap = ctx.lineJoin = 'round'; ctx.beginPath(); pts.forEach(([a, b], i) => i ? ctx.lineTo(X(a), Y(b)) : ctx.moveTo(X(a), Y(b))); ctx.stroke(); } };
-    const multi = S.game && S.game.mode === 'multi', ml = FARM_LOTS.find(l => l.id === (S.farmLot || 0));
-    if (multi) { road([[.27, .02], [.27, .5], [.27, .62]]); road([[.02, .25], [.55, .25]]); }
-    else { const fx = .155 + ml.c * .22, fy = .135 + ml.r * .23; road([[.02, .25], [fx, .25], [fx, fy]]); road([[fx, .25], [.55, .25]]); road([[fx, .25], [fx, .5], [.27, .5], [.27, .62]]); } road([[.75, .25], [.79, .25]]); road([[.92, .25], [.95, .25]]);
+    const poly = (c, pts) => { ctx.fillStyle = c; ctx.beginPath(); pts.forEach(([a, b], i) => i ? ctx.lineTo(X(a), Y(b)) : ctx.moveTo(X(a), Y(b))); ctx.closePath(); ctx.fill(); };
+    const zone = (c, x0, y0, x1, y1, rad = 2) => { ctx.fillStyle = c; ctx.beginPath(); ctx.roundRect(X(x0), Y(y0), X(x1) - X(x0), Y(y1) - Y(y0), rad * u); ctx.fill(); };
+    // terre ocre partout, prairie verte à l'ouest
+    ctx.fillStyle = '#d9b072'; ctx.beginPath(); ctx.roundRect(X(-.01), Y(-.01), X(1.01) - X(-.01), Y(1.01) - Y(-.01), 4 * u); ctx.fill();
+    for (let k = 0; k < 260; k++) { const x = X(rnd()), y = Y(rnd()); F(rnd() < .5 ? '#c99a5a' : '#e4c088', x, y, 1.2 * u, .6 * u); }
+    poly('#6aa84a', [[-.01, .45], [.15, .45], [.17, .7], [.15, 1.01], [-.01, 1.01]]);
+    // océan au sud (plage, fête foraine, port)
+    poly('#3f86c4', [[.15, .9], [.3, .95], [.45, .93], [.62, .9], [.7, .85], [1.01, .8], [1.01, 1.01], [.15, 1.01]]);
+    for (let x = X(.16); x < X(1); x += 1.6 * u) F('#bfe3f5', x, Y(.9 + .05 * Math.sin(x / (8 * u))) - .3 * u, 1 * u, .4 * u);
+    poly('#ecd39a', [[.17, .84], [.42, .86], [.62, .82], [.7, .8], [.62, .9], [.45, .93], [.3, .95], [.17, .9]]);   // sable
+    // rivière qui entoure le centre-ville puis file vers la mer
+    const river = pts => { for (const [w, c] of [[3.4, '#2f6aa8'], [2.4, '#4a92d0']]) { ctx.strokeStyle = c; ctx.lineWidth = w * u; ctx.lineCap = ctx.lineJoin = 'round'; ctx.beginPath(); pts.forEach(([a, b], i) => i ? ctx.lineTo(X(a), Y(b)) : ctx.moveTo(X(a), Y(b))); ctx.stroke(); } };
+    river([[.15, -.01], [.16, .2], [.16, .6], [.15, .75], [.16, .9]]); river([[.35, -.01], [.37, .15], [.37, .6], [.3, .63], [.16, .62]]);
+    // chemins de terre
+    const road = pts => { for (const [w, c] of [[3.2, '#8a6a3a'], [2.2, '#e8cf98']]) { ctx.strokeStyle = c; ctx.lineWidth = w * u; ctx.lineCap = ctx.lineJoin = 'round'; ctx.beginPath(); pts.forEach(([a, b], i) => i ? ctx.lineTo(X(a), Y(b)) : ctx.moveTo(X(a), Y(b))); ctx.stroke(); } };
+    road([[.09, .41], [.5, .41], [.78, .41]]); road([[.5, .05], [.5, .41], [.5, .7]]); road([[.41, .19], [.6, .19]]);
+    road([[.72, .41], [.72, .2], [.82, .18]]); road([[.72, .41], [.72, .78], [.8, .8]]); road([[.27, .58], [.27, .75]]); road([[.43, .55], [.5, .55]]);
+    for (const [bx, by] of [[.16, .41], [.37, .41], [.27, .62]]) { F('#8a5a32', X(bx) - 1.6 * u, Y(by) - 1.4 * u, 3.2 * u, 2.8 * u); F('#c99560', X(bx) - 1.6 * u, Y(by) - 1 * u, 3.2 * u, .5 * u); }   // ponts en bois
     // petits dessins
-    const tree = (x, y, s, c = '#3f7a32') => { F('#6a4426', x - .25 * s, y, .5 * s, .8 * s); circ(c, x, y - .2 * s, .9 * s); circ('rgba(255,255,255,.15)', x - .3 * s, y - .5 * s, .35 * s); };
-    const pine = (x, y, s) => { F('#5a3a22', x - .2 * s, y, .4 * s, .7 * s); ctx.fillStyle = '#2c5f2a'; for (let i = 0; i < 3; i++) { ctx.beginPath(); ctx.moveTo(x, y - (2.2 - i * .6) * s); ctx.lineTo(x - (.7 + i * .3) * s, y - (.9 - i * .5) * s); ctx.lineTo(x + (.7 + i * .3) * s, y - (.9 - i * .5) * s); ctx.fill(); } };
-    const house = (x, y, s, wall, roof) => { F('rgba(0,0,0,.2)', x - s, y + .9 * s, 2.2 * s, .3 * s); F(wall, x - s, y, 2 * s, s); ctx.fillStyle = roof; ctx.beginPath(); ctx.moveTo(x - 1.2 * s, y); ctx.lineTo(x, y - .9 * s); ctx.lineTo(x + 1.2 * s, y); ctx.fill(); F('#5a3a22', x - .2 * s, y + .4 * s, .4 * s, .6 * s); F('#bfe3f5', x + .4 * s, y + .25 * s, .35 * s, .3 * s); };
+    const tree = (x, y, s, c = '#3f7a32') => { circ('rgba(0,0,0,.18)', x + .2 * s, y + .3 * s, .9 * s); circ(c, x, y - .2 * s, .9 * s); circ('rgba(255,255,255,.15)', x - .3 * s, y - .5 * s, .35 * s); };
+    const house = (x, y, s, wall, roof) => { F('rgba(0,0,0,.2)', x - s, y + .9 * s, 2.2 * s, .3 * s); F(wall, x - s, y, 2 * s, s); ctx.fillStyle = roof; ctx.beginPath(); ctx.moveTo(x - 1.2 * s, y); ctx.lineTo(x, y - .9 * s); ctx.lineTo(x + 1.2 * s, y); ctx.fill(); };
     const ribbon = (x, y, text, sub, gold) => {
-      const tu = W < H ? u * .72 : u;   // en portrait, étiquettes plus petites pour ne pas se chevaucher
-      ctx.font = `bold ${3.1* tu}px Nunito, sans-serif`; const w = Math.max(ctx.measureText(text).width, sub ? (ctx.font = `${2.3* tu}px Nunito, sans-serif`, ctx.measureText(sub).width) : 0) + 4* tu, h = sub ? 7* tu : 4.6* tu;
-      ctx.fillStyle = gold ? '#f2c832' : '#fff6e0'; ctx.strokeStyle = gold ? '#8a5a12' : '#6a4a2a'; ctx.lineWidth = .5* tu;
-      ctx.beginPath(); ctx.roundRect(x - w / 2, y - h / 2, w, h, 1.4* tu); ctx.fill(); ctx.stroke();
-      ctx.textAlign = 'center'; ctx.fillStyle = '#3b2414'; ctx.font = `bold ${3.1* tu}px Nunito, sans-serif`; ctx.fillText(text, x, y + (sub ? -.4* tu : 1.1* tu));
-      if (sub) { ctx.font = `${2.3* tu}px Nunito, sans-serif`; ctx.fillStyle = '#6a4a2a'; ctx.fillText(sub, x, y + 2.6* tu); }
+      const tu = W < H ? u * .72 : u;
+      ctx.font = `bold ${3.1 * tu}px Nunito, sans-serif`; const w = Math.max(ctx.measureText(text).width, sub ? (ctx.font = `${2.3 * tu}px Nunito, sans-serif`, ctx.measureText(sub).width) : 0) + 4 * tu, h = sub ? 7 * tu : 4.6 * tu;
+      ctx.fillStyle = gold ? '#f2c832' : '#fff6e0'; ctx.strokeStyle = gold ? '#8a5a12' : '#6a4a2a'; ctx.lineWidth = .5 * tu;
+      ctx.beginPath(); ctx.roundRect(x - w / 2, y - h / 2, w, h, 1.4 * tu); ctx.fill(); ctx.stroke();
+      ctx.textAlign = 'center'; ctx.fillStyle = '#3b2414'; ctx.font = `bold ${3.1 * tu}px Nunito, sans-serif`; ctx.fillText(text, x, y + (sub ? -.4 * tu : 1.1 * tu));
+      if (sub) { ctx.font = `${2.3 * tu}px Nunito, sans-serif`; ctx.fillStyle = '#6a4a2a'; ctx.fillText(sub, x, y + 2.6 * tu); }
     };
-    // les 4 fermes : champ en sillons, cabane, grange
+    // forêts denses (nord-est, bords ouest)
+    for (let k = 0; k < 70; k++) tree(X(.59 + rnd() * .22), Y(.03 + rnd() * .33), 1.6 * u, k % 3 ? '#2f6a2a' : '#3f7a32');
+    for (let k = 0; k < 30; k++) tree(X(.01 + rnd() * .1), Y(.02 + rnd() * .3), 1.5 * u, '#2f6a2a');
+    for (let k = 0; k < 22; k++) tree(X(.03 + rnd() * .1), Y(.5 + rnd() * .35), 1.5 * u, '#2f6a2a');
+    // les 4 fermes (2 × 2) autour du chemin en croix
     const others = Object.values(g.others || {});
     for (const l of FARM_LOTS) {
-      const x0 = X(.06 + l.c * .22), y0 = Y(.04 + l.r * .23), w = X(.25) - X(.06), h = Y(.23) - Y(.04);
+      const x0 = X(.415 + l.c * .095), y0 = Y(.05 + l.r * .15), w = X(.085) - X(0), h = Y(.12) - Y(0);
       const mine = l.id === (S.farmLot || 0), who = mine ? S.name : (others.find(o => o.farmLot === l.id) || {}).name;
-      if (!mine && !(S.game && S.game.mode === 'multi')) { // en solo, les autres emplacements ne sont que des bois et des prés
-        for (let k = 0; k < 9; k++) tree(x0 + w * (.12 + (k * .37) % .8), y0 + h * (.15 + (k * .53) % .75), 1.5 * u, k % 3 ? '#3f7a32' : '#4f8a3a');
-        continue;
-      }
-      ctx.fillStyle = mine ? '#b8d888' : '#a8cc78'; ctx.beginPath(); ctx.roundRect(x0, y0, w, h, 1.5 * u); ctx.fill();
-      ctx.strokeStyle = '#8a6a3a'; ctx.setLineDash([1.2 * u, .8 * u]); ctx.lineWidth = .5 * u; ctx.stroke(); ctx.setLineDash([]);
-      for (let r = 0; r < 4; r++) F('#8a5a32', x0 + w * .52, y0 + h * (.45 + r * .12), w * .4, h * .06);
-      house(x0 + w * .22, y0 + h * .38, 2.4 * u, '#c99a6a', '#a8432f'); house(x0 + w * .55, y0 + h * .2, 2 * u, '#8a6a4a', '#5a3a2a');
-      tree(x0 + w * .15, y0 + h * .82, 1.6 * u); tree(x0 + w * .9, y0 + h * .15, 1.4 * u);
-      if (mine) { const p = .6 + .4 * Math.sin(now / 300); ctx.strokeStyle = `rgba(242,200,50,${p})`; ctx.lineWidth = 1.2 * u; ctx.beginPath(); ctx.roundRect(x0 - .6 * u, y0 - .6 * u, w + 1.2 * u, h + 1.2 * u, 2 * u); ctx.stroke(); }
-      ribbon(x0 + w / 2, y0 + h * .95, mine ? '⭐ ' + S.name : who ? '🧑‍🌾 ' + who : l.n, mine ? 'ta ferme' : who ? '' : 'libre', mine);
+      ctx.fillStyle = mine ? '#c8a86a' : '#b8925a'; ctx.beginPath(); ctx.roundRect(x0, y0, w, h, 1.2 * u); ctx.fill();
+      for (let r = 0; r < 4; r++) F(r % 2 ? '#5a8a3a' : '#7a5232', x0 + w * .5, y0 + h * (.2 + r * .17), w * .42, h * .1);
+      house(x0 + w * .25, y0 + h * .45, 1.8 * u, '#b8432f', '#5a2a22');
+      if (mine) { const p = .6 + .4 * Math.sin(now / 300); ctx.strokeStyle = `rgba(242,200,50,${p})`; ctx.lineWidth = 1 * u; ctx.beginPath(); ctx.roundRect(x0 - .5 * u, y0 - .5 * u, w + u, h + u, 1.6 * u); ctx.stroke(); }
+      if (mine || who) ribbon(x0 + w / 2, y0 + h * .92, mine ? '⭐ ' + S.name : '🧑‍🌾 ' + who, mine ? 'ta ferme' : '', mine);
     }
-    // gare et rails
-    for (let k = 0; k < 12; k++) F('#6a4a30', X(.005), Y(.12 + k * .03), 1.6 * u, .4 * u);
-    F('#8c8f96', X(.005) + .2 * u, Y(.12), .3 * u, Y(.48) - Y(.12)); F('#8c8f96', X(.005) + 1.1 * u, Y(.12), .3 * u, Y(.48) - Y(.12));
-    house(X(.03), Y(.22), 2 * u, '#b5654a', '#3e5a7a'); ribbon(X(.03), Y(.33), '🚉 Gare');
-    // quartier : maisons colorées, arbres, maison sombre de Myst en bas à gauche
-    { const x0 = X(.06), y0 = Y(.62), w = X(.48) - X(.06), h = Y(.92) - Y(.62);
-      ctx.fillStyle = '#b4d08a'; ctx.beginPath(); ctx.roundRect(x0, y0, w, h, 2 * u); ctx.fill();
-      F('#c9c2b4', x0 + w * .02, y0 + h * .3, w * .96, h * .06); F('#c9c2b4', x0 + w * .02, y0 + h * .62, w * .96, h * .06);
-      house(x0 + w * .2, y0 + h * .14, 2.4 * u, '#d8c2e8', '#7a5a8a'); house(x0 + w * .72, y0 + h * .14, 2.4 * u, '#f4f6f2', '#5aa8a0');
-      house(x0 + w * .25, y0 + h * .48, 2.4 * u, '#9aa4b0', '#3e5a7a'); house(x0 + w * .65, y0 + h * .48, 2.2 * u, '#f2dce0', '#5aa8a0');
-      house(x0 + w * .1, y0 + h * .82, 2.4 * u, '#4a4650', '#24212a');
-      for (const f of [.04, .3, .45, .88, .95]) tree(x0 + w * f, y0 + h * .78, 1.4 * u, '#4f8a3a');
-      ribbon(x0 + w * .55, y0 + h * .86, '🏘️ Zone résidentielle', 'Luna · Franck · Hailey · Igor · Myst · clinique'); }
-    // centre-ville : plan réduit de la vraie ville (34 × 32 cases) — pelouse, rues pavées, bâtiments espacés
-    { const x0 = X(.55), y0 = Y(.12), w = X(.75) - X(.55), h = Y(.5) - Y(.12), L = LAYOUTS.town, cw = w / L[0].length, ch = h / L.length;
-      ctx.fillStyle = '#a8cc78'; ctx.beginPath(); ctx.roundRect(x0, y0, w, h, 2 * u); ctx.fill();
-      for (let y = 0; y < L.length; y++) for (let x = 0; x < L[0].length; x++) if (L[y][x] === '.' || L[y][x] === 'D') F('#d2cbbd', x0 + x * cw, y0 + y * ch, cw + .5, ch + .5);
-      const COL = { R: ['#5a2a3a', '#7a3a4a'], M: ['#e8c26a', '#a8432f'], U: ['#8a5a32', '#3e3a44'], J: ['#9a6a3c', '#7a3a22'], A: ['#9a6a3c', '#2f5a3a'], O: ['#c98a4a', '#e0a560'], V: ['#9a6a3c', '#a83a32'], Z: ['#9a6a3c', '#2f5a8a'], W: ['#f4efe4', '#b8432f'] };
-      for (const [k, b] of Object.entries(TOWN_B)) {
-        const bx = x0 + b.x * cw, by = y0 + b.y * ch, bw = b.w * cw, bh = b.h * ch;
-        if (k === 'F') { circ('#7fb6d9', bx + bw / 2, by + bh / 2, bw * .45); circ('#bfe3f5', bx + bw / 2, by + bh / 2, bw * .2); continue; }
-        if (k === 'Q') { F('#8a5a32', bx, by, bw, bh); continue; }
-        const [wall, roof] = COL[k] || ['#9a6a3c', '#7a3a22'];
-        F('rgba(0,0,0,.2)', bx + .4 * u, by + .4 * u, bw, bh); F(wall, bx, by + bh * .4, bw, bh * .6); F(roof, bx, by, bw, bh * .45);
-      }
-      for (let y = 0; y < L.length; y++) for (let x = 0; x < L[0].length; x++) if (L[y][x] === 'T') circ('#4f8a3a', x0 + (x + .5) * cw, y0 + (y + .5) * ch, cw * .6);
-      ribbon(x0 + w / 2, y0 + h * .4, '🏙️ Centre-ville', 'commerces · place · villa de Manuel'); }
-    // plage au nord : mer, sable, palmiers
-    { const x0 = X(.5), y0 = Y(-.01), w = X(.95) - X(.5), h = Y(.1) - Y(-.01);
-      F('#3f92cc', x0, y0, w, h * .55); F('#ecd9a4', x0, y0 + h * .55, w, h * .45);
-      for (let x = x0; x < x0 + w; x += 1.5 * u) F('#ffffff', x, y0 + h * .53 + Math.sin(x / (2 * u)) * .4 * u, 1.2 * u, .5 * u);
-      for (const f of [.1, .3, .7, .9]) { F('#8a5a32', x0 + w * f, y0 + h * .55, .5 * u, h * .35); circ('#3f8a34', x0 + w * f, y0 + h * .55, 1.4 * u); }
-      road([[.655, .1], [.655, .12]]); ribbon(x0 + w / 2, y0 + h * .55, '🏖️ Plage', 'pêche en mer'); }
-    // montagne gelée à l'est du quartier : sommets enneigés, lac gelé, grotte
-    { const x0 = X(.52), y0 = Y(.6), w = X(.78) - X(.52), h = Y(.92) - Y(.6);
-      ctx.fillStyle = '#e6eef6'; ctx.beginPath(); ctx.roundRect(x0, y0, w, h, 2 * u); ctx.fill();
-      for (const [f, hh] of [[.2, .7], [.45, .9], [.75, .75]]) { ctx.fillStyle = '#8a94a4'; ctx.beginPath(); ctx.moveTo(x0 + w * (f - .18), y0 + h * .75); ctx.lineTo(x0 + w * f, y0 + h * (.75 - hh * .7)); ctx.lineTo(x0 + w * (f + .18), y0 + h * .75); ctx.fill();
-        ctx.fillStyle = '#ffffff'; ctx.beginPath(); ctx.moveTo(x0 + w * (f - .06), y0 + h * (.75 - hh * .7) + h * .17); ctx.lineTo(x0 + w * f, y0 + h * (.75 - hh * .7)); ctx.lineTo(x0 + w * (f + .06), y0 + h * (.75 - hh * .7) + h * .17); ctx.fill(); }
-      ctx.fillStyle = '#16141a'; ctx.beginPath(); ctx.arc(x0 + w * .75, y0 + h * .75, 1.6 * u, Math.PI, 0); ctx.fill();
-      ctx.fillStyle = '#a8d4ec'; ctx.beginPath(); ctx.ellipse(x0 + w * .3, y0 + h * .86, 3.5 * u, 1.4 * u, 0, 0, 7); ctx.fill();
-      road([[.48, .7], [.52, .7]]); ribbon(x0 + w / 2, y0 + h * .93, '🏔️ Montagne gelée', 'froid · filons · lac gelé'); }
-    // forêt : sapins serrés et champignons
-    { const x0 = X(.79), y0 = Y(.12), w = X(.92) - X(.79), h = Y(.5) - Y(.12);
-      ctx.fillStyle = '#5a9a46'; ctx.beginPath(); ctx.roundRect(x0, y0, w, h, 3 * u); ctx.fill();
-      for (let k = 0; k < 26; k++) pine(x0 + w * (.1 + rnd() * .8), y0 + h * (.12 + rnd() * .82), 1.4 * u + rnd() * .6 * u);
-      circ('#e8602a', x0 + w * .3, y0 + h * .55, .6 * u); circ('#8a5a32', x0 + w * .7, y0 + h * .35, .6 * u);
-      ribbon(x0 + w / 2, y0 + h * .5, '🌲 Forêt', 'champignons'); }
-    // montagne de la caverne
-    { const cx = X(.975), by = Y(.42);
-      ctx.fillStyle = '#7a7480'; ctx.beginPath(); ctx.moveTo(cx - 7 * u, by); ctx.lineTo(cx - 2 * u, by - 14 * u); ctx.lineTo(cx + 1 * u, by - 10 * u); ctx.lineTo(cx + 3 * u, by - 16 * u); ctx.lineTo(cx + 7 * u, by); ctx.fill();
-      ctx.fillStyle = '#eef0f4'; ctx.beginPath(); ctx.moveTo(cx + 3 * u, by - 16 * u); ctx.lineTo(cx + 1.6 * u, by - 12.5 * u); ctx.lineTo(cx + 4.4 * u, by - 12.5 * u); ctx.fill();
-      ctx.fillStyle = '#16141a'; ctx.beginPath(); ctx.arc(cx, by, 2.4 * u, Math.PI, 0); ctx.fill();
-      if (!CFG.CAVE_OPEN) { ctx.font = `${3 * u}px serif`; ctx.textAlign = 'center'; ctx.fillText('🔒', cx, by - 3 * u); }
-      ribbon(cx - 1 * u, by + 4 * u, 'Caverne sombre', CFG.CAVE_OPEN ? '' : 'fermée'); }
+    ribbon(X(.5), Y(.035), '🌾 Les 4 Fermes');
+    // gare et voie ferrée à l'ouest
+    for (let k = 0; k < 16; k++) F('#6a4a30', X(.055), Y(.02 + k * .028), 1.6 * u, .4 * u);
+    F('#8c8f96', X(.055) + .2 * u, Y(.02), .3 * u, Y(.45) - Y(.02)); F('#8c8f96', X(.055) + 1.1 * u, Y(.02), .3 * u, Y(.45) - Y(.02));
+    house(X(.1), Y(.38), 2.4 * u, '#9a6a3c', '#5a3a22'); ribbon(X(.1), Y(.31), '🚂 Gare');
+    // tunnel dans la colline à l'ouest (on verra plus tard)
+    circ('#4a6a3a', X(.06), Y(.6), 3 * u); ctx.fillStyle = '#16141a'; ctx.beginPath(); ctx.arc(X(.06), Y(.62), 1.4 * u, Math.PI, 0); ctx.fill();
+    // centre-ville sur son plateau, entouré par la rivière
+    zone('#cdb48a', .19, .25, .35, .58);
+    for (const [fx, fy, c1, c2] of [[.22, .31, '#7a5a8a', '#4a3a5a'], [.27, .31, '#b8432f', '#5a2a22'], [.32, .31, '#c98a4a', '#7a3a22'], [.22, .46, '#9a6a3c', '#5a3a22'], [.27, .46, '#5a2a3a', '#2a1a20'], [.32, .46, '#3e5a7a', '#24324a']]) house(X(fx), Y(fy), 2.2 * u, c1, c2);
+    ribbon(X(.27), Y(.55), '🤠 Centre-ville', 'saloon · magasins · charpentier');
+    // rond-point et sa fontaine
+    circ('#e8cf98', X(.5), Y(.41), 4 * u); circ('#8a6a3a', X(.5), Y(.41), 2.4 * u); circ('#7fb6d9', X(.5), Y(.41), 1.8 * u); circ('#e8f4fc', X(.5), Y(.41), .7 * u);
+    ribbon(X(.5), Y(.34), '⛲ Rond-point');
+    // zone résidentielle
+    for (const [fx, c1, c2] of [[.56, '#d8c2e8', '#7a5a8a'], [.6, '#f4f6f2', '#5aa8a0'], [.64, '#f2dce0', '#a83a32'], [.68, '#4a4650', '#24212a']]) house(X(fx), Y(.46), 1.9 * u, c1, c2);
+    ribbon(X(.62), Y(.515), '🏘️ Zone résidentielle', 'Luna · Franck · Hailey · Myst · Ed');
+    // ranch du Maire : enclos, chevaux
+    zone('#c49a62', .52, .56, .68, .7, 1); ctx.strokeStyle = '#6a4426'; ctx.lineWidth = .5 * u; ctx.strokeRect(X(.53), Y(.6), X(.67) - X(.53), Y(.69) - Y(.6));
+    house(X(.6), Y(.58), 2.4 * u, '#b8432f', '#5a2a22'); for (const fx of [.55, .58, .64]) { F('#6a4426', X(fx), Y(.65), 1.6 * u, .9 * u); F('#6a4426', X(fx) + 1.2 * u, Y(.64), .6 * u, .8 * u); }
+    ribbon(X(.6), Y(.715), '🐎 Ranch du Maire', 'Manu');
+    // fête foraine sur la plage
+    zone('#a8774a', .43, .74, .62, .84, 1); for (const fx of [.46, .52, .58]) { ctx.fillStyle = '#f4ead2'; ctx.beginPath(); ctx.moveTo(X(fx) - 2 * u, Y(.82)); ctx.lineTo(X(fx), Y(.77)); ctx.lineTo(X(fx) + 2 * u, Y(.82)); ctx.fill(); }
+    ribbon(X(.525), Y(.86), '🎡 Fête foraine');
+    // station balnéaire : cabines, parasols
+    for (const fx of [.22, .26, .3, .34]) house(X(fx), Y(.78), 1.4 * u, '#9a6a3c', '#5a3a22');
+    for (const [fx, c] of [[.24, '#e0402a'], [.29, '#4a7ae8'], [.35, '#f2c832']]) { ctx.fillStyle = c; ctx.beginPath(); ctx.arc(X(fx), Y(.87), 1.2 * u, Math.PI, 0); ctx.fill(); }
+    ribbon(X(.29), Y(.93), '🏖️ Station balnéaire', 'pêche en mer');
+    // zone portuaire : quais et voiliers
+    zone('#8a5a32', .76, .78, .97, .84, .6); for (const fx of [.8, .86, .92]) F('#8a5a32', X(fx), Y(.84), 1 * u, Y(.92) - Y(.84));
+    for (const fx of [.78, .9]) { F('#6a4426', X(fx), Y(.94), 4 * u, 1.2 * u); ctx.fillStyle = '#f4ead2'; ctx.beginPath(); ctx.moveTo(X(fx) + 2 * u, Y(.94) - 4.5 * u); ctx.lineTo(X(fx) + 2 * u, Y(.94)); ctx.lineTo(X(fx) + 4.5 * u, Y(.94)); ctx.fill(); }
+    ribbon(X(.87), Y(.75), '⚓ Zone portuaire');
+    // montagne (est) et caverne sombre (nord-est)
+    for (const [fx, fy, s] of [[.84, .45, 7], [.9, .4, 9], [.96, .47, 6], [.88, .52, 5]]) { ctx.fillStyle = '#8a6a5a'; ctx.beginPath(); ctx.moveTo(X(fx) - s * u, Y(fy) + s * .6 * u); ctx.lineTo(X(fx), Y(fy) - s * u); ctx.lineTo(X(fx) + s * u, Y(fy) + s * .6 * u); ctx.fill(); ctx.fillStyle = '#eef0f4'; ctx.beginPath(); ctx.moveTo(X(fx) - s * .25 * u, Y(fy) - s * .6 * u); ctx.lineTo(X(fx), Y(fy) - s * u); ctx.lineTo(X(fx) + s * .25 * u, Y(fy) - s * .6 * u); ctx.fill(); }
+    ribbon(X(.9), Y(.58), '🏔️ Montagne', 'froid · filons · lac gelé');
+    zone('#6a5a50', .82, -.01, 1.01, .17, 1); ctx.fillStyle = '#16141a'; ctx.beginPath(); ctx.arc(X(.91), Y(.13), 2.4 * u, Math.PI, 0); ctx.fill();
+    if (!CFG.CAVE_OPEN) { ctx.font = `${3 * u}px serif`; ctx.textAlign = 'center'; ctx.fillText('🔒', X(.91), Y(.07)); }
+    ribbon(X(.91), Y(.2), '🕳️ Caverne sombre', CFG.CAVE_OPEN ? '' : 'fermée');
+    ribbon(X(.7), Y(.2), '🌲 Forêt', 'champignons · bois');
     // rose des vents
-    { const cx = X(.93), cy = Y(.85), r = 5 * u;
-      ctx.fillStyle = 'rgba(255,248,220,.7)'; ctx.beginPath(); ctx.arc(cx, cy, r * 1.2, 0, 7); ctx.fill();
-      for (const [a, c] of [[0, '#a8302b'], [Math.PI / 2, '#3b2414'], [Math.PI, '#3b2414'], [-Math.PI / 2, '#3b2414']]) { ctx.fillStyle = c; ctx.beginPath(); ctx.moveTo(cx + Math.sin(a) * r, cy - Math.cos(a) * r); ctx.lineTo(cx + Math.cos(a) * r * .22, cy + Math.sin(a) * r * .22); ctx.lineTo(cx - Math.cos(a) * r * .22, cy - Math.sin(a) * r * .22); ctx.fill(); }
+    { const cx = X(.06), cy = Y(.92), r = 4 * u;
+      ctx.fillStyle = 'rgba(255,248,220,.75)'; ctx.beginPath(); ctx.arc(cx, cy, r * 1.25, 0, 7); ctx.fill();
+      for (const [a, c] of [[0, '#a8302b'], [Math.PI / 2, '#3b2414'], [Math.PI, '#3b2414'], [-Math.PI / 2, '#3b2414']]) { ctx.fillStyle = c; ctx.beginPath(); ctx.moveTo(cx + Math.sin(a) * r, cy - Math.cos(a) * r); ctx.lineTo(cx + Math.sin(a + 2.6) * r * .3, cy - Math.cos(a + 2.6) * r * .3); ctx.lineTo(cx + Math.sin(a - 2.6) * r * .3, cy - Math.cos(a - 2.6) * r * .3); ctx.fill(); }
       ctx.fillStyle = '#3b2414'; ctx.font = `bold ${2.4 * u}px Nunito, sans-serif`; ctx.textAlign = 'center'; ctx.fillText('N', cx, cy - r - .8 * u); }
     $('#mapLvl').textContent = S.game && S.game.code ? 'Code ' + S.game.code : 'Région';
     raf = requestAnimationFrame(draw);

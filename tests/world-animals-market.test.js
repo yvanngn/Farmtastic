@@ -110,7 +110,7 @@ test('village : portail, halle du marché et panneau d’affichage', () => {
   assert.deepEqual(opened, ['market', 'board']);
   assert.ok(!isSolid(S, 12, 6), 'la place est praticable');
   assert.equal(act(g, 0, 10), 'door');
-  assert.equal(S.scene, 'farm');
+  assert.equal(S.scene, 'rondpoint');
 });
 
 test('multijoueur : la scène voyage avec la position', () => {

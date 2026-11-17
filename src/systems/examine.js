@@ -32,7 +32,8 @@ export function examineText(S, tx, ty) {
   }
   if (sc === 'town') return t === 'R' ? K.bar : t === 'W' ? K.villa : t === 'T' ? K.treeTown : t === 'L' ? (S.village && S.village.done.includes('lampadaires') ? K.Lon : K.L) : K[t] || null;
   if (sc === 'foret') return t === 'T' ? K.treeForest : null;   // 'T' = arbre dehors, pas la table des intérieurs
-  if (['montagne', 'plage', 'parc'].includes(sc) && t === 'T') return K.treeTown;
+  if (['montagne', 'plage', 'parc', 'rondpoint', 'ranch', 'port'].includes(sc) && t === 'T') return K.treeTown;
+  if (['rondpoint', 'ranch', 'port'].includes(sc)) return { F: K.F, P: K.signWest, f: K.fenceRanch, H: K.ranchHouse, B: K.ranchBarn, E: K.warehouse, w: K.sea }[t] || null;   // Farmwest, lot 2
   if (sc === 'wild') return t === 'T' ? K.treeWild : t === '#' ? K.rockWild : null;
   if (sc === 'grange') return t === '#' ? K.rockGrange : t === 'W' ? K.wallGrange : null;
   if (sc === 'house' && t === 'B') return null; // le lit sert à dormir

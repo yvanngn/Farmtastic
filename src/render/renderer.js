@@ -98,6 +98,7 @@ import { buildGround, drawWaterShimmer, LIGHTS, drawSoil } from './ground.js';
 import { drawChar, drawTree, drawRock, drawCrop, drawAnimal, drawSlime, drawSwing, treeSprite, KIND_SPRITE } from './sprites.js';
 import { buildInterior } from './interiors.js';
 import { buildParc, buildBiome, buildQuartier, buildTown, TOWN_LIGHTS } from './town.js';
+import { buildWest } from './west.js';
 import { PICKUPS, isBroken } from '../systems/grange.js';
 import { buildWild, drawMob, drawZRock, drawShroom, drawForestTree } from './wild.js';
 import { MUSHROOMS } from '../data/items.js';
@@ -228,7 +229,7 @@ let swing = null;
     const scene = S.scene || 'farm', outside = scene === 'farm', sky = outside || !!SCENES[scene].outdoor, SC = SCENES[scene];
     if (scene === 'house' && cacheScene === 'house' && cache !== interiors['house' + !!S.workbench + (S.bed !== false)]) cacheScene = ''; // établi réparé
     if (cacheSeason !== S.season || cacheScene !== scene) {
-      cache = outside ? farmGround() : scene === 'wild' ? (interiors['wild' + S.season] ||= buildWild(S.season)) : scene === 'foret' ? (interiors['foret' + S.season] ||= buildWild(S.season, 'foret')) : scene === 'town' ? (interiors['town' + S.season] ||= buildTown(S.season)) : scene === 'quartier' ? (interiors['quartier' + S.season] ||= buildQuartier(S.season)) : (scene === 'montagne' || scene === 'plage') ? (interiors[scene] ||= buildBiome(scene, S.season)) : scene === 'parc' ? (interiors['parc' + S.season] ||= buildParc(S.season)) : (scene === 'house' ? (interiors['house' + !!S.workbench + (S.bed !== false)] ||= buildInterior(scene, S)) : (interiors[scene] ||= buildInterior(scene, S)));
+      cache = outside ? farmGround() : scene === 'wild' ? (interiors['wild' + S.season] ||= buildWild(S.season)) : scene === 'foret' ? (interiors['foret' + S.season] ||= buildWild(S.season, 'foret')) : scene === 'town' ? (interiors['town' + S.season] ||= buildTown(S.season)) : scene === 'quartier' ? (interiors['quartier' + S.season] ||= buildQuartier(S.season)) : (scene === 'montagne' || scene === 'plage') ? (interiors[scene] ||= buildBiome(scene, S.season)) : scene === 'parc' ? (interiors['parc' + S.season] ||= buildParc(S.season)) : (scene === 'rondpoint' || scene === 'ranch' || scene === 'port') ? (interiors[scene + S.season] ||= buildWest(scene, S.season)) : (scene === 'house' ? (interiors['house' + !!S.workbench + (S.bed !== false)] ||= buildInterior(scene, S)) : (interiors[scene] ||= buildInterior(scene, S)));
       if (cacheSeason !== S.season) initWeather();
       cacheSeason = S.season; cacheScene = scene;
     }
@@ -313,7 +314,7 @@ let swing = null;
         ctx.fillStyle = 'rgba(0,0,0,.55)'; ctx.fillRect(x - 1, y - 1, 18, 5); ctx.fillStyle = '#f2a03a'; ctx.fillRect(x, y, Math.round(16 * p), 3); } });
     }
     if (sky) { // sorties : flèches animées et nom de la destination, au bord de l'écran
-      const NAMES = { farm: 'Ma ferme', quartier: 'Zone résidentielle', town: 'Centre-ville', foret: 'Forêt', wild: 'Caverne sombre' }, seen = new Set();
+      const NAMES = { farm: 'Ma ferme', quartier: 'Zone résidentielle', rondpoint: 'Rond-point', ranch: 'Ranch du Maire', port: 'Zone portuaire', town: 'Centre-ville', foret: 'Forêt', wild: 'Caverne sombre' }, seen = new Set();
       for (const d of SC.doors || []) {
         const W = SC.W, H = SC.H, edge = d.x === 0 ? 'g' : d.x === W - 1 ? 'd' : d.y === 0 ? 'h' : d.y === H - 1 ? 'b' : null;
         if (!edge || !NAMES[d.to] || seen.has(d.to + edge)) continue; seen.add(d.to + edge);

@@ -70,7 +70,7 @@ function contribute(g, o) {
     S.village.progress += o.qty;
     if (S.village.progress >= p.goal) {
       S.village.done.push(p.id); S.village.progress = 0; S.money += p.reward;
-      if (p.id === 'lampadaires') openWild(g); // le chef confie la clé des Caverne sombre
+      if (p.id === 'lampadaires') openWild(g); // le Maire confie la clé des Caverne sombre
       g.bus.emit('sfx', 'levelup'); g.bus.emit('toast', `🔨 Chantier terminé : ${p.n} ! +${p.reward} $`);
     }
   } else if (o.kind === 'fete' && !S.festival.done) {
