@@ -4,6 +4,7 @@ import { CROPS } from '../data/crops.js';
 import { cropProgress } from '../systems/farming.js';
 import { shade, disc, canvas, outline, makeCache, groundShadow, hex6, harmonize } from './pixel.js';
 import { rng } from '../world/map.js';
+import { SHEETS } from './sheets.js';
 const T = CFG.T;
 const cache = makeCache(400);
 const SHOE = '#4a2e1e', EYE = '#2a1d18';
@@ -163,8 +164,28 @@ function drawHat(c, L, d, f) {
   r(1, 2 + by, 14, 1, Bc); r(1, 1 + by, 1, 1, Bc); r(14, 1 + by, 1, 1, Bc); r(4, -2 + by, 8, 4, A); r(4, -3 + by, 3, 1, A); r(9, -3 + by, 3, 1, A); r(3, 1 + by, 10, 1, rib); r(4, -2 + by, 2, 1, shade(A, 1.3));
 }
 // ox, oy : coin haut-gauche de l'ancien gabarit 12 × 20 (les pieds en oy + 18). t : horloge pour le clignement.
+// Planches de sprites (personnages dessinés d'après la planche de référence) : chargées une fois, ramenées à la palette.
+const SHEET_IMG = {};
+function sheetImage(name) {
+  if (SHEET_IMG[name] !== undefined) return SHEET_IMG[name];
+  SHEET_IMG[name] = null;
+  if (typeof Image === 'undefined' || !SHEETS[name]) return null;
+  const im = new Image();
+  im.onload = () => { SHEET_IMG[name] = im; };   // (pas ramenée à la palette : elle perdait le crème et le bordeaux)
+  im.src = SHEETS[name].url;
+  return null;
+}
+function drawSheet(c, ox, oy, L, d, f) {
+  const img = sheetImage(L.sheet); if (!img) return false;
+  const S = SHEETS[L.sheet], col = f ? [1, 2, 3, 0][(f - 1) >> 1] : 0, row = d === 0 ? 0 : d === 1 ? 1 : 2;
+  const x = Math.round(ox + 6 - S.fw / 2), y = oy + 19 - S.fh;
+  if (d === 3) { c.save(); c.translate(x + S.fw, y); c.scale(-1, 1); c.drawImage(img, col * S.fw, row * S.fh, S.fw, S.fh, 0, 0, S.fw, S.fh); c.restore(); }   // profil droit = miroir
+  else c.drawImage(img, col * S.fw, row * S.fh, S.fw, S.fh, x, y, S.fw, S.fh);
+  return true;
+}
 export function drawChar(c, ox, oy, L, d, f, t = 0, noArm = false) {
   groundShadow(c, ox + 6, oy + 19, 6, 2);
+  if (L.sheet && drawSheet(c, ox, oy, L, d, f)) return;   // planche de sprites si elle existe
   const blink = (t % 4200) < 130, spr = charSprite(L, d, f || 0, blink, noArm), x = ox - 3, y = oy - 12;
   if (L.kid) {   // enfant : tête entière, buste et jambes raccourcis
     c.drawImage(spr, 0, 0, 18, 15, x, y + 6, 18, 15);

@@ -63,7 +63,7 @@ export const LUNA = {
 // en vacances ; les gens croient qu'il travaille dur pour eux. Une enquête sur lui viendra plus tard.
 export const CHEF = {
   id: 'chef', name: 'Manuel', title: 'Maire', color: '#e8c26a', voice: 'voiceChef', de: 'de lui',
-  look: { body: 'h', bottom: 'pant', skin: '#e2b48c', hair: 0, hairC: '#5a3a22', shirt: '#f2ead8', pants: '#f2ead8', hat: 'blanc', vest: '#7a2a3a', mustache: '#5a3a22', stout: true, shoes: '#5a2a22' },   // costume blanc, gilet bordeaux, chapeau blanc
+  look: { body: 'h', bottom: 'pant', skin: '#e2b48c', hair: 0, hairC: '#5a3a22', shirt: '#f2ead8', pants: '#f2ead8', hat: 'blanc', vest: '#7a2a3a', mustache: '#5a3a22', stout: true, shoes: '#5a2a22', sheet: 'manu' },   // sheet : planche de sprites (essai du 17/11)   // costume blanc, gilet bordeaux, chapeau blanc
   home: 'ranch_maison', inside: { x: 3.5, y: 4.6 }, outScene: 'town', day: { x: 18.5, y: 8.6 },   // 17/11 : il vit dans son ranch, passe ses journées sur la place
   // trajet villa → place (le matin) et retour (le soir), à pied : porte de la villa, allée est, place
   walks: [{ scene: 'foret', from: 780, to: 840, every: 3, at: { x: 19.5, y: 13.5 } }],  // promenade digestive, un jour sur trois, 13 h – 14 h (💡)
