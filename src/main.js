@@ -26,7 +26,7 @@ registerRecipeLevels([...Object.values(HR_LVL), ...Object.values(PR_LVL)].map(r 
 import { introTick, introActive, skipIntro } from './systems/intro.js';
 import { createDialog } from './ui/dialog.js';
 import { NPCS, OUT_FROM, OUT_TO, INTRO_LINES } from './data/npcs.js';
-import { placeNPC, findNPCAt, mystTick } from './systems/social.js';
+import { placeNPC, orbitNPC, findNPCAt, mystTick } from './systems/social.js';
 import { pickFieldTool } from './systems/repair.js';
 import { cookTick } from './systems/cooking.js';
 import { fishTick } from './systems/fishing.js';
@@ -297,7 +297,7 @@ function loop(now) {
       if (g.dropAsked && g.dropAsked !== here) g.dropAsked = null; }
     rainBoost(g, dt);
     lerpOthers(g.others, dt);
-    for (const id in g.npcs) { const n = g.npcs[id]; placeNPC(n, g.S, OUT_FROM, OUT_TO); if (n.justOut) { n.justOut = false; toast(`${n.name} est sorti s'asseoir devant chez lui !`); } }
+    for (const id in g.npcs) { const n = g.npcs[id]; placeNPC(n, g.S, OUT_FROM, OUT_TO); if (n.orbit && n.scene === n.orbit.scene) orbitNPC(n, now / 1000); /* essai : tour de la fontaine */ if (n.justOut) { n.justOut = false; toast(`${n.name} est sorti s'asseoir devant chez lui !`); } }
     mp && mp.tick(now);
     for (const k in g.S.objs) { const o = g.S.objs[k]; if (o.shake > 0) o.shake -= dt; }
     for (let i = g.fx.length - 1; i >= 0; i--) { const f = g.fx[i]; f.life -= dt; f.y -= dt * 0.75; if (f.life <= 0) g.fx.splice(i, 1); }

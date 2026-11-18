@@ -108,6 +108,13 @@ export function routinePlace(n, S) {
   });
   return at || 'maison';
 }
+// Essai : le PNJ fait le tour d'un point (ellipse), t en secondes. Direction selon le sens de la marche (0 bas, 1 haut, 2 gauche, 3 droite).
+export function orbitNPC(n, t) {
+  const o = n.orbit, a = (t / o.period) * Math.PI * 2;
+  n.scene = o.scene; n.x = o.cx + Math.cos(a) * o.rx; n.y = o.cy + Math.sin(a) * o.ry; n.walking = true;
+  const vx = -Math.sin(a) * o.rx, vy = Math.cos(a) * o.ry;
+  n.dir = Math.abs(vx) > Math.abs(vy) ? (vx < 0 ? 2 : 3) : (vy < 0 ? 1 : 0);
+}
 export function placeNPC(n, S, OUT_FROM, OUT_TO) {
   if (n.mystic) return placeMyst(n, S);
   if (n.routine) { const p = n.places[routinePlace(n, S)]; n.scene = p.scene; n.x = p.x; n.y = p.y; n.walking = false; faceP(n, S); return; }

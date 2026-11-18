@@ -13,6 +13,7 @@ PICK = {
   'myst': dict(H=40, ncol=40, white=222, front=[0, 1, 2, 3], back=[4, 5, 6, 7], side=[(8, 1), (9, 1), (10, 1), (11, 1)]),   # planche myst_v2 (profils tournés à droite → miroir)
   'franck': dict(H=38, ncol=40, white=222, front=[0, 1, 2, 3], back=[4, 5, 6, 7], side=[(8, 1), (9, 1), (10, 1), (11, 1)]),
   'hailey': dict(H=36, ncol=40, white=240, halo=0, front=[0, 1, 2, 3], back=[4, 5, 6, 5], side=[(8, 1), (9, 1), (10, 1), (11, 1)]),
+  'manu': dict(H=35, ncol=40, white=254, halo=0, clean=12, front=[0, 1, 0, (1, 1)], back=[2, 3, 2, (3, 1)], side=[(4, 1), (5, 1), (4, 1), (6, 1)]),   # planche du 18/11 : 7 poses (face, face marche, dos, dos marche, profil, 2 pas) ; marche = pas miroir
   'luna': dict(H=36, ncol=40, white=240, halo=0, front=[0, 1, 2, 3], back=[5, 6, 5, 6], side=[(8, 1), (9, 1), (10, 1), (11, 1)]),
 }
 def blobs(im):
@@ -49,6 +50,11 @@ for name, P in PICK.items():
     sh = Image.new('RGBA', (FW * n, FH * 3))
     for ri, v in enumerate(('front', 'back', 'side')):
         for ci, f in enumerate(rows[v]): sh.alpha_composite(f, (ci * FW + (FW - f.size[0]) // 2, ri * FH + FH - f.size[1]))
+    if P.get('clean'):   # petits îlots isolés laissés par le découpage (bout de pied du voisin…) : effacés
+        a = np.array(sh); op = a[..., 3] > 0; lab, nb = ndimage.label(op); sz = ndimage.sum(op, lab, range(1, nb + 1))
+        for i, z in enumerate(sz, 1):
+            if z < P['clean']: a[lab == i, 3] = 0
+        sh = Image.fromarray(a, 'RGBA')
     sh.save(os.path.join(ROOT, 'assets/sprites', name + '.png'))
     fr = json.load(open(os.path.join(ROOT, 'assets/sprites/frames.json'))); fr[name] = [FW, FH, n]
     json.dump(fr, open(os.path.join(ROOT, 'assets/sprites/frames.json'), 'w')); print(name, FW, FH, n)

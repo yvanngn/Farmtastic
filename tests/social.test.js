@@ -229,3 +229,11 @@ test('Farmwest lot 5 : restaurant, four du cuistot en panne → réparé au mart
   assert.ok(S.tools.knife, 'le couteau en récompense'); assert.ok(S.resto.knife);
   const before = { ...S.tools }; S.social.cuistot.talked = false; tk(g, 'cuistot'); assert.deepEqual(S.tools, before, 'pas deux couteaux');
 });
+
+test('essai : orbitNPC fait le tour de la fontaine et donne le bon sens de marche', async () => {
+  const { orbitNPC } = await import('../src/systems/social.js');
+  const n = { orbit: { scene: 'town', cx: 16.5, cy: 7.6, rx: 2.5, ry: 2.2, period: 14 } };
+  orbitNPC(n, 0); assert.equal(n.scene, 'town'); assert.ok(Math.abs(n.x - 19) < 1e-9); assert.equal(n.dir, 0, 'à droite de la fontaine il descend');
+  orbitNPC(n, 7); assert.ok(Math.abs(n.x - 14) < 1e-9); assert.equal(n.dir, 1, 'à gauche il remonte');
+  orbitNPC(n, 3.5); assert.equal(n.dir, 2); orbitNPC(n, 10.5); assert.equal(n.dir, 3); assert.ok(n.walking);
+});
