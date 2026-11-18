@@ -1,4 +1,5 @@
 // Point d'entrée : assemble les modules et fait tourner la boucle.
+import { ensureMounds } from './systems/mounds.js';
 import { CFG } from './config.js';
 import { createGame } from './core/game.js';
 import { defaultState } from './core/state.js';
@@ -276,7 +277,7 @@ function loop(now) {
     updateWild(g, dt); // les monstres ne vivent que dans les Caverne sombre
     autoPickup(g);
     pickTestSword(g, Math.floor(g.S.x), Math.floor(g.S.y - .2)); pickFieldTool(g, Math.floor(g.S.x), Math.floor(g.S.y - .2)); mystTick(g); cookTick(g); nightTip(g); ghostTick(g); fishTick(g, dt); coldTick(g, dt);
-    ensureNature(g, g.S.scene || 'farm'); rainbowTick(g);
+    ensureNature(g, g.S.scene || 'farm'); ensureMounds(g.S, g.S.scene || 'farm'); rainbowTick(g);
     pickFlower(g, Math.floor(g.S.x), Math.floor(g.S.y - .2)); digTreasure(g, Math.floor(g.S.x), Math.floor(g.S.y - .2));
     if (g.S.scene === 'foret') { ensureShrooms(g); pickShroom(g, Math.floor(g.S.x), Math.floor(g.S.y - .2)); }
     // on entre directement en marchant vers une porte (si c'est possible)

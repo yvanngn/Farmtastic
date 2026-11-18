@@ -113,6 +113,16 @@ export const LAYOUTS = {
     '#.......#',
     '####D####'
   ],
+  // Lot 12 : cabane de Rouky, le vieux pêcheur (lit B, table T, filets et cannes C, poêle K)
+  rouky: [
+    '#########',
+    '#WWWWWWW#',
+    '#K....CB#',
+    '#......B#',
+    '#.TT...P#',
+    '#.......#',
+    '####D####'
+  ],
   // Maison du Maire au ranch : bureau (K), fauteuil (A), lit (B), plante (P), table (T)
   ranch_maison: [
     '#########',
@@ -264,6 +274,14 @@ LAYOUTS.plage = (() => {
   for (const [x, y] of [[4, 11], [9, 15], [14, 10], [26, 12], [35, 15], [37, 10], [6, 17], [31, 17]]) m[y][x] = 'T';
   for (let x = 21; x < W; x++) { m[9][x] = '.'; m[10][x] = '.'; } m[9][W - 1] = 'D'; m[10][W - 1] = 'D';   // lot 2e : passerelle le long de la plage jusqu'au port (à l'est)
   return m.reverse().map(r => r.join(''));
+})();
+// Lot 12 : la station balnéaire devient la cabane du pêcheur : cabane de Rouky (X) au nord de la plage, porte en (12, 4).
+export const ROUKY_CABIN = { x: 10, y: 2, w: 5, h: 3, door: 12 };
+LAYOUTS.plage = (() => {
+  const m = LAYOUTS.plage.map(r => r.split('')), C = ROUKY_CABIN;
+  for (let y = C.y; y < C.y + C.h; y++) for (let x = C.x; x < C.x + C.w; x++) m[y][x] = 'X';
+  m[4][9] = 's';   // pas de palmier collé à la cabane
+  return m.map(r => r.join(''));
 })();
 // Quartier : g herbe, . pavés, X maison (Luna x4-8, Franck x11-15, y4-6), T arbre, D sortie vers la ferme, b banc, f jardinière.
 // Quartier résidentiel (agrandi le 15/11) : une maison sur la 1re ligne (Luna), la clinique près de l'entrée,
@@ -501,6 +519,7 @@ export const SCENES = {
     { x: 6, y: 5, to: 'ranch_maison', spawn: { x: 4.5, y: 5.4 } }, { x: 7, y: 5, to: 'ranch_maison', spawn: { x: 4.5, y: 5.4 } }] },
   remy: { W: 9, H: 7, doors: [{ x: 4, y: 6, to: 'quartier', spawn: { x: 20.5, y: 25.8 } }] },
   resto: { W: 14, H: 7, doors: [{ x: 6, y: 6, to: 'town', spawn: { x: 15.5, y: 29.8 } }] },
+  rouky: { W: 9, H: 7, doors: [{ x: 4, y: 6, to: 'plage', spawn: { x: 12.5, y: 5.6 } }] },   // lot 12
   ranch_maison: { W: 9, H: 7, doors: [{ x: 4, y: 6, to: 'ranch', spawn: { x: 7, y: 6.8 } }] },
   port: { W: 36, H: 20, outdoor: true, doors: [{ x: 0, y: 6, to: 'ranch', spawn: { x: 29.4, y: 16 } }, { x: 0, y: 7, to: 'ranch', spawn: { x: 29.4, y: 16 } },
     { x: 0, y: 10, to: 'plage', spawn: { x: 37.4, y: 10 } }, { x: 0, y: 11, to: 'plage', spawn: { x: 37.4, y: 10 } },   // lot 2e : le long de la plage
@@ -508,7 +527,8 @@ export const SCENES = {
   montagne: { W: 36, H: 24, outdoor: true, cold: true, doors: [{ x: 0, y: 8, to: 'quartier', spawn: { x: 38.2, y: 8.6 } }, { x: 0, y: 9, to: 'quartier', spawn: { x: 38.2, y: 8.6 } },
     { x: 28, y: 23, to: 'port', spawn: { x: 24, y: 1.8 } }, { x: 29, y: 23, to: 'port', spawn: { x: 24, y: 1.8 } }] },   // lot 2e : la route de l'est descend au port
   plage: { W: 40, H: 20, outdoor: true, doors: [{ x: 19, y: 0, to: 'town', spawn: { x: 20.5, y: 29.8 } }, { x: 20, y: 0, to: 'town', spawn: { x: 20.5, y: 29.8 } },
-    { x: 39, y: 9, to: 'port', spawn: { x: 1.6, y: 10.6 } }, { x: 39, y: 10, to: 'port', spawn: { x: 1.6, y: 10.6 } }] },   // lot 2e : vers le port
+    { x: 39, y: 9, to: 'port', spawn: { x: 1.6, y: 10.6 } }, { x: 39, y: 10, to: 'port', spawn: { x: 1.6, y: 10.6 } },   // lot 2e : vers le port
+    { x: 12, y: 4, to: 'rouky', spawn: { x: 4.5, y: 5.4 } }] },   // lot 12 : la cabane de Rouky
   town: { W: 34, H: 32, outdoor: true, doors: [{ x: 20, y: 31, to: 'plage', spawn: { x: 19.5, y: 1.8 } }, { x: 21, y: 31, to: 'plage', spawn: { x: 20.5, y: 1.8 } }, { x: 33, y: 10, to: 'rondpoint', spawn: { x: 1.6, y: 9 } }, { x: 0, y: 10, to: 'gare', spawn: { x: 21.4, y: 9 } }, { x: 15, y: 28, to: 'resto', spawn: { x: 6.5, y: 5.4 } }, { x: 11, y: 15, to: 'bar', spawn: { x: 4.5, y: 5.4 } }] },
   house: { W: 12, H: 9, doors: [{ x: 5, y: 8, to: 'farm', spawn: { x: 5.5, y: 5.9 } }] },
   maison: { W: 16, H: 11, doors: [{ x: 7, y: 10, to: 'farm', spawn: { x: 5.5, y: 5.9 } }] },   // la cabane agrandie (même porte sur la ferme)

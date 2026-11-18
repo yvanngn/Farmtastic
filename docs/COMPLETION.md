@@ -1,12 +1,12 @@
 # Liste de complétion de Farmwest
 
-Tout ce qu'un joueur peut accomplir, à cocher. À jour au **18/11/2026 (v0.1.50)**. ⏳ = décidé, pas encore dans le jeu.
+Tout ce qu'un joueur peut accomplir, à cocher. À jour au **18/11/2026 (v0.1.51)**. ⏳ = décidé, pas encore dans le jeu.
 Le détail de chaque point est dans `docs/MANUEL.md`.
 
 ## Quêtes principales
 - [ ] **Premiers pas** : tente · première nuit · pioche · hache · feu de camp · cabane retapée · four de Remy (couteau) · grange et pelle
 - [ ] **Ghostbuster** : 3 nuits · approcher l'esprit · ⏳ lui parler (objet à venir)
-- [ ] ⏳ **La canne de Rouky** : aller voir Rouky à la cabane du pêcheur · trouver un os en creusant un petit tas · donner l'os à Rox · recevoir la canne à pêche sommaire
+- [ ] **La canne de Rouky** : aller voir Rouky à la cabane du pêcheur · trouver un os en creusant un petit tas · donner l'os à Rox · recevoir la canne à pêche sommaire
 
 ## Quêtes secondaires
 - [ ] **Agrandir la cabane** (160 bois + 60 pierres)
@@ -17,7 +17,7 @@ Le détail de chaque point est dans `docs/MANUEL.md`.
 - [ ] Demandes de fabrication (une par habitant et par semaine, + le panneau)
 
 ## Outils
-- [ ] Pioche · [ ] Hache · [ ] Marteau · [ ] Couteau · [ ] Pelle · [ ] Faucille · [ ] ⏳ Canne à pêche sommaire
+- [ ] Pioche · [ ] Hache · [ ] Marteau · [ ] Couteau · [ ] Pelle · [ ] Faucille · [ ] Canne à pêche sommaire
 - [ ] Pioche, hache, faucille, épée au palier Cuivre · Fer · Or · Iridium
 
 ## Ferme
@@ -27,10 +27,10 @@ Le détail de chaque point est dans `docs/MANUEL.md`.
 ## Ramassage et creusage
 - [ ] Bois, pierres, minerai, fleurs, champignons, baies, mûres
 - [ ] Un gros rocher cassé (pioche Cuivre)
-- [ ] ⏳ Un petit tas creusé · ⏳ un os trouvé
+- [ ] Un petit tas creusé · [ ] un os trouvé
 
 ## Pêche
-- [ ] ⏳ Premier poisson
+- [ ] Premier poisson
 - [ ] Les 12 poissons
 
 ## Fabrication et cuisine
@@ -39,8 +39,8 @@ Le détail de chaque point est dans `docs/MANUEL.md`.
 
 ## Niveaux et zones
 - [ ] Niveau 3 (forêt) · [ ] niveau 5 (caverne) · [ ] niveau 10 (⏳ diligence)
-- [ ] Visiter chaque zone : gare · centre-ville · rond-point · zone résidentielle · ranch · fête foraine · ⏳ cabane du pêcheur · port · forêt (coffre du labyrinthe) · montagne · caverne
+- [ ] Visiter chaque zone : gare · centre-ville · rond-point · zone résidentielle · ranch · fête foraine · cabane du pêcheur · port · forêt (coffre du labyrinthe) · montagne · caverne
 
 ## Amitié (10 cœurs)
-- [ ] Myst · Luna · Franck · Hailey · Manu · Igor · Ed · Suzie · Jade · Remy · Harry · ⏳ Rouky
+- [ ] Myst · Luna · Franck · Hailey · Manu · Igor · Ed · Suzie · Jade · Remy · Harry · Rouky
 - [ ] Tous les goûts découverts pour chaque habitant

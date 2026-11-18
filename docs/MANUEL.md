@@ -1,6 +1,6 @@
 # Manuel de Farmwest
 
-Le manuel du joueur : ce qu'on peut faire dans le jeu et comment. À jour au **18/11/2026 (v0.1.50)**.
+Le manuel du joueur : ce qu'on peut faire dans le jeu et comment. À jour au **18/11/2026 (v0.1.51)**.
 Légende : ⏳ = décidé, pas encore dans le jeu · 💡 = valeur proposée par Claude, à valider.
 Pour la liste à cocher de tout ce qu'on peut accomplir : `docs/COMPLETION.md`.
 
@@ -26,9 +26,9 @@ Le héros (**Cloud Jimny** par défaut) arrive en train à Farmwest pour reprend
 | Hache | plantée dans le grand arbre de la ferme | couper les arbres |
 | Marteau | dès le départ | réparer (cabane, grange, four…) avec bois et pierres |
 | Couteau | Remy, après la réparation de son four | cueillir fleurs et champignons (jauge) |
-| Pelle | dans la grange une fois rafistolée | bêcher, planter ; ⏳ **creuser les petits tas** (§ 6) |
+| Pelle | dans la grange une fois rafistolée | bêcher, planter ; **creuser les petits tas** (§ 6) |
 | Faucille | grange | couper l'herbe |
-| Canne à pêche sommaire | ⏳ **Rouky**, contre un os pour son chien Rox (§ 9) | pêcher |
+| Canne à pêche sommaire | **Rouky**, contre un os pour son chien Rox (§ 9) | pêcher |
 
 - **Paliers** de la pioche, de la hache, de la faucille et de l'épée : Base → Cuivre → Fer → Or → Iridium, à la forge d'Igor (argent + pierres, niveau de minage minimum). Un meilleur outil va plus vite et coûte moins d'énergie.
 - On n'a **jamais deux fois le même outil**, même à plusieurs.
@@ -39,10 +39,10 @@ Le héros (**Cloud Jimny** par défaut) arrive en train à Farmwest pour reprend
 - **Baies et mûres** : buissons et ronces, repoussent en 2 jours.
 - Arbres et cailloux sont **remis à chaque saison**, autant qu'au départ.
 
-## 6. Petits tas à creuser ⏳
+## 6. Petits tas à creuser
 - Partout sur la carte, **une vingtaine de petits tas par zone**, placés au hasard. On peut marcher dessus.
 - Une fois **la pelle** obtenue, on les creuse. Ils **reviennent chaque jour, à de nouvelles places**. Toutes les zones extérieures en ont, sauf la gare et le centre-ville.
-- On y trouve : **rien** (10 %), des **pierres** (30 %), du **bois** (25 %), des **champignons** (20 %), des **os** (15 %). Liste et répartition évolueront.
+- On y trouve : **rien** (10 %), des **pierres** (30 %), du **bois** (25 %), un **champignon** de saison (20 %), un **os** (15 %). Creuser coûte 1 ⚡. Liste et répartition évolueront.
 
 ## 7. La ferme
 - **Tente** (dans le sac au départ) : à déployer à côté de la cabane, pour dormir les premières nuits.
@@ -61,10 +61,10 @@ Le héros (**Cloud Jimny** par défaut) arrive en train à Farmwest pour reprend
 - Les recettes se débloquent **selon le niveau**.
 - **Métiers** (10 niveaux chacun) : Forgeron, Alchimiste, Couturier, Joaillier, Cuisinier, Charpentier ; on gagne de l'XP de métier en fabriquant.
 
-## 9. Pêche ⏳
+## 9. Pêche
 - La **station balnéaire** devient la **cabane du pêcheur** (la fête foraine reste à côté) : y vivent **Rouky**, un vieux monsieur, et son chien **Rox**. Le jour, Rouky dort à côté de sa cabane ; le soir, il est chez lui.
 - En allant le voir, une **quête principale** se débloque : trouver un **os** (dans les petits tas, § 6) et le donner à Rox ; Rouky donne alors une **canne à pêche sommaire** : plus lente, elle attrape moins de poissons ; elle sera améliorable.
-- 12 poissons à découvrir (📜 → Poissons).
+- 12 poissons à découvrir (📜 → Poissons) : à l'étang de la ferme, en mer et au lac gelé de la montagne. Avec la canne sommaire, les poissons rares (thon, pieuvre, lotte bleue) ne mordent pas.
 
 ## 10. Niveaux et expérience
 - **XP** : 1 par arbre, caillou, fleur ou champignon (2 par gros rocher) ; 5 par objet fabriqué ou plat ; 30 par quête du jour 💡 ; 40 par quête secondaire ; 100 par quête principale (+10 par étape) 💡.
@@ -73,14 +73,14 @@ Le héros (**Cloud Jimny** par défaut) arrive en train à Farmwest pour reprend
 ## 11. Habitants et amitié
 - On gagne de l'amitié en **parlant** (une fois par jour) et en **offrant** des objets (une fois par jour). 10 cœurs maximum ; chaque palier dévoile un peu de leur vie.
 - Leurs **goûts** se découvrent en offrant (📜 → Liens).
-- Habitants : **Myst**, **Luna**, **Franck**, **Hailey** (clinique), **Manu** (le Maire, ranch), **Igor** (forgeron), **Ed** (saloon), **Suzie**, **Jade**, **Remy Gusto** (restaurant), **Harry Fordson** (charpentier), le **cocher**, l'**esprit** de la vieille femme (la nuit, sur la ferme) ; ⏳ **Rouky** et **Rox** (cabane du pêcheur).
+- Habitants : **Myst**, **Luna**, **Franck**, **Hailey** (clinique), **Manu** (le Maire, ranch), **Igor** (forgeron), **Ed** (saloon), **Suzie**, **Jade**, **Remy Gusto** (restaurant), **Harry Fordson** (charpentier), le **cocher**, l'**esprit** de la vieille femme (la nuit, sur la ferme) ; **Rouky** et **Rox** (cabane du pêcheur).
 
 ## 12. Quêtes
-- **Principales** : « Premiers pas » (tente, nuit, pioche, hache, feu, cabane, four de Remy, grange et pelle), « Ghostbuster » (l'esprit de la ferme) ; ⏳ celle de **Rouky** (os pour Rox → canne à pêche).
+- **Principales** : « Premiers pas » (tente, nuit, pioche, hache, feu, cabane, four de Remy, grange et pelle), « Ghostbuster » (l'esprit de la ferme) ; « La canne de Rouky » (elle apparaît quand on va le voir : os pour Rox → canne à pêche).
 - **Secondaires** : elles apparaissent quand la cabane est retapée. Les premières : **Agrandir la cabane**, **Un vrai lit**, **Un coffre pour ranger** (plans chez Harry), **Aider Franck à sortir**.
 - **Du jour** : au panneau d'affichage du centre-ville.
 - **Demandes de fabrication** : une par habitant et par semaine (« 🛠️ Une demande ? »), et une au panneau.
 
 ## 13. La région
-Gare (ouest) · centre-ville (entouré par la rivière, ponts vers la gare, le rond-point et la plage) · les 4 fermes (nord) · rond-point et fontaine (centre) · zone résidentielle (est) · ranch du Maire · fête foraine (sud) · ⏳ **cabane du pêcheur** (à la place de la station balnéaire, sud-ouest) · zone portuaire (sud-est ; reliée au ranch, à la plage par le quai et à la montagne par la route de l'est) · forêt (nord-est, labyrinthe qui change à chaque saison) · montagne (est ; par la zone résidentielle ou par la route de l'est depuis le port) · caverne sombre.
+Gare (ouest) · centre-ville (entouré par la rivière, ponts vers la gare, le rond-point et la plage) · les 4 fermes (nord) · rond-point et fontaine (centre) · zone résidentielle (est) · ranch du Maire · fête foraine (sud) · **cabane du pêcheur** (à la place de la station balnéaire, au sud du centre-ville) · zone portuaire (sud-est ; reliée au ranch, à la plage par le quai et à la montagne par la route de l'est) · forêt (nord-est, labyrinthe qui change à chaque saison) · montagne (est ; par la zone résidentielle ou par la route de l'est depuis le port) · caverne sombre.
 - ⏳ **Diligence** : débloquée au niveau 10, un arrêt à chaque carrefour.

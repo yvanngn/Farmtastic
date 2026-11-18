@@ -1,4 +1,5 @@
 import { cuistotTalk, harryTalk } from './resto.js';
+import { roukyTalk } from './rouky.js';
 import { craftRequest, craftReady, deliverCraft, craftLabel } from './craftquests.js';
 import { CRAFT_LINES } from '../data/npcs.js';
 // Liens sociaux avec les PNJ. Les répliques d'histoire se débloquent avec l'amitié, une par jour.
@@ -41,6 +42,7 @@ export function talk(g, id) {
   r.seen ||= []; r.asked ||= []; r.talks ||= 0;
   const say = (lines, extra) => g.bus.emit('say', { name: n.name, title: n.title, color: n.color, voice: n.voice, lines, ...extra });
   if (id === 'harry' && harryTalk(g, n)) { if (!r.talked) { r.points += 20; r.talked = true; r.talks++; } return true; }   // le coffre (lot 6)
+  if (id === 'rouky' && roukyTalk(g, n)) { if (!r.talked) { r.points += 20; r.talked = true; r.talks++; } return true; }   // lot 12 : la canne de Rouky
   if (id === 'cuistot' && cuistotTalk(g, n)) { if (!r.talked) { r.points += 20; r.talked = true; r.talks++; } return true; }   // quête du four (lot 5)
   // une question de temps en temps (1 discussion sur 3), une seule fois chacune
   const q = !r.talked && r.talks % 3 === 2 && (n.questions || []).find(x => !r.asked.includes(x.id) && x.h <= hearts(r));
@@ -122,6 +124,7 @@ export function placeNPC(n, S, OUT_FROM, OUT_TO) {
   if (n.worker) { // au travail de longues heures, sinon introuvable
     const w = n.worker, on = S.minute >= w.from && S.minute < w.to;
     n.scene = on ? w.scene : (n.home || 'none'); Object.assign(n, on ? w.at : (n.inside || w.at)); n.walking = false; n.dir = 0;
+    if (n.napping) n.sleeping = on;   // lot 12 : Rouky fait la sieste dehors le jour
     return;
   }
   const out = S.minute >= OUT_FROM && S.minute < OUT_TO;

@@ -32,7 +32,7 @@ Légende : ✅ fait · ⏳ à faire · ❓ question pour l'utilisateur · 💡 i
 | **Zone résidentielle** | est du rond-point | Luna, Franck, Hailey, clinique, Myst (au fond), Ed / Suzie / Jade (maison à étages), **Remy** ; Igor traîne dans la ruelle |
 | **Ranch du Maire** | sud du rond-point | maison de Manu (intérieur), grange rouge, enclos à chevaux |
 | **Fête foraine** | sud du ranch | attractions (ancien parc FARM-LAND, plus caché) |
-| **Cabane du pêcheur** (ancienne station balnéaire, décision du 18/11, ⏳ lot 12) | sud du centre-ville | plage, mer au sud, ponton, cabane de Rouky ; pêche en mer |
+| **Cabane du pêcheur** (ancienne station balnéaire, lot 12 ✅) | sud du centre-ville | plage, mer au sud, ponton, cabane de Rouky ; pêche en mer |
 | **Zone portuaire** | est du ranch | entrepôts, quai, pontons, voiliers |
 | **Forêt** | est des fermes | arbres coupables (repoussent), champignons (couteau) |
 | **Montagne** | est (encore reliée par la zone résidentielle) | froid, lac gelé, filons |
@@ -51,7 +51,7 @@ Légende : ✅ fait · ⏳ à faire · ❓ question pour l'utilisateur · 💡 i
 | **Igor** | Forgeron ; ancien sportif de haut niveau, cheville abîmée, rêves de JO brisés ; fait de bons outils, rêve de forger des armes. Vend le patron du chaudron et la louche. | ruelle de la zone résidentielle |
 | **Ed** | Barman du saloon ; ancien chauffeur routier, aime le contact des gens ; rêve d'ouvrir un magasin en ville ; marié à Suzie, papa de Jade. | saloon / maison à étages |
 | **Suzie**, **Jade** | Femme et enfant d'Ed ; histoires à écrire. | maison à étages |
-| **Rouky** et son chien **Rox** (18/11, ⏳ lot 12) | Vieux monsieur, vit de la pêche ; on ne sait pas grand-chose de lui : il semble être né ici et avoir travaillé dans les chemins de fer ; peu de gens viennent le voir. Donne une canne à pêche sommaire contre un os pour Rox (quête principale). | cabane du pêcheur |
+| **Rouky** et son chien **Rox** (18/11, lot 12 ✅) | Vieux monsieur, vit de la pêche ; on ne sait pas grand-chose de lui : il semble être né ici et avoir travaillé dans les chemins de fer ; peu de gens viennent le voir. Donne une canne à pêche sommaire contre un os pour Rox (quête principale). | cabane du pêcheur |
 | **Remy Gusto** (le cuistot) | Fils abandonné d'un cuisinier renommé ; vu partout comme « le fils de », a perdu beaucoup de concours à cause de son nom ; venu à Farmwest, loin de tout, pour vivre de sa passion ; déteste son père, retentera sa chance à sa mort. Four en panne → donne le **couteau**. | restaurant / sa maison |
 | **Harry Fordson** (le charpentier) | Charpentier de père en fils, très doué ; maladie inconnue sans symptôme visible ; aimerait se marier ; travaille beaucoup ; beaucoup de dettes envers Manu. Apprend le **coffre**. | devant son atelier |
 | L'esprit de la vieille femme | Pleure la nuit sur la ferme, disparaît quand on approche (quête Ghostbuster). | ferme, la nuit |
@@ -85,7 +85,7 @@ Légende : ✅ fait · ⏳ à faire · ❓ question pour l'utilisateur · 💡 i
 - ✅ **Lot 8** : **expérience et niveaux** du joueur : 1 XP par petit objet cassé, fleur ou champignon ; 5 par objet fabriqué ; dizaines par quête (plus pour une principale) ; courbe exponentielle ; **niveau 10 max** ; déblocages de zones et de choses.
 - ✅ **Lot 9** (v0.1.19) : demandes de fabrication, une par habitant et par semaine, + panneau.
 - ✅ **Lot 2e** (v0.1.50) : rivière autour du centre-ville, route de l'est montagne ↔ port, port ↔ plage.
-- ⏳ **Lot 12** : cabane du pêcheur (Rouky, Rox), quête de la canne, petits tas à creuser à la pelle (20 par zone, chaque jour) ; ❓ tranchées le 18/11 (voir `docs/ROADMAP.md`), prêt à lancer.
+- ✅ **Lot 12** (v0.1.51) : cabane du pêcheur (Rouky, Rox), quête de la canne, petits tas à creuser. ⏳ Plus tard : canne améliorable, butin des tas à faire évoluer.
 - ⏳ **Diligence** : débloquée au **niveau 10**, **un arrêt à chaque carrefour** (18/11) ; le cocher en PNJ.
 - ⏳ **Pièce secrète** dans chaque maison.
 - ⏳ **Routines quotidiennes** pour tous les PNJ, sur le modèle de Hailey.
@@ -95,6 +95,8 @@ Légende : ✅ fait · ⏳ à faire · ❓ question pour l'utilisateur · 💡 i
 - ⏳ `docs/PARCOURS.md` à refaire pour le nouveau début (skill `parcours-debut`).
 
 ## 5. Idées de Claude (💡 à valider)
+- Lot 12 : 1 à 3 pierres ou bois par tas, 1 champignon (le courant de la saison, petit), 1 os ; 1 ⚡ et 1 XP par tas ; canne sommaire : attente × 1,6, pas de poisson de rareté < 2 ; répliques de Rouky 🆕 ; tenue de Rouky (casquette, barbe blanche, salopette).
+- 18/11 : plan du lit 80 $, plan du coffre 60 $, lit 50 bois + 10 pierres.
 - v0.1.26 : 0,65 s entre deux coups de hache / pioche (`CFG.HIT_MS`) ; énergie par coup 0,5 (0,3 dès le fer) au lieu de 1 (0,5).
 - v0.1.24 : seuil « grande maison » = 72 px de large (pan de toit), en dessous pignon pointu ; contour des personnages = teinte foncée de leurs cheveux.
 - Lot 9 : récompense 2 × prix de vente + 20 $, +60 points d'amitié, quantités (2 grillades, 2 pains, 3 clôtures), le coffre et le chaudron ne sont jamais demandés, 5 répliques génériques 🆕 (les mêmes pour tous les habitants).

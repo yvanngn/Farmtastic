@@ -18,8 +18,11 @@ export function zoneAt(S, x, y) {
   return sc === 'plage' ? 'mer' : sc === 'montagne' ? 'lac' : null;
 }
 export const canBite = (f, S, zone) => f.zones.includes(zone) && f.seasons.includes(S.season) && S.minute >= f.from && S.minute < f.to;
+// Lot 12 : la canne sommaire de Rouky (palier 1) attend plus longtemps et n'attrape pas les poissons rares (améliorable plus tard).
+export const BASIC_ROD = { wait: 1.6, minW: 2 };
+const basicRod = S => (S.tools && S.tools.rod || 0) <= 1;
 export function pickFish(S, zone, r) {
-  const ok = FISH.filter(f => canBite(f, S, zone));
+  const ok = FISH.filter(f => canBite(f, S, zone) && !(basicRod(S) && f.w < BASIC_ROD.minW));
   if (!ok.length) return null;
   let t = r * ok.reduce((a, f) => a + f.w, 0);
   for (const f of ok) if ((t -= f.w) < 0) return f;
@@ -32,7 +35,7 @@ export function cast(g, x, y) {
   if (!zone) { g.bus.emit('toast', '🎣 Vise l’eau pour lancer ta ligne.'); return false; }
   if (!useEnergy(g, 2)) return false;
   const fish = pickFish(S, zone, g.rnd());
-  g.fishing = { phase: 'wait', x, y, zone, fish, t0: g.now(), bite: g.now() + WAIT[0] + g.rnd() * (WAIT[1] - WAIT[0]) };
+  g.fishing = { phase: 'wait', x, y, zone, fish, t0: g.now(), bite: g.now() + (WAIT[0] + g.rnd() * (WAIT[1] - WAIT[0])) * (basicRod(S) ? BASIC_ROD.wait : 1) };
   g.bus.emit('sfx', 'pick'); g.bus.emit('swing', 'rod');
   if (!fish) g.fishing.bite = Infinity;   // rien ne mord à cet endroit, à cette heure-ci
   return true;

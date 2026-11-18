@@ -419,4 +419,31 @@ export const HARRY = {
   chat: ["Le bois, ça se respecte : il a mis des années à pousser.", "Encore une commande pour Manu… Elles ne finissent jamais."],
   questions: []
 };
-NPCS.cuistot = CUISTOT; NPCS.harry = HARRY;
+// Lot 12 (décrit par l'utilisateur le 18/11) : Rouky, vieux monsieur qui vit de la pêche avec son chien Rox, à la cabane du pêcheur
+// (ancienne station balnéaire). On ne sait pas grand-chose de lui : il semble être né ici et avoir travaillé dans les chemins de fer.
+// Peu de gens viennent le voir. Le jour, il dort à côté de sa cabane ; le soir, il est chez lui. Répliques 🆕 (💡 Claude).
+export const ROUKY = {
+  id: 'rouky', name: 'Rouky', title: 'pêcheur', de: 'de lui', color: '#7aa6c8', voice: 'voiceChef',
+  look: { body: 'h', bottom: 'pant', skin: '#e2b08a', hair: 0, hairC: '#e8e4dc', beard: '#e8e4dc', hat: 'cap', shirt: '#5a7aa8', overalls: '#6a5a3a', pants: '#6a5a3a', shoes: '#4a3a2a', stout: true },
+  home: 'rouky', inside: { x: 3.5, y: 4.6 }, worker: { scene: 'plage', at: { x: 16.5, y: 4.6 }, from: 360, to: 1080 }, napping: true,   // dort dehors le jour, chez lui le soir
+  traits: ['Vieux pêcheur, vit de la pêche', 'Son chien s’appelle Rox', 'Semble être né ici', 'A travaillé dans les chemins de fer', 'Peu de gens viennent le voir'],
+  taste: { adore: [], aime: [], naime: ['slime'], deteste: [] },   // 💡 à décrire
+  story: [
+    { h: 0, t: "Rouky. Et lui, c'est Rox. On pêche, on dort, on regarde la mer. Ça nous suffit." },
+    { h: 2, t: "Les rails qui passent à la gare… J'en ai posé quelques-uns, dans le temps." },
+    { h: 4, t: "Je suis né pas loin d'ici, je crois. Après un certain âge, on arrête de compter ces choses-là." }
+  ],
+  intro: [
+    "Hm ? … Ah. De la visite. Ça faisait longtemps.",
+    "Moi, c'est Rouky. Le vieux toutou, là, c'est Rox. Il a perdu son os favori et il boude depuis trois jours.",
+    "Si tu lui en trouves un, je te donnerai ma vieille canne à pêche. Elle n'est pas toute jeune, mais elle attrape encore du poisson."
+  ],
+  need: ["Toujours pas d'os pour Rox ? Paraît qu'on en trouve en creusant les petits tas de terre, un peu partout."],
+  rod: [
+    "Regarde-le, il remue la queue comme un jeunot !",
+    "Une promesse est une promesse : voilà ma canne. Elle est lente et les gros poissons lui échappent… mais c'est un début."
+  ],
+  chat: ["La mer est calme, aujourd'hui. Les poissons aussi.", "Rox ronfle plus fort que moi. Ne le lui dis pas."],
+  questions: []
+};
+NPCS.cuistot = CUISTOT; NPCS.harry = HARRY; NPCS.rouky = ROUKY;

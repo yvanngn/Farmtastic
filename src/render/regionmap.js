@@ -24,7 +24,7 @@ export function regionPos(S) {
 export const LABELS = [
   ['Les 4 Fermes', 44, 1.1], ['Forêt', 62, 7], ['Caverne Sombre', 79, 1.2], ['Montagne', 79, 13.2], ['Gare', 9, 16],
   ['Centre-ville', 24, 25], ['Zone Résidentielle', 51, 24.6], ['Ranch du Maire', 51, 27.6], ['Fête Foraine', 47, 40.6],
-  ['Station Balnéaire', 25, 44.8], ['Zone Portuaire', 74, 46.2]
+  ['Cabane du Pêcheur', 25, 44.8], ['Zone Portuaire', 74, 46.2]
 ];
 
 // ---------- plan en cases ----------
@@ -149,8 +149,8 @@ export function buildRegionMap(season = 0) {
     for (const [x, y, wall, roof] of [[38, 35, '#7a5a3a', '#4a3a2a'], [44, 35, '#5a7aa8', '#2a3a5a'], [49, 35, '#8a6a4a', '#4a3a2a'], [53, 35, '#7a5a3a', '#3a2a1a']]) house(g, x * RT, y * RT, 60, 40, wall, roof, { peak: true, sign: true });
     for (const [x, y] of [[41, 39], [52, 39], [46, 41], [55, 41]]) { g.fillStyle = '#f4ead2'; g.beginPath(); g.moveTo(x * RT - 14, y * RT + 14); g.lineTo(x * RT, y * RT - 6); g.lineTo(x * RT + 14, y * RT + 14); g.fill(); R(x * RT - 1, y * RT - 8, 2, 4, '#a83a2a'); g.fillStyle = '#d8cbb0'; g.beginPath(); g.moveTo(x * RT, y * RT - 6); g.lineTo(x * RT + 14, y * RT + 14); g.lineTo(x * RT + 4, y * RT + 14); g.fill(); }
   }
-  for (const x of [18, 21, 24, 27, 30]) house(g, x * RT, 36 * RT, 34, 32, '#9a6a3c', '#5a3a22', { peak: true });   // cabines de plage
-  for (const [x, col] of [[19, '#e0402a'], [23, '#f2c832'], [26, '#4a7ae8'], [29, '#e070b0'], [33, '#e0402a']]) { const px = x * RT, py = 42 * RT; R(px, py - 10, 1, 14, '#5b3a22'); g.fillStyle = col; g.beginPath(); g.arc(px, py - 10, 9, Math.PI, 0); g.fill(); R(px - 4, py + 4, 9, 3, '#f4ead2'); }
+  house(g, 22 * RT, 36 * RT, 44, 34, '#8a6a4a', '#6a7a84');   // lot 12 : la cabane de Rouky (toit de tôle), ponton et barque
+  R(30 * RT, 38 * RT, 22, 5, '#7a5a34'); R(31 * RT, 41 * RT, 14, 5, '#5a3a22'); R(32 * RT, 41 * RT, 12, 2, '#8a6a4a');
   for (const [x, wall, roof] of [[65, '#a86a4a', '#5a3a22'], [69, '#c84a3a', '#5a2a22'], [73, '#e0c8a0', '#3e5a7a'], [77, '#5a7aa8', '#24324a'], [81, '#9a8a6a', '#4a3a2a'], [84, '#c8d8e8', '#3e5a7a']]) house(g, x * RT, 33 * RT, 44, 34, wall, roof, { sign: true });   // entrepôts du port
   for (const [x, y] of [[69, 40], [74, 39], [79, 41], [84, 39]]) { R(x * RT, y * RT, 20, 7, '#f4f6f2'); R(x * RT + 2, y * RT + 7, 16, 3, '#a83a32'); R(x * RT + 8, y * RT - 6, 1, 6, '#4a2a14'); }   // barques
   ship(g, 58 * RT, 46 * RT + 4, 1.4); ship(g, 79 * RT, 45 * RT + 4, 1.5);

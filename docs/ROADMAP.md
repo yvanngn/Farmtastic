@@ -156,20 +156,20 @@ Pour que **les scènes du jeu** atteignent le niveau de détail de l'image, scè
 - [x] **Un coffre pour ranger** : acheter le **plan du coffre** chez Harry (💡 60 $), le fabriquer (80 bois + 20 pierres). Le coffre quitte la quête principale « Premiers pas » ; Harry ne l'apprend plus gratuitement.
 - ⏳ Plus tard : la cabane agrandie vue de dehors (aujourd'hui seul l'intérieur change).
 
-## Lot 12 — Cabane du pêcheur, Rouky et Rox, petits tas à creuser (demande du 18/11) ⏳
+## Lot 12 — Cabane du pêcheur, Rouky et Rox, petits tas à creuser (demande du 18/11) ✅ v0.1.51
 Décrit par l'utilisateur :
 - La **station balnéaire** devient la **cabane du pêcheur**. Y vit **Rouky**, un vieux monsieur, avec son chien **Rox** ; il vit de la pêche. On ne sait pas grand-chose de lui : il semble être né ici et avoir travaillé dans les chemins de fer. Peu de gens viennent le voir.
 - **Quête principale** débloquée quand on va le voir : trouver un **os** à donner à Rox ; Rouky donne alors une **canne à pêche sommaire mais utilisable**.
 - **Petits tas** placés au hasard sur toute la carte, **une vingtaine par zone**, renouvelés **chaque jour** ; on peut marcher dessus et les **creuser une fois la pelle acquise**. Butin : pierres, bois, champignons, os, ou **rien (10 %)** ; liste à compléter plus tard.
 
 À faire :
-- [ ] Scène `plage` → cabane du pêcheur (cabane en planches, ponton, barque, filets ; on retire cabines et parasols).
-- [ ] Rouky (vieux monsieur, PNJ dessiné par la poupée `paperdoll.js`) et Rox (chien) ; présentation et premières répliques 🆕.
-- [ ] Quête principale « La canne de Rouky » : aller le voir → trouver un os → le donner à Rox → canne à pêche sommaire.
-- [ ] Petits tas : 20 par zone extérieure, tirés au hasard chaque jour (même tirage pour tous les joueurs d'une partie), on marche dessus, on les creuse à la pelle ; butin au hasard (rien 10 %).
-- [ ] Objet **os** ; la canne active la pêche (système existant, 12 poissons).
-- [ ] Tests : tas renouvelés chaque jour, pas de creusage sans pelle, rien à 10 %, os → Rox → canne une seule fois.
-- [ ] Manuel (`docs/MANUEL.md`) et liste de complétion (`docs/COMPLETION.md`) : déjà notés en ⏳, à cocher une fois faits.
+- [x] Scène `plage` → cabane du pêcheur : cabane en planches au toit de tôle (filets, tonneau, cannes, banc), intérieur « Chez Rouky » ; carte de la région : cabane et ponton à la place des cabines et parasols.
+- [x] Rouky (casquette, barbe blanche, salopette ; poupée `paperdoll.js`) fait la sieste dehors de 6 h à 18 h (« Zzz »), puis rentre chez lui ; Rox couché à côté de lui ; répliques 🆕.
+- [x] Quête principale « La canne de Rouky » (visible seulement après l'avoir vu) : aller le voir → trouver un os → le donner à Rox (ou à Rouky) → canne à pêche sommaire.
+- [x] Petits tas : 20 par zone extérieure (sauf gare et centre-ville), nouvelles places chaque jour, on marche dessus, on les creuse à la pelle (1 ⚡, 1 XP) ; butin rien 10 % / pierres 30 % / bois 25 % / champignon de saison 20 % / os 15 % (💡 quantités : 1-3 pierres ou bois).
+- [x] Objet **os** ; la canne active la pêche ; canne sommaire : attente × 1,6 et pas de poissons rares (thon, pieuvre, lotte bleue). ⏳ amélioration de la canne plus tard.
+- [x] Tests : tas renouvelés chaque jour, pas de creusage sans pelle, butin, os → Rox → canne une seule fois, Rouky dehors le jour et chez lui le soir.
+- [x] Manuel et liste de complétion à jour.
 
 Réponses de l'utilisateur (18/11) — le lot est prêt à lancer :
 - Le chien s'appelle **Rox**.

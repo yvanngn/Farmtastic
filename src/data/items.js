@@ -39,6 +39,7 @@ export const ITEMS = {
   confiture_baies: { n: 'Confiture de baies', p: 25, i: '🍯', eat: { e: 45 } },
   chest: { n: 'Coffre', p: 0, i: '📦', keep: true },             // appris auprès d'Igor ; à poser plus tard
   bed: { n: 'Lit', p: 0, i: '🛏️', keep: true },                 // 18/11 : plan acheté chez Harry, s'installe dans la cabane
+  bone: { n: 'Os', p: 2, i: '🦴' },                              // lot 12 : trouvé en creusant les petits tas ; Rox en raffole
   manteau: { n: 'Manteau d’hiver', p: 150, i: '🧥', keep: true, buy: 400 },   // protège du froid de la montagne (💡 vendu à l'étal du marché)
   barbe_papa: { n: 'Barbe à papa', p: 5, i: '🍭', eat: { e: 8 } },
   peluche: { n: 'Peluche', p: 30, i: '🧸', keep: true },

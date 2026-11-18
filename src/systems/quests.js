@@ -26,6 +26,15 @@ export const QUESTS = {
       { id: 'grange', t: 'Rafistoler la grange (100 bois et 60 pierres) et y trouver la pelle, pour bêcher et planter', done: S => !!S.tools?.shovel }
     ]
   },
+  // Lot 12 : se débloque en allant voir Rouky à la cabane du pêcheur
+  rouky: {
+    n: 'La canne de Rouky', i: '🎣', main: true, unlock: S => !!S.quests?.rouky?.met,
+    steps: [
+      { id: 'voir', t: 'Aller voir Rouky, le vieux pêcheur, à la cabane du pêcheur (au sud du centre-ville)', done: S => !!S.quests?.rouky?.met },
+      { id: 'os', t: 'Trouver un os pour Rox : creuser les petits tas de terre à la pelle 🪏', done: S => (S.inv?.bone || 0) > 0 || !!S.tools?.rod },
+      { id: 'donner', t: "Donner l'os à Rox (ou à Rouky) : il te donnera sa canne à pêche", done: S => !!S.tools?.rod }
+    ]
+  },
   // 18/11 : premières quêtes secondaires, visibles une fois la cabane retapée
   cabane2: {
     n: 'Agrandir la cabane', i: '🏠',
@@ -60,7 +69,7 @@ export const QUESTS = {
   }
 };
 // Les quêtes secondaires sont cachées au début : elles apparaissent une fois la cabane retapée (confirmé le 18/11).
-export const questVisible = (S, id) => !!QUESTS[id] && (QUESTS[id].main || isRepaired(S, 'house'));
+export const questVisible = (S, id) => !!QUESTS[id] && (QUESTS[id].unlock ? QUESTS[id].unlock(S) : (QUESTS[id].main || isRepaired(S, 'house')));
 export function questProgress(S, id) {
   const q = QUESTS[id], done = q.steps.map(s => s.done(S));
   const cur = done.indexOf(false);

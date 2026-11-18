@@ -2,7 +2,7 @@ import { paintGrass, paintOchre, paintRoad, paintPlanks, softEdge, OCHRE, paintR
 // Centre du village pré-rendu : place pavée, halle du marché, panneau d'affichage,
 // fontaine, lampadaires, bancs, jardinières et arbres. Reconstruit à chaque saison.
 import { CFG } from '../config.js';
-import { LAYOUTS, QUARTIER, TOWN_B, TOWN_LAMPS, PARC_B } from '../world/scenes.js';
+import { LAYOUTS, QUARTIER, TOWN_B, TOWN_LAMPS, PARC_B, ROUKY_CABIN } from '../world/scenes.js';
 import { rng } from '../world/map.js';
 import { shade, disc } from './pixel.js';
 import { GRASS, drawLunaHouse, drawFranckHouse, drawMystHouse } from './ground.js';
@@ -338,6 +338,21 @@ export function buildBiome(name, season) {
     if (name === 'montagne' && ch === 'n' && r() < .04) { R(px + 5, py + 8, 4, 3, '#9aa4b0'); R(px + 5, py + 8, 4, 1, '#ffffff'); }
   }
   if (name === 'plage') { const sea = L.findIndex(row => row.includes('w')); for (let x = 0; x < W * T; x += 3) R(x, sea * T - 1 + Math.round(Math.sin(x / 9) * 2), 3, 3, '#ffffff'); }   // écume (la mer est au sud)
+  if (name === 'plage') { // lot 12 : la cabane de Rouky, le vieux pêcheur (planches délavées, toit de tôle, filets, tonneau)
+    const C = ROUKY_CABIN, x0 = C.x * T, y0 = C.y * T, w = C.w * T, h = C.h * T, dx = (C.door - C.x) * T;
+    R(x0 + 2, y0 + h - 2, w, 4, 'rgba(60,40,20,.25)');                                         // ombre au sol
+    R(x0, y0 + 14, w, h - 14, '#8a6a4a'); for (let k = 0; k < w; k += 5) R(x0 + k, y0 + 14, 1, h - 14, '#6a4e34');   // planches
+    for (let k = y0 + 18; k < y0 + h; k += 7) R(x0, k, w, 1, '#a08060');
+    R(x0 - 4, y0 + 2, w + 8, 14, '#7a8a94'); for (let k = 0; k < w + 8; k += 4) R(x0 - 4 + k, y0 + 2, 1, 14, '#5e6c76');   // toit de tôle ondulée
+    R(x0 - 4, y0 + 14, w + 8, 2, '#4a565e'); R(x0 - 4, y0 + 2, w + 8, 1, '#a8b6be');
+    R(x0 + dx + 3, y0 + h - 22, 10, 22, '#4a3020'); R(x0 + dx + 4, y0 + h - 21, 8, 20, '#6a4428'); R(x0 + dx + 10, y0 + h - 11, 1, 2, '#e8c050');   // porte
+    R(x0 + 8, y0 + 22, 12, 9, '#3a2a20'); R(x0 + 9, y0 + 23, 10, 7, '#a8d4ec'); R(x0 + 13, y0 + 23, 1, 7, '#3a2a20');   // fenêtre
+    for (let k = 0; k < 4; k++) for (let j = 0; j < 3; j++) R(x0 + w - 24 + k * 5, y0 + 20 + j * 5, 4, 1, '#d8c8a0');   // filet suspendu
+    for (let k = 0; k < 4; k++) R(x0 + w - 24 + k * 5, y0 + 20, 1, 12, '#d8c8a0');
+    R(x0 + w + 2, y0 + h - 12, 9, 12, '#7a4a26'); R(x0 + w + 2, y0 + h - 9, 9, 1, '#4a3020'); R(x0 + w + 2, y0 + h - 4, 9, 1, '#4a3020');   // tonneau
+    R(x0 - 6, y0 + 10, 1, h - 6, '#5a3a22'); R(x0 - 9, y0 + 10, 1, h - 6, '#5a3a22');   // cannes appuyées
+    R(x0 + w + 16, y0 + h - 2, 14, 6, '#7a5a34'); R(x0 + w + 16, y0 + h - 2, 14, 1, '#a08060');   // banc de Rouky
+  }
   if (name === 'montagne') { // entrée de la grotte, fermée par des éboulis
     const gx = 28 * T, gy = 3 * T;
     R(gx - 6, gy - 8, 2 * T + 12, T + 12, '#3a3640'); R(gx - 2, gy - 4, 2 * T + 4, T + 8, '#0c0a10');

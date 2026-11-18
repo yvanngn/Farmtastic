@@ -10,6 +10,7 @@ import { MIN_PICK } from '../data/tools.js';
 import { CFG } from '../config.js';
 import { TEST_SWORD, testSwordHere } from '../systems/wild.js';
 import { rainbowVisible } from '../systems/nature.js';
+import { roxPos } from '../systems/rouky.js';
 import { isRepaired, fieldToolAt } from '../systems/repair.js';
 import { FIELD_TOOLS, BIG_TREE } from '../data/repairs.js';
 import { BUSHES } from '../data/recipes.js';
@@ -302,6 +303,13 @@ let swing = null;
     }
   }
 
+  // Lot 12 : petit tas de terre fraîchement retournée (on marche dessus, on le creuse à la pelle).
+  function drawMound(c, x, y) {
+    const px = x * T, py = y * T, R = (u, v, w, h, col) => { c.fillStyle = col; c.fillRect(px + u, py + v, w, h); };
+    R(3, 11, 11, 2, 'rgba(40,25,10,.22)'); R(4, 8, 9, 4, '#7a5232'); R(5, 6, 7, 3, '#8e6440'); R(6, 5, 4, 2, '#a07450');
+    R(5, 7, 2, 1, '#b8885c'); R(10, 9, 2, 1, '#5e3e24'); R(8, 6, 1, 1, '#c8a070');
+  }
+
   function render(now) {
     const S = g.S;
     const scene = S.scene || 'farm', outside = scene === 'farm', sky = outside || !!SCENES[scene].outdoor, SC = SCENES[scene];
@@ -421,7 +429,7 @@ let swing = null;
         ctx.fillStyle = 'rgba(0,0,0,.55)'; ctx.fillRect(x - 1, y - 1, 18, 5); ctx.fillStyle = '#f2a03a'; ctx.fillRect(x, y, Math.round(16 * p), 3); } });
     }
     if (sky) { // sorties : flèches animées et nom de la destination, au bord de l'écran
-      const NAMES = { farm: 'Ma ferme', quartier: 'Zone résidentielle', gare: 'Gare', resto: 'Restaurant', rondpoint: 'Rond-point', ranch: 'Ranch du Maire', port: 'Zone portuaire', town: 'Centre-ville', foret: 'Forêt', wild: 'Caverne sombre' }, seen = new Set();
+      const NAMES = { farm: 'Ma ferme', quartier: 'Zone résidentielle', gare: 'Gare', resto: 'Restaurant', rondpoint: 'Rond-point', ranch: 'Ranch du Maire', port: 'Zone portuaire', town: 'Centre-ville', foret: 'Forêt', wild: 'Caverne sombre', plage: 'Cabane du pêcheur', montagne: 'Montagne', rouky: 'Chez Rouky' }, seen = new Set();
       for (const d of SC.doors || []) {
         const W = SC.W, H = SC.H, edge = d.x === 0 ? 'g' : d.x === W - 1 ? 'd' : d.y === 0 ? 'h' : d.y === H - 1 ? 'b' : null;
         if (!edge || !NAMES[d.to] || seen.has(d.to + edge)) continue; seen.add(d.to + edge);
@@ -516,6 +524,8 @@ let swing = null;
     }
     for (const id in g.npcs) { const n = g.npcs[id]; if ((n.scene || 'farm') !== scene) continue; list.push({ z: n.y, d: () => { drawChar(ctx, Math.round(n.x * T - 6), Math.round(n.y * T - 19), n.look, n.dir || 0, n.walking ? 1 + ((now / 85 | 0) % 8) : 0, now);   // lot 8 : plus de nom au-dessus des PNJ
       if (n.sleeping) { const t = now / 600; ctx.fillStyle = '#e8f0ff'; ctx.font = 'bold 7px Nunito, sans-serif'; ctx.fillText('z', n.x * T + 6 + (t % 1) * 3, n.y * T - 30 - (t % 1) * 6); ctx.font = 'bold 9px Nunito, sans-serif'; ctx.fillText('Z', n.x * T + 10 + ((t + .5) % 1) * 3, n.y * T - 34 - ((t + .5) % 1) * 7); } } }); }
+    { const p = roxPos(g.npcs.rouky); if (p && p.scene === scene) list.push({ z: p.y, d: () => drawAnimal(ctx, { type: 'dog', x: p.x, y: p.y, moving: false }, now, null) }); }   // lot 12 : Rox, le chien de Rouky
+    { const M = S.mounds && S.mounds[scene]; if (M) for (const k in M.at) { const [x, y] = k.split(',').map(Number); if (x >= x0 - 1 && x <= x1 + 1 && y >= y0 - 1 && y <= y1 + 1) list.push({ z: y + .2, d: () => drawMound(ctx, x, y) }); } }   // lot 12 : petits tas à creuser
     for (const id in g.others) { const o = g.others[id]; if (!o.look || (o.scene || 'farm') !== scene) continue; list.push({ z: o.y, d: () => { drawChar(ctx, Math.round(o.x * T - 6), Math.round(o.y * T - 19), o.look, o.dir, o.f, now + 777); label(o.name, o.x * T, o.y * T - 25); } }); }
     if (!g.ride && !g.introHidden) list.push({ z: S.y, d: () => {   // pendant la diligence (et l'arrivée en train), le héros est dedans
       if (swing && S.dir === 1) drawSwing(ctx, S, swing.tool, swing.p);

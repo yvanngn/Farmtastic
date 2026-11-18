@@ -11,8 +11,9 @@ import { isPond } from '../src/world/map.js';
 const pond = () => { for (let y = 0; y < 36; y++) for (let x = 0; x < 48; x++) if (isPond(x, y)) return [x, y]; };
 
 test('les poissons dépendent du lieu, de la saison et de l’heure', () => {
-  const S = { season: 3, minute: 1300 };
+  const S = { season: 3, minute: 1300, tools: { rod: 2 } };
   assert.equal(pickFish(S, 'lac', .99).id, 'lotte_bleue', 'la nuit en hiver, au lac gelé');
+  S.tools.rod = 1; assert.notEqual(pickFish(S, 'lac', .99).id, 'lotte_bleue', 'lot 12 : la canne sommaire n’attrape pas les poissons rares'); S.tools.rod = 2;
   S.season = 1; S.minute = 700;
   assert.ok(FISH.filter(f => f.zones.includes('mer')).some(f => f.id === pickFish(S, 'mer', .99).id));
   S.minute = 200; assert.equal(pickFish(S, 'etang', .5), null, 'rien à 3h du matin');

@@ -29,6 +29,8 @@ import { add } from './inventory.js';
 import { TOOL_FOR } from './resources.js';
 import { zoneOpen, ZONE_LEVEL } from './level.js';
 import { ADMIN } from './admin.js';
+import { digMound, moundAt, ensureMounds } from './mounds.js';
+import { roxAt, petRox } from './rouky.js';
 
 const TOOL_IDS = ['hand', 'axe', 'pick', 'sickle', 'shovel', 'sword', 'rod', 'hammer'];
 const own = (S, t) => (hasTool(S, t) ? t : 'hand');
@@ -36,6 +38,7 @@ const own = (S, t) => (hasTool(S, t) ? t : 'hand');
 export function smartTool(g, tx, ty) {
   const S = g.S;
   if (S.scene === 'wild') return S.wild && S.wild.rocks[key(tx, ty)] ? own(S, 'pick') : (hasTool(S, 'sword') ? 'sword' : S.sel);
+  if (hasTool(S, 'shovel') && moundAt(S, S.scene || 'farm', tx, ty)) return 'shovel';   // lot 12 : un petit tas → la pelle
   if (S.scene === 'grange') { const t = tileAt('grange', tx, ty); return t === 'p' ? own(S, 'axe') : t === 'r' ? own(S, 'pick') : S.sel; }
   if ((S.scene || 'farm') !== 'farm') return S.sel;
   if (findNPCAt(g, tx, ty)) return TOOL_IDS.includes(S.sel) ? 'hand' : S.sel;
@@ -90,9 +93,12 @@ function act0(g, tx, ty) {
   // un habitant : objet en main = cadeau, sinon discussion
   const npc = findNPCAt(g, tx, ty);
   if (npc) {
+    if (npc.id === 'rouky' && S.sel === 'bone') { talk(g, npc.id); return 'talk'; }   // lot 12 : l'os est pour Rox
     if (!TOOL_IDS.includes(S.sel) && S.inv[S.sel] > 0) { gift(g, npc.id, S.sel, add); return 'gift'; }
     talk(g, npc.id); return 'talk';
   }
+  if (roxAt(g, tx, ty)) return petRox(g);   // lot 12 : Rox
+  { ensureMounds(S, sc); const m = digMound(g, tx, ty); if (m) return m === 'noshovel' || m === 'tired' ? m : 'dig'; }   // lot 12 : petits tas
   if (pickTestSword(g, tx, ty)) return 'pick';
   if (pickFieldTool(g, tx, ty)) return 'pick';
   if (tentAt(S, tx, ty)) return useTent(g) && 'tent';
