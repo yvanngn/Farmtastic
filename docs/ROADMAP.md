@@ -162,7 +162,7 @@ Décrit par l'utilisateur : au niveau 5, une lettre de l'elfe **Golgolas** (viei
 - [x] Scène `golgolas` : centre en ruine puis réparé, météorite qui rétrécit avec barre de progression, Golgolas (chapeau pointu, bâton) et répliques 🆕.
 - [x] Dons au centre par lots ; piles 15 ; carte « piles » du menu renvoie au centre. Quête principale « Le centre de Golgolas ».
 - [x] Tests (`tests/golgolas.test.js`).
-- [ ] Centre niveau 2 : à définir.
+- [ ] Centre niveau 2 : à définir plus tard.
 
 ## Lot 12 — Cabane du pêcheur, Rouky et Rox, petits tas à creuser (demande du 18/11) ✅ v0.1.51
 Décrit par l'utilisateur :

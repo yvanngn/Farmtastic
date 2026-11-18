@@ -297,15 +297,17 @@ function drawKennel(R) {
 }
 
 // Bergerie (x27-30) : grange rouge à double pente, grande porte en croix.
-function drawBarn(R) {
+function drawBarn(R) {   // 18/11 : planches nettes (pixels entiers), croix de porte en escalier, plus de mouchetures
   const x = 27 * T - 1, y = 94, w = 4 * T + 2;
   R(x, y + 30, w, 3, 'rgba(20,12,8,.3)');
-  R(x, y + 10, w, 20, '#b8452f'); for (let i = 0; i < w; i += 4) R(x + i, y + 10, 1, 20, '#93321f');
-  R(x, y + 28, w, 2, '#f0e6d0');
+  R(x, y + 10, w, 20, '#b8452f'); R(x, y + 10, w, 2, '#93321f');
+  for (let i = 0; i < w; i += 5) { R(x + i, y + 12, 1, 16, '#93321f'); R(x + i + 1, y + 12, 1, 16, '#cc5a40'); }
+  R(x, y + 28, w, 2, '#f0e6d0'); R(x, y + 10, 1, 20, '#f0e6d0'); R(x + w - 1, y + 10, 1, 20, '#f0e6d0');
   roofGable(R, x, y - 8, w, 18, '#6e4a36', false);
-  R(x + 22, y + 15, 22, 15, '#f0e6d0'); R(x + 23, y + 16, 20, 14, '#6e2a1f');
-  for (let k = 0; k < 14; k++) { R(x + 23 + k * 1.4, y + 16 + k, 2, 1, '#f0e6d0'); R(x + 42 - k * 1.4, y + 16 + k, 2, 1, '#f0e6d0'); }
-  R(x + 4, y + 15, 10, 8, '#f0e6d0'); R(x + 5, y + 16, 8, 6, '#7fb6d9'); R(x + 9, y + 16, 1, 6, '#f0e6d0');
+  const dx = x + 22, dy = y + 15;
+  R(dx, dy, 22, 15, '#f0e6d0'); R(dx + 1, dy + 1, 20, 14, '#6e2a1f'); R(dx + 1, dy + 1, 20, 1, '#4e1c14'); R(dx + 10, dy + 1, 2, 14, '#f0e6d0');
+  for (let k = 0; k < 13; k++) { const cx = Math.round(k * 9 / 13); R(dx + 1 + cx, dy + 1 + k, 2, 1, '#f0e6d0'); R(dx + 19 - cx, dy + 1 + k, 2, 1, '#f0e6d0'); }
+  R(x + 4, y + 15, 10, 8, '#f0e6d0'); R(x + 5, y + 16, 8, 6, '#7fb6d9'); R(x + 5, y + 16, 8, 2, '#a8d2ee'); R(x + 9, y + 16, 1, 6, '#f0e6d0');
 }
 
 // Reflets animés sur l'eau, seulement pour les tuiles visibles.

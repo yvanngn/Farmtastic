@@ -2,6 +2,10 @@ import { folkSprite, CAST } from './folk.js';
 import { coachBody, coachWheel, horse, locoSprite, wagonSprite, fountainSprite, houseSprite } from './props.js';
 import { MAILBOX, METEOR_HITS } from '../systems/golgolas.js';
 import { GOLGO_CENTER, METEOR } from '../world/scenes.js';
+import { isHouse as _isHouse, isGrange as _isGrange, buildingAt as _bAt } from '../world/map.js';
+const ROOF_TILES = 'MUJRAHBEXCGNKOVZLPY';
+// 18/11 : tuile de bâtiment (le toit déborde au-dessus) : le héros derrière passe sous le toit, en transparence
+function isBuildingTile(S, scene, x, y) { if (scene === 'farm') return _isHouse(x, y) || _isGrange(x, y) || !!_bAt(S.built, x, y); const r = LAYOUTS[scene]; return !!(r && r[y] && ROOF_TILES.includes(r[y][x] || '')); }
 import { disc } from './pixel.js';
 import { getZoom, zoomScale } from '../ui/settingsPanel.js';
 import { QUARTIER, PARC_B } from '../world/scenes.js';
@@ -401,11 +405,7 @@ let swing = null;
           ctx.fillStyle = 'rgba(255,240,170,.9)';
           for (let k = 0; k < 2; k++) { const ox = px - ax * (6 - k * 5 - b), oy = py - ay * (6 - k * 5 - b); ctx.globalAlpha = .55 + k * .35; ctx.beginPath();
             ctx.moveTo(ox + ax * 4, oy + ay * 4); ctx.lineTo(ox - ay * 4 - ax * 2, oy + ax * 4 - ay * 2); ctx.lineTo(ox + ay * 4 - ax * 2, oy - ax * 4 - ay * 2); ctx.fill(); }
-          ctx.globalAlpha = 1;
-          const lx = px - ax * 22, ly = py - ay * 18 - (ay ? 0 : 12), label = NAMES[d.to];
-          ctx.font = 'bold 6px Nunito, sans-serif'; const w = ctx.measureText(label).width + 6;
-          ctx.fillStyle = 'rgba(30,22,40,.75)'; ctx.fillRect(Math.round(lx - w / 2), Math.round(ly - 6), Math.round(w), 9);
-          ctx.fillStyle = '#ffe7a6'; ctx.textAlign = 'center'; ctx.fillText(label, lx, ly + 1); ctx.textAlign = 'start';
+          ctx.globalAlpha = 1;   // 18/11 : plus de nom sur les flèches de sortie
         } });
       }
     }
@@ -523,6 +523,15 @@ let swing = null;
     } });
     for (const f of worldFx) if (f.k === 'chip') list.push({ z: f.floor / T, d: () => { ctx.globalAlpha = Math.min(1, f.life * 3); ctx.fillStyle = f.col; ctx.fillRect(Math.round(f.x), Math.round(f.y), 2, 2); ctx.globalAlpha = 1; } });
     list.sort((a, b) => a.z - b.z).forEach(o => o.d());
+    if (!g.ride && !g.introHidden && (outside || SC.outdoor)) {   // 18/11 : héros derrière un bâtiment → toit repeint par-dessus, héros en transparence
+      const fx = Math.floor(S.x), fy = Math.floor(S.y), cols = [fx - 1, fx, fx + 1].filter(x => isBuildingTile(S, scene, x, fy + 1));
+      if (cols.length) {
+        const hx = Math.round(S.x * T - 8), hy = Math.round(S.y * T - 30), hw = 16, hh = 32;
+        const bx0 = Math.max(hx, Math.min(...cols) * T), bx1 = Math.min(hx + hw, (Math.max(...cols) + 1) * T), by1 = Math.min(hy + hh, (fy + 1) * T);
+        if (bx1 > bx0 && by1 > hy) { ctx.drawImage(cache, bx0, hy, bx1 - bx0, by1 - hy, bx0, hy, bx1 - bx0, by1 - hy);
+          ctx.save(); ctx.globalAlpha = .45; drawChar(ctx, Math.round(S.x * T - 6), Math.round(S.y * T - 19), S.look, S.dir, g.player.walkFrame, now, !!swing); ctx.restore(); }
+      }
+    }
 
     if (SC.rooms) { // tout ce qui n'est pas la salle courante est masqué
       const rw = SC.rooms.w * T, rh = SC.rooms.h * T, rx = Math.floor(S.x * T / rw) * rw, ry = Math.floor(S.y * T / rh) * rh;

@@ -88,6 +88,7 @@ Légende : ✅ fait · ⏳ à faire · ❓ question pour l'utilisateur · 💡 i
 - ✅ **Lot 9** (v0.1.19) : demandes de fabrication, une par habitant et par semaine, + panneau.
 - ✅ **Lot 2e** (v0.1.50) : rivière autour du centre-ville, route de l'est montagne ↔ port, port ↔ plage.
 - ✅ **Lot 12** (v0.1.51) : cabane du pêcheur (Rouky, Rox), quête de la canne, petits tas à creuser. ⏳ Plus tard : canne améliorable, butin des tas à faire évoluer.
+- ✅ **18/11** (v0.1.57) : plus de noms sur les flèches de sortie ; grange rouge nettoyée ; héros en transparence derrière les toits ; images Gemini supprimées.
 - ✅ **Lot 13** (v0.1.56) : lettre de Golgolas au niveau 5, zone cachée au sud de la gare, météorite, centre niveau 1 (piles 15). ⏳ Centre niveau 2 à définir.
 - ⏳ **Diligence** : débloquée au **niveau 10**, **un arrêt à chaque carrefour** (18/11) ; le cocher en PNJ.
 - ⏳ **Pièce secrète** dans chaque maison.
