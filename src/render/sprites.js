@@ -6,6 +6,7 @@ import { shade, disc, canvas, outline, makeCache, groundShadow, hex6, harmonize 
 import { rng } from '../world/map.js';
 import { SHEETS } from './sheets.js';
 import { drawDoll } from './heroDoll.js';
+import { drawPaperDoll } from './paperdoll.js';
 const T = CFG.T;
 const cache = makeCache(400);
 const SHOE = '#4a2e1e', EYE = '#2a1d18';
@@ -230,7 +231,8 @@ function drawHeroSheet(c, ox, oy, L, d, f) {
   return true;
 }
 export function drawChar(c, ox, oy, L, d, f, t = 0, noArm = false) {
-  groundShadow(c, ox + 6, oy + 19, 6, 2);
+  groundShadow(c, ox + 6, oy + 19, L.stout || L.muscle ? 9 : L.kid ? 6 : 7, 2);
+  if (!L.oldDraw && drawPaperDoll(c, ox, oy, L, d, f)) return;   // 18/11 : tout le monde en poupée dessinée par le code (src/render/paperdoll.js)
   if (L.sheet && drawSheet(c, ox, oy, L, d, f)) return;
   if (L.doll) { drawDoll(c, ox, oy, L, d, f); return; }   // héros : poupée de sprites (calques)
   if (L.hero && heroCanUseSheet(L) && drawHeroSheet(c, ox, oy, L, d, f)) return;   // héros : planche recolorée   // planche de sprites si elle existe

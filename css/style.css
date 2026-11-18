@@ -98,7 +98,7 @@ button.on { background: linear-gradient(180deg, rgba(255, 223, 138, .45), rgba(2
 .card button { padding: .35em .6em; font-size: .9em; align-self: flex-start }
 input[type=text] { font: 600 16px var(--f-texte); color: var(--texte); padding: 8px 10px; border: 1px solid var(--bord); border-radius: 10px; background: rgba(0, 0, 0, .35); width: 100% }
 label { font-size: .85em; color: var(--doux) }
-#preview { width: clamp(108px, 30vmin, 150px); aspect-ratio: 36 / 45; height: auto; max-width: 100%; border: 1px solid var(--bord); border-radius: 12px; box-shadow: 0 0 20px rgba(232, 194, 106, .2) }
+#preview { width: clamp(108px, 30vmin, 150px); aspect-ratio: 36 / 50; image-rendering: pixelated; height: auto; max-width: 100%; border: 1px solid var(--bord); border-radius: 12px; box-shadow: 0 0 20px rgba(232, 194, 106, .2) }
 #netState { font-size: .78em; color: var(--doux); margin-top: 8px }
 
 .reglage { display: grid; grid-template-columns: auto 1fr auto; grid-template-areas: "b l p" "b r r"; gap: 4px 12px; align-items: center; padding: 10px 0; border-bottom: 1px solid rgba(232, 194, 106, .2) }

@@ -3,7 +3,7 @@
 // Toutes les répliques sont à faire valider par l'utilisateur (liste numérotée dans docs/CARNET.md).
 export const LUNA = {
   id: 'luna', name: 'Luna', de: "d'elle", color: '#c9a0ff', voice: 'voiceLuna',
-  look: { body: 'f', bottom: 'pant', skin: '#f1c7a5', hair: 3, hairC: '#7a4a2a', pencil: true, shirt: '#2a6ad0', hood: true, pants: '#5a7aa8', shoes: '#e8e8ec', sheet: 'luna' },   // planche docs/personnages-reference.jpg : sweat bleu à capuche, chignon et crayon
+  look: { body: 'f', bottom: 'pant', skin: '#f1c7a5', hair: 1, curly: true, hairC: '#7a4a2a', hat: 'cowboy', bandana: '#c0392b', shirt: '#a8432f', plaid: true, pants: '#d8cfc0', shoes: '#6a3a1e' },   // 18/11 : poupée dessinée par le code (src/render/paperdoll.js), tenue d'après son sprite
   home: 'luna', outScene: 'quartier', day: { x: 9.5, y: 7.4 }, inside: { x: 5.5, y: 4.6 },
   walks: [{ scene: 'foret', from: 960, to: 1020, every: 2, at: { x: 10.5, y: 7.5 } }],   // balade en forêt, un jour sur deux, 16 h – 17 h (💡)
   // Personnalité (💡 proposée par Claude, à valider) : ancienne informaticienne, rêve d'une ferme, budget serré, bricole sa maison.
@@ -63,7 +63,7 @@ export const LUNA = {
 // en vacances ; les gens croient qu'il travaille dur pour eux. Une enquête sur lui viendra plus tard.
 export const CHEF = {
   id: 'chef', name: 'Manuel', title: 'Maire', color: '#e8c26a', voice: 'voiceChef', de: 'de lui',
-  look: { body: 'h', bottom: 'pant', skin: '#e2b48c', hair: 0, hairC: '#5a3a22', shirt: '#f2ead8', pants: '#f2ead8', hat: 'blanc', vest: '#7a2a3a', mustache: '#5a3a22', stout: true, shoes: '#5a2a22', sheet: 'manu' },   // sheet : planche fournie le 18/11, qualité d'origine (tools/sprite-from-planche.py) ; essai du 17/11)   // costume blanc, gilet bordeaux, chapeau blanc
+  look: { body: 'h', bottom: 'pant', skin: '#e8a982', hair: 0, hairC: '#8a8480', beard: '#9a9490', hat: 'cowboy', shirt: '#f2efe8', vest: '#2f5a3a', pants: '#5a4030', shoes: '#7a3e1e', stout: true },   // 18/11 : poupée dessinée par le code (src/render/paperdoll.js), tenue d'après son sprite
   home: 'ranch_maison', inside: { x: 3.5, y: 4.6 }, outScene: 'town', day: { x: 18.5, y: 8.6 },
   orbit: { scene: 'town', cx: 16.5, cy: 7.6, rx: 2.5, ry: 2.2, period: 14 },   // ESSAI du 18/11 : quand il est sur la place (la journée), il fait le tour de la fontaine (pour voir la nouvelle planche) — à retirer ensuite   // 17/11 : il vit dans son ranch, passe ses journées sur la place
   // trajet villa → place (le matin) et retour (le soir), à pied : porte de la villa, allée est, place
@@ -92,7 +92,7 @@ export const CHEF = {
 export const FRANCK = {
   id: 'franck', name: 'Franck', de: 'de lui', color: '#8ab4d8', voice: 'voiceFranck',
   // décrit par l'utilisateur : grand, cheveux mi-longs, l'air triste
-  look: { body: 'h', bottom: 'pant', skin: '#e8c4a4', hair: 0, hairC: '#7a4a2a', shirt: '#c8b48a', pants: '#6a4a2a', knit: true, tall: true, sad: true, sheet: 'franck' },   // pull en maille beige
+  look: { body: 'h', bottom: 'pant', skin: '#e8c4a4', hair: 0, curly: true, hairC: '#7a4a2a', hat: 'cowboy', shirt: '#a8432f', vest: '#6a4426', pants: '#6a4a2a', shoes: '#5a3a22', tall: true, sad: true },   // 18/11 : poupée dessinée par le code (src/render/paperdoll.js), tenue d'après son sprite
   home: 'franck', outScene: 'quartier', inside: { x: 5.5, y: 2.7 }, day: { x: 11.5, y: 16.4 },
   walks: [{ scene: 'foret', from: 390, to: 450, every: 2, at: { x: 5.5, y: 12.5 } }],   // à l'aube, quand personne ne le voit (à partir de 2 cœurs) (💡)
   shy: { minHearts: 2, from: 1020, to: 1140 },   // à partir de 2 cœurs, il s'assoit devant chez lui en fin de journée
@@ -140,7 +140,7 @@ export const FRANCK = {
 // (trop antisocial) : il est content qu'on arrive bousculer un peu les choses.
 export const MYST = {
   id: 'myst', name: 'Myst', de: 'de lui', color: '#a99ad0', voice: 'voiceFranck',
-  look: { body: 'h', bottom: 'pant', skin: '#dcdcd6', hair: 2, hairC: '#1c1a20', shirt: '#1d1b22', pants: '#141218', tall: true, coat: true, sheet: 'myst' },   // cheveux noirs en épis, teint pâle, long manteau noir
+  look: { body: 'h', bottom: 'pant', skin: '#dcdcd6', hair: 2, hairC: '#1c1a20', shirt: '#1d1b22', pants: '#141218', shoes: '#2a2228', tall: true, coat: true },   // 18/11 : poupée dessinée par le code (src/render/paperdoll.js), tenue d'après son sprite
   home: null, mystic: true,
   // trajet du quartier jusqu'à la cabane : du portail sud de la ferme, on remonte le grand chemin
   route: [{ x: 16.5, y: 34.4 }, { x: 16.5, y: 20.6 }, { x: 3.6, y: 20.6 }],   // de la gare au quartier par le grand chemin
@@ -180,7 +180,7 @@ export const MYST = {
 // saturées et qu'elle reçoit le surplus ; de longues journées… elle frise le burn-out. (Histoire dévoilée par cœurs.)
 export const HAILEY = {
   id: 'hailey', name: 'Hailey', de: "d'elle", color: '#7cc8c0', voice: 'voiceLuna',
-  look: { body: 'f', bottom: 'pant', skin: '#f3d0b4', hair: 3, hairC: '#8a5a32', shirt: '#f4f4f0', pants: '#2a2a4a', stetho: true, shoes: '#3a3a44', sheet: 'hailey' },   // blouse blanche, stéthoscope, chignon
+  look: { body: 'f', bottom: 'pant', skin: '#f3d0b4', hair: 1, curly: true, hairC: '#9a5a2a', shirt: '#f4f0e8', stetho: true, pants: '#3a5a8a', shoes: '#6a3a1e' },   // 18/11 : poupée dessinée par le code (src/render/paperdoll.js), tenue d'après son sprite
   home: 'hailey', inside: { x: 3.5, y: 3.7 },
   // Routine quotidienne (16/11, 💡 à adapter par l'utilisateur) : elle varie un peu chaque jour (voir docs/CARNET.md).
   // Lieux nommés, puis la journée : [heure de début, lieu]. Les variantes sont choisies selon le jour.
@@ -238,7 +238,7 @@ export const HAILEY = {
 // apprendre à faire des armes. Il traîne dans le quartier (sa quête du bijou a été retirée le 17/11).
 export const IGOR = {
   id: 'igor', name: 'Igor', de: 'de lui', color: '#e0884a', voice: 'voiceChef',
-  look: { body: 'h', bottom: 'pant', skin: '#d9a07a', hair: 0, hairC: '#3a2a1e', bald: true, shirt: '#8a8a8a', pants: '#5a4a3a', tall: true, hat: 'bandeau', tank: true, muscle: true, apron: '#7a4a2a', gloves: '#3a2a20', beard: '#6a5a4a', sheet: 'igor' },   // chauve, bandeau noir, tablier de cuir, gants
+  look: { body: 'h', bottom: 'pant', skin: '#d9a07a', bald: true, hat: 'bandeau', beard: '#4a4048', shirt: '#8a8a8a', tank: true, muscle: true, apron: '#7a4a2a', gloves: '#3a2a20', pants: '#5a4a3a', shoes: '#3a2a20', tall: true },   // 18/11 : poupée dessinée par le code (src/render/paperdoll.js), tenue d'après son sprite
   home: null, dayScene: 'quartier', day: { x: 18.5, y: 13.5 },   // il traîne dans la ruelle du quartier 💡
   traits: ['Forgeron', 'Ancien sportif de haut niveau', 'Cheville abîmée', 'Fait de bons outils', 'Rêve de forger des armes'],
   taste: { adore: [], aime: ['copper_ore', 'iron_ore'], naime: ['berry'], deteste: [] },   // 💡 un forgeron aime le minerai
@@ -287,7 +287,7 @@ export const INTRO_LINES = [
 // des gens. Rêve d'ouvrir un jour un magasin en ville (future quête). Marié à Suzie, papa de Jade. Répliques 🆕 à valider.
 export const ED = {
   id: 'ed', name: 'Ed', de: 'de lui', color: '#e0a84a', voice: 'voiceChef',
-  look: { body: 'h', bottom: 'pant', skin: '#e8b48c', hair: 0, hairC: '#5a3a22', shirt: '#9a9aa0', pants: '#6a5a3a', hat: 'cap', beard: '#5a3a22', suspenders: '#4a2e1a', towel: true, stout: true, tall: true, sheet: 'ed' },   // casquette bleue, barbe, chemise grise, bretelles
+  look: { body: 'h', bottom: 'pant', skin: '#e8b48c', hair: 0, hairC: '#5a3a22', hat: 'cap', beard: '#6a3a1e', shirt: '#9a9aa0', suspenders: '#6a4426', towel: true, pants: '#6a4a2a', shoes: '#5a3a22', stout: true, tall: true },   // 18/11 : poupée dessinée par le code (src/render/paperdoll.js), tenue d'après son sprite
   home: 'ed', inside: { x: 3.5, y: 4.6 }, worker: { scene: 'bar', at: { x: 3.5, y: 3.7 }, from: 660, to: 1410 },   // 💡 au bar de 11 h à 23 h 30
   traits: ['Barman du saloon', 'Ancien chauffeur routier', 'Aime le contact des gens', 'Rêve d’ouvrir un magasin en ville', 'Mari de Suzie, papa de Jade'],
   taste: { adore: [], aime: ['berry_cooked', 'confiture_baies'], naime: ['slime'], deteste: [] },   // 💡 en attendant les boissons
@@ -306,7 +306,7 @@ export const ED = {
 // Suzie (femme d'Ed) et Jade (leur enfant) : histoire à écrire plus tard (voir le carnet). Elles restent à la maison pour l'instant.
 export const SUZIE = {
   id: 'suzie', name: 'Suzie', de: "d'elle", color: '#d88ab0', voice: 'voiceLuna',
-  look: { body: 'f', bottom: 'robe', skin: '#f1c7a5', hair: 3, hairC: '#c8a060', shirt: '#9ab8e0', pants: '#9ab8e0', apron: '#f4eee0', apronFlowers: true, sheet: 'suzie' },   // robe bleu ciel, tablier fleuri, chignon blond
+  look: { body: 'f', bottom: 'robe', skin: '#f1c7a5', hair: 4, braid: true, hairC: '#8a4a2a', shirt: '#8aa0d8', pants: '#8aa0d8', apron: '#f4eee0', apronFlowers: true, shoes: '#6a3a1e' },   // 18/11 : poupée dessinée par le code (src/render/paperdoll.js), tenue d'après son sprite
   home: 'ed', stay: true, inside: { x: 2.5, y: 3.6 },
   traits: ['Femme d’Ed', 'Maman de Jade'], taste: {},
   chat: ["Bonjour ! Vous connaissez mon mari, Ed ? Il passe ses journées au saloon.", "Jade joue en haut. Elle a toujours mille idées."],
@@ -314,7 +314,7 @@ export const SUZIE = {
 };
 export const JADE = {
   id: 'jade', name: 'Jade', de: "d'elle", color: '#8ad0a0', voice: 'voiceLuna',
-  look: { body: 'f', bottom: 'pant', skin: '#f1c7a5', hair: 5, hairC: '#8a5a32', shirt: '#f4f4f0', pants: '#3a6ab0', overalls: '#3a6ab0', shoes: '#c0392b', kid: true, sheet: 'jade' },   // couettes, salopette bleue, chaussures rouges
+  look: { body: 'f', bottom: 'pant', skin: '#e8b48c', hair: 5, hairC: '#2a2030', shirt: '#f4f4f0', overalls: '#3a6ab0', pants: '#3a6ab0', shoes: '#c0392b', kid: true },   // 18/11 : poupée dessinée par le code (src/render/paperdoll.js), tenue d'après son sprite
   home: 'ed_etage', stay: true, inside: { x: 3.5, y: 4.6 },
   traits: ['Fille d’Ed et Suzie'], taste: {},
   chat: ["T'es qui, toi ? Moi c'est Jade !", "Papa, il dit qu'un jour il aura un magasin. Avec plein de bonbons dedans."],
@@ -371,7 +371,7 @@ export const INTRO_MYST = {
 // Son four est en panne : le réparer (marteau, 30 pierres + 15 bois) rapporte le couteau (quête principale). Répliques 🆕.
 export const CUISTOT = {
   id: 'cuistot', name: 'Remy Gusto', title: 'cuistot', de: 'de lui', color: '#f2a03a', voice: 'voiceFranck',
-  look: { body: 'h', bottom: 'pant', skin: '#e8b48c', hair: 0, hairC: '#3a2a20', shirt: '#f4f4f0', pants: '#4a4a56', hat: 'toque', buttons: true, bandana: '#c0392b', checkPants: true, mustache: '#3a2a20', sheet: 'remy' },   // toque, veste de chef, foulard rouge, pantalon à carreaux
+  look: { body: 'h', bottom: 'pant', skin: '#e8b48c', hair: 0, hairC: '#3a2a20', hat: 'toque', shirt: '#f4f4f0', buttons: true, bandana: '#c0392b', beard: '#a8582a', checkPants: true, pants: '#4a4a56', shoes: '#2a2a2a', stout: true },   // 18/11 : poupée dessinée par le code (src/render/paperdoll.js), tenue d'après son sprite
   home: 'remy', inside: { x: 3.5, y: 4.6 }, worker: { scene: 'resto', at: { x: 11.5, y: 4.6 }, from: 420, to: 1320 },   // 💡 en cuisine de 7 h à 22 h
   traits: ['Cuisinier du restaurant', 'Fils abandonné d’un cuisinier renommé', 'On ne voyait en lui que « le fils de »', 'Vit de sa passion, loin de tout', 'Déteste son père'],
   taste: { adore: [], aime: ['confiture_baies', 'confiture_mures'], naime: ['slime'], deteste: [] },   // 💡
@@ -401,7 +401,7 @@ export const CUISTOT = {
 // envers Manu, le Maire. C'est lui qui apprend à faire le coffre (quête principale). Répliques 🆕.
 export const HARRY = {
   id: 'harry', name: 'Harry Fordson', title: 'charpentier', de: 'de lui', color: '#c99560', voice: 'voiceChef',
-  look: { body: 'h', bottom: 'pant', skin: '#e8b48c', hair: 0, hairC: '#a86a32', shirt: '#c0392b', pants: '#3a5a8a', tall: true, hat: 'plat', plaid: true, toolbelt: true, sheet: 'harry' },   // casquette plate grise, chemise à carreaux rouge, ceinture à outils
+  look: { body: 'h', bottom: 'pant', skin: '#e8b48c', hair: 0, hairC: '#a86a32', hat: 'plat', shirt: '#c0392b', plaid: true, toolbelt: true, pants: '#3a5a8a', shoes: '#5a3a22', tall: true },   // 18/11 : poupée dessinée par le code (src/render/paperdoll.js), tenue d'après son sprite
   home: null, dayScene: 'town', day: { x: 7.5, y: 16.6 },   // devant son atelier
   traits: ['Charpentier de père en fils', 'Très doué', 'Malade, sans symptôme visible', 'Aimerait se marier un jour', 'Beaucoup de dettes envers Manu, le Maire'],
   taste: { adore: [], aime: ['wood'], naime: ['slime'], deteste: [] },   // 💡
