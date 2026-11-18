@@ -26,6 +26,16 @@ export const QUESTS = {
       { id: 'grange', t: 'Rafistoler la grange (100 bois et 60 pierres) et y trouver la pelle, pour bêcher et planter', done: S => !!S.tools?.shovel }
     ]
   },
+  // 18/11 : le courrier des graines (le lendemain de la pelle) lance le premier champ
+  champ: {
+    n: 'Le premier champ', i: '🌾', main: true, unlock: S => !!S.mail?.seedsRead,
+    steps: [
+      { id: 'courrier', t: 'Lire le courrier dans la boîte aux lettres de la ferme (graines de blé en pièce jointe)', done: S => !!S.mail?.seedsRead },
+      { id: 'becher', t: 'Bêcher des carrés de terre à la pelle 🪏, sur l’herbe de la ferme', done: S => Object.keys(S.tilled || {}).length > 0 },
+      { id: 'semer', t: 'Choisir les graines de blé dans le sac et glisser sur les carrés pour semer', done: S => Object.values(S.plots || {}).some(p => p.crop === 'wheat') || !!S.quests?.champ?.recolte },
+      { id: 'recolter', t: 'Le lendemain, récolter tout le champ d’un coup à la faucille', done: S => !!S.quests?.champ?.recolte }
+    ]
+  },
   // Lot 13 : la lettre de Golgolas (dès le niveau 5) ouvre la zone cachée au sud de la gare
   golgolas: {
     n: 'Le centre de Golgolas', i: '🧙', main: true, unlock: S => !!S.golgo?.read,

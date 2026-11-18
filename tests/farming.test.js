@@ -21,7 +21,7 @@ test('récolte seulement à maturité, en temps réel', () => {
   const { g, S, clock } = makeGame();
   plant(g, 5, 9, 'wheat_seed');
   assert.equal(harvest(g, 5, 9), false);
-  clock.t += 60_000;
+  clock.t += 1_200_000;
   assert.equal(cropProgress(S.plots['5,9'], clock.t), 1);
   assert.equal(harvest(g, 5, 9), true);
   assert.equal(S.inv.wheat, 2);
@@ -32,7 +32,7 @@ test('farmAction (glisser) : graine sélectionnée = plante, faucille = récolte
   const { g, S, clock } = makeGame();
   S.sel = 'wheat_seed';
   for (let x = 4; x <= 7; x++) assert.equal(farmAction(g, x, 8), true);
-  clock.t += 61_000; S.sel = 'sickle';
+  clock.t += 1_201_000; S.sel = 'sickle';
   for (let x = 4; x <= 7; x++) farmAction(g, x, 8);
   assert.equal(S.inv.wheat, 8);
 });
@@ -58,7 +58,7 @@ test('le champ n’est pas prêt au départ : il faut le bêcher à la pelle', (
   S.sel = 'shovel';
   assert.equal(farmAction(g, 5, 9), true);
   assert.equal(isTilled(S, 5, 9), true);
-  assert.equal(till(g, 20, 20), false, 'hors du champ');
+  assert.equal(till(g, 5, 0), false, 'pas sur la haie');
   assert.equal(plant(g, 5, 9, 'hay_seed'), true);
 });
 

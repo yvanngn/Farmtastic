@@ -7,6 +7,7 @@ export const ITEMS = {
   carrot_seed: { n: 'Graine de carotte', p: 2, i: '🌱', seed: 'carrot', buy: 10 },
   hay_seed: { n: 'Graine de foin', p: 1, i: '🌱', seed: 'hay', buy: 4 },
   wheat: { n: 'Blé', p: 6, i: '🌾' },
+  straw: { n: 'Paille', p: 1, i: '🟫' },   // 18/11 : se vend 1 $ l'unité
   corn: { n: 'Maïs', p: 18, i: '🌽' },
   carrot: { n: 'Carotte', p: 12, i: '🥕', eat: { e: 15 } },
   egg: { n: 'Œuf', p: 25, i: '🥚', eat: { e: 20, h: 5 } },

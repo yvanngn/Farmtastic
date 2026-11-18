@@ -4,6 +4,7 @@ import { attack, enemyAt } from '../systems/combat.js';
 import { isHouse, isGrange } from '../world/map.js';
 import { repairAt } from '../systems/repair.js';
 import { act } from '../systems/actions.js';
+import { ITEMS } from '../data/items.js';
 import { dirFrom } from '../systems/movement.js';
 
 const MAP = { z: 'up', w: 'up', arrowup: 'up', s: 'down', arrowdown: 'down', q: 'left', a: 'left', arrowleft: 'left', d: 'right', arrowright: 'right' };
@@ -33,7 +34,7 @@ export function createInput(cv, g, renderer, { isActive, onMenu }) {
       clearInterval(hold);
       hold = setInterval(() => { if (repairAt(g.S, tx, ty) && Math.hypot(tx + .5 - g.S.x, ty + .5 - g.S.y) < 3.2) act(g, tx, ty); }, 420);   // un coup de marteau toutes les 0,4 s
     }
-    dragMode = farmAction(g, tx, ty);
+    dragMode = farmAction(g, tx, ty) || (S.scene || 'farm') === 'farm' && !!(ITEMS[S.sel] && ITEMS[S.sel].seed);   // 18/11 : graines en main → on glisse sur tous les carrés (façon Hay Day)
     if (!dragMode) g.player.target = { tx, ty, reach: isHouse(tx, ty) || isGrange(tx, ty) ? 2.5 : 1.4 };
   });
   cv.addEventListener('pointermove', e => {

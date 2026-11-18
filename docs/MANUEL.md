@@ -49,7 +49,7 @@ Le héros (**Cloud Jimny** par défaut) arrive en train à Farmwest pour reprend
 - **Cabane** : à retaper (80 bois + 30 pierres), puis à **agrandir** (160 bois + 60 pierres, marteau en main devant la cabane) : l'intérieur devient bien plus grand.
 - **Lit** : plan chez Harry (80 $), à fabriquer (50 bois + 10 pierres) puis à installer dans la cabane ; avant, on dort sous la tente.
 - **Grange** : à rafistoler (100 bois + 60 pierres) ; on y trouve la pelle.
-- **Champ** : bêcher, planter, arroser, récolter (cultures façon Hay Day).
+- **Champ** : le lendemain du jour où l'on trouve la pelle, un **courrier** arrive (boîte aux lettres) avec **20 graines de blé**. À la pelle, on bêche des **carrés** sur l'herbe libre de la ferme ; on choisit les graines dans le sac et on **glisse** sur les carrés pour tout semer. Le **blé pousse en 1 jour** ; le lendemain, à la **faucille**, toucher un épi mûr récolte **tout le champ d'un coup**, sans bouger. Chaque carré donne 2 blés et 3 **pailles** (1 $ pièce).
 - **Coffre** : rangement (80 bois + 20 pierres), plan acheté chez Harry (60 $).
 - **Bac de vente** : tout se vend là.
 - **Animaux** : poule, lapin, cochon, mouton, chien et chat (marchand d'animaux du centre-ville).
@@ -76,7 +76,7 @@ Le héros (**Cloud Jimny** par défaut) arrive en train à Farmwest pour reprend
 - Habitants : **Myst**, **Luna**, **Franck**, **Hailey** (clinique), **Manu** (le Maire, ranch), **Igor** (forgeron), **Ed** (saloon), **Suzie**, **Jade**, **Remy Gusto** (restaurant), **Harry Fordson** (charpentier), le **cocher**, l'**esprit** de la vieille femme (la nuit, sur la ferme) ; **Rouky** et **Rox** (cabane du pêcheur).
 
 ## 12. Quêtes
-- **Principales** : « Premiers pas » (tente, nuit, pioche, hache, feu, cabane, four de Remy, grange et pelle), « Ghostbuster » (l'esprit de la ferme) ; « La canne de Rouky » (elle apparaît quand on va le voir : os pour Rox → canne à pêche).
+- **Principales** : « Premiers pas » (tente, nuit, pioche, hache, feu, cabane, four de Remy, grange et pelle), « Ghostbuster » (l'esprit de la ferme) ; « Le premier champ » (courrier des graines → bêcher → semer → récolter) ; « La canne de Rouky » (elle apparaît quand on va le voir : os pour Rox → canne à pêche).
 - **Secondaires** : elles apparaissent quand la cabane est retapée. Les premières : **Agrandir la cabane**, **Un vrai lit**, **Un coffre pour ranger** (plans chez Harry), **Aider Franck à sortir**.
 - **Du jour** : au panneau d'affichage du centre-ville.
 - **Demandes de fabrication** : une par habitant et par semaine (« 🛠️ Une demande ? »), et une au panneau.

@@ -156,6 +156,13 @@ Pour que **les scènes du jeu** atteignent le niveau de détail de l'image, scè
 - [x] **Un coffre pour ranger** : acheter le **plan du coffre** chez Harry (💡 60 $), le fabriquer (80 bois + 20 pierres). Le coffre quitte la quête principale « Premiers pas » ; Harry ne l'apprend plus gratuitement.
 - ⏳ Plus tard : la cabane agrandie vue de dehors (aujourd'hui seul l'intérieur change).
 
+## Lot 14 — Le premier champ (demande du 18/11) ✅ v0.1.58
+Décrit par l'utilisateur : le lendemain du jour où l'on obtient la pelle, un courrier arrive avec des graines de blé en pièce jointe. Planter fait partie des quêtes principales. On crée des carrés à la pelle par terre, puis, comme dans Hay Day, on choisit les graines dans le sac et on glisse sur tous les carrés. Le blé pousse en 1 jour ; à la faucille on récolte tout d'un coup sans se déplacer. Tuto. La paille se vend 1 $.
+- [x] Courrier des graines (boîte aux lettres de la ferme) + quête principale « Le premier champ » + tuto (dans le courrier et bulles au premier carré, premier semis, première récolte).
+- [x] Bêcher sur toute l'herbe libre de la ferme ; glisser avec les graines en main sème tous les carrés.
+- [x] Blé : mûr en 1 jour (≈ 20 min, ou au matin suivant) ; faucille → tout ce qui est mûr d'un coup.
+- [x] Objet **paille** (1 $). 💡 20 graines dans le courrier ; 💡 un carré de blé donne 2 blés + 3 pailles.
+
 ## Lot 13 — Golgolas, la météorite et le centre de l'elfe (demande du 18/11) ✅ v0.1.56
 Décrit par l'utilisateur : au niveau 5, une lettre de l'elfe **Golgolas** (vieil elfe ermite) arrive dans une **boîte aux lettres à la ferme**. La lire débloque une zone cachée au sud de la gare. Il faut d'abord casser une **météorite** (~5000 coups de pioche, 1 pierre tous les 10 coups, énergie normale), puis le **centre niveau 1** demande 500 bois, 500 pierres, 200 champignons. Récompense : piles de 10 → 15 (remplace le magasin d'amélioration).
 - [x] Boîte aux lettres (drapeau rouge si lettre non lue), lettre 🆕, planches qui barrent la sortie sud de la gare jusqu'à la lecture.

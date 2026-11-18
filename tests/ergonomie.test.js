@@ -26,7 +26,7 @@ test('coup sur un arbre : animation d’outil et impact émis', () => {
 test('récolte à la faucille : animation', () => {
   const { g, S, clock } = makeGame();
   let tool = null; g.bus.on('swing', t => { tool = t; });
-  plant(g, 5, 9, 'wheat_seed'); clock.t += 61_000; S.sel = 'sickle';
+  plant(g, 5, 9, 'wheat_seed'); clock.t += 1_201_000; S.sel = 'sickle';
   harvest(g, 5, 9);
   assert.equal(tool, 'sickle');
 });

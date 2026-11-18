@@ -8,6 +8,8 @@ Le détail de chaque point est dans `docs/MANUEL.md`.
 - [ ] **Ghostbuster** : 3 nuits · approcher l'esprit · ⏳ lui parler (objet à venir)
 - [ ] **La canne de Rouky** : aller voir Rouky à la cabane du pêcheur · trouver un os en creusant un petit tas · donner l'os à Rox · recevoir la canne à pêche sommaire
 
+- [ ] **Le premier champ** : lire le courrier · bêcher des carrés · semer le blé · tout récolter à la faucille
+
 ## Quêtes secondaires
 - [ ] **Agrandir la cabane** (160 bois + 60 pierres)
 - [ ] **Un vrai lit** : plan chez Harry · fabriquer · installer

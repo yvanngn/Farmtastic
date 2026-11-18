@@ -1,6 +1,7 @@
 import { folkSprite, CAST } from './folk.js';
 import { coachBody, coachWheel, horse, locoSprite, wagonSprite, fountainSprite, houseSprite } from './props.js';
 import { MAILBOX, METEOR_HITS } from '../systems/golgolas.js';
+import { hasUnread } from '../systems/mail.js';
 import { GOLGO_CENTER, METEOR } from '../world/scenes.js';
 import { isHouse as _isHouse, isGrange as _isGrange, buildingAt as _bAt } from '../world/map.js';
 const ROOF_TILES = 'MUJRAHBEXCGNKOVZLPY';
@@ -497,7 +498,7 @@ let swing = null;
         ctx.fillStyle = `rgba(255,${140 + 60 * Math.sin(now / 300)},60,.85)`; for (const [a, b, w] of [[-12, -10, 9], [4, -16, 7], [10, -6, 8], [-4, -4, 5]]) ctx.fillRect(Math.round(cx + a * k), Math.round(cy + b * k), Math.max(2, w * k | 0), 1);
         ctx.fillStyle = 'rgba(0,0,0,.6)'; ctx.fillRect(cx - 20, cy + 10, 40, 4); ctx.fillStyle = '#f2a03a'; ctx.fillRect(cx - 20, cy + 10, Math.round(40 * left), 4); } });
     }
-    if (scene === 'farm') list.push({ z: MAILBOX.y + .8, d: () => { const x = MAILBOX.x * T, y = MAILBOX.y * T, un = S.golgo && S.golgo.letter && !S.golgo.read;   // lot 13 : boîte aux lettres de la ferme
+    if (scene === 'farm') list.push({ z: MAILBOX.y + .8, d: () => { const x = MAILBOX.x * T, y = MAILBOX.y * T, un = hasUnread(S);   // lot 13 : boîte aux lettres de la ferme
       ctx.fillStyle = '#5a3a22'; ctx.fillRect(x + 7, y + 4, 2, 12); ctx.fillStyle = '#3a5a8a'; ctx.fillRect(x + 3, y - 2, 10, 7); ctx.fillStyle = '#5a7aaa'; ctx.fillRect(x + 3, y - 2, 10, 2); ctx.fillStyle = '#1e2a40'; ctx.fillRect(x + 3, y + 5, 10, 1);
       ctx.fillStyle = un ? '#e0402a' : '#8a2a1a'; ctx.fillRect(x + 12, un ? y - 6 : y, 2, un ? 6 : 4); if (un) ctx.fillRect(x + 12, y - 6, 4, 2); } });
     if (scene === 'gare' && !(S.golgo && S.golgo.read)) list.push({ z: 13, d: () => { const x = 10 * T, y = 12 * T + 8; ctx.fillStyle = '#6a4426'; ctx.fillRect(x - 2, y, 36, 4); ctx.fillRect(x - 2, y + 7, 36, 4); ctx.fillStyle = '#4a2e1a'; ctx.fillRect(x, y - 4, 3, 18); ctx.fillRect(x + 29, y - 4, 3, 18); } });   // planches qui barrent le chemin du sud

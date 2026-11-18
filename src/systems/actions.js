@@ -8,7 +8,7 @@ import { sleep } from './time.js';
 import { sellAll } from './economy.js';
 import { hitObject } from './resources.js';
 import { findAnimalAt, interactAnimal, feedAll } from './animals.js';
-import { farmAction, isRipe, isTilled } from './farming.js';
+import { farmAction, isRipe, isTilled, canTill } from './farming.js';
 import { ITEMS } from '../data/items.js';
 import { BUILDINGS } from '../data/buildings.js';
 import { hasTool } from './skills.js';
@@ -31,6 +31,7 @@ import { zoneOpen, ZONE_LEVEL } from './level.js';
 import { ADMIN } from './admin.js';
 import { digMound, moundAt, ensureMounds } from './mounds.js';
 import { roxAt, petRox } from './rouky.js';
+import { openMailbox } from './mail.js';
 import { readLetter, hitMeteor, zoneOpen as golgoOpen, MAILBOX } from './golgolas.js';
 import { METEOR } from '../world/scenes.js';
 
@@ -51,7 +52,7 @@ export function smartTool(g, tx, ty) {
   if (holdsItem) return S.sel;
   const p = S.plots[key(tx, ty)];
   if (p && isRipe(p, g.now())) return own(S, 'sickle');
-  if (isPlot(tx, ty) && !isTilled(S, tx, ty) && hasTool(S, 'shovel') && (holdsItem && ITEMS[S.sel] && ITEMS[S.sel].seed || S.sel === 'shovel' || S.sel === 'hand')) return 'shovel';
+  if (canTill(S, tx, ty) && !isTilled(S, tx, ty) && hasTool(S, 'shovel') && S.sel === 'shovel' || isPlot(tx, ty) && !isTilled(S, tx, ty) && hasTool(S, 'shovel') && (holdsItem && ITEMS[S.sel] && ITEMS[S.sel].seed || S.sel === 'shovel' || S.sel === 'hand')) return 'shovel';
   return S.sel === 'sword' || S.sel === 'axe' || S.sel === 'pick' || S.sel === 'shovel' ? 'hand' : S.sel;
 }
 
@@ -100,7 +101,7 @@ function act0(g, tx, ty) {
     talk(g, npc.id); return 'talk';
   }
   if (roxAt(g, tx, ty)) return petRox(g);   // lot 12 : Rox
-  if (sc === 'farm' && tx === MAILBOX.x && ty === MAILBOX.y) return readLetter(g);   // lot 13 : boîte aux lettres de la ferme
+  if (sc === 'farm' && tx === MAILBOX.x && ty === MAILBOX.y) return openMailbox(g);   // lot 13 + 18/11 (courrier des graines) : boîte aux lettres de la ferme
   if (sc === 'golgolas' && tx >= METEOR.x && tx < METEOR.x + METEOR.w && ty >= METEOR.y && ty < METEOR.y + METEOR.h) return hitMeteor(g);   // lot 13 : la météorite
   { ensureMounds(S, sc); const m = digMound(g, tx, ty); if (m) return m === 'noshovel' || m === 'tired' ? m : 'dig'; }   // lot 12 : petits tas
   if (pickTestSword(g, tx, ty)) return 'pick';

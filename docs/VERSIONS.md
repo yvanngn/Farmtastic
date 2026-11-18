@@ -2,6 +2,7 @@
 
 Semver horodaté (heure de Paris). Patch automatique à chaque publication ; mineure et majeure sur décision de l'utilisateur.
 
+- **0.1.58** — 2026-11-18 22:02 — lot 14 : premier champ (courrier des graines, carrés partout, semis en glissant, blé en 1 jour, récolte d'un coup, paille 1 $)
 - **0.1.57** — 2026-11-18 21:38 — flèches sans nom, grange rouge nette, héros transparent derrière les toits, images Gemini supprimées
 - **0.1.56** — 2026-11-18 21:34 — lot 13 : Golgolas, boîte aux lettres, météorite, centre de l'elfe (piles 15)
 - **0.1.55** — 2026-11-18 21:22 — maisons, ranch, grange, gare, entrepôts, cabane et bâtiments de la carte en pixel moderne ; plus de noms de lieux sur la carte
