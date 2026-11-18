@@ -26,6 +26,15 @@ export const QUESTS = {
       { id: 'grange', t: 'Rafistoler la grange (100 bois et 60 pierres) et y trouver la pelle, pour bêcher et planter', done: S => !!S.tools?.shovel }
     ]
   },
+  // Lot 13 : la lettre de Golgolas (dès le niveau 5) ouvre la zone cachée au sud de la gare
+  golgolas: {
+    n: 'Le centre de Golgolas', i: '🧙', main: true, unlock: S => !!S.golgo?.read,
+    steps: [
+      { id: 'lettre', t: 'Lire la lettre de Golgolas (boîte aux lettres de la ferme)', done: S => !!S.golgo?.read },
+      { id: 'meteorite', t: 'Casser la météorite devant son centre, au sud de la gare (environ 5000 coups de pioche)', done: S => (S.golgo?.hits || 0) >= 5000 },
+      { id: 'materiaux', t: 'Apporter à Golgolas 500 bois, 500 pierres et 200 champignons', done: S => (S.golgo?.lvl || 0) >= 1 }
+    ]
+  },
   // Lot 12 : se débloque en allant voir Rouky à la cabane du pêcheur
   rouky: {
     n: 'La canne de Rouky', i: '🎣', main: true, unlock: S => !!S.quests?.rouky?.met,

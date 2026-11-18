@@ -446,4 +446,18 @@ export const ROUKY = {
   chat: ["La mer est calme, aujourd'hui. Les poissons aussi.", "Rox ronfle plus fort que moi. Ne le lui dis pas."],
   questions: []
 };
-NPCS.cuistot = CUISTOT; NPCS.harry = HARRY; NPCS.rouky = ROUKY;
+// Lot 13 (décrit par l'utilisateur le 18/11) : Golgolas, vieil elfe ermite, dans son centre caché au sud de la gare, écrasé par une
+// météorite. Il a entendu parler de nos talents de bâtisseur. Répliques 🆕 (💡 Claude).
+export const GOLGOLAS = {
+  id: 'golgolas', name: 'Golgolas', title: 'elfe', de: 'de lui', color: '#a8c88a', voice: 'voiceFranck',
+  look: { folk: 'golgolas', body: 'h' }, home: 'golgolas', stay: true, inside: { x: 21.5, y: 9.6 },
+  traits: ['Vieil elfe ermite', 'Vit dans un centre caché au sud de la gare', 'Une météorite a écrasé son centre'],
+  taste: { adore: [], aime: [], naime: ['slime'], deteste: [] },
+  story: [{ h: 0, t: "Golgolas. Les années ont passé sur ce centre comme l'eau sur une pierre… mais la pierre, cette fois, est tombée du ciel." }],
+  meteor: ["Te voilà ! Regarde ce rocher venu des étoiles : il bouche l'entrée de mon centre.", "Prends ta pioche. Il faudra des milliers de coups… mais chaque éclat fera un bon caillou."],
+  need: ["Pour remettre le centre debout, il me faut beaucoup de matériaux : 500 bois, 500 pierres et 200 champignons."],
+  merci: ["Merci, c'est précieux."],
+  thanks: ["Le centre tient de nouveau debout ! Tu as un vrai don.", "En remerciement, mes vieux sortilèges de rangement sont à toi : tes piles tiendront plus d'objets."],
+  chat: ["Le vent du sud porte l'odeur des pins. C'est bon signe."], questions: []
+};
+NPCS.cuistot = CUISTOT; NPCS.harry = HARRY; NPCS.rouky = ROUKY; NPCS.golgolas = GOLGOLAS;

@@ -31,6 +31,8 @@ import { zoneOpen, ZONE_LEVEL } from './level.js';
 import { ADMIN } from './admin.js';
 import { digMound, moundAt, ensureMounds } from './mounds.js';
 import { roxAt, petRox } from './rouky.js';
+import { readLetter, hitMeteor, zoneOpen as golgoOpen, MAILBOX } from './golgolas.js';
+import { METEOR } from '../world/scenes.js';
 
 const TOOL_IDS = ['hand', 'axe', 'pick', 'sickle', 'shovel', 'sword', 'rod', 'hammer'];
 const own = (S, t) => (hasTool(S, t) ? t : 'hand');
@@ -98,6 +100,8 @@ function act0(g, tx, ty) {
     talk(g, npc.id); return 'talk';
   }
   if (roxAt(g, tx, ty)) return petRox(g);   // lot 12 : Rox
+  if (sc === 'farm' && tx === MAILBOX.x && ty === MAILBOX.y) return readLetter(g);   // lot 13 : boîte aux lettres de la ferme
+  if (sc === 'golgolas' && tx >= METEOR.x && tx < METEOR.x + METEOR.w && ty >= METEOR.y && ty < METEOR.y + METEOR.h) return hitMeteor(g);   // lot 13 : la météorite
   { ensureMounds(S, sc); const m = digMound(g, tx, ty); if (m) return m === 'noshovel' || m === 'tired' ? m : 'dig'; }   // lot 12 : petits tas
   if (pickTestSword(g, tx, ty)) return 'pick';
   if (pickFieldTool(g, tx, ty)) return 'pick';
@@ -117,6 +121,7 @@ function act0(g, tx, ty) {
   const d = doorAt(sc, tx, ty);
   if (d && ZONE_LEVEL[d.to] && !zoneOpen(S, d.to) && !ADMIN.on) { g.bus.emit('sfx', 'denied'); g.bus.emit('toast', d.to === 'foret' ? `🌲 Les arbres sont si serrés qu'on ne passe pas… (niveau ${ZONE_LEVEL.foret} requis)` : `🔒 La caverne attendra : niveau ${ZONE_LEVEL[d.to]} requis.`); return 'locked'; }   // lot 8 : zones débloquées par le niveau
   if (d && d.to === 'wild' && !isOpen(S)) { g.bus.emit('sfx', 'denied'); g.bus.emit('toast', 'La grille de la caverne est fermée à clé. Le Maire saura peut-être…'); return 'locked'; }
+  if (d && d.to === 'golgolas' && !golgoOpen(S) && !ADMIN.on) { g.bus.emit('sfx', 'denied'); g.bus.emit('toast', '🚧 Des planches barrent le chemin du sud. Quelqu’un les retirera peut-être un jour…'); return 'locked'; }   // lot 13
   if (d && d.to === 'plage' && !seaOpen(S)) { g.bus.emit('sfx', 'denied'); g.bus.emit('toast', '🚧 Le chemin de la plage est barré pour l’instant.'); return 'locked'; }
   if (d && HOME_OWNER[d.to] && !canEnterHome(S, HOME_OWNER[d.to])) return knock(g, HOME_OWNER[d.to]);
   if (d && d.to === 'house' && isRepaired(S, 'house2')) { enterScene(g, 'maison', { x: 7.5, y: 9.4 }); return 'door'; }   // 18/11 : la cabane agrandie

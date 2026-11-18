@@ -275,6 +275,17 @@ LAYOUTS.plage = (() => {
   for (let x = 21; x < W; x++) { m[9][x] = '.'; m[10][x] = '.'; } m[9][W - 1] = 'D'; m[10][W - 1] = 'D';   // lot 2e : passerelle le long de la plage jusqu'au port (à l'est)
   return m.reverse().map(r => r.join(''));
 })();
+// Lot 13 : la zone cachée de Golgolas, au sud de la gare : clairière, centre abandonné (C) écrasé par une météorite (m).
+LAYOUTS.golgolas = (() => {
+  const W = 30, H = 20, m = Array.from({ length: H }, (_, y) => Array.from({ length: W }, (_, x) => (x === 0 || y === H - 1 || x === W - 1 || y === 0 ? 'T' : 'g')));
+  for (let y = 0; y < 13; y++) { m[y][14] = '.'; m[y][15] = '.'; } m[0][14] = 'D'; m[0][15] = 'D';
+  for (let y = 3; y <= 7; y++) for (let x = 10; x <= 19; x++) m[y][x] = 'C';
+  for (let y = 9; y <= 10; y++) for (let x = 13; x <= 16; x++) m[y][x] = 'm';
+  for (const [x, y] of [[3, 4], [6, 12], [24, 5], [26, 13], [4, 16], [22, 16], [9, 15], [19, 14]]) m[y][x] = 'T';
+  return m.map(r => r.join(''));
+})();
+export const GOLGO_CENTER = { x: 10, y: 3, w: 10, h: 5 }, METEOR = { x: 13, y: 9, w: 4, h: 2 };
+// Gare : un chemin descend au sud vers la zone cachée (barré tant que la lettre de Golgolas n'est pas lue).
 // Lot 12 : la station balnéaire devient la cabane du pêcheur : cabane de Rouky (X) au nord de la plage, porte en (12, 4).
 export const ROUKY_CABIN = { x: 10, y: 2, w: 5, h: 3, door: 12 };
 LAYOUTS.plage = (() => {
@@ -450,6 +461,7 @@ LAYOUTS.gare = (() => {
   return m.map(r => r.join(''));
 })();
 // Rond-point (26 × 18) : chemins en croix, anneau autour de la fontaine (lot 8 : plus de panneaux indicateurs)
+LAYOUTS.gare = (() => { const m = LAYOUTS.gare.map(r => r.split('')), H = m.length; for (let y = 10; y < H - 1; y++) { m[y][10] = '.'; m[y][11] = '.'; } m[H - 1][10] = 'D'; m[H - 1][11] = 'D'; return m.map(r => r.join('')); })();
 LAYOUTS.rondpoint = (() => {
   const W = 26, H = 18, m = grid(W, H, 's');
   for (let y = 0; y < H; y++) { m[y][12] = '.'; m[y][13] = '.'; } for (let x = 0; x < W; x++) { m[8][x] = '.'; m[9][x] = '.'; }
@@ -505,7 +517,8 @@ export const SCENES = {
     { x: 47, y: 5, to: 'foret', spawn: { x: 1.6, y: 9.6 } }, { x: 47, y: 4, to: 'foret', spawn: { x: 1.6, y: 9.6 } }, { x: 47, y: 6, to: 'foret', spawn: { x: 1.6, y: 9.6 } }   // Farmwest : à l'est des fermes, la forêt
   ] },
   // Farmwest (lot 3) : la gare, à l'ouest du centre-ville
-  gare: { W: 24, H: 14, outdoor: true, doors: [{ x: 23, y: 8, to: 'town', spawn: { x: 1.6, y: 10.6 } }, { x: 23, y: 9, to: 'town', spawn: { x: 1.6, y: 10.6 } }] },
+  golgolas: { W: 30, H: 20, outdoor: true, doors: [{ x: 14, y: 0, to: 'gare', spawn: { x: 11, y: 11.8 } }, { x: 15, y: 0, to: 'gare', spawn: { x: 11, y: 11.8 } }] },   // lot 13
+  gare: { W: 24, H: 14, outdoor: true, doors: [{ x: 10, y: 13, to: 'golgolas', spawn: { x: 15, y: 1.8 } }, { x: 11, y: 13, to: 'golgolas', spawn: { x: 15, y: 1.8 } }, { x: 23, y: 8, to: 'town', spawn: { x: 1.6, y: 10.6 } }, { x: 23, y: 9, to: 'town', spawn: { x: 1.6, y: 10.6 } }] },
   // Farmwest (lot 2) : rond-point (carrefour), ranch du Maire, zone portuaire
   rondpoint: { W: 26, H: 18, outdoor: true, doors: [
     { x: 12, y: 0, to: 'farm', spawn: { x: 16.5, y: 33.8 } }, { x: 13, y: 0, to: 'farm', spawn: { x: 16.5, y: 33.8 } },

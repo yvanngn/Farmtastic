@@ -39,8 +39,11 @@ Le détail de chaque point est dans `docs/MANUEL.md`.
 
 ## Niveaux et zones
 - [ ] Niveau 3 (forêt) · [ ] niveau 5 (caverne) · [ ] niveau 10 (⏳ diligence)
-- [ ] Visiter chaque zone : gare · centre-ville · rond-point · zone résidentielle · ranch · fête foraine · cabane du pêcheur · port · forêt (coffre du labyrinthe) · montagne · caverne
+- [ ] Visiter chaque zone : gare · centre-ville · rond-point · zone résidentielle · ranch · fête foraine · cabane du pêcheur · port · forêt (coffre du labyrinthe) · montagne · caverne · clairière de Golgolas
 
 ## Amitié (10 cœurs)
 - [ ] Myst · Luna · Franck · Hailey · Manu · Igor · Ed · Suzie · Jade · Remy · Harry · Rouky
 - [ ] Tous les goûts découverts pour chaque habitant
+
+## Golgolas
+- [ ] Lire la lettre · [ ] Casser la météorite · [ ] Centre niveau 1 (piles 15)

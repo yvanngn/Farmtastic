@@ -1,3 +1,4 @@
+import { letterTick } from './systems/golgolas.js';
 // Point d'entrée : assemble les modules et fait tourner la boucle.
 import { ensureMounds } from './systems/mounds.js';
 import { CFG } from './config.js';
@@ -304,7 +305,7 @@ function loop(now) {
     for (let i = g.fx.length - 1; i >= 0; i--) { const f = g.fx[i]; f.life -= dt; f.y -= dt * 0.75; if (f.life <= 0) g.fx.splice(i, 1); }
     renderer.updateParticles(dt);
     renderer.render(now);
-    if ((hudT += dt) > 0.25) { hudT = 0; if (started && !introActive(g.S)) questXpTick(g, QUESTS); hud.update(); repairPanel.update(started && !dialog.isOpen && !document.querySelector('.overlay.on')); }
+    if ((hudT += dt) > 0.25) { hudT = 0; if (started && !introActive(g.S)) { questXpTick(g, QUESTS); letterTick(g); } hud.update(); repairPanel.update(started && !dialog.isOpen && !document.querySelector('.overlay.on')); }
   }
   if (custom.isOpen()) custom.draw(now);
   if (title.isOpen()) title.draw(now);

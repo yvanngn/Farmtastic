@@ -156,6 +156,14 @@ Pour que **les scènes du jeu** atteignent le niveau de détail de l'image, scè
 - [x] **Un coffre pour ranger** : acheter le **plan du coffre** chez Harry (💡 60 $), le fabriquer (80 bois + 20 pierres). Le coffre quitte la quête principale « Premiers pas » ; Harry ne l'apprend plus gratuitement.
 - ⏳ Plus tard : la cabane agrandie vue de dehors (aujourd'hui seul l'intérieur change).
 
+## Lot 13 — Golgolas, la météorite et le centre de l'elfe (demande du 18/11) ✅ v0.1.56
+Décrit par l'utilisateur : au niveau 5, une lettre de l'elfe **Golgolas** (vieil elfe ermite) arrive dans une **boîte aux lettres à la ferme**. La lire débloque une zone cachée au sud de la gare. Il faut d'abord casser une **météorite** (~5000 coups de pioche, 1 pierre tous les 10 coups, énergie normale), puis le **centre niveau 1** demande 500 bois, 500 pierres, 200 champignons. Récompense : piles de 10 → 15 (remplace le magasin d'amélioration).
+- [x] Boîte aux lettres (drapeau rouge si lettre non lue), lettre 🆕, planches qui barrent la sortie sud de la gare jusqu'à la lecture.
+- [x] Scène `golgolas` : centre en ruine puis réparé, météorite qui rétrécit avec barre de progression, Golgolas (chapeau pointu, bâton) et répliques 🆕.
+- [x] Dons au centre par lots ; piles 15 ; carte « piles » du menu renvoie au centre. Quête principale « Le centre de Golgolas ».
+- [x] Tests (`tests/golgolas.test.js`).
+- [ ] Centre niveau 2 : à définir.
+
 ## Lot 12 — Cabane du pêcheur, Rouky et Rox, petits tas à creuser (demande du 18/11) ✅ v0.1.51
 Décrit par l'utilisateur :
 - La **station balnéaire** devient la **cabane du pêcheur**. Y vit **Rouky**, un vieux monsieur, avec son chien **Rox** ; il vit de la pêche. On ne sait pas grand-chose de lui : il semble être né ici et avoir travaillé dans les chemins de fer. Peu de gens viennent le voir.

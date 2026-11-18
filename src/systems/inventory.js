@@ -9,7 +9,9 @@ export const STACKS = [10, 20, 30, 50, 99];           // taille des piles par ni
 export const has = (S, id, n = 1) => (S.inv[id] || 0) >= n;
 export const count = (S, id) => S.inv[id] || 0;
 export const slots = S => S.invSlots || CFG.INV_SLOTS;
-export const stackSize = S => STACKS[Math.min(S.stackLvl || 0, STACKS.length - 1)];
+// lot 13 : les piles s'agrandissent au centre de Golgolas (niveau 1 : 15) ; les paliers déjà achetés au magasin restent acquis.
+export const CENTER_PILES = [10, 15];
+export const stackSize = S => Math.max(STACKS[Math.min(S.stackLvl || 0, STACKS.length - 1)], CENTER_PILES[Math.min((S.golgo && S.golgo.lvl) || 0, CENTER_PILES.length - 1)]);
 const cells = (n, st) => Math.ceil(n / st);
 export const usedSlots = S => { const st = stackSize(S); let u = 0; for (const id in S.inv) u += cells(S.inv[id], st); return u; };
 

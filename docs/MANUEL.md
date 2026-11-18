@@ -84,3 +84,8 @@ Le héros (**Cloud Jimny** par défaut) arrive en train à Farmwest pour reprend
 ## 13. La région
 Gare (ouest) · centre-ville (entouré par la rivière, ponts vers la gare, le rond-point et la plage) · les 4 fermes (nord) · rond-point et fontaine (centre) · zone résidentielle (est) · ranch du Maire · fête foraine (sud) · **cabane du pêcheur** (à la place de la station balnéaire, au sud du centre-ville) · zone portuaire (sud-est ; reliée au ranch, à la plage par le quai et à la montagne par la route de l'est) · forêt (nord-est, labyrinthe qui change à chaque saison) · montagne (est ; par la zone résidentielle ou par la route de l'est depuis le port) · caverne sombre.
 - ⏳ **Diligence** : débloquée au niveau 10, un arrêt à chaque carrefour.
+
+## Golgolas et le centre de l'elfe
+- Au **niveau 5**, une lettre arrive dans la **boîte aux lettres de la ferme** (drapeau rouge). La lire ouvre le passage barré au **sud de la gare**.
+- Dans la clairière : casser la **météorite** à la pioche (5000 coups, 1 pierre tous les 10 coups, énergie normale).
+- Puis apporter à Golgolas, pour le **centre niveau 1** : 500 bois, 500 pierres, 200 champignons (dons en plusieurs fois). Récompense : **piles de 15 objets**.

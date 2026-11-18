@@ -151,6 +151,7 @@ function buildFront(c, back, s) {
   if (g.includes('stetho')) feat.push({ t: 'px', x: cx - 8, y: shY + 1, w: 1, h: 12, col: '#4a5a6a' }, { t: 'px', x: cx + 7, y: shY + 1, w: 1, h: 10, col: '#4a5a6a' }, { t: 'btn', x: cx + 8, y: shY + 21, col: '#b8c4d0' }, { t: 'px', x: cx - 8, y: shY + 13, w: 3, h: 1, col: '#4a5a6a' });
   if (g.includes('towel')) add(RR(cx + bw / 2 - 9, shY - 3, 10, 15, 3), 'towel', 9);
   if (g.includes('pocket')) add(RR(cx - 11, shY + 9, 7, 6, 1), 'topD', 6);
+  if (g.includes('staff')) add(RR(aR + armW / 2 + 1.5 - 1.5, shY - 14, 3, footY - shY + 12, 1.5), 'staff', 5.5);   // bâton noueux (lot 13)
   if (g.includes('pipe')) feat.push({ t: 'px', x: cx + 4, y: cy + 13, w: 4, h: 1, col: '#5a3a22' }, { t: 'px', x: cx + 8, y: cy + 10, w: 2, h: 3, col: '#5a3a22' });
   // ---- tête
   add(RR(cx - 4, neckY - 6, 8, 10, 2), 'skin', 9);
@@ -196,6 +197,7 @@ function buildFront(c, back, s) {
   if (hat === 'flat') { add(P2(p => { p.moveTo(cx - rx - 3, cy - 3); p.quadraticCurveTo(cx - rx - 2, top - 3, cx + 2, top - 3); p.quadraticCurveTo(cx + rx + 4, top - 2, cx + rx + 3, cy - 3); }), 'hat', 15); add(E(cx, cy - 4, rx - 1, 3), 'hatBand', 16); }
   if (hat === 'bowler') { add(E(cx, cy - 7, rx + 4, 3.6), 'hat', 15); add(P2(p => { p.moveTo(cx - rx + 2, cy - 7); p.quadraticCurveTo(cx - rx + 1, top - 9, cx, top - 9); p.quadraticCurveTo(cx + rx - 1, top - 9, cx + rx - 2, cy - 7); }), 'hat', 16); add(RR(cx - rx + 2, cy - 11, 2 * rx - 4, 3, 1), 'hatBand', 17); }
   if (hat === 'toque') { add(RR(cx - rx + 2, top - 2, 2 * rx - 4, 10, 2), 'hat', 15); for (const [x, y, r] of [[cx - 9, top - 9, 9], [cx + 1, top - 13, 10], [cx + 10, top - 8, 8]]) add(E(x, y, r, r * .85), 'hat', 15.5); }
+  if (hat === 'pointy') { add(E(cx, top + 5, rx + 7, 4), 'hat', 15); add(POLY(cx - 12, top + 5, cx + 12, top + 5, cx + 6, top - 14, cx + 13, top - 22, cx + 1, top - 16), 'hat', 16); }   // lot 13 : chapeau pointu de l'ermite
   if (hat === 'band') { add(RR(cx - rx - .5, cy - 12, 2 * rx + 1, 5, 2), 'hat', 15); add(E(cx + rx + 1, cy - 9, 3, 2.4), 'hat', 15.5); }
   // visage (pas de dos)
   const eyeY = cy + 4, gap = 6.5;
@@ -298,6 +300,7 @@ function buildSide(c, s) {
   if (hat === 'flat') { add(P2(p => { p.moveTo(cx - rx - 2, cy - 3); p.quadraticCurveTo(cx - rx - 1, top - 3, cx + 2, top - 3); p.quadraticCurveTo(cx + rx + 5, top - 2, cx + rx + 6, cy - 3); }), 'hat', 15); add(E(cx + rx + 3, cy - 3.5, 6, 2), 'hatBand', 16); }
   if (hat === 'bowler') { add(E(cx, cy - 7, rx + 4, 2.8), 'hat', 15); add(P2(p => { p.moveTo(cx - rx + 2, cy - 7); p.quadraticCurveTo(cx - rx + 1, top - 9, cx, top - 9); p.quadraticCurveTo(cx + rx - 1, top - 9, cx + rx - 2, cy - 7); }), 'hat', 16); add(RR(cx - rx + 2, cy - 11, 2 * rx - 4, 3, 1), 'hatBand', 17); }
   if (hat === 'toque') { add(RR(cx - rx + 2, top - 2, 2 * rx - 4, 10, 2), 'hat', 15); add(E(cx - 1, top - 10, 13, 9), 'hat', 15.5); }
+  if (hat === 'pointy') { add(E(cx, top + 5, rx + 7, 4), 'hat', 15); add(POLY(cx - 12, top + 5, cx + 12, top + 5, cx + 6, top - 14, cx + 13, top - 22, cx + 1, top - 16), 'hat', 16); }   // lot 13 : chapeau pointu de l'ermite
   if (hat === 'band') { add(RR(cx - rx - .5, cy - 12, 2 * rx + 1, 5, 2), 'hat', 15); add(E(cx - rx - 1, cy - 9, 3, 2.4), 'hat', 15.5); }
   // visage : un œil, un sourcil, la bouche
   const ex = cx + 9;
@@ -334,6 +337,7 @@ const CAST_LIST = [
   { id: 'harry', n: 'Harry Fordson', hair: 'short', hat: 'flat', eye: '#4a6a8a', serious: 1, garments: ['toolbelt'], mats: { skin, hair: '#b8642a', top: '#c0302e', pant: '#3a5a8a', shoe: '#5a3a22', belt: '#7a4a26', hat: '#7a7a80', hatBand: '#5a5a62' }, pattern: { top: { type: 'plaid' } } },
   { id: 'esprit', n: "L'esprit", f: 1, dress: 1, noFeet: 1, hair: 'long', sad: 1, eye: '#e8fcff', garments: [], ghost: 1, mats: { skin: '#bff0f4', hair: '#8adce8', top: '#a4e8f0', dress: '#a4e8f0' } },
   { id: 'rouky', n: 'Rouky', hair: 'short', hat: 'cap', beard: 'short', stout: 1, eye: '#4a6a8a', garments: ['overalls'], mats: { skin: '#e2b08a', hair: '#e8e4dc', beard: '#e8e4dc', top: '#5a7aa8', over: '#6a5a3a', overD: '#4a3e28', pant: '#6a5a3a', shoe: '#4a3a2a', hat: '#2a4a7a', hatBand: '#1e365a' } },   // lot 12 (pas sur la planche : d'après sa description)
+  { id: 'golgolas', n: 'Golgolas', hat: 'pointy', beard: 'big', dress: 1, serious: 1, eye: '#6a8a4a', garments: ['staff'], mats: { skin: '#e8c8a8', hair: '#f0ece4', beard: '#f0ece4', top: '#7a5a3a', dress: '#7a5a3a', shoe: '#4a3020', hat: '#5a4a6a', staff: '#6a4426' }, pattern: { dress: { type: 'flowers', col: '#9a7a52', col2: '#5a3e26' } } },   // lot 13 : vieil elfe ermite (robe rapiécée)
   { id: 'cocher', n: 'Le cocher', hat: 'bowler', beard: 'short', stout: 1, serious: 1, eye: '#3a2a20', garments: ['coat', 'fur', 'pipe'], mats: { skin: '#e2a888', top: '#5a3a2a', coat: '#7a5232', fur: '#d8c4a0', pant: '#3a3036', shoe: '#2a2020', hat: '#2a2428', hatBand: '#4a3a30', beard: '#8a8680' } }
 ];
 

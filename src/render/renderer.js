@@ -1,5 +1,7 @@
 import { folkSprite, CAST } from './folk.js';
-import { coachBody, coachWheel, horse, locoSprite, wagonSprite, fountainSprite } from './props.js';
+import { coachBody, coachWheel, horse, locoSprite, wagonSprite, fountainSprite, houseSprite } from './props.js';
+import { MAILBOX, METEOR_HITS } from '../systems/golgolas.js';
+import { GOLGO_CENTER, METEOR } from '../world/scenes.js';
 import { disc } from './pixel.js';
 import { getZoom, zoomScale } from '../ui/settingsPanel.js';
 import { QUARTIER, PARC_B } from '../world/scenes.js';
@@ -279,7 +281,7 @@ let swing = null;
     if (cacheSeason !== S.season || cacheScene !== scene || (scene === 'foret' && cacheForest !== forestKey)) {   // lot 11 : nouveau labyrinthe
       cacheForest = forestKey;
       SIGN_SINK.list = [];
-      cache = outside ? farmGround() : scene === 'wild' ? (interiors['wild' + S.season] ||= buildWild(S.season)) : scene === 'foret' ? (interiors['foret' + forestKey + ':' + S.season] ||= buildWild(S.season, 'foret')) : scene === 'town' ? (interiors['town' + S.season] ||= buildTown(S.season)) : scene === 'quartier' ? (interiors['quartier' + S.season] ||= buildQuartier(S.season)) : (scene === 'montagne' || scene === 'plage') ? (interiors[scene] ||= buildBiome(scene, S.season)) : scene === 'parc' ? (interiors['parc' + S.season] ||= buildParc(S.season)) : (scene === 'rondpoint' || scene === 'ranch' || scene === 'port' || scene === 'gare') ? (interiors[scene + S.season] ||= buildWest(scene, S.season)) : (scene === 'resto' ? (interiors['resto' + !!(S.resto && S.resto.oven)] ||= buildInterior(scene, S)) : (scene === 'house' || scene === 'maison') ? (interiors[scene + !!S.workbench + (S.bed !== false)] ||= buildInterior(scene, S)) : (interiors[scene] ||= buildInterior(scene, S)));
+      cache = outside ? farmGround() : scene === 'wild' ? (interiors['wild' + S.season] ||= buildWild(S.season)) : scene === 'foret' ? (interiors['foret' + forestKey + ':' + S.season] ||= buildWild(S.season, 'foret')) : scene === 'town' ? (interiors['town' + S.season] ||= buildTown(S.season)) : scene === 'quartier' ? (interiors['quartier' + S.season] ||= buildQuartier(S.season)) : (scene === 'montagne' || scene === 'plage') ? (interiors[scene] ||= buildBiome(scene, S.season)) : scene === 'parc' ? (interiors['parc' + S.season] ||= buildParc(S.season)) : (scene === 'rondpoint' || scene === 'ranch' || scene === 'port' || scene === 'gare' || scene === 'golgolas') ? (interiors[scene + S.season] ||= buildWest(scene, S.season)) : (scene === 'resto' ? (interiors['resto' + !!(S.resto && S.resto.oven)] ||= buildInterior(scene, S)) : (scene === 'house' || scene === 'maison') ? (interiors[scene + !!S.workbench + (S.bed !== false)] ||= buildInterior(scene, S)) : (interiors[scene] ||= buildInterior(scene, S)));
       if (!cache.__signs) cache.__signs = SIGN_SINK.list; SIGN_SINK.list = null;   // enseignes de ce décor
       if (cacheSeason !== S.season) initWeather();
       cacheSeason = S.season; cacheScene = scene;
@@ -484,6 +486,21 @@ let swing = null;
     }
     for (const id in g.npcs) { const n = g.npcs[id]; if ((n.scene || 'farm') !== scene) continue; list.push({ z: n.y, d: () => { drawChar(ctx, Math.round(n.x * T - 6), Math.round(n.y * T - 19), n.look, n.dir || 0, n.walking ? 1 + ((now / 85 | 0) % 8) : 0, now);   // lot 8 : plus de nom au-dessus des PNJ
       if (n.sleeping) { const t = now / 600; ctx.fillStyle = '#e8f0ff'; ctx.font = 'bold 7px Nunito, sans-serif'; ctx.fillText('z', n.x * T + 6 + (t % 1) * 3, n.y * T - 30 - (t % 1) * 6); ctx.font = 'bold 9px Nunito, sans-serif'; ctx.fillText('Z', n.x * T + 10 + ((t + .5) % 1) * 3, n.y * T - 34 - ((t + .5) % 1) * 7); } } }); }
+    if (scene === 'golgolas') {   // lot 13 : le centre de Golgolas (en ruine puis réparé) et la météorite qui rétrécit
+      const C = GOLGO_CENTER, st = S.golgo || {}, fixed = (st.lvl || 0) >= 1, F = houseSprite({ w: C.w * T, h: C.h * T - 24, wall: fixed ? '#b8a8c8' : '#7a7280', trim: fixed ? '#5a4a7a' : '#4a4450', roof: fixed ? '#4a6a8a' : '#3a3640', roofH: 30, windows: [[14, 14], [C.w * T - 26, 14]], lit: fixed, porch: true, door: { x: C.w * T / 2 - 9, w: 18, h: 26 }, gableWin: true });
+      list.push({ z: C.y + C.h - .1, d: () => { if (!F) return; const x = C.x * T, y = C.y * T + 24; ctx.drawImage(F.im, x + F.ox, y + F.oy);
+        if (!fixed) { ctx.fillStyle = 'rgba(20,14,24,.55)'; for (const [a, b, w, h] of [[30, -18, 26, 12], [62, 6, 4, 30], [100, 10, 18, 3], [20, 30, 3, 18]]) ctx.fillRect(x + a, y + b, w, h); } } });
+      const left = 1 - Math.min(1, (st.hits || 0) / METEOR_HITS);
+      if (left > 0) list.push({ z: METEOR.y + METEOR.h, d: () => { const cx = (METEOR.x + METEOR.w / 2) * T, cy = (METEOR.y + METEOR.h) * T - 6, k = .4 + .6 * left;
+        ctx.fillStyle = 'rgba(30,20,10,.35)'; ctx.beginPath(); ctx.ellipse(cx, cy + 4, 34 * k + 6, 7, 0, 0, 7); ctx.fill();
+        ctx.fillStyle = '#2a2430'; ctx.beginPath(); ctx.ellipse(cx, cy - 12 * k, 30 * k, 18 * k, 0, 0, 7); ctx.fill(); ctx.fillStyle = '#4a4252'; ctx.beginPath(); ctx.ellipse(cx - 6 * k, cy - 18 * k, 18 * k, 9 * k, 0, 0, 7); ctx.fill();
+        ctx.fillStyle = `rgba(255,${140 + 60 * Math.sin(now / 300)},60,.85)`; for (const [a, b, w] of [[-12, -10, 9], [4, -16, 7], [10, -6, 8], [-4, -4, 5]]) ctx.fillRect(Math.round(cx + a * k), Math.round(cy + b * k), Math.max(2, w * k | 0), 1);
+        ctx.fillStyle = 'rgba(0,0,0,.6)'; ctx.fillRect(cx - 20, cy + 10, 40, 4); ctx.fillStyle = '#f2a03a'; ctx.fillRect(cx - 20, cy + 10, Math.round(40 * left), 4); } });
+    }
+    if (scene === 'farm') list.push({ z: MAILBOX.y + .8, d: () => { const x = MAILBOX.x * T, y = MAILBOX.y * T, un = S.golgo && S.golgo.letter && !S.golgo.read;   // lot 13 : boîte aux lettres de la ferme
+      ctx.fillStyle = '#5a3a22'; ctx.fillRect(x + 7, y + 4, 2, 12); ctx.fillStyle = '#3a5a8a'; ctx.fillRect(x + 3, y - 2, 10, 7); ctx.fillStyle = '#5a7aaa'; ctx.fillRect(x + 3, y - 2, 10, 2); ctx.fillStyle = '#1e2a40'; ctx.fillRect(x + 3, y + 5, 10, 1);
+      ctx.fillStyle = un ? '#e0402a' : '#8a2a1a'; ctx.fillRect(x + 12, un ? y - 6 : y, 2, un ? 6 : 4); if (un) ctx.fillRect(x + 12, y - 6, 4, 2); } });
+    if (scene === 'gare' && !(S.golgo && S.golgo.read)) list.push({ z: 13, d: () => { const x = 10 * T, y = 12 * T + 8; ctx.fillStyle = '#6a4426'; ctx.fillRect(x - 2, y, 36, 4); ctx.fillRect(x - 2, y + 7, 36, 4); ctx.fillStyle = '#4a2e1a'; ctx.fillRect(x, y - 4, 3, 18); ctx.fillRect(x + 29, y - 4, 3, 18); } });   // planches qui barrent le chemin du sud
     { const p = roxPos(g.npcs.rouky); if (p && p.scene === scene) list.push({ z: p.y, d: () => drawAnimal(ctx, { type: 'dog', x: p.x, y: p.y, moving: false }, now, null) }); }   // lot 12 : Rox, le chien de Rouky
     { const M = S.mounds && S.mounds[scene]; if (M) for (const k in M.at) { const [x, y] = k.split(',').map(Number); if (x >= x0 - 1 && x <= x1 + 1 && y >= y0 - 1 && y <= y1 + 1) list.push({ z: y + .2, d: () => drawMound(ctx, x, y) }); } }   // lot 12 : petits tas à creuser
     for (const id in g.others) { const o = g.others[id]; if (!o.look || (o.scene || 'farm') !== scene) continue; list.push({ z: o.y, d: () => { drawChar(ctx, Math.round(o.x * T - 6), Math.round(o.y * T - 19), o.look, o.dir, o.f, now + 777); label(o.name, o.x * T, o.y * T - 25); } }); }

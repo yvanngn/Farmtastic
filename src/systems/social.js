@@ -1,5 +1,6 @@
 import { cuistotTalk, harryTalk } from './resto.js';
 import { roukyTalk } from './rouky.js';
+import { golgolasTalk } from './golgolas.js';
 import { craftRequest, craftReady, deliverCraft, craftLabel } from './craftquests.js';
 import { CRAFT_LINES } from '../data/npcs.js';
 // Liens sociaux avec les PNJ. Les répliques d'histoire se débloquent avec l'amitié, une par jour.
@@ -42,6 +43,7 @@ export function talk(g, id) {
   r.seen ||= []; r.asked ||= []; r.talks ||= 0;
   const say = (lines, extra) => g.bus.emit('say', { name: n.name, title: n.title, color: n.color, voice: n.voice, lines, ...extra });
   if (id === 'harry' && harryTalk(g, n)) { if (!r.talked) { r.points += 20; r.talked = true; r.talks++; } return true; }   // le coffre (lot 6)
+  if (id === 'golgolas' && golgolasTalk(g, n)) { if (!r.talked) { r.points += 20; r.talked = true; r.talks++; } return true; }   // lot 13
   if (id === 'rouky' && roukyTalk(g, n)) { if (!r.talked) { r.points += 20; r.talked = true; r.talks++; } return true; }   // lot 12 : la canne de Rouky
   if (id === 'cuistot' && cuistotTalk(g, n)) { if (!r.talked) { r.points += 20; r.talked = true; r.talks++; } return true; }   // quête du four (lot 5)
   // une question de temps en temps (1 discussion sur 3), une seule fois chacune

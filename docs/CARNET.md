@@ -88,6 +88,7 @@ Légende : ✅ fait · ⏳ à faire · ❓ question pour l'utilisateur · 💡 i
 - ✅ **Lot 9** (v0.1.19) : demandes de fabrication, une par habitant et par semaine, + panneau.
 - ✅ **Lot 2e** (v0.1.50) : rivière autour du centre-ville, route de l'est montagne ↔ port, port ↔ plage.
 - ✅ **Lot 12** (v0.1.51) : cabane du pêcheur (Rouky, Rox), quête de la canne, petits tas à creuser. ⏳ Plus tard : canne améliorable, butin des tas à faire évoluer.
+- ✅ **Lot 13** (v0.1.56) : lettre de Golgolas au niveau 5, zone cachée au sud de la gare, météorite, centre niveau 1 (piles 15). ⏳ Centre niveau 2 à définir.
 - ⏳ **Diligence** : débloquée au **niveau 10**, **un arrêt à chaque carrefour** (18/11) ; le cocher en PNJ.
 - ⏳ **Pièce secrète** dans chaque maison.
 - ⏳ **Routines quotidiennes** pour tous les PNJ, sur le modèle de Hailey.
@@ -97,6 +98,7 @@ Légende : ✅ fait · ⏳ à faire · ❓ question pour l'utilisateur · 💡 i
 - ⏳ `docs/PARCOURS.md` à refaire pour le nouveau début (skill `parcours-debut`).
 
 ## 5. Idées de Claude (💡 à valider)
+- Lot 13 : boîte aux lettres en (8,5) à la ferme ; texte de la lettre et répliques de Golgolas 🆕 ; dons au centre par paquets de ce qu'on a en sac.
 - Lot 12 : 1 à 3 pierres ou bois par tas, 1 champignon (le courant de la saison, petit), 1 os ; 1 ⚡ et 1 XP par tas ; canne sommaire : attente × 1,6, pas de poisson de rareté < 2 ; répliques de Rouky 🆕 ; tenue de Rouky (casquette, barbe blanche, salopette).
 - 18/11 : plan du lit 80 $, plan du coffre 60 $, lit 50 bois + 10 pierres.
 - v0.1.26 : 0,65 s entre deux coups de hache / pioche (`CFG.HIT_MS`) ; énergie par coup 0,5 (0,3 dès le fer) au lieu de 1 (0,5).

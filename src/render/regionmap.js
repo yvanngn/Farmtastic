@@ -13,7 +13,7 @@ export const RW = 88, RH = 48, RT = 16;
 // Où se trouve chaque zone du jeu sur la carte (en cases), pour le repère du joueur.
 export const FARM_RECT = l => ({ x: 37 + l.c * 8, y: 2 + l.r * 8, w: 7, h: 6 });
 export const REGION_POS = {
-  gare: [9, 19], town: [24, 20], resto: [24, 20], bar: [24, 20], rondpoint: [44, 20], quartier: [50, 23], ranch: [51, 30],
+  gare: [9, 19], golgolas: [8, 30], town: [24, 20], resto: [24, 20], bar: [24, 20], rondpoint: [44, 20], quartier: [50, 23], ranch: [51, 30],
   parc: [46, 39], plage: [25, 40], port: [74, 40], foret: [62, 9], wild: [79, 5], montagne: [78, 20]
 };
 export function regionPos(S) {

@@ -114,7 +114,9 @@ export function createMenu(g, opts) {
       const bag = slots(S) < CFG.INV_MAX
         ? card(`<div class="t">🎒 <b>Sac plus grand</b></div><div>+6 cases (${slots(S)} → ${slots(S) + 6})</div><div>${bc} $</div><button data-bag="1" ${S.money >= bc ? '' : 'disabled'}>Acheter</button>`)
         : card('<div class="t">🎒 <b>Sac plus grand</b></div><div>Taille maximale ✨</div>');
-      const pile = sc != null
+      const pile = true   // lot 13 : les piles ne s'achètent plus, c'est le centre de Golgolas qui les agrandit
+        ? card(`<div class="t">📦 <b>Piles plus hautes</b></div><div>${stackSize(S)} objets par case</div><small>Elles s'agrandissent désormais au centre de Golgolas, au sud de la gare.</small>`)
+        : sc != null
         ? card(`<div class="t">📦 <b>Piles plus hautes</b></div><div>${stackSize(S)} → ${STACKS[lvl + 1]} objets par case</div><div>${sc} $</div><button data-stack="1" ${S.money >= sc ? '' : 'disabled'}>Acheter</button>`)
         : card('<div class="t">📦 <b>Piles plus hautes</b></div><div>Piles maximales ✨</div>');
       return `<p class="info">Votre sac : ${slots(S)} cases, ${stackSize(S)} objets par case.</p><div class="grid">${bag}${pile}</div>`;
