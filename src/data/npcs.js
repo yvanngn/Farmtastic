@@ -65,7 +65,6 @@ export const CHEF = {
   id: 'chef', name: 'Manuel', title: 'Maire', color: '#e8c26a', voice: 'voiceChef', de: 'de lui',
   look: { body: 'h', bottom: 'pant', skin: '#e8a982', hair: 0, hairC: '#8a8480', beard: '#9a9490', hat: 'cowboy', shirt: '#f2efe8', vest: '#2f5a3a', pants: '#5a4030', shoes: '#7a3e1e', stout: true },   // 18/11 : poupée dessinée par le code (src/render/paperdoll.js), tenue d'après son sprite
   home: 'ranch_maison', inside: { x: 3.5, y: 4.6 }, outScene: 'town', day: { x: 18.5, y: 8.6 },
-  orbit: { scene: 'town', cx: 16.5, cy: 7.6, rx: 2.5, ry: 2.2, period: 14 },   // ESSAI du 18/11 : quand il est sur la place (la journée), il fait le tour de la fontaine (pour voir la nouvelle planche) — à retirer ensuite   // 17/11 : il vit dans son ranch, passe ses journées sur la place
   // trajet villa → place (le matin) et retour (le soir), à pied : porte de la villa, allée est, place
   walks: [{ scene: 'foret', from: 780, to: 840, every: 3, at: { x: 19.5, y: 13.5 } }],  // promenade digestive, un jour sur trois, 13 h – 14 h (💡)
   traits: ['Maire élu à l\'unanimité', 'Surnommé Manu', 'Propriétaire du ranch du Maire', 'Dit aimer ses villageois', 'En secret : impôts élevés, bon temps et vacances'],
