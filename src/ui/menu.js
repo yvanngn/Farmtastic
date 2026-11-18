@@ -26,6 +26,7 @@ import { build, canBuild, canBuyAnimal, homeCount, buy, buyAnimal, buyBag, bagCo
 import { consume } from '../systems/player.js';
 import { SHEETS } from '../render/sheets.js';
 import { dollPortrait } from '../render/paperdoll.js';
+import { folkPortrait } from '../render/folk.js';
 import { hearts, POINTS_PER_HEART, DEGREES, DEGREE_NAMES, tasteOf } from '../systems/social.js';
 import { ITEMS as ALL_ITEMS } from '../data/items.js';
 import { slots, usedSlots, stackSize } from '../systems/inventory.js';
@@ -148,7 +149,7 @@ export function createMenu(g, opts) {
         const all = Object.keys(ALL_ITEMS), unknown = all.filter(k => !(k in known) && tasteOf(n, k) !== 'neutre').length;
         const rows = DEGREES.map(d => { const its = Object.keys(known).filter(k => known[k] === d); return its.length ? `<b>${DEGREE_NAMES[d]}</b><span>${its.map(k => it(k).i + ' ' + it(k).n).join(', ')}</span>` : ''; }).join('');
         const life = (r.seen || []).map(i => n.story && n.story[i] ? `<li>${esc(n.story[i].t)}</li>` : '').join('');
-        const pp = n.look && dollPortrait(n.look), Z = 2;   // portrait : haut du corps de face, dessiné par le code (poupée)
+        const pp = n.look && (folkPortrait(n.look) || dollPortrait(n.look)), Z = 2;   // portrait : haut du corps de face, dessiné par le code (poupée)
         const pic = pp ? `<div class="portrait" style="width:${pp.w * Z}px;height:${pp.h * Z}px;background:url(${pp.url}) 0 0/100% 100% no-repeat;image-rendering:pixelated"></div>` : '';
         return card(`<div class="pnj"><div class="tete">${pic}<div class="nom" style="color:${n.color}">${esc(n.name)}</div></div>
           <div>${'❤️'.repeat(h) + '🤍'.repeat(Math.max(0, 10 - h))}</div>

@@ -76,48 +76,55 @@ export function createTitle({ audio, onContinue, onNew, onGames = () => {}, onSe
     disc(hx, hy, 2, '#4a3020');
   }
 
+  // 18/11 (soir) : écran titre « pixel crépuscule enrichi » (choisi par l'utilisateur sur maquette) : ciel tramé du violet à l'or,
+  // étoiles, soleil couchant en bandes, mesas striées, pont de bois et train éclairé qui passe, ranch aux fenêtres allumées,
+  // cactus et clôture en silhouette, lucioles. Le décor fixe est dessiné une fois par taille d'écran ; train, fumée, étoiles et lucioles bougent.
+  const B4 = [[0, 8, 2, 10], [12, 4, 14, 6], [3, 11, 1, 9], [15, 7, 13, 5]];
+  const DUSK = ['#1e1838', '#3a2452', '#6a2e5c', '#a83e52', '#d8604a', '#f0903e', '#f8c45a'];
+  let bg = null, bgKey = '';
+  function background(dy) {
+    const key = W + 'x' + H; if (bg && bgKey === key) return bg;
+    const c = document.createElement('canvas'); c.width = W; c.height = H; const g = c.getContext('2d');
+    const P = (x, y, w, h, col) => { g.fillStyle = col; g.fillRect(Math.round(x), Math.round(y), Math.round(w), Math.round(h)); };
+    let seed = 11; const r = () => (seed = (seed * 1664525 + 1013904223) >>> 0) / 4294967296;
+    const horizon = dy + 104, n = DUSK.length - 1;
+    for (let y = 0; y < horizon; y++) { const tt = y / horizon * n, i = Math.min(n - 1, tt | 0), f = tt - i;
+      for (let x = 0; x < W; x++) P(x, y, 1, 1, f * 16 > B4[y & 3][x & 3] + .5 ? DUSK[i + 1] : DUSK[i]); }
+    const sx = W * .66, sy = dy + 90;
+    const discG = (cx, cy, rr, col) => { for (let k = -rr; k <= rr; k++) { const w = Math.floor(Math.sqrt(rr * rr - k * k)); P(cx - w, cy + k, w * 2 + 1, 1, col); } };
+    discG(sx, sy, 25, '#f8b84a'); discG(sx, sy, 21, '#fcd46a'); discG(sx, sy, 16, '#fee89a');
+    for (const y of [80, 85, 89, 92, 95]) P(sx - 30, dy + y, 60, y > 88 ? 2 : 1, '#e0743c');   // bandes du soleil couchant
+    const mesa = (x0, w, top, h, col, sh, lit) => { P(x0, top, w, h, col); for (let y = top + 4; y < top + h; y += 4) P(x0, y, w, 1, sh); P(x0, top, w, 2, lit); P(x0 + w - 5, top, 5, h, sh);
+      for (let x = x0; x < x0 + w; x += 2) if (r() < .5) P(x, top + h, 2, 2 + (r() * 3 | 0), col); };
+    mesa(W * .03, 56, dy + 62, 42, '#8a3a3e', '#6e2c36', '#c8584a'); mesa(W * .78, 48, dy + 56, 48, '#7a3440', '#5e2834', '#b84c48'); mesa(W * .38, 32, dy + 77, 27, '#9a4440', '#7a3438', '#d86a4a');
+    const ridge = (base, amp, f, col) => { for (let x = 0; x < W; x++) P(x, base + Math.sin(x * f) * amp + Math.sin(x * f * 3.1) * amp * .3, 1, H, col); };
+    ridge(dy + 98, 3, .03, '#5a2a3a'); ridge(dy + 106, 2.5, .05, '#3e2232');
+    // pont de bois (le train passe dessus)
+    P(0, dy + 95, W, 2, '#2a1824'); for (let x = 4; x < W; x += 11) { P(x, dy + 97, 2, 11, '#2a1824'); for (let k = 0; k < 6; k++) P(x + k, dy + 97 + k * 2, 1, 1, '#2a1824'); }
+    // sol, ranch éclairé, cactus, clôture
+    P(0, dy + 112, W, H, '#3a2230'); for (let y = dy + 112; y < H; y += 2) for (let x = 0; x < W; x += 2) if (r() < .2) P(x, y, 2, 1, '#4e2e3a');
+    const rx = W * .09; P(rx, dy + 98, 44, 18, '#2a1824'); for (let k = 0; k < 10; k++) P(rx + 22 - k * 2.4 - 3, dy + 88 + k, k * 4.8 + 6, 1, '#1c1018');
+    P(rx + 6, dy + 103, 7, 6, '#fcb44a'); P(rx + 22, dy + 103, 7, 6, '#fcb44a'); P(rx + 7, dy + 104, 5, 4, '#fed878');
+    for (const [fx, h] of [[.38, 24], [.91, 29], [.66, 18]]) { const x = W * fx, b = dy + 120; P(x, b - h, 5, h, '#1c1420'); P(x - 5, b - h + 8, 5, 3, '#1c1420'); P(x - 5, b - h + 3, 3, 7, '#1c1420'); P(x + 5, b - h + 11, 4, 3, '#1c1420'); P(x + 6, b - h + 5, 3, 8, '#1c1420'); }
+    for (let x = W * .44; x < W * .87; x += 13) P(x, dy + 117, 2, 10, '#1c1420'); P(W * .44, dy + 119, W * .43, 1, '#1c1420');
+    bg = c; bgKey = key; return c;
+  }
   function draw(t) {
     if (!ov.classList.contains('on')) return;
-    const dy = Math.round((H - BH) * 0.45), band = Math.ceil((dy + BH * 0.62) / SKY.length);
-    SKY.forEach((c, i) => { R(0, i * band, W, band + 1, c); if (i) for (let x = (i % 2) * 2; x < W; x += 4) R(x, i * band, 1, 1, SKY[i - 1]); });
-    ctx.save(); ctx.translate(0, dy);
-    // grand soleil couchant posé sur l'horizon + rayons
-    const sx = W * 0.62 | 0, sy = 76;
-    ctx.globalAlpha = 0.16;
-    for (let k = 0; k < 12; k++) { const a = t / 9000 + k * Math.PI / 6; for (let l = 26; l < 80; l += 2) R(sx + Math.cos(a) * l, sy + Math.sin(a) * l, 2, 2, '#ffe2a0'); }
-    disc(sx, sy, 30, '#ffc070'); ctx.globalAlpha = 1;
-    disc(sx, sy, 20, '#ffd27a'); disc(sx - 4, sy - 4, 12, '#ffe8a8');
-    for (let k = 0; k < 4; k++) R(sx - 22, sy + 6 + k * 4, 44, 1, SKY[6]);   // bandes de chaleur
-    // mesas (buttes rouges à sommet plat), la lointaine glisse doucement
-    const mesa = (x0, w, h, top, col, shadow) => { R(x0, 96 - h, w, h + 4, col); R(x0 - 3, 96 - h + 3, 3, h, col); R(x0 + w, 96 - h + 5, 4, h, col); R(x0 + w - 6, 96 - h, 6, h + 4, shadow); R(x0 - 1, 96 - h - 1, w + 2, top, shade2(col)); };
-    const shade2 = c => c === '#8a3e3a' ? '#a24e40' : '#c26a48';
-    const off = (t / 120) % (W + 160);
-    mesa(((W * .05 - off) % (W + 160) + W + 160) % (W + 160) - 80, 46, 24, 2, '#8a3e3a', '#6e2e2e');
-    mesa(W * .72 | 0, 58, 30, 3, '#a8503e', '#7e3a30'); mesa(W * .3 | 0, 30, 16, 2, '#8a3e3a', '#6e2e2e');
-    const gy = 100;
-    // désert ocre au premier plan, touffes sèches et cailloux
-    R(0, 94, W, H, '#c98a4a');
-    for (let k = 0; k < 6; k++) R(0, 96 + k * 9, W, 2, k % 2 ? '#b8783e' : '#d89a58');
-    for (let x = 5; x < W; x += 17) { const y = gy + 8 + (x * 7) % 30; R(x, y, 1, 3, '#8a6a2a'); R(x + 2, y - 1, 1, 4, '#a07a30'); R(x + 4, y, 1, 3, '#8a6a2a'); }
-    for (let x = 11; x < W; x += 29) { const y = gy + 14 + (x * 13) % 26; R(x, y, 4, 2, '#a07858'); R(x, y, 2, 1, '#d8b088'); }
-    // cactus
-    const cactus = (x, gy2, h) => { R(x, gy2 - h, 5, h, '#3f7a3a'); R(x + 1, gy2 - h, 2, h, '#5aa04a'); R(x - 5, gy2 - h * .6, 5, 3, '#3f7a3a'); R(x - 5, gy2 - h * .95, 3, h * .38, '#3f7a3a'); R(x + 5, gy2 - h * .45, 5, 3, '#3f7a3a'); R(x + 7, gy2 - h * .8, 3, h * .38, '#3f7a3a'); R(x - 1, gy2, 7, 2, 'rgba(60,30,10,.35)'); };
-    cactus(W * .08 | 0, gy + 18, 26); cactus(W * .9 | 0, gy + 12, 20); cactus(W * .48 | 0, gy + 2, 12);
-    barn(W * .2 | 0, gy); windmill(W * .8 | 0, gy, t);
-    // clôture de ranch
-    for (let x = 2; x < W; x += 12) { R(x, gy - 6, 2, 9, '#8a5a32'); R(x + 1, gy - 6, 1, 9, '#5b3a22'); }
-    R(0, gy - 4, W, 1, '#a8774a'); R(0, gy - 1, W, 1, '#a8774a');
-    // virevoltant (tumbleweed) qui roule et rebondit
-    { const tx = ((t / 14) % (W + 60)) - 30, ty = gy + 22 - Math.abs(Math.sin(t / 260)) * 8, a = t / 140;
-      for (let k = 0; k < 14; k++) { const ang = a + k * 0.9, rr = 3 + (k % 3); R(tx + Math.cos(ang) * rr, ty + Math.sin(ang) * rr, 1, 1, k % 2 ? '#8a6a3a' : '#b8925a'); } }
-    // vautours au loin
-    for (let k = 0; k < 2; k++) { const bx = W * .3 + Math.cos(t / 2400 + k * 3) * 26, by = 28 + k * 9 + Math.sin(t / 1900 + k) * 4, f = (t / 260 + k) % 2 < 1; R(bx - 3, by - (f ? 1 : 0), 3, 1, '#2a1a2a'); R(bx, by, 1, 1, '#2a1a2a'); R(bx + 1, by - (f ? 1 : 0), 3, 1, '#2a1a2a'); }
-    ctx.restore();
-    // poussière dorée qui flotte
-    for (const p of pollen) {
-      const x = (p.x + Math.sin(t / 900 + p.p) * 6) % W, y = ((p.y - t / (90 * p.s)) % H + H) % H;
-      ctx.globalAlpha = 0.45 + 0.45 * Math.sin(t / 300 + p.p); R(x, y, 1, 1, '#ffd9a0');
-    }
+    const dy = Math.round((H - BH) * 0.45);
+    ctx.drawImage(background(dy), 0, 0);
+    // étoiles qui scintillent
+    for (let i = 0; i < 46; i++) { const x = (i * 97 + 13) % W, y = (i * 53) % Math.max(20, dy + 40); if (Math.sin(t / 600 + i * 1.7) > -.2) R(x, y, 1, 1, i % 3 ? '#c8b8e8' : '#ffffff'); }
+    // le train traverse le pont, de droite à gauche, avec sa fumée
+    const L = 150, tx = W + 30 - ((t / 45) % (W + L + 60)), ty = dy + 83;
+    for (let i = 0; i < 9; i++) { const k = ((t / 90) + i) % 9, a = .45 - k * .045; if (a <= 0) continue; ctx.globalAlpha = a; const rr = 2 + k * .9 | 0, cx = tx + 6 + k * 6, cy = ty - 4 - k * 3 - k * k * .25;
+      for (let q = -rr; q <= rr; q++) { const w = Math.floor(Math.sqrt(rr * rr - q * q)); R(cx - w, cy + q, w * 2 + 1, 1, '#f0c8be'); } }
+    ctx.globalAlpha = 1;
+    R(tx, ty, 28, 12, '#1c1420'); R(tx + 3, ty - 6, 6, 6, '#1c1420'); R(tx + 20, ty - 4, 8, 5, '#1c1420'); R(tx + 1, ty + 9, 26, 3, '#1c1420');   // locomotive
+    R(tx - 2, ty + 4, 2, 2, '#fff2b0');                                                                        // phare
+    for (let k = 0; k < 3; k++) { const wx = tx + 32 + k * 25; R(wx, ty + 1, 22, 11, '#1c1420'); for (let j = 0; j < 3; j++) R(wx + 3 + j * 7, ty + 3, 3, 3, '#fcd46a'); }
+    // lucioles
+    for (let i = 0; i < 18; i++) { const x = (i * 71 + Math.sin(t / 1300 + i) * 8 + W) % W, y = dy + 60 + (i * 37) % 60 + Math.sin(t / 900 + i * 2) * 3; ctx.globalAlpha = .4 + .5 * Math.max(0, Math.sin(t / 400 + i * 1.3)); R(x, y, 1, 1, '#fff2b0'); }
     ctx.globalAlpha = 1;
   }
 

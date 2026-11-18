@@ -1,3 +1,4 @@
+import { folkSprite, CAST } from './folk.js';
 import { disc } from './pixel.js';
 import { getZoom, zoomScale } from '../ui/settingsPanel.js';
 import { QUARTIER, PARC_B } from '../world/scenes.js';
@@ -39,6 +40,8 @@ function drawChest(c, x, y) {
 // Feu de camp : pierres en cercle, bûches, flammes qui dansent.
 // Esprit d'une vieille femme qui pleure : silhouette pâle et transparente qui flotte, chignon, châle, larmes.
 function drawGhost(c, x, y, now) {
+  { const im = folkSprite(CAST.esprit, 0, 0); if (im) { const w = 24, h = 48, px = Math.round(x * T + 8 - w / 2), py = Math.round(y * T + 15 - h + Math.sin(now / 500) * 1.5 - 3);   // 18/11 : l'esprit en « pixel moderne »
+    c.save(); c.globalAlpha = .7 + Math.sin(now / 700) * .12; c.fillStyle = 'rgba(120,190,255,.25)'; c.beginPath(); c.ellipse(x * T + 8, y * T + 15, 7, 2, 0, 0, 7); c.fill(); c.drawImage(im, px, py, w, h); c.restore(); return; } }
   { const im = ghostSheet(); if (im) { const S = SHEETS.esprit, px = x * T + 8 - S.fw / 2, py = y * T + 14 - S.fh + Math.round(Math.sin(now / 500) * 1.5) - 3;   // planche de référence
     c.save(); c.globalAlpha = .6 + Math.sin(now / 700) * .12; c.fillStyle = 'rgba(120,190,255,.25)'; c.beginPath(); c.ellipse(x * T + 8, y * T + 15, 7, 2, 0, 0, 7); c.fill(); c.drawImage(im, 0, 0, S.fw, S.fh, px, py, S.fw, S.fh); c.restore(); return; } }   // l'esprit de la vieille femme (planche de l'utilisateur) : robe d'époque bleutée, chignon, translucide, flotte
   const px = x * T, py = y * T + Math.round(Math.sin(now / 500) * 1.5) - 14, R = (a, b, w, h, col) => { c.fillStyle = col; c.fillRect(px + a, py + b, w, h); };

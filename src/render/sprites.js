@@ -7,6 +7,7 @@ import { rng } from '../world/map.js';
 import { SHEETS } from './sheets.js';
 import { drawDoll } from './heroDoll.js';
 import { drawPaperDoll } from './paperdoll.js';
+import { drawFolk } from './folk.js';
 const T = CFG.T;
 const cache = makeCache(400);
 const SHOE = '#4a2e1e', EYE = '#2a1d18';
@@ -232,6 +233,7 @@ function drawHeroSheet(c, ox, oy, L, d, f) {
 }
 export function drawChar(c, ox, oy, L, d, f, t = 0, noArm = false) {
   groundShadow(c, ox + 6, oy + 19, L.stout || L.muscle ? 9 : L.kid ? 6 : 7, 2);
+  if (!L.oldDraw && drawFolk(c, ox, oy, L, d, f)) return;   // 18/11 (soir) : personnages en « pixel moderne » (src/render/folk.js)
   if (!L.oldDraw && drawPaperDoll(c, ox, oy, L, d, f)) return;   // 18/11 : tout le monde en poupée dessinée par le code (src/render/paperdoll.js)
   if (L.sheet && drawSheet(c, ox, oy, L, d, f)) return;
   if (L.doll) { drawDoll(c, ox, oy, L, d, f); return; }   // héros : poupée de sprites (calques)
