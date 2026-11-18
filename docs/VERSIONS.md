@@ -2,6 +2,7 @@
 
 Semver horodaté (heure de Paris). Patch automatique à chaque publication ; mineure et majeure sur décision de l'utilisateur.
 
+- **0.1.53** — 2026-11-18 21:16 — épaules corrigées à la marche ; personnalisation du héros (sexe, coiffures, barbe, chapeaux, haut, par-dessus, bandana, robe, chaussures, sac) ; mèches dans les cheveux ; diligence, cocher, chevaux, train et fontaines en pixel moderne
 - **0.1.52** — 2026-11-18 21:01 — personnages en pixel moderne (src/render/folk.js : face, dos, profils, marche) ; écran titre pixel crépuscule
 - **0.1.51** — 2026-11-18 19:24 — lot 12 : cabane du pêcheur, Rouky et Rox, quête de la canne, petits tas à creuser à la pelle
 - **0.1.50** — 2026-11-18 19:18 — lot 2e (rivière autour du centre-ville, route de l'est montagne ↔ port, port ↔ plage) ; quêtes secondaires : agrandir la cabane, plan du lit et plan du coffre chez Harry

@@ -1,5 +1,6 @@
 // Farmwest (lot 2) : décors pré-rendus des nouvelles zones — rond-point, ranch du Maire, zone portuaire.
 // Style de docs/carte-region-farmwest.jpg : terre ocre, chemins de sable, planches, eau bleue. Dessiné une fois par saison.
+import { fountainSprite } from './props.js';
 import { CFG } from '../config.js';
 import { LAYOUTS } from '../world/scenes.js';
 import { rng } from '../world/map.js';
@@ -59,10 +60,9 @@ export function buildWest(name, season) {
   autotile(g, W, H, (x, y) => { const ch = (L[y] || '')[x]; return ch == null ? null : ch === '.' || ch === 'D' || ch === 'F' ? 'chemin' : ch === 's' || ch === 'T' ? 'ocre' : ch === 'g' ? 'herbe' : null; }, { chemin: 1, ocre: 2, herbe: 3 }, { ocre: SAND, herbe: GR });
   // 2. fontaine du rond-point (disque de pierre, eau, jet)
   if (name === 'rondpoint') {
-    const cx = 12.5 * T + 8, cy = 8.5 * T + 8;
-    disc(g, cx, cy + 3, 34, 'rgba(60,40,20,.25)'); disc(g, cx, cy, 34, '#a89a88'); disc(g, cx, cy, 31, '#c8bca8'); disc(g, cx, cy, 27, '#3f86c4'); disc(g, cx, cy, 24, '#4a92d0');
-    for (let k = 0; k < 8; k++) R(cx - 20 + k * 5, cy - 6 + (k % 3) * 6, 3, 1, '#9ad0f0');
-    disc(g, cx, cy, 9, '#a89a88'); disc(g, cx, cy, 7, '#c8bca8'); R(cx - 2, cy - 18, 4, 14, '#c8bca8'); disc(g, cx, cy - 19, 5, '#d8ccb8'); disc(g, cx, cy - 20, 3, '#bfe3f5');
+    const cx = 12.5 * T + 8, cy = 8.5 * T + 8, im = fountainSprite(34);   // 18/11 (soir) : fontaine « pixel moderne » (src/render/props.js)
+    if (im) g.drawImage(im, Math.round(cx - im.width / 2), Math.round(cy + 34 * .62 + 4 - im.height + 4));
+    else { disc(g, cx, cy, 34, '#a89a88'); disc(g, cx, cy, 27, '#3f86c4'); }
   }
   // 3. clôtures de ranch (deux lisses + poteaux)
   for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) if (at(x, y) === 'f') {

@@ -21,9 +21,10 @@ export function tones(base) {
 
 // ---------- rendu en pixels ----------
 let probe = null;
-function renderPixel(m, W, H, opt = {}) {
+export function renderPixel(m, W, H, opt = {}) {
+  probe ||= document.createElement('canvas').getContext('2d');
   m.pattern ||= {};
-  const s = W / 64, sorted = [...m.parts].sort((a, b) => b.z - a.z);
+  const s = opt.s || W / 64, sorted = [...m.parts].sort((a, b) => b.z - a.z);
   const at = (mx, my) => { for (const p of sorted) if (probe.isPointInPath(p.path, mx, my)) return p; return null; };
   const id = [];
   for (let j = 0; j < H; j++) { id.push([]); for (let i = 0; i < W; i++) id[j].push(at((i + .5) / s, (j + .5) / s)); }
@@ -40,7 +41,8 @@ function renderPixel(m, W, H, opt = {}) {
     // ombre portée : une pièce plus haute juste au-dessus (frange, col, bras)
     const up = P(i, j - o), up2 = P(i - 1, j - o);
     if ((up && up.z > p.z && up.mat !== p.mat) || (opt.deep && up2 && up2.z > p.z && up2.mat !== p.mat && up2.path !== p.path)) col = t.sh;
-    const pt = m.pattern[p.mat], ptype = pt && (pt.type || 'plaid');
+    const pt = m.pattern[p.mat] || (p.mat === 'hair' && !opt.noStrands ? { type: 'strands' } : null), ptype = pt && (pt.type || 'plaid');
+    if (ptype === 'strands' && col === t.base && (i * 2 + j) % 5 === 0) col = t.sh;   // mèches
     if (ptype === 'plaid') { const q = opt.q || 4, a = i % q === 0, b = j % q === 0; if (a && b) col = t.dk; else if (a || b) col = col === t.hi ? t.base : t.sh; }
     else if (ptype === 'check') { if (((i >> 1) + (j >> 1)) % 2) col = pt.col; }
     else if (ptype === 'knit') { if (i % 3 === 0) col = col === t.hi ? t.base : t.sh; if ((j + (i % 3 === 1 ? 1 : 0)) % 4 === 0 && i % 3 === 1) col = t.hi; }
@@ -206,7 +208,7 @@ function buildFront(c, back, s) {
   const lift = { L: s === 1 ? 4 : 0, R: s === 3 ? 4 : 0 }, sw = s === 1 ? 2.5 : s === 3 ? -2.5 : 0, bob = s % 2 ? -2 : 0;
   let out0 = parts.map(q => {
     let dy = q.tag === 'L' ? -lift.L : q.tag === 'R' ? -lift.R : q.z >= 3 ? bob : 0;
-    if (q.tag === 'aL') dy += bob - sw; if (q.tag === 'aR') dy += bob + sw;
+    if (q.tag === 'aL' && q.z === 5) dy -= sw * .4; if (q.tag === 'aR' && q.z === 5) dy += sw * .4;   // seules les mains se balancent un peu (les épaules suivent le corps)
     if (!dy) return q; const p = new Path2D(); p.addPath(q.path, new DOMMatrix().translate(0, dy)); return { ...q, path: p };
   });
   for (const f of feat) f.y += bob;
@@ -335,15 +337,41 @@ const CAST_LIST = [
 
 export const CAST = Object.fromEntries(CAST_LIST.map(c => [c.id, c]));
 
-// Le héros : sa tenue personnalisée (src/render/heroDoll.js, DOLL_OPTS) traduite en description de personnage.
+// Le héros : options de personnalisation (18/11 au soir : sexe et plus de choix) et traduction en description de personnage.
+export const HERO_OPTS = {
+  body: { h: 'Homme', f: 'Femme' },
+  skin: ['#f8d8bc', '#f4c8a0', '#e2a882', '#c08060', '#8a5a3a'],
+  eye: ['#3a6aa8', '#4a8a4a', '#6a4a2a', '#5a5a6a', '#8a5aa8'],
+  hair: { messy: 'En bataille', short: 'Courts', spiky: 'En épis', long: 'Longs', bun: 'Chignon', braid: 'Tresse', pigtails: 'Couettes', bald: 'Rasé' },
+  hairC: ['#8a4f28', '#2a2026', '#5a3a22', '#d8a850', '#b8482a', '#e8e0d0', '#6a6a72'],
+  beard: { '': 'Aucune', mustache: 'Moustache', short: 'Courte', big: 'Grande' },
+  hat: { '': 'Aucun', cowboy: 'Cow-boy', paille: 'Paille', cap: 'Casquette', flat: 'Gavroche', bowler: 'Melon' },
+  hatC: ['#8a4a26', '#efe6d2', '#2a2428', '#3a6ab0', '#7a7a80'],
+  top: { plaid: 'Carreaux', plain: 'Unie', knit: 'Pull', hoodie: 'Sweat' },
+  shirt: ['#c0342e', '#2f7a46', '#3a5a9a', '#e8dcc4', '#6a3a7a', '#c88a2a', '#3a3a44'],
+  extra: { '': 'Rien', overalls: 'Salopette', vest: 'Gilet', jacket: 'Veste', coat: 'Manteau', apron: 'Tablier' },
+  extraC: ['#3f62a8', '#7a4a26', '#2e2a38', '#4a6a3a', '#7a2a3a', '#d8c8a8'],
+  scarf: ['', '#d0302a', '#2a5aa8', '#e8b030', '#2a2428'],
+  bottom: { pant: 'Pantalon', skirt: 'Robe' },
+  pants: ['#4a6aaa', '#3a3a44', '#6a5034', '#8a3a2a', '#a8b8d8', '#4a6a3a'],
+  shoes: ['#6a3e22', '#2a2220', '#8a5a32', '#e8e8ec'],
+  backpack: { 0: 'Non', 1: 'Oui' }
+};
+const OLD_HAIR = { 0: 'messy', 1: 'long', 3: 'bun', 4: 'braid', 5: 'pigtails' };
+export const heroHair = L => (typeof L.hair === 'string' && HERO_OPTS.hair[L.hair]) ? L.hair : OLD_HAIR[L.hair] || 'messy';
 export function heroSpec(L) {
-  const hair = { 0: 'messy', 1: 'long', 3: 'bun', 4: 'braid' }[L.hair] || 'messy', f = L.body === 'f' || L.bottom === 'skirt';
-  return { id: 'heros', hair, eye: L.eye || '#3a6aa8', blush: 1, f, dress: L.bottom === 'skirt',
-    hat: L.hat === 'cowboy' || L.hat === 'paille' ? 'cowboy' : undefined,
-    garments: [...(L.overalls ? ['overalls'] : []), 'backpack'],
-    mats: { skin: L.skin || '#f4c8a0', hair: L.hairC || '#8a4f28', top: L.shirt || '#c0342e', over: L.overalls || '#3f62a8', overD: L.overalls ? darken(L.overalls) : '#33508a',
-      pant: L.pants || '#4a6aaa', dress: L.pants || '#4a6aaa', shoe: '#6a3e22', pack: '#7a5232', hat: L.hat === 'paille' ? '#e6c870' : '#8a4a26', hatBand: L.hat === 'paille' ? '#b8302a' : '#4a2a14' },
-    pattern: L.top === 'plain' ? {} : { top: { type: 'plaid' } } };
+  const hair = heroHair(L), f = L.body === 'f', skirt = L.bottom === 'skirt', extra = L.extra !== undefined ? L.extra : (L.overalls ? 'overalls' : '');
+  const exC = L.extraC || L.overalls || '#3f62a8', hatC = L.hat === 'paille' ? '#e6c870' : (L.hatC || '#8a4a26');
+  const garments = [];
+  if (extra === 'overalls') garments.push('overalls'); if (extra === 'vest') garments.push('vest'); if (extra === 'jacket') garments.push('jacket', 'lapels'); if (extra === 'coat') garments.push('coat', 'lapels'); if (extra === 'apron') garments.push('apron');
+  if (L.top === 'hoodie') garments.push('hoodie'); if (L.scarf) garments.push('scarf'); if (L.backpack !== 0 && L.backpack !== false) garments.push('backpack');
+  const pattern = L.top === 'plain' || L.top === 'hoodie' ? {} : L.top === 'knit' ? { top: { type: 'knit' } } : { top: { type: 'plaid' } };
+  return { id: 'heros', hair: hair === 'bald' ? undefined : hair, eye: L.eye || '#3a6aa8', blush: 1, f, dress: skirt,
+    hat: L.hat === 'paille' ? 'cowboy' : L.hat || undefined, beard: !f && (L.beard === 'short' || L.beard === 'big') ? L.beard : undefined, mustache: !f && L.beard === 'mustache',
+    garments, pattern,
+    mats: { skin: L.skin || '#f4c8a0', hair: L.hairC || '#8a4f28', beard: L.hairC || '#8a4f28', top: L.shirt || '#c0342e', topD: darken(L.shirt || '#c0342e'),
+      over: exC, overD: darken(exC), vest: exC, coat: exC, lapel: darken(exC), apron: exC, scarf: L.scarf || '#d0302a',
+      pant: L.pants || '#4a6aaa', dress: L.pants || '#4a6aaa', shoe: L.shoes || '#6a3e22', pack: '#7a5232', hat: hatC, hatBand: L.hat === 'paille' ? '#b8302a' : darken(hatC) } };
 }
 const darken = h => tones(h).sh;
 // Description du personnage pour un look du jeu : un habitant (look.folk), le héros (look.doll / look.hero), sinon rien.

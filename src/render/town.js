@@ -1,3 +1,4 @@
+import { fountainSprite } from './props.js';
 import { paintGrass, paintOchre, paintRoad, paintPlanks, softEdge, OCHRE, paintRiver, paintBridge, paintCliff, autotile, ROAD, canopy, dress, roofFor, softPatches, barrel } from './terrain.js';
 // Centre du village pré-rendu : place pavée, halle du marché, panneau d'affichage,
 // fontaine, lampadaires, bancs, jardinières et arbres. Reconstruit à chaque saison.
@@ -202,9 +203,7 @@ export function buildTown(season) {
   }, { wall: '#8a6a4a' });
   // fontaine (x11-13, y8-10)
   const fx = TOWN_B.F.x * T + 24, fy = TOWN_B.F.y * T + 24;
-  disc(g, fx, fy + 2, 23, '#6f6a73'); disc(g, fx, fy, 22, '#9a958c'); disc(g, fx, fy, 18, '#3a7cc2'); disc(g, fx - 4, fy - 5, 6, '#6aa8e0');
-  disc(g, fx, fy, 6, '#9a958c'); R(fx - 2, fy - 14, 4, 12, '#b4afb8'); disc(g, fx, fy - 15, 4, '#bfe3f5');
-  for (const [a, b] of [[-9, 6], [8, -7], [10, 9], [-11, -4]]) R(fx + a, fy + b, 3, 1, '#e1f4ff');
+  { const im = fountainSprite(23); if (im) g.drawImage(im, Math.round(fx - im.width / 2), Math.round(fy + 23 * .62 + 6 - im.height)); }   // 18/11 (soir) : fontaine « pixel moderne »
 
   for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
     const ch = L[y][x], px = x * T, py = y * T;

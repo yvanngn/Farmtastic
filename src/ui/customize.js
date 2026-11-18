@@ -2,7 +2,7 @@
 import { $ } from './dom.js';
 import { LOOK_OPTS, HAIR_NAMES, BODY_NAMES, BOTTOM_NAMES, WEST_OPTS, HAT_NAMES, YESNO } from '../data/look.js';
 import { drawChar } from '../render/sprites.js';
-import { DOLL_OPTS, HAIR_LABELS, TOP_LABELS } from '../render/heroDoll.js';
+import { HERO_OPTS } from '../render/folk.js';
 import { GRASS } from '../render/ground.js';
 
 const ROT_L = [2, 3, 1, 0], ROT_R = [3, 2, 0, 1];
@@ -16,14 +16,16 @@ export function createCustomizer({ getLook, getName, onStart, onContinue, onBack
     // labels === 1 : nuancier de couleurs ; sinon tableau/objet de libellés pour des boutons.
     const sec = (title, k, vals, labels) => `<div style="margin-top:8px"><b>${title}</b><div class="row">` + vals.map((v, i) => labels === 1
       ? `<div class="chip ${L[k] === v ? 'sel' : ''}" style="background:${v}" data-k="${k}" data-v="${v}"></div>`
-      : `<button class="${L[k] === v ? 'on' : ''}" data-k="${k}" data-v="${v}">${labels[v] ?? labels[i]}</button>`).join('') + '</div></div>';
-    // 17/11 : héros en poupée de sprites — choix en nombre limité (src/render/heroDoll.js, DOLL_OPTS)
-    const D = DOLL_OPTS;
-    $('#lookOpts').innerHTML = sec('Peau', 'skin', D.skin, 1) + sec('Yeux', 'eye', D.eye, 1)
-      + sec('Coiffure', 'hair', D.hair, HAIR_LABELS) + sec('Cheveux', 'hairC', D.hairC, 1)
-      + sec('Chemise', 'top', D.top, TOP_LABELS) + sec('Couleur de la chemise', 'shirt', D.shirt, 1)
-      + opt('Salopette', 'overalls', D.overalls) + sec('Bas', 'bottom', D.bottom, { pant: 'Pantalon', skirt: 'Jupe' }) + sec('Couleur du bas', 'pants', D.pants, 1)
-      + sec('Chapeau', 'hat', D.hat, { '': 'Aucun', cowboy: 'Cow-boy', paille: 'Paille' });
+      : `<button class="${String(L[k] ?? '') === String(v) ? 'on' : ''}" data-k="${k}" data-v="${v}">${labels[v] ?? labels[i]}</button>`).join('') + '</div></div>';
+    // 18/11 (soir) : héros en « pixel moderne » — sexe et plus de choix (src/render/folk.js, HERO_OPTS)
+    const O = HERO_OPTS, f = L.body === 'f', bt = (title, k) => sec(title, k, Object.keys(O[k]), O[k]);
+    $('#lookOpts').innerHTML = bt('Sexe', 'body') + sec('Peau', 'skin', O.skin, 1) + sec('Yeux', 'eye', O.eye, 1)
+      + bt('Coiffure', 'hair') + sec('Couleur des cheveux', 'hairC', O.hairC, 1) + (f ? '' : bt('Barbe', 'beard'))
+      + bt('Chapeau', 'hat') + (L.hat && L.hat !== 'paille' ? sec('Couleur du chapeau', 'hatC', O.hatC, 1) : '')
+      + bt('Haut', 'top') + sec('Couleur du haut', 'shirt', O.shirt, 1)
+      + bt('Par-dessus', 'extra') + (L.extra ? sec('Couleur', 'extraC', O.extraC, 1) : '')
+      + opt('Bandana', 'scarf', O.scarf) + bt('Bas', 'bottom') + sec('Couleur du bas', 'pants', O.pants, 1)
+      + sec('Chaussures', 'shoes', O.shoes, 1) + bt('Sac à dos', 'backpack');
   }
   // couleur facultative : « Aucun » puis le nuancier
   function opt(title, k, vals = WEST_OPTS[k]) {
@@ -38,7 +40,7 @@ export function createCustomizer({ getLook, getName, onStart, onContinue, onBack
   $('#lookOpts').onclick = e => {
     const { k, v, b } = e.target.dataset; if (!k) return;
     const L = getLook(); delete L.sheet; L.doll = true;
-    L[k] = b != null ? b === '1' : k === 'hair' ? +v : v; buildOpts();
+    L[k] = b != null ? b === '1' : k === 'backpack' ? +v : v; buildOpts();
   };
   $('#rotL').onclick = () => { dir = ROT_L[dir]; };
   $('#rotR').onclick = () => { dir = ROT_R[dir]; };

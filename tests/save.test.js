@@ -37,7 +37,7 @@ test('migration : champs manquants complétés', () => {
   const s = migrate({ money: 5, look: { skin: '#000' } });
   assert.equal(s.money, 5);
   assert.equal(s.look.skin, '#000');
-  assert.equal(s.look.hair, 0);
+  assert.equal(s.look.hair, 'messy');
   assert.equal(s.maxHp, 100);
   assert.equal(migrate(null), null);
 });

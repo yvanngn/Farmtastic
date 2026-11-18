@@ -36,7 +36,7 @@ test('apparence : silhouette et bas par défaut, conservés au chargement', () =
   assert.equal(s.look.body, 'h');
   assert.equal(s.look.bottom, 'pant');
   const f = migrate({ look: { body: 'f', bottom: 'skirt', hair: 5 } });
-  assert.deepEqual([f.look.body, f.look.bottom, f.look.hair], ['f', 'skirt', 4], 'couettes → queue de cheval (options de la poupée)');
+  assert.deepEqual([f.look.body, f.look.bottom, f.look.hair], ['f', 'skirt', 'pigtails'], 'anciennes couettes (5) → couettes');
 });
 
 test('menu titre : Continuer seulement avec une sauvegarde', async () => {
@@ -109,13 +109,15 @@ test('chaque niveau de zoom montre plus loin que le précédent (« Loin » ≠ 
   }
 });
 
-test('héros : poupée de sprites, choix limités, anciens looks convertis', async () => {
-  const { DOLL_OPTS, dollFrame } = await import('../src/render/heroDoll.js');
+test('héros (18/11 soir) : sexe et plus de choix, anciens looks convertis', async () => {
+  const { HERO_OPTS, heroSpec } = await import('../src/render/folk.js');
   const { defaultState, migrate } = await import('../src/core/state.js');
   const L = defaultState().look;
   assert.equal(L.doll, true);
-  for (const k of ['skin', 'eye', 'hairC', 'shirt', 'pants']) assert.ok(DOLL_OPTS[k].includes(L[k]), k);
-  const m = migrate({ name: 'x', look: { body: 'h', hair: 2, shirt: '#123456', hat: 'melon', vest: '#5a3a2a' } }).look;
-  assert.equal(m.doll, true); assert.equal(m.hair, 0, 'coiffure inconnue → courts'); assert.equal(m.hat, '', 'chapeau absent des options → aucun'); assert.equal(m.shirt, '#123456');
-  assert.equal(typeof dollFrame, 'function');
+  for (const k of ['skin', 'eye', 'hairC', 'shirt', 'pants', 'shoes']) assert.ok(HERO_OPTS[k].includes(L[k]), k);
+  for (const k of ['body', 'hair', 'hat', 'top', 'extra', 'bottom', 'beard']) assert.ok(L[k] in HERO_OPTS[k], k);
+  const m = migrate({ name: 'x', look: { body: 'h', hair: 2, shirt: '#123456', hat: 'melon', overalls: '#5a3a2a' } }).look;
+  assert.equal(m.hair, 'messy', 'coiffure inconnue → en bataille'); assert.equal(m.hat, '', 'chapeau inconnu → aucun'); assert.equal(m.shirt, '#123456'); assert.equal(m.extra, 'overalls'); assert.equal(m.extraC, '#5a3a2a');
+  const f = heroSpec({ ...L, body: 'f', beard: 'big', bottom: 'skirt', extra: 'vest', hat: 'bowler' });
+  assert.equal(f.f, true); assert.equal(f.beard, undefined, 'pas de barbe pour une héroïne'); assert.equal(f.dress, true); assert.ok(f.garments.includes('vest')); assert.equal(f.hat, 'bowler');
 });

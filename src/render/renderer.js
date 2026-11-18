@@ -1,4 +1,5 @@
 import { folkSprite, CAST } from './folk.js';
+import { coachBody, coachWheel, horse, locoSprite, wagonSprite, fountainSprite } from './props.js';
 import { disc } from './pixel.js';
 import { getZoom, zoomScale } from '../ui/settingsPanel.js';
 import { QUARTIER, PARC_B } from '../world/scenes.js';
@@ -128,68 +129,24 @@ function drawBigTree(c, x, y, season, now) {
   for (const [bx, by, r] of [[-17, -44, 4], [9, -46, 5], [-5, -60, 4], [3, -52, 3]]) blob(bx, by, r, L[2]);
 }
 // Farmwest : locomotive à vapeur qui entre en gare par le nord sur la voie (x1-2) et s'arrête le long du quai.
-function drawLoco(c, t, now, hero, leave = 0) {
-  const x = 16 + 1, stopY = 6 * 16, y0 = stopY - (t < 3 ? (3 - t) * (3 - t) * 50 : 0) + leave * leave * 40;   // lot 8 : repart vers le sud en accélérant
-  const R = (a, b, w, h, col) => { c.fillStyle = col; c.fillRect(Math.round(a), Math.round(b), w, h); };
-  for (const [k, col] of [[0, '#7a3a2a'], [1, '#7a3a2a']]) { const y = y0 - 52 - k * 46; R(x + 2, y + 2, 28, 44, 'rgba(0,0,0,.3)'); R(x, y, 28, 44, col); R(x, y, 28, 3, '#3a2a20'); R(x, y + 41, 28, 3, '#3a2a20'); for (let w = 8; w < 38; w += 10) R(x + 22, y + w, 4, 6, '#ffd98a'); R(x + 3, y + 4, 2, 36, '#a8574a');
-    if (!k) { R(x + 27, y + 14, 2, 18, '#3a2a20'); R(x + 28, y + 15, 1, 16, '#5a3a2a'); }   // porte du wagon, côté quai
-    if (!k && hero) { R(x + 22, y + 18, 4, 6, '#ffd98a'); R(x + 23, y + 19, 3, 3, hero.skin || '#e8b48c'); R(x + 23, y + 18, 3, 1, hero.hairC || '#5a3a22'); }   // le héros à la fenêtre
-  }   // wagons bois
-  R(x + 2, y0 + 2, 28, 72, 'rgba(0,0,0,.3)');
-  R(x, y0, 28, 70, '#2a2a30'); R(x + 3, y0 + 4, 22, 40, '#3a3a44'); R(x + 3, y0 + 4, 4, 40, '#5a5a66');   // chaudière
-  for (const b of [12, 24, 36]) R(x + 1, y0 + b, 26, 2, '#e8c26a');   // cerclages laiton
-  R(x + 8, y0 + 46, 12, 4, '#3a3a44'); R(x + 9, y0 + 50, 10, 10, '#a8302b'); R(x + 11, y0 + 52, 6, 4, '#ffd98a');   // cabine et lanterne
-  R(x + 4, y0 + 62, 20, 8, '#a8302b'); for (let k = 0; k < 5; k++) R(x + 6 + k * 4, y0 + 66, 2, 6, '#5a5a66');   // chasse-buffle
-  R(x + 10, y0 + 14, 8, 8, '#1a1a20'); R(x + 9, y0 + 12, 10, 3, '#3a3a44');   // cheminée
+function drawLoco(c, t, now, hero, leave = 0) {   // 18/11 (soir) : locomotive et wagons « pixel moderne » (src/render/props.js)
+  const x = 16, stopY = 6 * 16, y0 = stopY - (t < 3 ? (3 - t) * (3 - t) * 50 : 0) + leave * leave * 40;   // lot 8 : repart vers le sud en accélérant
+  const L = locoSprite(), W0 = wagonSprite(hero), W1 = wagonSprite(null);
+  c.fillStyle = 'rgba(0,0,0,.3)'; c.fillRect(x + 3, y0 - 92 + 3, 28, 162);
+  if (W1) c.drawImage(W1, x, Math.round(y0 - 98)); if (W0) c.drawImage(W0, x, Math.round(y0 - 52)); if (L) c.drawImage(L, x, Math.round(y0));
   const puff = t < 6 || leave > 0 ? 1 : .35;   // fumée : forte en arrivant, légère à l'arrêt
-  for (let k = 0; k < 5; k++) { const ph = (now / 600 + k * .2) % 1, py = y0 + 10 - ph * 40, sz = 5 + ph * 10; c.fillStyle = `rgba(235,235,235,${(1 - ph) * .55 * puff})`; c.fillRect(Math.round(x + 14 - sz / 2 + Math.sin(k * 2 + now / 400) * 4), Math.round(py), Math.round(sz), Math.round(sz)); }
+  for (let k = 0; k < 6; k++) { const ph = (now / 600 + k / 6) % 1, py = y0 + 16 - ph * 44, sz = 4 + ph * 11; c.fillStyle = `rgba(235,232,228,${(1 - ph) * .6 * puff})`; c.beginPath(); c.arc(x + 15 + Math.sin(k * 2 + now / 400) * 4, py, sz / 2, 0, 7); c.fill(); }
 }
 // Farmwest : diligence tirée par deux chevaux, cocher en chapeau sur le siège ; roues qui tournent.
-function drawCoach(c, wx, wy, now) {   // diligence détaillée (vue de 3/4, vers la droite) : caisse laquée, bagages, roues à rayons, deux chevaux, cocher
-  const X = Math.round(wx * 16), Y = Math.round(wy * 16), R = (a, b, w, h, col) => { c.fillStyle = col; c.fillRect(X + a, Y + b, w, h); };
-  const trot = now / 110, k1 = Math.round(Math.sin(trot)), k2 = Math.round(Math.sin(trot + Math.PI)), ang = now / 140;
-  const O = '#2a1610';
-  // ombre au sol
-  c.fillStyle = 'rgba(30,15,5,.3)'; c.beginPath(); c.ellipse(X + 8, Y + 9, 46, 5, 0, 0, 7); c.fill();
-  // ---- chevaux (le second décalé derrière)
-  const horse = (hx, hy, coat, mane, k, kb) => {
-    R(hx - 1, hy - 9 + k, 18, 9, O); R(hx, hy - 8 + k, 16, 7, coat); R(hx, hy - 8 + k, 16, 2, shade(coat, 1.2)); R(hx, hy - 3 + k, 16, 2, shade(coat, .8));   // corps
-    R(hx + 13, hy - 15 + k, 6, 8, O); R(hx + 14, hy - 14 + k, 4, 7, coat); R(hx + 16, hy - 16 + k, 7, 5, O); R(hx + 17, hy - 15 + k, 5, 3, coat); R(hx + 21, hy - 14 + k, 1, 1, '#1a1010');   // cou, tête
-    R(hx + 18, hy - 15 + k, 1, 1, '#ffffff'); R(hx + 14, hy - 17 + k, 2, 2, coat);   // œil, oreille
-    R(hx + 12, hy - 16 + k, 3, 9, mane); R(hx - 2, hy - 7 + k, 2, 6, mane); R(hx - 3, hy - 3 + k, 2, 4, mane);   // crinière, queue
-    R(hx + 3, hy - 8 + k, 10, 1, '#8a2a1a'); R(hx + 8, hy - 9 + k, 1, 7, '#8a2a1a');   // harnais
-    for (const [lx, a] of [[1, kb], [4, -kb], [11, -kb], [14, kb]]) { R(hx + lx, hy - 2 + k, 2, 7 - Math.max(0, a), shade(coat, .75)); R(hx + lx, hy + 4 - Math.max(0, a), 2, 1, '#1a1010'); }   // pattes et sabots
-  };
-  horse(24, 0, '#5a3a22', '#2a1a10', k2, k1);
-  R(14, -6, 28, 1, '#3a2414');   // timon
-  horse(30, 3, '#8a5a32', '#3a2414', k1, k2);
-  // ---- caisse de la diligence
-  R(-30, -30, 44, 30, O);
-  R(-29, -29, 42, 28, '#8a2a20'); R(-29, -29, 42, 3, '#a83a2a'); R(-29, -4, 42, 3, '#5a1a14');   // laque rouge, reflet en haut, ombre en bas
-  R(-29, -29, 2, 28, '#b84a3a'); R(11, -29, 2, 28, '#5a1a14');
-  R(-30, -31, 44, 3, O); R(-32, -33, 48, 3, '#3a2414'); R(-32, -34, 48, 1, '#6a4426');   // toit
-  R(-28, -40, 38, 7, '#6a4426'); R(-28, -40, 38, 1, '#8a5a32'); for (let k = -26; k < 10; k += 6) R(k, -40, 1, 7, '#3a2414');   // bagages sur le toit
-  R(-20, -44, 12, 5, '#a8774a'); R(-20, -44, 12, 1, '#c99560'); R(-15, -44, 2, 5, '#5a3a22'); R(-4, -43, 10, 4, '#3e5a7a'); R(-4, -43, 10, 1, '#5a7a9a');   // malle et sac
-  R(-29, -15, 42, 2, '#e8c26a'); R(-29, -26, 42, 1, '#e8c26a');   // filets dorés
-  for (const wxx of [-25, 0]) { R(wxx, -24, 11, 9, '#e8c26a'); R(wxx + 1, -23, 9, 7, '#ffe8a8'); R(wxx + 1, -23, 2, 7, '#c84a3a'); R(wxx + 8, -23, 2, 7, '#c84a3a'); R(wxx + 4, -21, 3, 5, '#3a2a20'); }   // fenêtres, rideaux, voyageurs
-  R(-13, -24, 11, 22, '#5a1a14'); R(-12, -23, 9, 20, '#9a3226'); R(-4, -13, 2, 2, '#f2c832');   // porte et poignée
-  R(-34, -24, 4, 6, '#3a2414'); R(-33, -23, 2, 3, '#ffd98a'); R(14, -24, 4, 6, '#3a2414'); R(15, -23, 2, 3, '#ffd98a');   // lanternes
-  // banc du cocher et cocher (planche de l'utilisateur) : haut-de-forme, manteau en peau retournée, barbe grise, pipe
-  R(13, -20, 10, 3, '#5a3a22'); R(13, -17, 2, 10, '#3a2414');
-  R(14, -29, 9, 10, '#8a6a48'); R(14, -29, 2, 10, '#a8865e'); R(14, -29, 9, 2, '#e8dcc4'); R(17, -27, 1, 8, '#e8dcc4');   // manteau, col de laine
-  R(16, -35, 6, 6, '#e8b48c'); R(16, -32, 6, 3, '#9a9a9a'); R(17, -33, 4, 1, '#7a7a7a'); R(20, -34, 1, 1, '#2a2030');   // visage, barbe grise
-  R(21, -32, 3, 1, '#5a3a22'); R(23, -34, 2, 2, '#5a3a22');   // pipe
-  R(13, -36, 12, 2, '#4a3020'); R(15, -41, 8, 5, '#5a3a26'); R(16, -42, 6, 1, '#5a3a26'); R(15, -37, 8, 1, '#2a1a10'); R(16, -40, 2, 2, '#7a5236');   // chapeau melon brun
-  c.strokeStyle = '#3a2414'; c.lineWidth = 1; c.beginPath(); c.moveTo(X + 21, Y - 24); c.lineTo(X + 40, Y - 12 + k1); c.stroke();   // rênes
-  // ---- roues à rayons qui tournent (arrière grande, avant petite), ressorts
-  R(-26, -2, 36, 2, '#3a2414');
-  const wheel = (cx, cy, rad) => {
-    c.fillStyle = O; c.beginPath(); c.arc(X + cx, Y + cy, rad + 1, 0, 7); c.fill(); c.fillStyle = '#a8774a'; c.beginPath(); c.arc(X + cx, Y + cy, rad, 0, 7); c.fill();
-    c.fillStyle = O; c.beginPath(); c.arc(X + cx, Y + cy, rad - 2, 0, 7); c.fill(); c.fillStyle = 'rgba(0,0,0,0)';
-    c.strokeStyle = '#c99560'; c.lineWidth = 1.2; c.beginPath(); for (let k = 0; k < 8; k++) { const a = ang + k * Math.PI / 4; c.moveTo(X + cx, Y + cy); c.lineTo(X + cx + Math.cos(a) * (rad - 2), Y + cy + Math.sin(a) * (rad - 2)); } c.stroke();
-    c.fillStyle = '#e8c26a'; c.beginPath(); c.arc(X + cx, Y + cy, 2, 0, 7); c.fill();
-  };
-  wheel(-20, 1, 9); wheel(6, 3, 7);
+function drawCoach(c, wx, wy, now) {   // 18/11 (soir) : diligence « pixel moderne » (src/render/props.js) : caisse, cocher, chevaux au trot, roues qui tournent
+  const X = Math.round(wx * 16), Y = Math.round(wy * 16), fr = (now / 110 | 0) % 4, st = (now / 70 | 0) % 8;
+  c.fillStyle = 'rgba(30,15,5,.3)'; c.beginPath(); c.ellipse(X + 12, Y + 9, 52, 5, 0, 0, 7); c.fill();
+  const h1 = horse('#5a3a22', fr), h2 = horse('#8a5a32', (fr + 2) % 4), body = coachBody(), wb = coachWheel(10, st), wf = coachWheel(8, st);
+  if (h1) c.drawImage(h1, X + 40, Y - 21);
+  if (body) c.drawImage(body, X - 40, Y - 64);
+  if (wb) c.drawImage(wb, X - 31, Y - 10); if (wf) c.drawImage(wf, X + 1, Y - 6);
+  if (h2) c.drawImage(h2, X + 46, Y - 17);
+  c.strokeStyle = '#3a2414'; c.lineWidth = 1; c.beginPath(); c.moveTo(X + 34, Y - 30); c.lineTo(X + 72, Y - 14); c.stroke();   // rênes
 }
 import { SCENES } from '../world/scenes.js';
 import { ANIMALS } from '../data/animals.js';
