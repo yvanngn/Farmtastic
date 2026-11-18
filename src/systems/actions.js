@@ -3,7 +3,7 @@ import { forestTreeAt, chopForest, isForestChest, openForestChest } from './fore
 // Aiguillage d'une action sur une tuile, selon la scène (ferme ou intérieur).
 import { isBin, key, isPlot } from '../world/map.js';
 import { seaOpen } from './admin.js';
-import { doorAt, tileAt, UI_TILES } from '../world/scenes.js';
+import { doorAt, tileAt, UI_TILES, isHome } from '../world/scenes.js';
 import { sleep } from './time.js';
 import { sellAll } from './economy.js';
 import { hitObject } from './resources.js';
@@ -16,7 +16,7 @@ import { grangeAction } from './grange.js';
 import { examineText } from './examine.js';
 import { hitZRock, isOpen, pickTestSword } from './wild.js';
 import { pickShroom } from './foret.js';
-import { repairAt, contribute, pickFieldTool } from './repair.js';
+import { repairAt, contribute, pickFieldTool, installBed, isRepaired } from './repair.js';
 import { pitchTent, tentAt, useTent } from './camp.js';
 import { cast, hook, zoneAt } from './fishing.js';
 import { parcAt, ride, startGame, buyStall } from './parc.js';
@@ -113,6 +113,7 @@ function act0(g, tx, ty) {
   if (d && d.to === 'wild' && !isOpen(S)) { g.bus.emit('sfx', 'denied'); g.bus.emit('toast', 'La grille de la caverne est fermée à clé. Le Maire saura peut-être…'); return 'locked'; }
   if (d && d.to === 'plage' && !seaOpen(S)) { g.bus.emit('sfx', 'denied'); g.bus.emit('toast', '🚧 Le chemin de la plage est barré pour l’instant.'); return 'locked'; }
   if (d && HOME_OWNER[d.to] && !canEnterHome(S, HOME_OWNER[d.to])) return knock(g, HOME_OWNER[d.to]);
+  if (d && d.to === 'house' && isRepaired(S, 'house2')) { enterScene(g, 'maison', { x: 7.5, y: 9.4 }); return 'door'; }   // 18/11 : la cabane agrandie
   if (d && !(sc === 'farm' && BUILDINGS[d.to] && !(S.built && S.built[d.to]))) { enterScene(g, d.to, d.spawn); return 'door'; }
   if (sc === 'grange') { const r = grangeAction(g, tx, ty); if (r !== 'none') return r; }
   if (sc === 'resto' && tileAt('resto', tx, ty) === 'O') return repairOven(g);   // le four du cuistot (lot 5)
@@ -124,8 +125,9 @@ function act0(g, tx, ty) {
   if (sc === 'wild' && tileAt(sc, tx, ty) === 'S') { g.bus.emit('sfx', 'denied'); g.bus.emit('toast', '⬇️ Un escalier s’enfonce vers l’étage 2… bloqué par des éboulis pour l’instant.'); return 'stairs'; }
   if (sc === 'wild') return S.wild && S.wild.rocks[key(tx, ty)] ? (hitZRock(g, tx, ty) ? 'hit' : 'none') : 'none';
   if (sc === 'town') { const ui = UI_TILES[tileAt(sc, tx, ty)]; if (ui) { g.bus.emit('sfx', 'ui'); g.bus.emit('open', ui); return ui; } return 'none'; }
-  if (sc === 'house') {
+  if (isHome(sc)) {
     const t = tileAt(sc, tx, ty);
+    if (t === 'B' && S.bed === false && installBed(g)) return 'bed';
     if (t === 'E') { if (S.workbench) { g.bus.emit('sfx', 'ui'); g.bus.emit('open', 'workshop'); return 'workshop'; } g.bus.emit('sfx', 'denied'); g.bus.emit('toast', 'Un vieil établi tout branlant… Le charpentier du village pourrait le réparer.'); return 'broken'; }
     if (t === 'B' && S.bed === false) { g.bus.emit('sfx', 'denied'); g.bus.emit('toast', 'Il n’y a pas encore de lit ici… En attendant, la tente fera l’affaire.'); return 'nobed'; }
     return t === 'B' ? (sleep(g) ? 'sleep' : 'none') : 'none';

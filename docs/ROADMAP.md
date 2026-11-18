@@ -50,7 +50,7 @@ Zones de l'image → scènes du jeu :
 - [x] 2c. Nouvelles zones jouables (encore vides de PNJ) : **rond-point** (fontaine, panneaux), **ranch du Maire** (maison « MAIRE », grange, enclos à chevaux, abreuvoir), **zone portuaire** (entrepôts, quai, pontons, voiliers) (v0.1.8).
 - [x] Le « chef du village » devient **le Maire, Manu (Manuel)** partout.
 - [x] 2d. Liaisons alignées sur l'image (v0.1.9) : ferme → **forêt** à l'est ; centre-ville ↔ rond-point par un **pont sur la rivière** (à l'est du centre-ville) ; **station balnéaire au sud** du centre-ville (plage retournée : mer au sud) ; **fête foraine** au sud du ranch (panneau « FÊTE FORAINE », plus de trouée secrète dans la forêt). L'entrée ouest du centre-ville est fermée en attendant la gare du lot 3.
-- [ ] 2e. Plus tard : la rivière autour du centre-ville dans la scène du centre-ville elle-même, la montagne à rattacher par la route de l'est (aujourd'hui depuis la zone résidentielle), le port relié à la plage.
+- [x] 2e. (v0.1.50) Le centre-ville **entouré par la rivière** (rivière aussi à l'ouest, pont vers la gare) ; la **route de l'est** descend de la montagne au **port** (sortie sud de la montagne, nord du port) ; le **port relié à la plage** par le quai (est de la plage ↔ ouest du port). La montagne reste aussi reliée à la zone résidentielle.
 - Le tunnel de l'ouest reste tel quel pour l'instant (décision du 17/11).
 - [x] Le Maire **vit dans son ranch** (maison avec intérieur) ; la **villa du centre-ville est effacée** (décision du 17/11). Il passe toujours ses journées sur la place.
 
@@ -65,7 +65,7 @@ Réponses de l'utilisateur : un **cocher** conduit la diligence (peut-être un P
 - [x] Au **rond-point**, Myst fait **choisir une des 4 fermes** (en multijoueur, une ferme prise par un autre joueur est indiquée et refusée).
 - [x] Conseils de fin (tente, liste des tâches, plan, où habite Myst), puis le héros est **déposé devant sa ferme** et le plan s'ouvre.
 - Les parties déjà commencées ne rejouent pas ce début.
-- [ ] Plus tard : le **cocher** en PNJ ; des **arrêts de diligence** pour voyager entre les zones (payants ?).
+- [ ] Plus tard : le **cocher** en PNJ ; la **diligence débloquée au niveau 10**, avec **un arrêt à chaque carrefour** (décision du 18/11).
 
 ## Lot 4 — Nouvelles quêtes du début ✅ (17/11/2026, v0.1.11)
 Réponses de l'utilisateur : la **pelle** est dans la grange une fois réparée ; la **pioche** reste contre la grange ; chaque ferme a un **grand arbre incassable** au pied duquel on trouve la **hache** ; on ne peut **jamais avoir deux fois le même outil** (multijoueur) ; la **quête du bijou d'Igor est supprimée** (dialogues nettoyés) ; le **coffre devient une quête principale**.
@@ -149,6 +149,13 @@ Pour que **les scènes du jeu** atteignent le niveau de détail de l'image, scè
 - [x] 11g. Palette unique : 48 couleurs tirées des décors (k-moyennes) + 3 accents, tramage léger ; décors, carte et sprites ramenés à la palette (v0.1.22).
 - [x] Forêt-labyrinthe : allées de 2 cases, murs en gros buissons (v0.1.22) ; **nouvelle forme à chaque saison**, tirée au hasard, jamais bloquante (v0.1.23). **Palette unique** (~48 couleurs) et lumière en haut à gauche partout, pour l'harmonie de l'ensemble.
 
+## Quêtes secondaires de la cabane (demande du 18/11) ✅ v0.1.50
+- [x] Les quêtes secondaires restent cachées jusqu'à la cabane retapée (confirmé).
+- [x] **Agrandir la cabane** : le double de la cabane (160 bois + 60 pierres), au marteau devant la cabane ; on entre ensuite dans une **cabane plus grande** (16 × 11 au lieu de 12 × 9).
+- [x] **Un vrai lit** : acheter le **plan du lit** chez Harry (💡 80 $), le fabriquer (💡 50 bois + 10 pierres), l'installer dans la cabane.
+- [x] **Un coffre pour ranger** : acheter le **plan du coffre** chez Harry (💡 60 $), le fabriquer (80 bois + 20 pierres). Le coffre quitte la quête principale « Premiers pas » ; Harry ne l'apprend plus gratuitement.
+- ⏳ Plus tard : la cabane agrandie vue de dehors (aujourd'hui seul l'intérieur change).
+
 ## Lot 12 — Cabane du pêcheur, Rouky et Rox, petits tas à creuser (demande du 18/11) ⏳
 Décrit par l'utilisateur :
 - La **station balnéaire** devient la **cabane du pêcheur**. Y vit **Rouky**, un vieux monsieur, avec son chien **Rox** ; il vit de la pêche. On ne sait pas grand-chose de lui : il semble être né ici et avoir travaillé dans les chemins de fer. Peu de gens viennent le voir.
@@ -164,14 +171,14 @@ Décrit par l'utilisateur :
 - [ ] Tests : tas renouvelés chaque jour, pas de creusage sans pelle, rien à 10 %, os → Rox → canne une seule fois.
 - [ ] Manuel (`docs/MANUEL.md`) et liste de complétion (`docs/COMPLETION.md`) : déjà notés en ⏳, à cocher une fois faits.
 
-❓ À trancher avant de lancer le lot :
-- Le chien s'appelle **Rox** (écrit aussi « Rex » une fois) : confirmer.
-- Zones avec des tas : toutes les zones extérieures (ferme, forêt, centre-ville, rond-point, zone résidentielle, ranch, fête foraine, port, montagne, gare, cabane du pêcheur) ou seulement certaines ? 💡 toutes sauf la gare et le centre-ville (sols en planches et en pavés).
-- Probabilités du butin : 💡 rien 10 %, pierres 30 %, bois 25 %, champignons 20 %, os 15 %.
-- Les tas réapparaissent-ils seulement là où on a creusé, ou tous à de nouvelles places chaque jour ? 💡 nouvelles places chaque jour.
-- La fête foraine reste-t-elle sur la plage, à côté de la cabane ?
-- Où trouve-t-on Rouky dans la journée (devant sa cabane, sur le ponton) et le soir ?
-- Que fait la canne « sommaire » de moins qu'une vraie canne (plus lente, poissons limités) ? Y aura-t-il une meilleure canne plus tard ?
+Réponses de l'utilisateur (18/11) — le lot est prêt à lancer :
+- Le chien s'appelle **Rox**.
+- Tas dans **toutes les zones extérieures sauf la gare et le centre-ville**.
+- Butin : rien 10 %, pierres 30 %, bois 25 %, champignons 20 %, os 15 % (**répartition à faire évoluer avec le temps**).
+- **Nouvelles places au hasard chaque jour**.
+- La **fête foraine reste** à côté, sur la plage.
+- Rouky **dort à côté de sa cabane le jour**, et il est **à l'intérieur le soir**.
+- La canne sommaire est **plus lente** et attrape **moins de poissons** ; elle sera **améliorable** plus tard.
 
 ## Plus tard (déjà noté dans le carnet)
 - Pièce secrète dans chaque maison.

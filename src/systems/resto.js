@@ -37,6 +37,7 @@ export function repairOven(g) {
 
 // Farmwest (lot 6) : Harry Fordson, le charpentier, apprend à faire le coffre une fois la cabane retapée (quête principale).
 export function harryTalk(g, n) {
+  return false;   // 18/11 : le plan du coffre s'achète chez lui (quête secondaire), il ne l'apprend plus gratuitement
   const S = g.S;
   if ((S.recipes || []).includes('chest') || !isRepaired(S, 'house')) return false;
   S.recipes = [...(S.recipes || []), 'chest'];

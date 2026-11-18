@@ -11,9 +11,10 @@ export function isRepaired(S, id) {
 }
 const onFarm = S => (S.scene || 'farm') === 'farm';
 // Bâtiment encore délabré sur cette case (le toucher = déposer).
-export const repairAt = (S, x, y) => onFarm(S) ? Object.keys(REPAIRS).find(id => { const R = REPAIRS[id]; return inRect(x, y, R.x0, R.y0, R.x1, R.y1) && !isRepaired(S, id); }) || null : null;
+const ready = (S, id) => !REPAIRS[id].after || isRepaired(S, REPAIRS[id].after);   // l'agrandissement vient après la cabane
+export const repairAt = (S, x, y) => onFarm(S) ? Object.keys(REPAIRS).find(id => { const R = REPAIRS[id]; return inRect(x, y, R.x0, R.y0, R.x1, R.y1) && !isRepaired(S, id) && ready(S, id) && (!R.after || S.sel === 'hammer'); }) || null : null;   // l'agrandissement : seulement marteau en main
 // Bâtiment délabré devant lequel se tient le joueur (affiche la fenêtre des besoins).
-export const repairNear = S => onFarm(S) ? Object.keys(REPAIRS).find(id => { const R = REPAIRS[id]; return !isRepaired(S, id) && S.x >= R.x0 - 1 && S.x <= R.x1 + 2 && S.y >= R.y0 && S.y <= R.y1 + 4; }) || null : null;
+export const repairNear = S => onFarm(S) ? Object.keys(REPAIRS).find(id => { const R = REPAIRS[id]; return !isRepaired(S, id) && ready(S, id) && (!R.after || S.sel === 'hammer') && S.x >= R.x0 - 1 && S.x <= R.x1 + 2 && S.y >= R.y0 && S.y <= R.y1 + 4; }) || null : null;
 
 // Dépose ce qu'on a sur soi, jusqu'à remplir les jauges.
 export function contribute(g, id) {
@@ -30,8 +31,18 @@ export function contribute(g, id) {
   g.bus.emit('sfx', 'pick'); g.bus.emit('pop', { t: moved.trim(), x: (R.x0 + R.x1) / 2, y: R.y1 });
   if (isRepaired(S, id)) {
     g.bus.emit('sfx', 'levelup'); g.bus.emit('toast', `✅ ${R.n} est réparée !`); g.bus.emit('repaired', id);
-    if (id === 'house') g.bus.emit('toast', '📦 Harry Fordson, le charpentier du centre-ville, pourra t’apprendre à faire un coffre.');
+    if (id === 'house') g.bus.emit('toast', '📜 Nouvelles quêtes secondaires : agrandir la cabane, fabriquer un lit et un coffre (plans chez Harry Fordson, le charpentier).');
+    if (id === 'house2') g.bus.emit('toast', '🏠 Ta cabane est plus grande : il y a de la place pour s’installer !');
   }
+  return true;
+}
+
+// Quête secondaire du lit : le lit fabriqué (plan acheté chez Harry) s'installe dans la cabane.
+export function installBed(g) {
+  const S = g.S;
+  if (S.bed !== false || !(S.inv.bed > 0)) return false;
+  add(g, 'bed', -1); S.bed = true;
+  g.bus.emit('sfx', 'levelup'); g.bus.emit('toast', '🛏️ Ton lit est installé : tu peux enfin dormir dans ta cabane !');
   return true;
 }
 

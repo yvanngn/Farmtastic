@@ -15,6 +15,20 @@ export const LAYOUTS = {
     '#........EE#',
     '#####D######'
   ],
+  // 18/11 : la cabane agrandie (quête secondaire « Agrandir la cabane ») : plus grande, plus de place pour les meubles
+  maison: [
+    '################',
+    '#WWWWWWWWWWWWWW#',
+    '#KK......P....B#',
+    '#.............B#',
+    '#..TT.....RRR..#',
+    '#..TT.....RRR..#',
+    '#.........RRR.C#',
+    '#P.............#',
+    '#.........EE...#',
+    '#..............#',
+    '#######D########'
+  ],
   coop: [
     '##########',
     '#WWWWWWWW#',
@@ -207,6 +221,7 @@ function buildTown() {
   for (let x = 0; x < W; x++) { m[0][x] = '^'; m[1][x] = '^'; }
   for (let y = 2; y < H; y++) m[y][W - 2] = y === 10 ? '=' : 'w';
   for (let x = 0; x < W - 1; x++) m[H - 2][x] = (x === 20 || x === 21) ? '=' : 'w';
+  for (let y = 2; y < H - 1; y++) m[y][1] = y === 10 ? '=' : 'w';   // lot 2e : rivière à l'ouest aussi (le centre-ville est entouré d'eau), pont vers la gare
   return m.map(r => r.join(''));
 }
 LAYOUTS.town = buildTown();
@@ -235,7 +250,8 @@ LAYOUTS.montagne = (() => {
   for (let y = 1; y <= 4; y++) for (let x = 25; x <= 32; x++) m[y][x] = 'G';                 // paroi rocheuse et grotte
   for (let y = 14; y <= 19; y++) for (let x = 7; x <= 16; x++) if (Math.hypot((x - 11.5) / 5, (y - 16.5) / 3) < 1) m[y][x] = 'w';   // lac gelé
   for (let y = 10; y <= 14; y++) m[y][11] = '.';
-  for (const [x, y] of [[4, 3], [9, 4], [15, 2], [20, 5], [5, 12], [21, 13], [24, 18], [29, 15], [32, 20], [3, 18], [19, 20], [27, 11], [33, 7]]) m[y][x] = 'T';
+  for (let y = 10; y < H; y++) { m[y][28] = '.'; m[y][29] = '.'; } m[H - 1][28] = 'D'; m[H - 1][29] = 'D';   // lot 2e : la route de l'est descend vers le port
+  for (const [x, y] of [[4, 3], [9, 4], [15, 2], [20, 5], [5, 12], [21, 13], [24, 18], [31, 15], [32, 20], [3, 18], [19, 20], [27, 11], [33, 7]]) m[y][x] = 'T';
   return m.map(r => r.join(''));
 })();
 // Plage (au nord du centre-ville) : w mer, a sable mouillé, s sable, T palmiers, . passerelle de bois, D retour en ville.
@@ -246,6 +262,7 @@ LAYOUTS.plage = (() => {
   for (let y = 9; y < H; y++) { m[y][19] = '.'; m[y][20] = '.'; } m[H - 1][19] = 'D'; m[H - 1][20] = 'D';
   for (let x = 30; x <= 33; x++) for (let y = 4; y <= 8; y++) m[y][x] = '.';                   // ponton qui avance dans la mer
   for (const [x, y] of [[4, 11], [9, 15], [14, 10], [26, 12], [35, 15], [37, 10], [6, 17], [31, 17]]) m[y][x] = 'T';
+  for (let x = 21; x < W; x++) { m[9][x] = '.'; m[10][x] = '.'; } m[9][W - 1] = 'D'; m[10][W - 1] = 'D';   // lot 2e : passerelle le long de la plage jusqu'au port (à l'est)
   return m.reverse().map(r => r.join(''));
 })();
 // Quartier : g herbe, . pavés, X maison (Luna x4-8, Franck x11-15, y4-6), T arbre, D sortie vers la ferme, b banc, f jardinière.
@@ -450,6 +467,8 @@ LAYOUTS.port = (() => {
   for (let y = 0; y < 9; y++) { m[y][0] = 'T'; m[y][W - 1] = 'T'; } for (let x = 0; x < W; x++) m[0][x] = 'T';
   for (let y = 9; y < 12; y++) { m[y][0] = 'T'; m[y][W - 1] = 'T'; }
   m[6][0] = 'D'; m[7][0] = 'D';
+  m[10][0] = 'D'; m[11][0] = 'D';   // lot 2e : le quai rejoint la plage (à l'ouest)
+  for (let y = 0; y < 6; y++) { m[y][23] = '.'; m[y][24] = '.'; } m[0][23] = 'D'; m[0][24] = 'D';   // lot 2e : la route de l'est monte vers la montagne
   return m.map(r => r.join(''));
 })();
 
@@ -483,11 +502,16 @@ export const SCENES = {
   remy: { W: 9, H: 7, doors: [{ x: 4, y: 6, to: 'quartier', spawn: { x: 20.5, y: 25.8 } }] },
   resto: { W: 14, H: 7, doors: [{ x: 6, y: 6, to: 'town', spawn: { x: 15.5, y: 29.8 } }] },
   ranch_maison: { W: 9, H: 7, doors: [{ x: 4, y: 6, to: 'ranch', spawn: { x: 7, y: 6.8 } }] },
-  port: { W: 36, H: 20, outdoor: true, doors: [{ x: 0, y: 6, to: 'ranch', spawn: { x: 29.4, y: 16 } }, { x: 0, y: 7, to: 'ranch', spawn: { x: 29.4, y: 16 } }] },
-  montagne: { W: 36, H: 24, outdoor: true, cold: true, doors: [{ x: 0, y: 8, to: 'quartier', spawn: { x: 38.2, y: 8.6 } }, { x: 0, y: 9, to: 'quartier', spawn: { x: 38.2, y: 8.6 } }] },
-  plage: { W: 40, H: 20, outdoor: true, doors: [{ x: 19, y: 0, to: 'town', spawn: { x: 20.5, y: 29.8 } }, { x: 20, y: 0, to: 'town', spawn: { x: 20.5, y: 29.8 } }] },
+  port: { W: 36, H: 20, outdoor: true, doors: [{ x: 0, y: 6, to: 'ranch', spawn: { x: 29.4, y: 16 } }, { x: 0, y: 7, to: 'ranch', spawn: { x: 29.4, y: 16 } },
+    { x: 0, y: 10, to: 'plage', spawn: { x: 37.4, y: 10 } }, { x: 0, y: 11, to: 'plage', spawn: { x: 37.4, y: 10 } },   // lot 2e : le long de la plage
+    { x: 23, y: 0, to: 'montagne', spawn: { x: 29, y: 21.8 } }, { x: 24, y: 0, to: 'montagne', spawn: { x: 29, y: 21.8 } }] },   // lot 2e : route de l'est
+  montagne: { W: 36, H: 24, outdoor: true, cold: true, doors: [{ x: 0, y: 8, to: 'quartier', spawn: { x: 38.2, y: 8.6 } }, { x: 0, y: 9, to: 'quartier', spawn: { x: 38.2, y: 8.6 } },
+    { x: 28, y: 23, to: 'port', spawn: { x: 24, y: 1.8 } }, { x: 29, y: 23, to: 'port', spawn: { x: 24, y: 1.8 } }] },   // lot 2e : la route de l'est descend au port
+  plage: { W: 40, H: 20, outdoor: true, doors: [{ x: 19, y: 0, to: 'town', spawn: { x: 20.5, y: 29.8 } }, { x: 20, y: 0, to: 'town', spawn: { x: 20.5, y: 29.8 } },
+    { x: 39, y: 9, to: 'port', spawn: { x: 1.6, y: 10.6 } }, { x: 39, y: 10, to: 'port', spawn: { x: 1.6, y: 10.6 } }] },   // lot 2e : vers le port
   town: { W: 34, H: 32, outdoor: true, doors: [{ x: 20, y: 31, to: 'plage', spawn: { x: 19.5, y: 1.8 } }, { x: 21, y: 31, to: 'plage', spawn: { x: 20.5, y: 1.8 } }, { x: 33, y: 10, to: 'rondpoint', spawn: { x: 1.6, y: 9 } }, { x: 0, y: 10, to: 'gare', spawn: { x: 21.4, y: 9 } }, { x: 15, y: 28, to: 'resto', spawn: { x: 6.5, y: 5.4 } }, { x: 11, y: 15, to: 'bar', spawn: { x: 4.5, y: 5.4 } }] },
   house: { W: 12, H: 9, doors: [{ x: 5, y: 8, to: 'farm', spawn: { x: 5.5, y: 5.9 } }] },
+  maison: { W: 16, H: 11, doors: [{ x: 7, y: 10, to: 'farm', spawn: { x: 5.5, y: 5.9 } }] },   // la cabane agrandie (même porte sur la ferme)
   coop: { W: 10, H: 7, doors: [{ x: 4, y: 6, to: 'farm', spawn: { x: 24.5, y: 8.9 } }] },
   // Forêt : à l'est du centre-ville ; au-delà (est), la zone de la Caverne sombre (fermée pour l'instant).
   parc: { W: 34, H: 24, outdoor: true, doors: [{ x: 16, y: 23, to: 'ranch', spawn: { x: 16, y: 19.8 } }, { x: 17, y: 23, to: 'ranch', spawn: { x: 16, y: 19.8 } }] },
@@ -508,5 +532,7 @@ export const SCENES = {
   barn: { W: 12, H: 8, doors: [{ x: 5, y: 7, to: 'farm', spawn: { x: 28.5, y: 8.9 } }] }
 };
 
+// La cabane du joueur : petite au début, agrandie ensuite (scène « maison »).
+export const isHome = sc => sc === 'house' || sc === 'maison';
 export const tileAt = (scene, x, y) => (LAYOUTS[scene] && LAYOUTS[scene][y] && LAYOUTS[scene][y][x]) || '#';
 export const doorAt = (scene, x, y) => SCENES[scene].doors.find(d => d.x === x && d.y === y) || null;

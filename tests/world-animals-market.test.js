@@ -194,3 +194,15 @@ test('demandes : jamais un objet qu’on ne peut pas encore produire', () => {
   let k = 3; const { g } = makeGame({ state: { ...freshState(), built: { coop: false, pigsty: false, barn: false } }, rnd: () => ((k = (k * 9301 + 49297) % 233280) / 233280) });
   for (let i = 0; i < 100; i++) assert.ok(!['wool', 'rabbit_wool', 'truffle', 'egg', 'corn', 'carrot'].includes(newOrder(g, 0).item));
 });
+
+test('lot 2e : centre-ville entouré par la rivière, route de l’est montagne ↔ port, port ↔ plage', async () => {
+  const { LAYOUTS, SCENES, SOLID_TILES } = await import('../src/world/scenes.js');
+  const T = LAYOUTS.town, H = T.length;
+  for (let y = 2; y < H - 1; y++) assert.ok('w='.includes(T[y][1]), `rivière à l’ouest (y${y})`);
+  assert.equal(T[10][1], '=', 'pont vers la gare'); assert.equal(T[10][T[0].length - 2], '=', 'pont vers le rond-point');
+  const link = (a, b) => SCENES[a].doors.filter(d => d.to === b);
+  for (const [a, b] of [['montagne', 'port'], ['port', 'montagne'], ['plage', 'port'], ['port', 'plage']]) {
+    const ds = link(a, b); assert.ok(ds.length >= 2, `${a} → ${b}`);
+    for (const d of ds) { assert.equal(LAYOUTS[a][d.y][d.x], 'D'); const t = LAYOUTS[b][Math.floor(d.spawn.y)][Math.floor(d.spawn.x)]; assert.ok(!SOLID_TILES.includes(t), `arrivée praticable dans ${b} (${t})`); }
+  }
+});

@@ -88,7 +88,7 @@ export function createMenu(g, opts) {
     },
     carpenter(S) {
       const why = { money: "Pas assez d'argent", wood: 'Pas assez de bois', stone: 'Pas assez de pierre' };
-      return '<p class="info">Les bâtiments se construisent au nord de l\'enclos, sur leur emplacement balisé.</p><div class="grid">' + Object.entries(BUILDINGS).map(([id, b]) => {
+      return patternGrid(S, 'carpenter') + '<p class="info">Les bâtiments se construisent au nord de l\'enclos, sur leur emplacement balisé.</p><div class="grid">' + Object.entries(BUILDINGS).map(([id, b]) => {
         const r = canBuild(S, id), c = b.cost;
         return card(`<div class="t">${b.i} <b>${b.n}</b></div><div>Pour les ${b.for} · ${b.cap} places</div>`
           + (S.built && S.built[id] ? '<div>Construit ✔</div>'

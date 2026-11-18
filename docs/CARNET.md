@@ -61,7 +61,7 @@ Légende : ✅ fait · ⏳ à faire · ❓ question pour l'utilisateur · 💡 i
 
 ## 3. Questions en suspens (❓ à trancher par l'utilisateur)
 - ✅ **Canne à pêche** (18/11) : Rouky, contre un os pour Rox (lot 12).
-- ❓ **Quête du coffre** : Harry l'apprend une fois la cabane retapée (💡 lot 6) — à confirmer ; la « première quête secondaire » prévue pour le coffre n'a plus lieu d'être ?
+- ✅ **Quête du coffre** (18/11) : quête secondaire ; le plan du coffre s'achète chez Harry, comme le plan du lit. Autres premières quêtes secondaires : agrandir la cabane (double des composants), fabriquer son lit (v0.1.50).
 - ✅ **Quêtes secondaires** (18/11) : restent cachées jusqu'à la cabane retapée ; l'utilisateur ajustera le moment à l'usage.
 - ❓ **Objet pour parler à l'esprit** (Ghostbuster) : lanceur à neutrons ? à quel niveau (lot 8) ou métier ?
 - ❓ **Objet qui animera Franck** : lequel ?
@@ -84,9 +84,9 @@ Légende : ✅ fait · ⏳ à faire · ❓ question pour l'utilisateur · 💡 i
 - ✅ **Lot 10** (v0.1.20) : carte de la région refaite comme l'image (`src/render/regionmap.js`). ✅ **Lot 11** (v0.1.21-22) : deuxième passe graphique « niveau de l'image » (auto-tuilage, forêts, falaises, eau, bâtiments 3/4, décor dense, palette).
 - ✅ **Lot 8** : **expérience et niveaux** du joueur : 1 XP par petit objet cassé, fleur ou champignon ; 5 par objet fabriqué ; dizaines par quête (plus pour une principale) ; courbe exponentielle ; **niveau 10 max** ; déblocages de zones et de choses.
 - ✅ **Lot 9** (v0.1.19) : demandes de fabrication, une par habitant et par semaine, + panneau.
-- ⏳ **Lot 2e** : rivière autour du centre-ville dans la scène elle-même ; montagne reliée par la route de l'est ; port relié à la plage.
-- ⏳ **Lot 12** : cabane du pêcheur (Rouky, Rox), quête de la canne, petits tas à creuser à la pelle (20 par zone, chaque jour) ; ❓ dans `docs/ROADMAP.md`.
-- ⏳ **Diligence** : arrêts pour voyager entre les zones (payants ?) ; le cocher en PNJ.
+- ✅ **Lot 2e** (v0.1.50) : rivière autour du centre-ville, route de l'est montagne ↔ port, port ↔ plage.
+- ⏳ **Lot 12** : cabane du pêcheur (Rouky, Rox), quête de la canne, petits tas à creuser à la pelle (20 par zone, chaque jour) ; ❓ tranchées le 18/11 (voir `docs/ROADMAP.md`), prêt à lancer.
+- ⏳ **Diligence** : débloquée au **niveau 10**, **un arrêt à chaque carrefour** (18/11) ; le cocher en PNJ.
 - ⏳ **Pièce secrète** dans chaque maison.
 - ⏳ **Routines quotidiennes** pour tous les PNJ, sur le modèle de Hailey.
 - ⏳ **Patrons « Bientôt »** (bague, tisane, bonnet, pain, ragoût, soupe de poisson) : à ouvrir plus tard ; boutiques propres pour l'alchimiste, le couturier, le joaillier (PNJ à décrire).

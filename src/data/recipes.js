@@ -2,7 +2,8 @@
 // lot 8 : lvl = niveau du joueur requis (recettes du début : niveau 1 ; les autres 💡 en attendant les choix de l'utilisateur)
 export const HAND_RECIPES = {
   campfire: { out: 'campfire', q: 1, in: { wood: 5, stone: 2 }, cat: 'feu', lvl: 1 },
-  chest: { out: 'chest', q: 1, in: { wood: 80, stone: 20 }, cat: 'rangement', job: 'charpentier', lvl: 1 },   // appris auprès de Harry Fordson   // appris auprès d'Igor
+  chest: { out: 'chest', q: 1, in: { wood: 80, stone: 20 }, cat: 'rangement', job: 'charpentier', lvl: 1 },   // 18/11 : plan acheté chez Harry Fordson (quête secondaire)
+  lit: { out: 'bed', q: 1, in: { wood: 50, stone: 10 }, cat: 'deco', job: 'charpentier', lvl: 1 },   // 18/11 : plan acheté chez Harry (💡 50 bois + 10 pierres)
   chaudron: { out: 'chaudron', q: 1, in: { stone: 20, wood: 10 }, cat: 'feu', job: 'forgeron', lvl: 1 },   // 💡 patron acheté à la forge
   bague_cuivre: { out: 'bague_cuivre', q: 1, in: { copper_ore: 3, stone: 2 }, cat: 'bijoux', job: 'joaillier', lvl: 4 },
   tisane: { out: 'tisane', q: 1, in: { berry: 2, paquerette: 2 }, cat: 'potions', job: 'alchimiste', lvl: 2 },

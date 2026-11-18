@@ -2,6 +2,7 @@
 
 Semver horodaté (heure de Paris). Patch automatique à chaque publication ; mineure et majeure sur décision de l'utilisateur.
 
+- **0.1.50** — 2026-11-18 19:18 — lot 2e (rivière autour du centre-ville, route de l'est montagne ↔ port, port ↔ plage) ; quêtes secondaires : agrandir la cabane, plan du lit et plan du coffre chez Harry
 - **0.1.49** — 2026-11-18 19:07 — documents à jour (HANDOFF, carnet, roadmap, manuel, liste de complétion), lot 12 décidé, gros rochers réduits, notes de version gardées
 - **0.1.48** — 2026-11-18 18:15
 - **0.1.47** — 2026-11-18 18:05

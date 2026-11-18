@@ -2,6 +2,8 @@
 // Patrons vendus dans les magasins : acheter un patron apprend une recette (onglet 📜 Recettes).
 // 💡 prix et ingrédients proposés par Claude, sauf le chaudron (50 $ chez le forgeron, demande de l'utilisateur).
 export const PATTERNS = {
+  p_coffre: { n: 'Plan du coffre', recipe: 'chest', price: 60, shop: 'carpenter', job: 'charpentier' },   // 18/11 : chez Harry Fordson (💡 prix)
+  p_lit: { n: 'Plan du lit', recipe: 'lit', price: 80, shop: 'carpenter', job: 'charpentier' },
   p_chaudron: { n: 'Patron du chaudron', recipe: 'chaudron', price: 50, shop: 'forge', job: 'forgeron' },
   p_bague: { n: 'Patron : bague de cuivre', recipe: 'bague_cuivre', price: 120, shop: 'forge', job: 'joaillier', soon: true },
   p_tisane: { n: 'Patron : tisane fleurie', recipe: 'tisane', price: 60, shop: 'stall', job: 'alchimiste', soon: true },

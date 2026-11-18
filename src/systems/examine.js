@@ -37,6 +37,6 @@ export function examineText(S, tx, ty) {
   if (['rondpoint', 'ranch', 'port'].includes(sc)) return { F: K.F, P: K.signWest, f: K.fenceRanch, H: K.ranchHouse, B: K.ranchBarn, E: K.warehouse, w: K.sea }[t] || null;   // Farmwest, lot 2
   if (sc === 'wild') return t === 'T' ? K.treeWild : t === '#' ? K.rockWild : null;
   if (sc === 'grange') return t === '#' ? K.rockGrange : t === 'W' ? K.wallGrange : null;
-  if (sc === 'house' && t === 'B') return null; // le lit sert à dormir
+  if ((sc === 'house' || sc === 'maison') && t === 'B') return null; // le lit sert à dormir
   return K[t] || null;
 }

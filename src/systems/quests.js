@@ -22,9 +22,30 @@ export const QUESTS = {
       { id: 'hache', t: 'Trouver la hache, au pied du grand arbre de la ferme', done: S => !!S.tools?.axe },
       { id: 'feu', t: 'Faire un feu de camp (📜 Recettes : 5 bois + 2 cailloux)', done: S => (S.fires || []).length > 0 || (S.inv?.campfire || 0) > 0 || isRepaired(S, 'house') },
       { id: 'cabane', t: 'Retaper la cabane : 80 bois et 30 pierres (marteau 🔨)', done: S => isRepaired(S, 'house') },
-      { id: 'coffre', t: 'Construire un coffre : Harry Fordson, le charpentier (centre-ville), t’apprend à le faire (80 bois + 20 pierres)', done: S => (S.chests || []).length > 0 || (S.inv?.chest || 0) > 0 },
       { id: 'four', t: 'Aider le cuistot du restaurant (centre-ville) : réparer son four au marteau (30 pierres + 15 bois) — il te donnera son couteau', done: S => !!S.resto?.knife || !!S.tools?.knife },
       { id: 'grange', t: 'Rafistoler la grange (100 bois et 60 pierres) et y trouver la pelle, pour bêcher et planter', done: S => !!S.tools?.shovel }
+    ]
+  },
+  // 18/11 : premières quêtes secondaires, visibles une fois la cabane retapée
+  cabane2: {
+    n: 'Agrandir la cabane', i: '🏠',
+    steps: [
+      { id: 'agrandir', t: "L'intérieur est tout petit et vide : agrandir la cabane, 160 bois et 60 pierres (marteau 🔨 devant la cabane)", done: S => isRepaired(S, 'house2') }
+    ]
+  },
+  lit: {
+    n: 'Un vrai lit', i: '🛏️',
+    steps: [
+      { id: 'plan', t: 'Acheter le plan du lit chez Harry Fordson, le charpentier (centre-ville)', done: S => (S.recipes || []).includes('lit') || S.bed === true },
+      { id: 'fabriquer', t: 'Fabriquer le lit (📜 Recettes : 50 bois + 10 pierres)', done: S => (S.inv?.bed || 0) > 0 || S.bed === true },
+      { id: 'installer', t: "L'installer dans la cabane (toucher l'emplacement du lit)", done: S => S.bed === true }
+    ]
+  },
+  coffre: {
+    n: 'Un coffre pour ranger', i: '📦',
+    steps: [
+      { id: 'plan', t: 'Acheter le plan du coffre chez Harry Fordson, le charpentier (centre-ville)', done: S => (S.recipes || []).includes('chest') },
+      { id: 'fabriquer', t: 'Fabriquer un coffre (📜 Recettes : 80 bois + 20 pierres)', done: S => (S.chests || []).length > 0 || (S.inv?.chest || 0) > 0 }
     ]
   },
   franck: {
@@ -38,7 +59,7 @@ export const QUESTS = {
     ]
   }
 };
-// Les quêtes secondaires sont cachées au début : elles apparaissent une fois la cabane retapée (💡 à confirmer).
+// Les quêtes secondaires sont cachées au début : elles apparaissent une fois la cabane retapée (confirmé le 18/11).
 export const questVisible = (S, id) => !!QUESTS[id] && (QUESTS[id].main || isRepaired(S, 'house'));
 export function questProgress(S, id) {
   const q = QUESTS[id], done = q.steps.map(s => s.done(S));
