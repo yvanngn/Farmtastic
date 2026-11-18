@@ -7,7 +7,8 @@
 import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { VERSION } from '../src/version.js';
 
-const kind = process.argv[2] || 'patch', note = process.argv.slice(3).join(' ');
+const KINDS = ['patch', 'minor', 'major', 'show'], a = process.argv.slice(2);   // la note peut venir seule : node tools/version.mjs "note"
+const kind = KINDS.includes(a[0]) ? a[0] : 'patch', note = (KINDS.includes(a[0]) ? a.slice(1) : a).join(' ');
 const v = { ...VERSION };
 if (kind !== 'show') {
   if (kind === 'major') { v.major++; v.minor = 0; v.patch = 0; }
@@ -19,8 +20,8 @@ if (kind !== 'show') {
   writeFileSync(f, src.replace(/export const VERSION = \{[^}]*\};/, `export const VERSION = { major: ${v.major}, minor: ${v.minor}, patch: ${v.patch}, date: '${v.date}' };`));
   const pk = JSON.parse(readFileSync('package.json', 'utf8')); pk.version = `${v.major}.${v.minor}.${v.patch}`;
   writeFileSync('package.json', JSON.stringify(pk, null, 2) + '\n');
-  const log = 'docs/VERSIONS.md', head = '# Versions de Farm\'tastic\n\nSemver horodaté (heure de Paris). Patch automatique à chaque publication ; mineure et majeure sur décision de l\'utilisateur.\n\n';
-  const old = existsSync(log) ? readFileSync(log, 'utf8').replace(head, '') : '';
+  const log = 'docs/VERSIONS.md', head = '# Versions de Farmwest\n\nSemver horodaté (heure de Paris). Patch automatique à chaque publication ; mineure et majeure sur décision de l\'utilisateur.\n\n';
+  const old = existsSync(log) ? readFileSync(log, 'utf8').replace(head, '').replace(head.replace('Farmwest', 'Farm\'tastic'), '') : '';
   writeFileSync(log, head + `- **${v.major}.${v.minor}.${v.patch}** — ${v.date.replace('T', ' ')}${note ? ' — ' + note : ''}\n` + old);
 }
 console.log(`v${v.major}.${v.minor}.${v.patch} (${v.date.replace('T', ' ')})`);

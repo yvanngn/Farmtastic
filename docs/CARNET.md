@@ -13,6 +13,7 @@ Légende : ✅ fait · ⏳ à faire · ❓ question pour l'utilisateur · 💡 i
 - **Farmwest** (ancien nom Farm'tastic) : une ferme au **Far West**. Dépôt `yvanngn/farmwest`, GitHub Pages https://yvanngn.github.io/farmwest/, jeu claude.ai toujours republié sur la même page.
 - **Feuille de route : `docs/ROADMAP.md`** (un lot à la fois, ❓ à trancher avant chaque lot). Carte de référence : `docs/carte-region-farmwest.jpg`.
 - **Parcours du joueur** (à faire, possible, temps moyens, moments creux) : `docs/PARCOURS.md`, à remettre à jour avec le skill `parcours-debut` (il date d'avant Farmwest : ⏳ à refaire).
+- **Manuel du joueur** : `docs/MANUEL.md` ; **liste de complétion** : `docs/COMPLETION.md` (à tenir à jour à chaque lot).
 - **Dialogues** : `docs/DIALOGUES.md` (🆕 = à valider ; envoi à l'utilisateur dès 100 🆕). Versions : `docs/VERSIONS.md` (semver horodaté ; mineure / majeure seulement sur demande).
 - Pas d'histoire inventée par Claude : seulement ce que l'utilisateur décrit ; les idées de Claude vont en 💡.
 
@@ -31,7 +32,7 @@ Légende : ✅ fait · ⏳ à faire · ❓ question pour l'utilisateur · 💡 i
 | **Zone résidentielle** | est du rond-point | Luna, Franck, Hailey, clinique, Myst (au fond), Ed / Suzie / Jade (maison à étages), **Remy** ; Igor traîne dans la ruelle |
 | **Ranch du Maire** | sud du rond-point | maison de Manu (intérieur), grange rouge, enclos à chevaux |
 | **Fête foraine** | sud du ranch | attractions (ancien parc FARM-LAND, plus caché) |
-| **Station balnéaire** | sud du centre-ville | plage, mer au sud, ponton, pêche en mer |
+| **Cabane du pêcheur** (ancienne station balnéaire, décision du 18/11, ⏳ lot 12) | sud du centre-ville | plage, mer au sud, ponton, cabane de Rouky ; pêche en mer |
 | **Zone portuaire** | est du ranch | entrepôts, quai, pontons, voiliers |
 | **Forêt** | est des fermes | arbres coupables (repoussent), champignons (couteau) |
 | **Montagne** | est (encore reliée par la zone résidentielle) | froid, lac gelé, filons |
@@ -50,6 +51,7 @@ Légende : ✅ fait · ⏳ à faire · ❓ question pour l'utilisateur · 💡 i
 | **Igor** | Forgeron ; ancien sportif de haut niveau, cheville abîmée, rêves de JO brisés ; fait de bons outils, rêve de forger des armes. Vend le patron du chaudron et la louche. | ruelle de la zone résidentielle |
 | **Ed** | Barman du saloon ; ancien chauffeur routier, aime le contact des gens ; rêve d'ouvrir un magasin en ville ; marié à Suzie, papa de Jade. | saloon / maison à étages |
 | **Suzie**, **Jade** | Femme et enfant d'Ed ; histoires à écrire. | maison à étages |
+| **Rouky** et son chien **Rox** (18/11, ⏳ lot 12) | Vieux monsieur, vit de la pêche ; on ne sait pas grand-chose de lui : il semble être né ici et avoir travaillé dans les chemins de fer ; peu de gens viennent le voir. Donne une canne à pêche sommaire contre un os pour Rox (quête principale). | cabane du pêcheur |
 | **Remy Gusto** (le cuistot) | Fils abandonné d'un cuisinier renommé ; vu partout comme « le fils de », a perdu beaucoup de concours à cause de son nom ; venu à Farmwest, loin de tout, pour vivre de sa passion ; déteste son père, retentera sa chance à sa mort. Four en panne → donne le **couteau**. | restaurant / sa maison |
 | **Harry Fordson** (le charpentier) | Charpentier de père en fils, très doué ; maladie inconnue sans symptôme visible ; aimerait se marier ; travaille beaucoup ; beaucoup de dettes envers Manu. Apprend le **coffre**. | devant son atelier |
 | L'esprit de la vieille femme | Pleure la nuit sur la ferme, disparaît quand on approche (quête Ghostbuster). | ferme, la nuit |
@@ -58,9 +60,9 @@ Légende : ✅ fait · ⏳ à faire · ❓ question pour l'utilisateur · 💡 i
 **Liens dits par l'utilisateur** : Franck → Luna (un peu amoureux) ; Myst ↔ le village (mis de côté) ; Manu ↔ villageois (impôts, future enquête) ; Hailey soigne tout le monde ; Luna ↔ héros (même parcours) ; Harry → Manu (dettes) ; Remy → son père (haine) ; Ed ↔ Suzie, Jade.
 
 ## 3. Questions en suspens (❓ à trancher par l'utilisateur)
-- ❓ **Canne à pêche** : qui la donne, quand ? (plage ouverte, pêche impossible sans test)
+- ✅ **Canne à pêche** (18/11) : Rouky, contre un os pour Rox (lot 12).
 - ❓ **Quête du coffre** : Harry l'apprend une fois la cabane retapée (💡 lot 6) — à confirmer ; la « première quête secondaire » prévue pour le coffre n'a plus lieu d'être ?
-- ❓ **Quêtes secondaires** : cachées jusqu'à la cabane retapée (💡 confirmé le 17/11 sans moment précis) — garder ce moment ?
+- ✅ **Quêtes secondaires** (18/11) : restent cachées jusqu'à la cabane retapée ; l'utilisateur ajustera le moment à l'usage.
 - ❓ **Objet pour parler à l'esprit** (Ghostbuster) : lanceur à neutrons ? à quel niveau (lot 8) ou métier ?
 - ❓ **Objet qui animera Franck** : lequel ?
 - ❓ **Enquête sur Manu** : qu'apprend-on, par qui ? (💡 Myst témoin, Igor forge pour lui, Harry endetté)
@@ -69,7 +71,7 @@ Légende : ✅ fait · ⏳ à faire · ❓ question pour l'utilisateur · 💡 i
 - ❓ **Boissons et alcools pour le saloon d'Ed** : quel métier les fabrique, que donne Ed ?
 - ❓ **Quête du magasin d'Ed** : quel magasin, où, quelles étapes ?
 - ❓ **Hailey** : l'utilisateur adaptera sa routine (§ 6).
-- ❓ **Gros rochers de la ferme** (pioche Cuivre) : garder, faire repousser ou retirer ?
+- ✅ **Gros rochers de la ferme** (18/11) : moins nombreux (v0.1.49 : 1 % des cases de la forêt de la ferme au lieu de 2 %, 3 à 5 au lieu d'environ 8).
 - ❓ **Vente** : les commerces ne rachètent rien, tout se vend au bac de la ferme — à revoir ?
 - ❓ **Énergie** : avec la tente à 100 % et les confitures à +45 ⚡ (≈ 400 ⚡ / jour possibles), est-ce trop ? (à vérifier en jouant)
 - ❓ **Mode en ligne** : SQL `supabase_ferme.sql` + « Anonymous sign-ins » à faire côté Supabase, puis tester ; visiter la ferme d'un autre joueur (objets non partagés).
@@ -83,6 +85,7 @@ Légende : ✅ fait · ⏳ à faire · ❓ question pour l'utilisateur · 💡 i
 - ✅ **Lot 8** : **expérience et niveaux** du joueur : 1 XP par petit objet cassé, fleur ou champignon ; 5 par objet fabriqué ; dizaines par quête (plus pour une principale) ; courbe exponentielle ; **niveau 10 max** ; déblocages de zones et de choses.
 - ✅ **Lot 9** (v0.1.19) : demandes de fabrication, une par habitant et par semaine, + panneau.
 - ⏳ **Lot 2e** : rivière autour du centre-ville dans la scène elle-même ; montagne reliée par la route de l'est ; port relié à la plage.
+- ⏳ **Lot 12** : cabane du pêcheur (Rouky, Rox), quête de la canne, petits tas à creuser à la pelle (20 par zone, chaque jour) ; ❓ dans `docs/ROADMAP.md`.
 - ⏳ **Diligence** : arrêts pour voyager entre les zones (payants ?) ; le cocher en PNJ.
 - ⏳ **Pièce secrète** dans chaque maison.
 - ⏳ **Routines quotidiennes** pour tous les PNJ, sur le modèle de Hailey.

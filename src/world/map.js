@@ -94,7 +94,7 @@ export function genObjects(seed = 12345) {
     if (isForest(x)) {
       if (v < 0.30) { if (trees++ < FOREST.MAX_TREES) o[key(x, y)] = newTree(kind); }
       else if (v < 0.44) { if (rocks++ < FOREST.MAX_ROCKS) o[key(x, y)] = newRock(v >= 0.40); }
-      else if (v < 0.46) o[key(x, y)] = { t: 'boulder', hp: ROCK_HPS.boulder };
+      else if (v < 0.45) o[key(x, y)] = { t: 'boulder', hp: ROCK_HPS.boulder };   // 18/11 : gros rochers réduits (1 % des cases de la forêt au lieu de 2 %)
     }
     else if (v < 0.10) o[key(x, y)] = newTree(kind);
     else if (v < 0.19) o[key(x, y)] = newRock(v > 0.165);

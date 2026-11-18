@@ -161,3 +161,11 @@ test('coups de hache et de pioche plus lents (un geste à la fois) ; un meilleur
     clock.t += 650; assert.equal(hitObject(g, 20, 20), true);
   } finally { CFG.HIT_MS = old; }
 });
+
+test('ferme : peu de gros rochers au départ (réduits le 18/11)', async () => {
+  const { genObjects } = await import('../src/world/map.js');
+  for (const seed of [12345, 1, 2, 3]) {
+    const n = Object.values(genObjects(seed)).filter(o => o.t === 'boulder').length;
+    assert.ok(n >= 1 && n <= 6, `graine ${seed} : ${n} gros rochers`);
+  }
+});
