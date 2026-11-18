@@ -1,3 +1,4 @@
+import { houseSprite } from './props.js';
 // Couche statique pré-rendue (sol texturé, rivages, clôtures, bâtiments).
 // Reconstruite uniquement au changement de saison. L'eau animée est dessinée à part.
 import { CFG } from '../config.js';
@@ -110,8 +111,8 @@ function drawGate(R) {
 
 function drawHouse(g, R) {
   const x0 = 36, x1 = 108, wallTop = 42, wallBot = 80;
-  R(x0 - 2, wallBot, x1 - x0 + 4, 3, 'rgba(20,12,8,.3)');
-  R(x0, wallTop, x1 - x0, wallBot - wallTop, '#c08552');
+  { const F = houseSprite({ w: x1 - x0, h: wallBot - wallTop, wall: '#c08552', trim: '#7e5634', roof: '#b8432f', roofH: 34, chimney: 56, windows: [[9, 11]], shutters: true, door: { x: 41, w: 15, h: 24 } });   // 18/11 (soir) : cabane « pixel moderne »
+    if (F) { R(x0 - 2, wallBot, x1 - x0 + 4, 3, 'rgba(20,12,8,.3)'); g.drawImage(F.im, x0 + F.ox, wallTop + F.oy); R(42, 65, 19, 4, '#8a5a32'); R(42, 65, 19, 1, '#a8774a'); for (let k = 0; k < 5; k++) R(44 + k * 3, 63, 2, 2, ['#f07ab0', '#f6d24a', '#ffffff', '#e0402a', '#9ab8ff'][k]); return; } }
   for (let y = wallTop + 4; y < wallBot; y += 5) R(x0, y, x1 - x0, 1, '#9c6438');
   for (let y = wallTop; y < wallBot; y += 5) R(x0 + ((y * 7) % 30) + 6, y, 1, 5, '#9c6438');
   R(x0, wallTop, 2, wallBot - wallTop, '#a46a3c'); R(x1 - 2, wallTop, 2, wallBot - wallTop, '#8a552d');

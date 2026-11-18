@@ -47,7 +47,7 @@ export function createMapView(g, renderer, audio) {
       if (mine) { ctx.strokeStyle = `rgba(242,200,50,${.6 + .4 * Math.sin(now / 300)})`; ctx.lineWidth = 3 * d; ctx.strokeRect(x0 - 2 * d, y0 - 2 * d, w + 4 * d, h + 4 * d); }
       if (who) drawLabel(ctx, (mine ? '★ ' : '') + who, x0 + w / 2, y0 + h + fs * .3, fs * .62);
     }
-    for (const [t, x, y] of LABELS) { const [px, py] = P(x, y); drawLabel(ctx, t + (t === 'Caverne Sombre' && !CFG.CAVE_OPEN ? ' 🔒' : ''), px, py, fs); }
+    // 18/11 (soir) : plus de noms de lieux sur la carte (le joueur les connaît)
     // moi : point rouge qui pulse ; les autres joueurs : points bleus
     for (const o of others) { if (!o.scene) continue; const q = regionPos({ scene: o.scene, farmLot: o.farmLot }), [px, py] = P(q.x, q.y); ctx.fillStyle = '#5aa8ff'; ctx.beginPath(); ctx.arc(px, py, 5 * d, 0, 7); ctx.fill(); ctx.strokeStyle = '#fff'; ctx.lineWidth = 1.5 * d; ctx.stroke(); }
     const me = regionPos(S), [mx, my] = P(me.x, me.y), pr = (6 + Math.sin(now / 200) * 1.5) * d;

@@ -1,4 +1,4 @@
-import { fountainSprite, facadeSprite } from './props.js';
+import { fountainSprite, facadeSprite, houseSprite } from './props.js';
 import { paintGrass, paintOchre, paintRoad, paintPlanks, softEdge, OCHRE, paintRiver, paintBridge, paintCliff, autotile, ROAD, canopy, dress, roofFor, softPatches, barrel } from './terrain.js';
 // Centre du village pré-rendu : place pavée, halle du marché, panneau d'affichage,
 // fontaine, lampadaires, bancs, jardinières et arbres. Reconstruit à chaque saison.
@@ -268,6 +268,16 @@ export function buildQuartier(season) {
     const h = Q[id], x0 = h.x * T, y0 = h.y * T, w = h.w * T, rows = h.porch ? 4 : 3, bot = y0 + rows * T - (h.porch ? T : 0), top = o.storeys === 2 ? y0 - 2 * T : y0 - 4;
     const W = o.wall, Wd = shade(W, .8), Wl = shade(W, 1.12), TR = o.trim, TRd = shade(TR, .72);
     R(x0 - 2, bot + 4, w + 6, 4, 'rgba(30,15,5,.3)'); R(x0 + w, top + 6, 4, bot - top, 'rgba(30,15,5,.2)');   // ombres portées
+    { const dX0 = h.door * T, wins0 = [7, w - 19].filter(wx => Math.abs(x0 + wx + 6 - (dX0 + 8)) > 14).map(wx => [wx, y0 + 6 - top]);
+      if (o.storeys === 2) for (const wx of [7, w / 2 - 6, w - 19]) wins0.push([wx, 8]);
+      const posts = [-2, w / 2 - 1, w - 1].filter(px => Math.abs(x0 + px - (dX0 + 8)) > 9);
+      const F = houseSprite({ w, h: bot - top, wall: W, trim: TR, roof: o.roof || TR, falseFront: !!o.falseFront, chimney: o.chimney ? w - 16 : null, storeyY: o.storeys === 2 ? y0 - 2 - top : null,
+        windows: wins0, lit: !!o.lit, porch: true, posts, door: { x: dX0 + 2 - x0, w: 12, h: 22 }, doorCol: o.door || '#7a4f2e' });   // 18/11 (soir) : maison « pixel moderne » (src/render/props.js)
+      if (F) { g.drawImage(F.im, x0 + F.ox, top + F.oy);
+        if (o.flowers) for (const [wx, wy] of wins0) for (let k = 0; k < 12; k += 3) R(x0 + wx + k, top + wy + 9, 2, 2, ['#f07ab0', '#f6d24a', '#ffffff', '#e0402a'][k / 3 | 0]);
+        for (let k = 0; k < 2; k++) R(dX0 + 2 - k * 2, bot + 1 + k * 2, 12 + k * 4, 2, k ? '#7a5232' : '#a8774a');   // marches
+        R(dX0 + 11, bot - 14, 2, 2, '#e8c26a'); R(dX0 + 6, bot - 30, 4, 1, '#9aa0a8'); R(dX0 + 5, bot - 29, 1, 2, '#9aa0a8'); R(dX0 + 10, bot - 29, 1, 2, '#9aa0a8');   // poignée, fer à cheval
+      } else {
     // bardage à clin
     R(x0, top, w, bot - top, W);
     for (let y = top + 3, k = 0; y < bot; y += 4, k++) { R(x0, y, w, 1, Wd); R(x0, y - 3, w, 1, Wl); for (let x = x0 + ((k * 13) % 17) + 6; x < x0 + w - 4; x += 19 + (k % 3) * 5) { R(x, y - 3, 1, 3, Wd); if ((x + k) % 3 === 0) R(x + 2, y - 2, 6, 2, shade(W, o.weathered ? .9 : 1.06)); } if (k % 2) R(x0 + 3 + (k * 7) % (w - 8), y - 2, 1, 1, '#3a2a20'); }
@@ -295,7 +305,9 @@ export function buildQuartier(season) {
     // porte en planches, fer à cheval
     R(dX + 1, bot - 26, 14, 23, TRd); R(dX + 2, bot - 25, 12, 22, o.door || '#7a4f2e'); for (let k = dX + 5; k < dX + 14; k += 4) R(k, bot - 25, 1, 22, shade(o.door || '#7a4f2e', .75)); R(dX + 11, bot - 14, 2, 2, '#e8c26a');
     R(dX + 6, bot - 30, 4, 1, '#9aa0a8'); R(dX + 5, bot - 29, 1, 2, '#9aa0a8'); R(dX + 10, bot - 29, 1, 2, '#9aa0a8');
+      } }
     // décor de véranda
+    const dX = h.door * T, ay = bot - 22;
     if (o.rocker !== false) { const rx = x0 + 4; R(rx, bot - 12, 8, 2, '#6a4426'); R(rx + 6, bot - 18, 2, 8, '#6a4426'); R(rx, bot - 10, 1, 7, '#5a3a22'); R(rx + 6, bot - 10, 1, 7, '#5a3a22'); R(rx - 1, bot - 4, 10, 1, '#5a3a22'); }
     if (o.barrel !== false) barrel(R, x0 + w - 13, bot - 14);
     R(dX - 4, ay + 7, 1, 3, '#3a2a20'); R(dX - 6, ay + 10, 5, 6, '#3a2a20'); R(dX - 5, ay + 11, 3, 4, '#ffd98a');   // lanterne

@@ -2,6 +2,7 @@
 
 Semver horodaté (heure de Paris). Patch automatique à chaque publication ; mineure et majeure sur décision de l'utilisateur.
 
+- **0.1.55** — 2026-11-18 21:22 — maisons, ranch, grange, gare, entrepôts, cabane et bâtiments de la carte en pixel moderne ; plus de noms de lieux sur la carte
 - **0.1.54** — 2026-11-18 21:19 — façades du centre-ville en pixel moderne (props.js : planches, corniche, fenêtres, auvent, vitrines)
 - **0.1.53** — 2026-11-18 21:16 — épaules corrigées à la marche ; personnalisation du héros (sexe, coiffures, barbe, chapeaux, haut, par-dessus, bandana, robe, chaussures, sac) ; mèches dans les cheveux ; diligence, cocher, chevaux, train et fontaines en pixel moderne
 - **0.1.52** — 2026-11-18 21:01 — personnages en pixel moderne (src/render/folk.js : face, dos, profils, marche) ; écran titre pixel crépuscule

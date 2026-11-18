@@ -126,3 +126,32 @@ export function facadeSprite(w, trim, trim2, opt = {}) {
     return { im, ox: -6, oy: -H0 - 8 };
   });
 }
+
+// ---------- maison / bâtiment générique (vue de face) : bardage à clin, toit à deux pans en bardeaux (ou fausse façade),
+// fenêtres à volets, porte en planches, véranda sur poteaux, cheminée. Origine (0, 0) = coin haut-gauche du mur ; l'image
+// déborde de 6 px sur les côtés et monte de roofH + 8 au-dessus du mur.
+export function houseSprite(o) {
+  return cached('house' + JSON.stringify(o), () => {
+    const { w, h } = o, roofH = o.falseFront ? 16 : (o.roofH || 22), PX = 6, PY = roofH + 10, W = w + 12, H = h + PY + 6, p = [], A = (path, mat, z) => p.push({ path, mat, z });
+    const X = x => x + PX, Y = y => y + PY;
+    A(RR(X(0), Y(0), w, h, 1), 'wall', 1);
+    A(RR(X(0), Y(0), 3, h, 1), 'trim', 2); A(RR(X(w - 3), Y(0), 3, h, 1), 'trim', 2);                       // poteaux d'angle
+    if (o.storeyY) A(RR(X(0), Y(o.storeyY), w, 3, 1), 'trim', 2);
+    if (o.falseFront) { A(RR(X(0), Y(-14), w, 15, 1), 'wall', 1); A(RR(X(-2), Y(-16), w + 4, 3, 1), 'trim', 3); A(RR(X(w / 2 - 10), Y(-20), 20, 5, 1), 'trim', 3); }
+    else A(POLY(X(-5), Y(2), X(w / 2), Y(-roofH), X(w + 5), Y(2)), 'roof', 3);                              // pignon en bardeaux
+    if (o.chimney != null) { A(RR(X(o.chimney), Y(-roofH + 2), 7, roofH - 4, 1), 'stone', 2.5); A(RR(X(o.chimney - 1), Y(-roofH + 1), 9, 2.5, 1), 'stoneD', 2.6); }
+    if (o.gableWin) { A(E(X(w / 2), Y(-roofH * .45), 5, 4), 'frame', 4); A(E(X(w / 2), Y(-roofH * .45), 3.5, 2.8), o.lit ? 'lit' : 'glass', 5); }
+    for (const [wx, wy] of o.windows || []) {
+      if (o.shutters !== false) { A(RR(X(wx - 4), Y(wy - 1), 3.5, 13, 1), 'shutter', 4); A(RR(X(wx + 12.5), Y(wy - 1), 3.5, 13, 1), 'shutter', 4); }
+      A(RR(X(wx - 1), Y(wy - 1), 14, 13, 1), 'frame', 4); A(RR(X(wx), Y(wy), 12, 11, 1), o.lit ? 'lit' : 'glass', 5);
+      A(RR(X(wx + 5.4), Y(wy), 1.2, 11, .5), 'frame', 6); A(RR(X(wx), Y(wy + 5), 12, 1.2, .5), 'frame', 6); A(RR(X(wx - 2), Y(wy + 11), 16, 2.5, 1), 'trim', 6);
+    }
+    if (o.porch) { const ay = h - 22; A(POLY(X(-4), Y(ay), X(w + 4), Y(ay), X(w + 5), Y(ay + 5), X(-5), Y(ay + 5)), 'roof', 7); for (const px of o.posts || [-2, w - 1]) A(RR(X(px), Y(ay + 5), 3, h - ay - 5, 1), 'trim', 7);
+      A(RR(X(-4), Y(h - 3), w + 8, 4, 1), 'deck', 7); }
+    if (o.door) { const d = o.door; A(RR(X(d.x - 1), Y(h - d.h - 1), d.w + 2, d.h + 1, 1), 'frame', 6.5); A(RR(X(d.x), Y(h - d.h), d.w, d.h, 1), 'door', 6.6);
+      if (d.cross) { A(POLY(X(d.x + 1), Y(h - d.h + 1), X(d.x + 3.5), Y(h - d.h + 1), X(d.x + d.w - 1), Y(h - 1.5), X(d.x + d.w - 3.5), Y(h - 1.5)), 'trim', 6.8); A(POLY(X(d.x + d.w - 1), Y(h - d.h + 1), X(d.x + d.w - 3.5), Y(h - d.h + 1), X(d.x + 1), Y(h - 1.5), X(d.x + 3.5), Y(h - 1.5)), 'trim', 6.8); } }
+    const im = draw(p, { wall: o.wall, trim: o.trim, roof: o.roof, stone: '#8a8078', stoneD: '#5a524a', frame: tones(o.trim).dk, glass: '#8ab8d4', lit: '#ffd98a', shutter: tones(o.trim).sh,
+      door: o.doorCol || '#7a4f2e', deck: '#a8774a' }, W, H, { wall: { type: o.planks ? 'planks' : 'boards' }, roof: { type: 'boards' }, door: { type: 'planks' } });
+    return { im, ox: -PX, oy: -PY };
+  });
+}

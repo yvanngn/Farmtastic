@@ -1,3 +1,4 @@
+import { houseSprite } from './props.js';
 // Lot 10 : carte de la région refaite comme docs/carte-region-farmwest.jpg, pré-rendue en grand (88 × 48 cases de 16 px,
 // 1408 × 768 px) avec les mêmes peintres que le jeu : herbe en brins, terre ocre, chemins de sable, rivière et ponts,
 // falaises en terrasses, forêts en canopée continue, montagnes en 3/4 enneigées, caverne, mini-bâtiments, étiquettes western.
@@ -72,6 +73,8 @@ export function regionLayout() {
 function house(g, x, y, w, h, wall, roof, opt = {}) {   // bâtiment en 3/4 : toit avec volume, façade, porte, fenêtres
   const R = (a, b, c, d, col) => { g.fillStyle = col; g.fillRect(Math.round(a), Math.round(b), c, d); };
   const rh = Math.round(h * .5), dk = shade(roof, .72), lt = shade(roof, 1.18);
+  { const F = w >= 24 && houseSprite({ w, h: h - rh, wall, trim: shade(wall, .62), roof, roofH: rh + (opt.peak ? 6 : 0), chimney: opt.chimney ? w - 8 : null, door: { x: w / 2 - 3, w: 6, h: Math.min(9, h - rh - 2) }, lit: true, gableWin: w >= 40 });   // 18/11 (soir) : bâtiments « pixel moderne »
+    if (F) { R(x + 2, y + h, w, 3, 'rgba(40,20,10,.3)'); g.drawImage(F.im, x + F.ox, y + rh + F.oy); if (opt.sign) { R(x + w / 2 - 6, y + rh + 2, 12, 4, '#e8d4ac'); R(x + w / 2 - 5, y + rh + 3, 10, 1, '#5b3a22'); } return; } }
   R(x + 2, y + h, w, 3, 'rgba(40,20,10,.3)');                       // ombre portée
   R(x, y + rh, w, h - rh, wall); R(x, y + rh, 1, h - rh, shade(wall, 1.15)); R(x + w - 2, y + rh, 2, h - rh, shade(wall, .78));
   for (let k = y + rh + 3; k < y + h; k += 3) R(x + 1, k, w - 3, 1, shade(wall, .9));   // planches
