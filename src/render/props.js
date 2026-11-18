@@ -1,7 +1,7 @@
 // 18/11 (soir) : décors animés au niveau des personnages « pixel moderne » : même moteur (formes vectorielles → pixels,
 // 4 tons par couleur, contour teinté). Diligence (caisse, roues qui tournent, chevaux au trot, cocher), locomotive et wagons,
 // fontaines. Chaque image n'est calculée qu'une fois (cache).
-import { renderPixel, folkSprite, CAST } from './folk.js';
+import { renderPixel, folkSprite, CAST, tones } from './folk.js';
 
 const P2 = f => { const p = new Path2D(); f(p); p.closePath(); return p; };
 const E = (cx, cy, rx, ry) => P2(p => p.ellipse(cx, cy, rx, ry, 0, 0, Math.PI * 2));
@@ -92,5 +92,37 @@ export function fountainSprite(r) {   // r = rayon du bassin (px)
     const sparkles = [];
     for (let k = 0; k < 6; k++) { const a = k * 1.1; sparkles.push({ t: 'px', x: cx + Math.cos(a) * r * .6, y: cy + Math.sin(a) * r * .35, w: 3, h: 1, col: '#e1f4ff' }); }
     return draw(p, { stone: '#c8bca8', stoneD: '#8a7e70', water: '#3f86c4', jet: '#bfe3f5' }, Math.ceil(W), Math.ceil(H), {}, sparkles);
+  });
+}
+
+// ---------- façade western (centre-ville) : fausse façade en gradins, planches, corniche, fenêtres de l'étage, auvent sur poteaux,
+// vitrines éclairées et porte. Image (uw + 12) × (hauteur), origine en (ux - 6, top - 8). L'enseigne et la déco restent dessinées par town.js.
+export function facadeSprite(w, trim, trim2, opt = {}) {
+  const uw = w * 16, tall = opt.tall || 0, H0 = 28 + tall;   // hauteur au-dessus de la ligne du bâtiment
+  return cached('facade' + JSON.stringify([w, trim, trim2, opt.wall, tall, opt.step, opt.balcony, !!opt.door]), () => {
+    const W = uw + 12, H = H0 + 8 + 50, ox = 6, oy = H0 + 8, p = [], A = (path, mat, z) => p.push({ path, mat, z }), top = oy - H0;
+    const step = opt.step !== false;
+    A(RR(ox + 6, top + 2, uw - 12, 12, 2), 'roof', 0.5);                                       // toit derrière la façade
+    A(RR(ox, top + 7, uw, oy + 46 - top - 7, 1), 'wall', 1);
+    if (step) { A(RR(ox + 10, top, uw - 20, 9, 1), 'wall', 1); A(RR(ox + uw / 2 - 8, top - 4, 16, 6, 1), 'wall', 1); }
+    A(RR(ox - 2, top + 6, uw + 4, 4, 1), 'trim', 3); if (step) { A(RR(ox + 9, top - 1, uw - 18, 2.5, 1), 'trim', 3); A(RR(ox + uw / 2 - 9, top - 5, 18, 2.5, 1), 'trim2', 3); }
+    A(RR(ox + uw / 2 - 18, top + 13, 36, 13, 2), 'board', 2);                                  // panneau de l'enseigne
+    if (!opt.balcony) for (const wx of (w > 3 ? [ox + 7, ox + uw - 19] : [ox + uw / 2 - 6])) {
+      A(RR(wx - 4, top + 26, 4, 14, 1), 'shutter', 2); A(RR(wx + 12, top + 26, 4, 14, 1), 'shutter', 2);
+      A(RR(wx - 1, top + 27, 14, 12, 1), 'frame', 2); A(RR(wx, top + 28, 12, 10, 1), 'glass', 3); A(RR(wx + 1, top + 28, 2.5, 6, 1), 'curtain', 4); A(RR(wx + 8.5, top + 28, 2.5, 6, 1), 'curtain', 4);
+      A(RR(wx + 5.5, top + 28, 1.2, 10, .5), 'frame', 4); A(RR(wx - 2, top + 38, 16, 3, 1), 'box', 4);
+    }
+    if (opt.balcony) { A(RR(ox - 2, top + 34, uw + 4, 3, 1), 'trim', 3); for (let k = 0; k < uw; k += 5) A(RR(ox + k, top + 28, 1.6, 7, .5), 'trim', 3.1); A(RR(ox - 2, top + 27, uw + 4, 2, 1), 'trim', 3.1); }
+    const ay = oy + 10;                                                                         // auvent et poteaux
+    A(POLY(ox - 4, ay, ox + uw + 4, ay, ox + uw + 6, ay + 6, ox - 6, ay + 6), 'awning', 6);
+    A(RR(ox - 3, ay + 6, 3, 34, 1), 'post', 6); A(RR(ox + uw - 1, ay + 6, 3, 34, 1), 'post', 6);
+    const dx = ox + uw / 2 - 8;
+    if (!opt.door) { A(RR(dx - 1, oy + 19, 18, 28, 1), 'frame', 2); A(RR(dx, oy + 20, 7.5, 26, 1), 'door', 3); A(RR(dx + 8.5, oy + 20, 7.5, 26, 1), 'door', 3); }
+    const win = (wx, ww) => { A(RR(wx - 1, oy + 20, ww + 2, 15, 1), 'frame', 2); A(RR(wx, oy + 21, ww, 13, 1), 'lit', 3); A(RR(wx + ww / 2 - .5, oy + 21, 1.2, 13, .5), 'frame', 4); A(RR(wx - 2, oy + 34, ww + 4, 2.5, 1), 'trim', 3); };
+    if (uw - 16 > 34) { win(ox + 4, 13); win(ox + uw - 17, 13); } else win(ox + 3, 9);
+    const wall = opt.wall || '#9a6a3c';
+    const im = draw(p, { roof: tones(trim).sh, wall, trim, trim2, board: tones(wall).sh, shutter: tones(trim).sh, frame: tones(wall).dk, glass: '#7aa4c0', curtain: '#e8d4ac', box: '#7a4f2e',
+      awning: tones(trim2).base, post: '#7a4f2e', door: '#6a4428', lit: '#ffd98a' }, W, H, { wall: { type: 'planks' }, awning: { type: 'awning', col: tones(trim2).hi } });
+    return { im, ox: -6, oy: -H0 - 8 };
   });
 }

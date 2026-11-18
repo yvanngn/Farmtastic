@@ -1,4 +1,4 @@
-import { fountainSprite } from './props.js';
+import { fountainSprite, facadeSprite } from './props.js';
 import { paintGrass, paintOchre, paintRoad, paintPlanks, softEdge, OCHRE, paintRiver, paintBridge, paintCliff, autotile, ROAD, canopy, dress, roofFor, softPatches, barrel } from './terrain.js';
 // Centre du village pré-rendu : place pavée, halle du marché, panneau d'affichage,
 // fontaine, lampadaires, bancs, jardinières et arbres. Reconstruit à chaque saison.
@@ -102,6 +102,11 @@ export function buildTown(season) {
     const wall = opt.wall || '#9a6a3c', wallD = shade(wall, 0.82), wallL = shade(wall, 1.12), OUT = shade(wall, 0.42);   // lot 11e : contour coloré (teinte du mur), plus de noir
     // ombre portée au sol
     g.fillStyle = 'rgba(40,20,10,.22)'; g.fillRect(ux + 4, uy + 46, uw, 4); g.fillRect(ux + uw, top + 14, 5, uy + 50 - top - 14);   // ombre portée (soleil en haut à gauche)
+    { const F = facadeSprite(w, trim, trim2, opt);   // 18/11 (soir) : façade « pixel moderne » (src/render/props.js)
+      if (F) { g.drawImage(F.im, ux + F.ox, uy + F.oy); signBoard(R, ux + uw / 2, top + 20, sign);
+        if (!opt.balcony) for (const wx of (w > 3 ? [ux + 7, ux + uw - 19] : [ux + uw / 2 - 6])) for (const [fx, fc] of [[0, '#f07ab0'], [4, '#f6d24a'], [8, '#ffffff'], [11, '#e0402a']]) { R(wx + fx, top + 36, 2, 2, fc); R(wx + fx, top + 38, 1, 1, '#4a7a2a'); }
+        if (opt.door) opt.door(ux + uw / 2 - 8, uy);
+        deco(ux, uy, uw, top); return; } }
     // toit à deux pans qui dépasse derrière la fausse façade
     for (let i = 0; i < 6; i++) R(ux + 6 + i, top + 12 - i * 2, uw - 12 - i * 2, 2, i % 2 ? shade(trim, 0.7) : shade(trim, 0.8));
     // fausse façade : silhouette en gradins

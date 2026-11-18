@@ -48,6 +48,9 @@ export function renderPixel(m, W, H, opt = {}) {
     else if (ptype === 'knit') { if (i % 3 === 0) col = col === t.hi ? t.base : t.sh; if ((j + (i % 3 === 1 ? 1 : 0)) % 4 === 0 && i % 3 === 1) col = t.hi; }
     else if (ptype === 'flowers') { const h = (i * 7 + j * 13) % 11; if (h === 0) col = pt.col; else if (h === 5) col = pt.col2 || pt.col; }
     else if (ptype === 'stripe') { if (j % 3 === 0) col = pt.col; }
+    else if (ptype === 'planks') { if (i % 5 === 0) col = t.sh; else if (i % 5 === 1 && col === t.base && (j * 7 + i) % 13 === 0) col = t.hi; }   // planches verticales
+    else if (ptype === 'boards') { if (j % 4 === 0) col = t.sh; else if (j % 4 === 1 && col === t.base) col = t.hi; }   // bardage à clin
+    else if (ptype === 'awning') { if (i % 8 >= 4) col = pt.col; }
     // contour : bord de la silhouette (plus clair côté lumière)
     const edge = !P(i - 1, j) || !P(i + 1, j) || !P(i, j - 1) || !P(i, j + 1);
     if (edge) col = (!P(i - 1, j) || !P(i, j - 1)) && opt.selout ? t.dk : t.ol;
