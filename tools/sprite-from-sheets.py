@@ -64,8 +64,15 @@ def outline(s):
             nb = [src[x + a, y + b] for a, b in ((1, 0), (-1, 0), (0, 1), (0, -1)) if 0 <= x + a < w + 2 and 0 <= y + b < h + 2 and src[x + a, y + b][3]]
             if nb: p[x, y] = (sum(n[0] for n in nb) // len(nb) * 38 // 100, sum(n[1] for n in nb) // len(nb) * 32 // 100, sum(n[2] for n in nb) // len(nb) * 30 // 100, 255)
     return o
-out = {}
+# Personnages faits depuis les planches fournies (tools/sprite-from-planche.py, haute définition) : on n'y touche pas.
+_fr0 = json.load(open(os.path.join(ROOT, 'assets/sprites/frames.json'))) if os.path.exists(os.path.join(ROOT, 'assets/sprites/frames.json')) else {}
+HD = {k: v for k, v in _fr0.items() if len(v) == 5}
+def hd(nm, im, n):   # champs de sheets.js : taille dans le monde (fw, fh) et, pour les planches HD, taille d'une image (sw, sh)
+    if nm in HD: fw, fh, n, sw, sh = HD[nm]; return f"fw: {fw}, fh: {fh}, sw: {sw}, sh: {sh}, n: {n}"
+    return f"fw: {im.width // n}, fh: {im.height // 3}, n: {n}"
+out = dict(HD)
 for name, C in CH.items():
+    if name in HD: continue   # planche fournie (haute définition), faite par tools/sprite-from-planche.py
     rows = {}
     for v in ('front', 'back', 'side'):
         img, cells = C[v]; ref = img is REF
@@ -88,7 +95,7 @@ frames = out; js = []
 for f in sorted(os.listdir(os.path.join(ROOT, 'assets/sprites'))):
     if not f.endswith('.png'): continue
     name = f[:-4]; im = Image.open(os.path.join(ROOT, 'assets/sprites', f)); n = frames.get(name, (0, 0, 4))[2]
-    js.append(f"  {name}: {{ fw: {im.width // n}, fh: {im.height // 3}, n: {n}, url: 'data:image/png;base64,{base64.b64encode(open(os.path.join(ROOT, 'assets/sprites', f), 'rb').read()).decode()}' }}")
+    js.append(f"  {name}: {{ {hd(name, im, n)}, url: 'data:image/png;base64,{base64.b64encode(open(os.path.join(ROOT, 'assets/sprites', f), 'rb').read()).decode()}' }}")
 open(os.path.join(ROOT, 'src/render/sheets.js'), 'w').write("""// Planches de sprites des personnages (ne pas modifier à la main) : tools/sprite-from-sheets.py (planches de marche fournies,
 // docs/sprites/) et tools/sprite-from-reference.py (docs/personnages-reference.jpg). Lignes : face, dos, profil (vers la gauche) ;
 // n images de marche par ligne. Intégrées en data URL pour marcher partout ; le dessin par code prend le relais tant qu'elles chargent.

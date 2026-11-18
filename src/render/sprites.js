@@ -180,8 +180,9 @@ function drawSheet(c, ox, oy, L, d, f) {
   const img = sheetImage(L.sheet); if (!img) return false;
   const S = SHEETS[L.sheet], n = S.n || 4, col = f ? ((f - 1) * n / WALK_N | 0) % n : 0, row = d === 0 ? 0 : d === 1 ? 1 : 2;
   const x = Math.round(ox + 6 - S.fw / 2), y = oy + 19 - S.fh;
-  if (d === 3) { c.save(); c.translate(x + S.fw, y); c.scale(-1, 1); c.drawImage(img, col * S.fw, row * S.fh, S.fw, S.fh, 0, 0, S.fw, S.fh); c.restore(); }   // profil droit = miroir
-  else c.drawImage(img, col * S.fw, row * S.fh, S.fw, S.fh, x, y, S.fw, S.fh);
+  const sw = S.sw || S.fw, sh = S.sh || S.fh;   // planche haute définition (sw × sh par image) affichée à fw × fh pixels du monde
+  if (d === 3) { c.save(); c.translate(x + S.fw, y); c.scale(-1, 1); c.drawImage(img, col * sw, row * sh, sw, sh, 0, 0, S.fw, S.fh); c.restore(); }   // profil droit = miroir
+  else c.drawImage(img, col * sw, row * sh, sw, sh, x, y, S.fw, S.fh);
   return true;
 }
 // Héros personnalisable dessiné depuis la planche de sprites (même style que les habitants) : la planche de base

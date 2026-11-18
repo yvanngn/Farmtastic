@@ -6,7 +6,7 @@ Pour reprendre dans n'importe quel compte Claude : « Reprends Farmwest depuis l
 - **Code** : dépôt GitHub `yvanngn/farmwest` (branche `main`). CLAUDE.md et README.md font foi.
 - **Jeu en ligne** : GitHub Pages https://yvanngn.github.io/farmwest/ (index.html généré depuis play.html par `node tools/build-index.mjs`).
 - **Page claude.ai « Farmwest »** : appartient au compte personnel. Depuis un autre compte, ne pas la republier : pousser sur GitHub ; elle sera republiée au retour sur le compte personnel.
-- **Personnages** : planche de référence `docs/personnages-reference.jpg` (règle dans CLAUDE.md).
+- **Personnages** : depuis le 18/11, on part des **planches de sprites fournies par l'utilisateur** (`docs/sprites/<nom>.png` → `tools/sprite-from-planche.py`, qualité d'origine gardée) ; plus de Gemini. Les autres gardent la planche de référence `docs/personnages-reference.jpg` en attendant (règle dans CLAUDE.md).
 - **Feuille de route** : `docs/ROADMAP.md` (lots 8-11 faits). **Mémoire** : `docs/CARNET.md` (questions ❓, idées 💡, abandons ❌). **Versions** : `docs/VERSIONS.md`. **Dialogues** : `docs/DIALOGUES.md` (138 répliques 🆕 en attente de relecture).
 - **Tests** : `npm test` (node:test, 238 tests).
 

@@ -5,7 +5,8 @@ Mémoire du projet. À lire avant chaque séance, à compléter à la fin.
 
 Légende : ✅ fait · ⏳ à faire · ❓ question pour l'utilisateur · 💡 idée de Claude (à valider) · ❌ abandonné
 
-- 🧪 **Essai du 18/11** : Manu d'après la nouvelle planche (`docs/sprites/manu-gemini.jpg` : chapeau marron, barbe grise, gilet vert, chemise blanche, pantalon et bottes marron), via `tools/sprite-from-gemini.py`. Pour le voir, il **fait le tour de la fontaine** quand il est sur la place (8 h – 19 h) : `orbit` dans src/data/npcs.js, **à retirer** une fois validé. ❓ On garde ce design ? (L'ancien était costume blanc et gilet bordeaux.)
+- 🧪 **Essai du 18/11** : Manu d'après la **planche fournie** (`docs/sprites/manu.png` : chapeau marron, barbe grise, gilet vert, chemise blanche, pantalon et bottes marron), **en qualité d'origine** via `tools/sprite-from-planche.py` (72 × 107 par image, affichée à 27 × 40 pixels du monde). Pour le voir, il **fait le tour de la fontaine** quand il est sur la place (8 h – 19 h) : `orbit` dans src/data/npcs.js, **à retirer** une fois validé. ❓ On garde ce design ? (L'ancien : costume blanc, gilet bordeaux.)
+- **18/11 : plus de Gemini.** Les personnages viendront des planches de sprites fournies par l'utilisateur, gardées en qualité d'origine. ⚠️ Tant que les autres ne sont pas refaits, Manu est nettement plus fin qu'eux (deux niveaux de détail à l'écran).
 ## ⭐ À lire en premier
 - **Farmwest** (ancien nom Farm'tastic) : une ferme au **Far West**. Dépôt `yvanngn/farmwest`, GitHub Pages https://yvanngn.github.io/farmwest/, jeu claude.ai toujours republié sur la même page.
 - **Feuille de route : `docs/ROADMAP.md`** (un lot à la fois, ❓ à trancher avant chaque lot). Carte de référence : `docs/carte-region-farmwest.jpg`.

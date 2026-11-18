@@ -63,7 +63,7 @@ export const LUNA = {
 // en vacances ; les gens croient qu'il travaille dur pour eux. Une enquête sur lui viendra plus tard.
 export const CHEF = {
   id: 'chef', name: 'Manuel', title: 'Maire', color: '#e8c26a', voice: 'voiceChef', de: 'de lui',
-  look: { body: 'h', bottom: 'pant', skin: '#e2b48c', hair: 0, hairC: '#5a3a22', shirt: '#f2ead8', pants: '#f2ead8', hat: 'blanc', vest: '#7a2a3a', mustache: '#5a3a22', stout: true, shoes: '#5a2a22', sheet: 'manu' },   // sheet : planche Gemini du 18/11 (tools/sprite-from-gemini.py) ; essai du 17/11)   // costume blanc, gilet bordeaux, chapeau blanc
+  look: { body: 'h', bottom: 'pant', skin: '#e2b48c', hair: 0, hairC: '#5a3a22', shirt: '#f2ead8', pants: '#f2ead8', hat: 'blanc', vest: '#7a2a3a', mustache: '#5a3a22', stout: true, shoes: '#5a2a22', sheet: 'manu' },   // sheet : planche fournie le 18/11, qualité d'origine (tools/sprite-from-planche.py) ; essai du 17/11)   // costume blanc, gilet bordeaux, chapeau blanc
   home: 'ranch_maison', inside: { x: 3.5, y: 4.6 }, outScene: 'town', day: { x: 18.5, y: 8.6 },
   orbit: { scene: 'town', cx: 16.5, cy: 7.6, rx: 2.5, ry: 2.2, period: 14 },   // ESSAI du 18/11 : quand il est sur la place (la journée), il fait le tour de la fontaine (pour voir la nouvelle planche) — à retirer ensuite   // 17/11 : il vit dans son ranch, passe ses journées sur la place
   // trajet villa → place (le matin) et retour (le soir), à pied : porte de la villa, allée est, place

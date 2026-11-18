@@ -1,3 +1,4 @@
+# ANCIEN outil : planches Gemini, plus utilisées depuis le 18/11 (on part des planches fournies : tools/sprite-from-planche.py).
 # Planches générées par Gemini (docs/sprites/<nom>-gemini.jpg) → assets/sprites/<nom>.png, avec la réduction nette
 # de tools/hero-propositions.py (palette par personnage, pixel dominant par bloc, contour sombre).
 # Les personnages sont repérés automatiquement (taches sur fond blanc, triées par ligne puis colonne) ;
@@ -13,7 +14,6 @@ PICK = {
   'myst': dict(H=40, ncol=40, white=222, front=[0, 1, 2, 3], back=[4, 5, 6, 7], side=[(8, 1), (9, 1), (10, 1), (11, 1)]),   # planche myst_v2 (profils tournés à droite → miroir)
   'franck': dict(H=38, ncol=40, white=222, front=[0, 1, 2, 3], back=[4, 5, 6, 7], side=[(8, 1), (9, 1), (10, 1), (11, 1)]),
   'hailey': dict(H=36, ncol=40, white=240, halo=0, front=[0, 1, 2, 3], back=[4, 5, 6, 5], side=[(8, 1), (9, 1), (10, 1), (11, 1)]),
-  'manu': dict(H=35, ncol=40, white=254, halo=0, clean=12, front=[0, 1, 0, (1, 1)], back=[2, 3, 2, (3, 1)], side=[(4, 1), (5, 1), (4, 1), (6, 1)]),   # planche du 18/11 : 7 poses (face, face marche, dos, dos marche, profil, 2 pas) ; marche = pas miroir
   'luna': dict(H=36, ncol=40, white=240, halo=0, front=[0, 1, 2, 3], back=[5, 6, 5, 6], side=[(8, 1), (9, 1), (10, 1), (11, 1)]),
 }
 def blobs(im):
@@ -58,11 +58,15 @@ for name, P in PICK.items():
     sh.save(os.path.join(ROOT, 'assets/sprites', name + '.png'))
     fr = json.load(open(os.path.join(ROOT, 'assets/sprites/frames.json'))); fr[name] = [FW, FH, n]
     json.dump(fr, open(os.path.join(ROOT, 'assets/sprites/frames.json'), 'w')); print(name, FW, FH, n)
-# src/render/sheets.js (même format que tools/sprite-from-sheets.py)
+# src/render/sheets.js (même format que tools/sprite-from-sheets.py ; planches HD de tools/sprite-from-planche.py gardées telles quelles)
+def hd(nm, im, n):
+    v = fr.get(nm)
+    if v and len(v) == 5: return f"fw: {v[0]}, fh: {v[1]}, sw: {v[3]}, sh: {v[4]}, n: {v[2]}"
+    return f"fw: {im.width // n}, fh: {im.height // 3}, n: {n}"
 fr = json.load(open(os.path.join(ROOT, 'assets/sprites/frames.json'))); js = []
 for f in sorted(os.listdir(os.path.join(ROOT, 'assets/sprites'))):
     if not f.endswith('.png'): continue
     nm = f[:-4]; im = Image.open(os.path.join(ROOT, 'assets/sprites', f)); n = fr.get(nm, (0, 0, 4))[2]
-    js.append(f"  {nm}: {{ fw: {im.width // n}, fh: {im.height // 3}, n: {n}, url: 'data:image/png;base64,{base64.b64encode(open(os.path.join(ROOT, 'assets/sprites', f), 'rb').read()).decode()}' }}")
+    js.append(f"  {nm}: {{ {hd(nm, im, n)}, url: 'data:image/png;base64,{base64.b64encode(open(os.path.join(ROOT, 'assets/sprites', f), 'rb').read()).decode()}' }}")
 head = open(os.path.join(ROOT, 'src/render/sheets.js')).read().split('export const SHEETS')[0]
 open(os.path.join(ROOT, 'src/render/sheets.js'), 'w').write(head + "export const SHEETS = {\n" + ',\n'.join(js) + "\n};\n")
