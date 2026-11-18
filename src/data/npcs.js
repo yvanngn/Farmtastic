@@ -313,7 +313,7 @@ export const SUZIE = {
 };
 export const JADE = {
   id: 'jade', name: 'Jade', de: "d'elle", color: '#8ad0a0', voice: 'voiceLuna',
-  look: { body: 'f', bottom: 'pant', skin: '#e8b48c', hair: 5, hairC: '#2a2030', shirt: '#f4f4f0', overalls: '#3a6ab0', pants: '#3a6ab0', shoes: '#c0392b', kid: true },   // 18/11 : poupée dessinée par le code (src/render/paperdoll.js), tenue d'après son sprite
+  look: { body: 'f', bottom: 'pant', skin: '#f3c9a6', eye: '#4a2a1c', hair: 5, hairC: '#2a2234', ribbons: '#e0405a', shirt: '#f8f6f0', puffy: true, overalls: '#3a6ab0', pants: '#3a6ab0', shorts: true, socks: true, pocket: 'heart', shoes: '#d0402e', kid: true },   // 18/11 : poupée dessinée par le code (src/render/paperdoll.js), tenue d'après son sprite
   home: 'ed_etage', stay: true, inside: { x: 3.5, y: 4.6 },
   traits: ['Fille d’Ed et Suzie'], taste: {},
   chat: ["T'es qui, toi ? Moi c'est Jade !", "Papa, il dit qu'un jour il aura un magasin. Avec plein de bonbons dedans."],
