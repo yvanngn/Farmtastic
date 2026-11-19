@@ -44,22 +44,35 @@ def pad(c, W, Hh):   # centre horizontalement, pieds en bas
     out = np.zeros((Hh, W, 4), 'uint8'); h, w = c.shape[:2]; x = (W - w) // 2; out[Hh - h:, x:x + w] = c; return out
 def head_x(c, frac=.3):   # centre horizontal de la tête (haut de l'image)
     a = c[:int(c.shape[0] * frac), :, 3] > 0; xs = np.nonzero(a.any(0))[0]; return (xs.min() + xs.max()) / 2
-def compose(top, bottom, cut):   # haut d'une image + bas d'une autre, têtes alignées, pieds en bas
-    Hh = max(top.shape[0], bottom.shape[0]); W = max(top.shape[1], bottom.shape[1]) + 8
-    def place(c, dx=0):
-        out = np.zeros((Hh, W, 4), 'uint8'); h, w = c.shape[:2]; x = (W - w) // 2 + dx; out[Hh - h:, x:x + w] = c; return out
-    b = place(bottom); t0 = place(top); dx = int(round(head_x(b) - head_x(t0))); t = place(top, dx)
-    y = int(Hh * cut); out = b.copy(); out[:y] = t[:y]
-    xs = np.nonzero(out[..., 3].any(0))[0]; return out[:, xs.min():xs.max() + 1]
+def head_top(c): return int(np.nonzero(c[..., 3].any(1))[0][0])
+def compose(top, bottom, cut, lo=.3, hi=.62):   # haut d'une image + bas d'une autre : têtes alignées (x et y), coupe là où les deux se ressemblent le plus
+    Hh = max(top.shape[0], bottom.shape[0]) + 12; W = max(top.shape[1], bottom.shape[1]) + 12
+    def place(c, dx=0, dy=0):
+        out = np.zeros((Hh, W, 4), 'uint8'); h, w = c.shape[:2]; x = (W - w) // 2 + dx; y = Hh - 6 - h + dy; out[y:y + h, x:x + w] = c; return out
+    b = place(bottom); t0 = place(top); dx = int(round(head_x(b) - head_x(t0))); dy = head_top(b) - head_top(t0); t = place(top, dx, dy)
+    best = None
+    y0b = head_top(b); hb = Hh - 6 - y0b
+    for y in range(y0b + int(hb * lo), y0b + int(hb * hi)):
+        diff = np.abs(t[y - 1:y + 1].astype(int) - b[y - 1:y + 1].astype(int)).sum()
+        if best is None or diff < best[0]: best = (diff, y)
+    y = best[1] if cut is None else y0b + int(hb * cut)
+    out = b.copy(); out[:y] = t[:y]
+    ys = np.nonzero(out[..., 3].any(1))[0]; xs = np.nonzero(out[..., 3].any(0))[0]; return out[ys.min():ys.max() + 1, xs.min():xs.max() + 1]
+def step_legs(idle, side, lift=2, legs=.8):   # pas de dos synthétique : une jambe remonte (genou plié), l'autre reste, le corps monte d'1 pixel
+    c = idle.copy(); h, w = c.shape[:2]; y0 = int(h * legs); mid = int(round(head_x(idle)))
+    out = np.zeros((h, w, 4), 'uint8'); out[:y0 - 1] = c[1:y0]; out[y0 - 1:] = c[y0 - 1:]   # buste remonté d'1
+    xs = slice(0, mid) if side == 'L' else slice(mid, w)
+    seg = c[y0:, xs].copy(); out[y0:, xs] = 0; out[y0 - lift:h - lift, xs] = np.where(seg[..., 3:] > 0, seg, out[y0 - lift:h - lift, xs])
+    return out
 def build(cells):
     F, L, R, B = cells
-    # profil : la tête (et la coiffure) de l'image à l'arrêt sur le pas, pour qu'elle ne change pas en marchant
-    Lp, Ln = compose(L[2], L[3], .42), compose(L[0], L[1], .42)
-    # dos : avec sac = haut de l'arrêt avec sac + jambes du pas ; sans sac = haut du pas sans sac + jambes de l'arrêt
-    Bp_step, Bn_idle = compose(B[0], B[1], .74), compose(B[1], B[0], .66)
+    # profil : la tête (et la coiffure) de l'image à l'arrêt sur le pas ; coupe au cou, là où les deux images se rejoignent
+    Lp, Ln = compose(L[2], L[3], None), compose(L[0], L[1], None)
+    # dos : marche synthétique à partir de la pose à l'arrêt (une jambe puis l'autre), plus de raccord visible
+    Bn_idle = compose(B[1], B[0], .66)
     return {
-        'p': [[F[0], F[1], F[2], F[3]], [B[0], Bp_step, B[0], Bp_step], [L[2], Lp, L[2], Lp]],
-        'n': [[F[0], F[1], F[2], F[3]], [Bn_idle, B[1], Bn_idle, B[1]], [L[0], Ln, L[0], Ln]],
+        'p': [[F[0], F[1], F[2], F[3]], [B[0], step_legs(B[0], 'L'), B[0], step_legs(B[0], 'R')], [L[2], Lp, L[2], Lp]],
+        'n': [[F[0], F[1], F[2], F[3]], [Bn_idle, step_legs(Bn_idle, 'L'), Bn_idle, step_legs(Bn_idle, 'R')], [L[0], Ln, L[0], Ln]],
     }
 def masks(sheet, hairRef):   # cheveux : couleurs proches de celles du haut de la tête ; yeux : pixels bleutés du visage
     rgb = sheet[..., :3].astype(int); m = np.zeros(sheet.shape[:2] + (3,), 'uint8')

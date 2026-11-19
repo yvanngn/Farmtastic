@@ -10,6 +10,9 @@ Le héros (**Cloud Jimny** par défaut) arrive en train à Farmwest pour reprend
 ## 1 bis. Le personnage
 Au début, on choisit **homme ou femme**, avec ou sans **sac à dos**, et la **couleur des cheveux**.
 
+## 1 ter. Équipement
+Menu → 🎽 Équipement : tête, corps, pieds, accessoire. Le manteau d'hiver protège du froid ; les **bottes de vent** font marcher 4 fois plus vite.
+
 ## 2. Commandes
 - **Se déplacer** : joystick (écran tactile) ou flèches / ZQSD / WASD. Dès qu'on se sert du joystick, toucher l'écran ne fait plus marcher le héros : on touche seulement ce qui est à portée.
 - **Agir** : bouton ✋ ou espace (couper, casser, ramasser, parler, réparer…). Un court délai caché sépare deux actions quand on reste appuyé.

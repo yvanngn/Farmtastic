@@ -2,6 +2,7 @@
 
 Semver horodaté (heure de Paris). Patch automatique à chaque publication ; mineure et majeure sur décision de l'utilisateur.
 
+- **0.1.74** — 2026-11-19 15:05 — marche de dos et de profil corrigées ; équipement ; bottes de vent
 - **0.1.73** — 2026-11-19 14:49 — essai : coup de pioche de l'héroïne d'après la planche fournie
 - **0.1.72** — 2026-11-19 14:31 — héros et héroïne d'après les planches fournies ; personnalisation simplifiée
 - **0.1.71** — 2026-11-19 14:07 — essai Myst : animation un peu plus lente (150 ms)

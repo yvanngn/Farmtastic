@@ -1,5 +1,6 @@
 import { isSolid } from '../world/map.js';
 import { ADMIN, ADMIN_SPEED } from './admin.js';
+import { speedMult } from './equip.js';
 
 export const SPEED = 4.5; // tuiles / s
 const R = 0.3;
@@ -42,7 +43,7 @@ export function updatePlayer(g, dt, keys, onArrive) {
     } else { dx = (tx - S.x) / d; dy = (ty - S.y) / d; }
   }
   if (dx || dy) {
-    const l = Math.hypot(dx, dy), sp = SPEED * (ADMIN.on ? ADMIN_SPEED : 1) * dt * (analog ? Math.min(1, l) : 1), bx = S.x, by = S.y;
+    const l = Math.hypot(dx, dy), sp = SPEED * (ADMIN.on ? ADMIN_SPEED : 1) * speedMult(S) * dt * (analog ? Math.min(1, l) : 1), bx = S.x, by = S.y;
     tryMove(S, dx / l * sp, dy / l * sp);
     if (P.target && Math.hypot(S.x - bx, S.y - by) < sp * 0.1) P.target = null; // bloqué
     S.dir = dirFrom(dx, dy);

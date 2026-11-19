@@ -41,7 +41,8 @@ export const ITEMS = {
   chest: { n: 'Coffre', p: 0, i: '📦', keep: true },             // appris auprès d'Igor ; à poser plus tard
   bed: { n: 'Lit', p: 0, i: '🛏️', keep: true },                 // 18/11 : plan acheté chez Harry, s'installe dans la cabane
   bone: { n: 'Os', p: 2, i: '🦴' },                              // lot 12 : trouvé en creusant les petits tas ; Rox en raffole
-  manteau: { n: 'Manteau d’hiver', p: 150, i: '🧥', keep: true, buy: 400 },   // protège du froid de la montagne (💡 vendu à l'étal du marché)
+  manteau: { n: 'Manteau d’hiver', p: 150, i: '🧥', keep: true, buy: 400, equip: 'corps' },
+  bottes_vent: { n: 'Bottes de vent', p: 0, i: '👢', keep: true, equip: 'pieds', speed: 4, f: 1 },   // 19/11 : ×4 en marchant (offertes à Yvan ; objet à gagner plus tard)   // protège du froid de la montagne (💡 vendu à l'étal du marché)
   barbe_papa: { n: 'Barbe à papa', p: 5, i: '🍭', eat: { e: 8 } },
   peluche: { n: 'Peluche', p: 30, i: '🧸', keep: true },
   peluche_geante: { n: 'Peluche géante', p: 120, i: '🐻', keep: true },

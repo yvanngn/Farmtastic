@@ -14,6 +14,7 @@ import { SHOPS } from '../data/shops.js';
 import { QUESTS, questProgress, questVisible } from '../systems/quests.js';
 import { journal, setJournalTab, storySoFar } from '../systems/journal.js';
 import { xpBar } from '../systems/level.js';
+import { SLOTS, equipped, equippable, equip, unequip } from '../systems/equip.js';
 import { isUnlocked } from '../systems/market.js';
 import { canRepairBench, repairBench } from '../systems/economy.js';
 import { WORKBENCH } from '../data/buildings.js';
@@ -35,7 +36,7 @@ import { slots, usedSlots, stackSize } from '../systems/inventory.js';
 import { canUpgrade, upgradeTool, miningLevel, nextXp, toolTier, hasTool } from '../systems/skills.js';
 
 const JTABS = { journal: '📝 Activités', quests: '⭐ Quêtes en cours', social: '💞 Liens', histoire: '📖 Histoire' };   // 19/11 : onglets du journal
-const TABS = { sac: 'Sac', poissons: '🐟 Poissons', metiers: '🧑‍🔧 Métiers', forge: 'Forge', social: 'Liens' };   // 19/11 : recettes et quêtes ont leur bouton près de l'action
+const TABS = { sac: 'Sac', equip: '🎽 Équipement', poissons: '🐟 Poissons', metiers: '🧑‍🔧 Métiers', forge: 'Forge', social: 'Liens' };   // 19/11 : recettes et quêtes ont leur bouton près de l'action
 const TITLES = { recettes: '🛠️ Recettes', quests: '⭐ Quêtes', poissons: '🐟 Carnet de pêche', market: '🏪 Marché', upgrades: '🧰 Magasin d\'amélioration', carpenter: '🪚 Charpentier', workshop: '🛠️ Établi', animals: '🐾 Marchand d\'animaux', bakery: '🥖 Boulangerie', igorShop: '⚒️ Boutique d’Igor', butcher: '🥩 Boucherie', fishmonger: '🐟 Poissonnerie' };
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 const it = id => ITEMS[id] || { n: id, i: '❔', p: 0 };
@@ -145,6 +146,12 @@ export function createMenu(g, opts) {
       const col = (t, list) => `<div><h3>${t}</h3>${list.map(one).join('') || '<p class="info">Aucune pour l’instant.</p>'}</div>`;
       return `<div class="quetes-cols">${col('⭐ Quêtes principales', ids.filter(id => QUESTS[id].main))}${col('📋 Quêtes secondaires', ids.filter(id => !QUESTS[id].main))}</div>`;
     },
+    equip(S) {   // 19/11 : équipement
+      const slots = Object.entries(SLOTS).map(([k, n]) => { const id = equipped(S, k), it = id && ALL_ITEMS[id];
+        return card(`<div class="t">${n}</div>${it ? `<div>${iconHTML(id)} <b>${it.n}</b>${it.speed ? ` <small>· vitesse × ${it.speed}</small>` : ''}</div><button data-unequip="${k}">Retirer</button>` : '<small>Rien</small>'}`); }).join('');
+      const bag = equippable(S).map(id => card(`<div class="t">${iconHTML(id)} <b>${ALL_ITEMS[id].n}</b></div><small>${SLOTS[ALL_ITEMS[id].equip]}</small><button data-equip="${id}">Équiper</button>`)).join('');
+      return `<p class="info">Ce que tu portes. Les objets équipés quittent le sac.</p><div class="grid">${slots}</div><h3>Dans le sac</h3>${bag ? `<div class="grid">${bag}</div>` : '<p class="info">Aucun objet à équiper.</p>'}`;
+    },
     journal(S) {   // 19/11 : les 200 dernières activités, les plus récentes en haut
       const L = journal(S).log;
       return `<p class="info">📓 Les ${L.length} dernières activités (200 au plus).</p><ul class="journal">` + L.slice().reverse().map(e => `<li><small>${esc(e.w)}</small> ${esc(e.t)}</li>`).join('') + '</ul>' + (L.length ? '' : '<p class="info">Rien encore… La page est blanche.</p>');
@@ -201,6 +208,7 @@ export function createMenu(g, opts) {
 
   const handlers = {
     use: id => consume(g, id), deploy: () => { if (deployTent(g)) $('#ovBag').classList.remove('on'); }, craft: i => craft(g, +i), hcraft: id => craftHand(g, id), rcat: c => { recCat = c; }, buy: id => buy(g, id), pattern: id => buyPattern(g, id), buy5: id => buy(g, id, 5), animal: id => buyAnimal(g, id),
+    equip: id => equip(g, id), unequip: k => unequip(g, k),
     bag: () => buyBag(g), bench: () => repairBench(g), build: id => build(g, id), stack: () => buyStack(g), up: id => upgradeTool(g, id)
   };
   function render() {

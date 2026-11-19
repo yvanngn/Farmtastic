@@ -75,6 +75,7 @@ import { createInventoryGrid } from './ui/inventoryGrid.js';
 import { createSellPanel } from './ui/sellPanel.js';
 import { createStandPanel } from './ui/standPanel.js';
 import { standTick } from './systems/stand.js';
+import { yvanGift } from './systems/equip.js';
 import { createChestPanel } from './ui/chestPanel.js';
 import { createMultiplayer, lerpOthers } from './net/multiplayer.js';
 
@@ -327,7 +328,7 @@ function loop(now) {
     renderer.updateParticles(dt);
     renderer.render(now);
     { const mv = !!g.player.walkFrame; if (mv) hudIdle = 0; else hudIdle += dt; $('#hud').classList.toggle('repos', hudIdle > 1.2); }   // 19/11 : météo / argent visibles quand on bouge
-    if ((hudT += dt) > 0.25) { hudT = 0; if (started && !introActive(g.S)) { questXpTick(g, QUESTS); letterTick(g); standTick(g); } hud.update(); repairPanel.update(started && !dialog.isOpen && !document.querySelector('.overlay.on')); }
+    if ((hudT += dt) > 0.25) { hudT = 0; if (started && !introActive(g.S)) { questXpTick(g, QUESTS); letterTick(g); standTick(g); yvanGift(g); } hud.update(); repairPanel.update(started && !dialog.isOpen && !document.querySelector('.overlay.on')); }
   }
   if (custom.isOpen()) custom.draw(now);
   if (title.isOpen()) title.draw(now);

@@ -2,7 +2,7 @@
 import { SCENES } from '../world/scenes.js';
 import { knockout } from './player.js';
 export const COLD_HP_PER_S = 1;   // 💡 1 point de vie par seconde (100 points : environ 1 min 40)
-export const isWarm = S => (S.inv.manteau || 0) > 0;
+export const isWarm = S => (S.inv.manteau || 0) > 0 || (S.equip && S.equip.corps === 'manteau');   // 19/11 : porté (équipement) ou dans le sac
 export function coldTick(g, dt) {
   const S = g.S, sc = SCENES[S.scene];
   if (!sc || !sc.cold || isWarm(S)) { g.coldAcc = 0; return false; }

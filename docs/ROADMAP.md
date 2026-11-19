@@ -156,6 +156,12 @@ Pour que **les scènes du jeu** atteignent le niveau de détail de l'image, scè
 - [x] **Un coffre pour ranger** : acheter le **plan du coffre** chez Harry (💡 60 $), le fabriquer (80 bois + 20 pierres). Le coffre quitte la quête principale « Premiers pas » ; Harry ne l'apprend plus gratuitement.
 - ⏳ Plus tard : la cabane agrandie vue de dehors (aujourd'hui seul l'intérieur change).
 
+## Correctifs et équipement (19/11) ✅ v0.1.74
+- [x] Marche de dos : les deux jambes bougent l'une après l'autre (pas reconstitués à partir de la pose à l'arrêt), plus de raccord au niveau du sac.
+- [x] Marche de profil : plus de coupure au visage (têtes alignées en hauteur et en largeur, raccord au cou là où les deux images se rejoignent).
+- [x] Menu → 🎽 Équipement : tête, corps, pieds, accessoire. Le manteau d'hiver se porte (il protège du froid porté ou dans le sac).
+- [x] Bottes de vent (pieds) : marche × 4. Offertes et équipées d'office au joueur nommé « Yvan » (le nom se choisit à la création) ; objet à gagner plus tard pour les autres.
+
 ## Essai du 19/11 : coup de pioche de l'héroïne ✅ v0.1.73
 - [x] Planche `docs/sprites/heroine-pioche.jpg` → 3 temps par direction (levée haute, levée, frappe), têtes alignées ; remplace le bras dessiné quand l'héroïne pioche. Dos et profil : la pose à queue de cheval est gardée (cohérente avec la marche).
 - [ ] À faire si validé : héros (homme), hache, faucille, pelle, arrosage.
