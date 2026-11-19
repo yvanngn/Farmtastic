@@ -64,18 +64,28 @@ def compose(top, bottom, cut, lo=.42, hi=.6):   # haut d'une image + bas d'une a
     y = best[1] if cut is None else y0b + int(hb * cut)
     out = b.copy(); out[:y] = t[:y]
     ys = np.nonzero(out[..., 3].any(1))[0]; xs = np.nonzero(out[..., 3].any(0))[0]; return out[ys.min():ys.max() + 1, xs.min():xs.max() + 1]
+def sym(c):   # de dos : moitié gauche recopiée en miroir à droite (le pas fourni a un bras écarté)
+    c = c.copy(); mid = int(round(head_x(c))); w = c.shape[1]; L = c[:, :mid][:, ::-1]; n = min(L.shape[1], w - mid)
+    out = np.zeros((c.shape[0], mid + n, 4), 'uint8'); out[:, :mid] = c[:, :mid]; out[:, mid:mid + n] = L[:, :n]; return out
 def step_legs(idle, side, lift=2, legs=.8):   # pas de dos synthétique : une jambe remonte (genou plié), l'autre reste, le corps monte d'1 pixel
     c = idle.copy(); h, w = c.shape[:2]; y0 = int(h * legs); mid = int(round(head_x(idle)))
     out = np.zeros((h, w, 4), 'uint8'); out[:y0 - 1] = c[1:y0]; out[y0 - 1:] = c[y0 - 1:]   # buste remonté d'1
     xs = slice(0, mid) if side == 'L' else slice(mid, w)
     seg = c[y0:, xs].copy(); out[y0:, xs] = 0; out[y0 - lift:h - lift, xs] = np.where(seg[..., 3:] > 0, seg, out[y0 - lift:h - lift, xs])
+    # 19/11 : bras qui se balancent, comme de face : le bras opposé à la jambe levée avance (il remonte), l'autre recule (il descend)
+    a0, a1 = int(h * .42), int(h * .86); cols = np.nonzero(out[a0:a1, :, 3].any(0))[0]; L0, R1 = cols.min(), cols.max() + 1
+    for side_, dy in (('L', 2 if side == 'R' else -1), ('R', 2 if side == 'L' else -1)):
+        xa = slice(L0, L0 + 4) if side_ == 'L' else slice(R1 - 4, R1)
+        arm = out[a0:a1, xa].copy(); out[a0:a1, xa] = 0
+        ys0, ys1 = a0 - dy, a1 - dy; dst = out[ys0:ys1, xa]; out[ys0:ys1, xa] = np.where(arm[..., 3:] > 0, arm, dst)
+        if dy > 0: out[a1 - dy:a1, xa] = np.where(out[a1 - dy:a1, xa][..., 3:] > 0, out[a1 - dy:a1, xa], 0)
     return out
 def build(cells):
     F, L, R, B = cells
     # profil : la tête (et la coiffure) de l'image à l'arrêt sur le pas ; coupe au cou, là où les deux images se rejoignent
     Lp, Ln = compose(L[2], L[3], None), compose(L[0], L[1], None)
     # dos : marche synthétique à partir de la pose à l'arrêt (une jambe puis l'autre), plus de raccord visible
-    Bn_idle = compose(B[1], B[0], .66)
+    Bn_idle = sym(compose(B[1], B[0], .8))   # haut du pas sans sac (rendu symétrique : bras le long du corps) + jambes de l'arrêt
     return {
         'p': [[F[0], F[1], F[2], F[3]], [B[0], step_legs(B[0], 'L'), B[0], step_legs(B[0], 'R')], [L[2], Lp, L[2], Lp]],
         'n': [[F[0], F[1], F[2], F[3]], [Bn_idle, step_legs(Bn_idle, 'L'), Bn_idle, step_legs(Bn_idle, 'R')], [L[0], Ln, L[0], Ln]],
