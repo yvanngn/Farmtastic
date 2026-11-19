@@ -582,7 +582,14 @@ let swing = null;
     } });
     for (const f of worldFx) if (f.k === 'chip') list.push({ z: f.floor / T, d: () => { ctx.globalAlpha = Math.min(1, f.life * 3); ctx.fillStyle = f.col; ctx.fillRect(Math.round(f.x), Math.round(f.y), 2, 2); ctx.globalAlpha = 1; } });
     list.sort((a, b) => a.z - b.z).forEach(o => o.d());
-    // 19/11 : plus d'effet translucide derrière les bâtiments (demande de l'utilisateur)
+    if (!g.ride && !g.introHidden && (outside || SC.outdoor)) {   // 19/11 : derrière un bâtiment, le toit cache le héros (sans transparence)
+      const fx = Math.floor(S.x), fy = Math.floor(S.y), cols = [fx - 1, fx, fx + 1].filter(x => isBuildingTile(S, scene, x, fy + 1));
+      if (cols.length) {
+        const hx = Math.round(S.x * T - 16), hy = Math.round(S.y * T - 36), hw = 32, hh = 40;
+        const bx0 = Math.max(hx, Math.min(...cols) * T), bx1 = Math.min(hx + hw, (Math.max(...cols) + 1) * T), by1 = Math.min(hy + hh, (fy + 1) * T);
+        if (bx1 > bx0 && by1 > hy) ctx.drawImage(cache, bx0, hy, bx1 - bx0, by1 - hy, bx0, hy, bx1 - bx0, by1 - hy);
+      }
+    }
 
     if (SC.rooms) { // tout ce qui n'est pas la salle courante est masqué
       const rw = SC.rooms.w * T, rh = SC.rooms.h * T, rx = Math.floor(S.x * T / rw) * rw, ry = Math.floor(S.y * T / rh) * rh;

@@ -2,6 +2,7 @@
 
 Semver horodaté (heure de Paris). Patch automatique à chaque publication ; mineure et majeure sur décision de l'utilisateur.
 
+- **0.1.81** — 2026-11-19 21:38 — derrière un bâtiment, le toit cache le héros (sans transparence)
 - **0.1.80** — 2026-11-19 21:36 — plus d'effet translucide derrière les bâtiments
 - **0.1.79** — 2026-11-19 21:30 — de dos : vrai balancement des bras (pas fournis + leur miroir)
 - **0.1.78** — 2026-11-19 21:27 — de dos, les bras se balancent en marchant
