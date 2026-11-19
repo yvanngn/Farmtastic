@@ -40,18 +40,24 @@ def grid(path):
         cells.append(row)
     print(path, 'pas', round(py, 3), round(px, 3), [[c.shape[:2] for c in r] for r in cells])
     return cells
-def pad(c, W, Hh):   # centre horizontalement, pieds en bas
-    out = np.zeros((Hh, W, 4), 'uint8'); h, w = c.shape[:2]; x = (W - w) // 2; out[Hh - h:, x:x + w] = c; return out
+def pad(c, W, Hh):   # tête au centre de l'image (19/11 : plus de saut du visage entre deux images), pieds en bas
+    out = np.zeros((Hh, W, 4), 'uint8'); h, w = c.shape[:2]; x = int(round(W / 2 - head_x(c))); x = max(0, min(W - w, x)); out[Hh - h:, x:x + w] = c; return out
 def head_x(c, frac=.3):   # centre horizontal de la tête (haut de l'image)
     a = c[:int(c.shape[0] * frac), :, 3] > 0; xs = np.nonzero(a.any(0))[0]; return (xs.min() + xs.max()) / 2
 def head_top(c): return int(np.nonzero(c[..., 3].any(1))[0][0])
-def compose(top, bottom, cut, lo=.3, hi=.62):   # haut d'une image + bas d'une autre : têtes alignées (x et y), coupe là où les deux se ressemblent le plus
-    Hh = max(top.shape[0], bottom.shape[0]) + 12; W = max(top.shape[1], bottom.shape[1]) + 12
+def compose(top, bottom, cut, lo=.42, hi=.6):   # haut d'une image + bas d'une autre : têtes alignées (x et y), coupe là où les deux se ressemblent le plus
+    Hh = max(top.shape[0], bottom.shape[0]) + 16; W = max(top.shape[1], bottom.shape[1]) + 24
     def place(c, dx=0, dy=0):
-        out = np.zeros((Hh, W, 4), 'uint8'); h, w = c.shape[:2]; x = (W - w) // 2 + dx; y = Hh - 6 - h + dy; out[y:y + h, x:x + w] = c; return out
-    b = place(bottom); t0 = place(top); dx = int(round(head_x(b) - head_x(t0))); dy = head_top(b) - head_top(t0); t = place(top, dx, dy)
+        out = np.zeros((Hh, W, 4), 'uint8'); h, w = c.shape[:2]; x = (W - w) // 2 + dx; y = Hh - 8 - h + dy; out[y:y + h, x:x + w] = c; return out
+    b = place(bottom); t0 = place(top); dx0 = int(round(head_x(b) - head_x(t0))); dy0 = head_top(b) - head_top(t0)
+    # recalage fin : décalage qui superpose le mieux les deux visages (bande du visage)
+    yb = head_top(b); band = slice(yb + 6, yb + 16)
+    def score(dx, dy):
+        t = place(top, dx, dy); return np.abs(t[band].astype(int) - b[band].astype(int)).sum()
+    dx, dy = min(((dx, dy) for dx in range(dx0 - 4, dx0 + 5) for dy in range(dy0 - 2, dy0 + 3)), key=lambda v: score(*v))
+    t = place(top, dx, dy)
     best = None
-    y0b = head_top(b); hb = Hh - 6 - y0b
+    y0b = head_top(b); hb = Hh - 8 - y0b
     for y in range(y0b + int(hb * lo), y0b + int(hb * hi)):
         diff = np.abs(t[y - 1:y + 1].astype(int) - b[y - 1:y + 1].astype(int)).sum()
         if best is None or diff < best[0]: best = (diff, y)
@@ -85,7 +91,7 @@ lines = []
 for sex, path in (('h', 'docs/sprites/heros.jpg'), ('f', 'docs/sprites/heroine.jpg')):
     V = build(grid(os.path.join(ROOT, path)))
     for k, rows in V.items():
-        W = max(c.shape[1] for r in rows for c in r) + 2; Hh = max(c.shape[0] for r in rows for c in r)
+        W = int(np.ceil(2 * max(max(head_x(c), c.shape[1] - head_x(c)) for r in rows for c in r))) + 2; Hh = max(c.shape[0] for r in rows for c in r)
         sh = np.zeros((Hh * 3, W * 4, 4), 'uint8')
         for ri, r in enumerate(rows):
             for ci, c in enumerate(r): sh[ri * Hh:(ri + 1) * Hh, ci * W:(ci + 1) * W] = pad(c, W, Hh)
