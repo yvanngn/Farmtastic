@@ -1,6 +1,6 @@
 // Nature : fleurs à cueillir, cailloux et filons à piocher (ferme, forêt, Caverne sombre ; jamais en ville),
 // et arc-en-ciel les jours de pluie avec un trésor à son pied. Logique pure.
-import { syncForest, FOREST_ROUTE, LAYOUTS } from '../world/scenes.js';
+import { syncForest, FOREST_ROUTE, LAYOUTS, QUARRY_MOUTHS } from '../world/scenes.js';
 import { key, freeForObj, isSolid } from '../world/map.js';
 import { CFG } from '../config.js';
 import { FLOWERS } from '../data/items.js';
@@ -102,6 +102,7 @@ export function hitNature(g, x, y) {
   if (!o) return false;
   if (S.sel !== 'pick') { g.bus.emit('sfx', 'denied'); g.bus.emit('toast', hasTool(S, 'pick') ? 'Il faut la pioche ⛏️' : 'Il te faut une pioche.'); return false; }
   const tier = toolTier(S, 'pick');
+  if (o.border && y === 1 && QUARRY_MOUTHS.some(m => m.x === x) && tier < 2) { g.bus.emit('sfx', 'denied'); g.bus.emit('toast', '⛏️ Ma pioche n’est pas assez costaude pour ce rocher… Il me faudrait une pioche en cuivre (forge d’Igor).'); return false; }   // 19/11 : rocher devant le passage de la carrière
   if (!hitReady(g)) return 'wait';   // le geste précédent n'est pas fini
   if (!useEnergy(g, energyCost(tier))) return false;
   o.hp -= tier; o.shake = 0.25;

@@ -156,6 +156,10 @@ Pour que **les scènes du jeu** atteignent le niveau de détail de l'image, scè
 - [x] **Un coffre pour ranger** : acheter le **plan du coffre** chez Harry (💡 60 $), le fabriquer (80 bois + 20 pierres). Le coffre quitte la quête principale « Premiers pas » ; Harry ne l'apprend plus gratuitement.
 - ⏳ Plus tard : la cabane agrandie vue de dehors (aujourd'hui seul l'intérieur change).
 
+## Forêt et carrière : obstacles (19/11) ✅ v0.1.85
+- [x] La forêt n'est plus ouverte par le niveau 3 : un énorme arbre tombé barre le chemin (est des fermes de droite) ; il faut une hache en cuivre au moins (12 coups, 12 bois). Sinon : « Ma hache n'est pas assez costaude… ».
+- [x] Carrière : le gros rocher devant la bouche du passage demande une pioche en cuivre (« Ma pioche n'est pas assez costaude… »).
+
 ## Calendrier et arbres (19/11) ✅ v0.1.84
 - [x] Arbres de la ferme placés au hasard à chaque nouvelle partie, et replacés ailleurs à chaque saison (même nombre ; le petit bois de la hache reste).
 - [x] Journée un peu plus rapide : 1 minute de jeu = 0,78 s (≈ 15 min par jour au lieu de 20).

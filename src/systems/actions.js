@@ -32,6 +32,7 @@ import { ADMIN } from './admin.js';
 import { digMound, moundAt, ensureMounds } from './mounds.js';
 import { roxAt, petRox } from './rouky.js';
 import { openMailbox } from './mail.js';
+import { forestOpen, chopForestBlocker } from './blockers.js';
 import { farmDoor } from './farms.js';
 import { quarryMouthOpen } from '../world/quarrymouth.js';
 import { readLetter, hitMeteor, zoneOpen as golgoOpen, MAILBOX } from './golgolas.js';
@@ -124,7 +125,8 @@ function act0(g, tx, ty) {
   const d = doorAt(sc, tx, ty);
   { const fd = d && farmDoor(S, d); if (fd) { const who = Object.values(g.others || {}).find(o => o.farmLot === fd.lot); enterScene(g, fd.scene, fd.spawn); if (fd.scene !== 'farm') g.bus.emit('toast', `🏡 ${fd.name} — ${who ? 'la ferme de ' + who.name : 'personne n’y habite pour l’instant'}`); return 'door'; }
     if (d && d.to.startsWith('lot:')) return 'none'; }   // 19/11 : fermes voisines
-  if (d && ZONE_LEVEL[d.to] && !zoneOpen(S, d.to) && !ADMIN.on) { g.bus.emit('sfx', 'denied'); g.bus.emit('toast', d.to === 'foret' ? `🌲 Les arbres sont si serrés qu'on ne passe pas… (niveau ${ZONE_LEVEL.foret} requis)` : `🔒 La caverne attendra : niveau ${ZONE_LEVEL[d.to]} requis.`); return 'locked'; }   // lot 8 : zones débloquées par le niveau
+  if (d && d.to === 'foret' && !forestOpen(S) && !ADMIN.on) { const r = chopForestBlocker(g, tx, ty); return r === 'open' ? (enterScene(g, d.to, d.spawn), 'door') : 'locked'; }   // 19/11 : un gros arbre barre la forêt (hache en cuivre)
+  if (d && d.to !== 'foret' && ZONE_LEVEL[d.to] && !zoneOpen(S, d.to) && !ADMIN.on) { g.bus.emit('sfx', 'denied'); g.bus.emit('toast', d.to === 'foret' ? `🌲 Les arbres sont si serrés qu'on ne passe pas… (niveau ${ZONE_LEVEL.foret} requis)` : `🔒 La caverne attendra : niveau ${ZONE_LEVEL[d.to]} requis.`); return 'locked'; }   // lot 8 : zones débloquées par le niveau
   if (d && d.to === 'wild' && !isOpen(S)) { g.bus.emit('sfx', 'denied'); g.bus.emit('toast', 'La grille de la caverne est fermée à clé. Le Maire saura peut-être…'); return 'locked'; }
   if (d && d.to === 'carriere2' && !quarryMouthOpen(S, d.x, d.y)) { g.bus.emit('toast', '🪨 La paroi est pleine ici. Un passage s’ouvre ailleurs chaque jour…'); return 'locked'; }   // 19/11
   if (d && d.to === 'golgolas' && !golgoOpen(S) && !ADMIN.on) { g.bus.emit('sfx', 'denied'); g.bus.emit('toast', '🚧 Des planches barrent le chemin du sud. Quelqu’un les retirera peut-être un jour…'); return 'locked'; }   // lot 13

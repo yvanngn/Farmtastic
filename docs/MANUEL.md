@@ -43,7 +43,7 @@ Menu → 🎽 Équipement : tête, corps, pieds, accessoire. Le manteau d'hiver 
 
 ## 5. Ressources
 - **Arbres** (hache) → bois. Un arbre abattu laisse sa **souche** : coupée, elle donne encore 1 à 2 bois (l'arbre ne revient qu'à la saison suivante) ; laissée, elle repousse au bout de 4 jours, petit à petit. Pareil dans la forêt. Plus de cailloux à la ferme : ils sont à la **carrière**, au nord de la ferme (chemin au bout de l'allée centrale). Elle est pleine au premier passage ; une fois vidée, 6 cailloux reviennent chaque jour. Elle est bordée de **gros cailloux** (plus longs à casser, 4 à 6 pierres, ils repoussent en 3 jours).
-- **Carrière profonde** : chaque jour, l'une des trois bouches de tunnel de la paroi nord est ouverte (casser le gros caillou devant). Derrière, un canyon de grès rouge riche en **filons de fer et d'or**.
+- **Carrière profonde** : chaque jour, l'une des trois bouches de tunnel de la paroi nord est ouverte (casser le gros caillou devant, avec une pioche en cuivre). Derrière, un canyon de grès rouge riche en **filons de fer et d'or**.
 - **Filons** → minerai ; les filons rares (fer, or) montrent un morceau de métal qui **scintille**.
 - **Fleurs et champignons** : couteau, en restant appuyé.
 - **Baies et mûres** : buissons et ronces, repoussent en 2 jours.
@@ -79,7 +79,7 @@ Menu → 🎽 Équipement : tête, corps, pieds, accessoire. Le manteau d'hiver 
 
 ## 10. Niveaux et expérience
 - **XP** : 1 par arbre, caillou, fleur ou champignon (2 par gros rocher) ; 5 par objet fabriqué ou plat ; 30 par quête du jour 💡 ; 40 par quête secondaire ; 100 par quête principale (+10 par étape) 💡.
-- **Niveaux 1 à 10** (niveau 10 vers 5100 XP). La forêt s'ouvre au **niveau 3**, la caverne au **niveau 5** (⏳ quête qui l'ouvre).
+- **Niveaux 1 à 10** (niveau 10 vers 5100 XP). La forêt est barrée par un **énorme arbre tombé** (il faut une hache en cuivre), la caverne s'ouvre au **niveau 5** (⏳ quête qui l'ouvre).
 
 ## 11. Habitants et amitié
 - On gagne de l'amitié en **parlant** (une seule discussion par jour et par habitant, sauf quête spéciale) et en **offrant** des objets (une fois par jour). 10 cœurs maximum ; chaque palier dévoile un peu de leur vie.

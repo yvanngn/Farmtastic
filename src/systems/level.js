@@ -17,7 +17,7 @@ export function xpBar(S) {
 }
 // Ce qui se débloque à chaque niveau (demande de l'utilisateur : forêt niveau 3, caverne niveau 5 — une quête l'ouvrira —,
 // la plupart des recettes selon le niveau, celles du début au niveau 1). La suite sera décidée plus tard.
-export const UNLOCKS = { 1: ['Les recettes du début'], 3: ['La forêt (à l’est de la ferme)'], 5: ['La caverne sombre (une quête l’ouvrira)'] };
+export const UNLOCKS = { 1: ['Les recettes du début'], 5: ['La caverne sombre (une quête l’ouvrira)'] };
 export const ZONE_LEVEL = { foret: 3, wild: 5 };
 export const zoneOpen = (S, scene) => level(S) >= (ZONE_LEVEL[scene] || 0);
 export const recipeOpen = (S, r) => level(S) >= ((r && r.lvl) || 0);

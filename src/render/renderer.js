@@ -144,6 +144,7 @@ import { buildInterior } from './interiors.js';
 import { buildParc, buildBiome, buildQuartier, buildTown, TOWN_LIGHTS } from './town.js';
 import { buildWest } from './west.js';
 import { buildQuarry } from './quarry.js';
+import { forestOpen } from '../systems/blockers.js';
 import { eating, EAT_MS } from '../systems/player.js';
 import { itemArt } from './itemart.js';
 const ART_IM = {};
@@ -537,6 +538,17 @@ let swing = null;
       ctx.fillStyle = '#5a3a22'; ctx.fillRect(x + 7, y + 4, 2, 12); ctx.fillStyle = '#3a5a8a'; ctx.fillRect(x + 3, y - 2, 10, 7); ctx.fillStyle = '#5a7aaa'; ctx.fillRect(x + 3, y - 2, 10, 2); ctx.fillStyle = '#1e2a40'; ctx.fillRect(x + 3, y + 5, 10, 1);
       ctx.fillStyle = un ? '#e0402a' : '#8a2a1a'; ctx.fillRect(x + 12, un ? y - 6 : y, 2, un ? 6 : 4); if (un) ctx.fillRect(x + 12, y - 6, 4, 2); } });
     if (scene === 'gare' && !(S.golgo && S.golgo.read)) list.push({ z: 13, d: () => { const x = 10 * T, y = 12 * T + 8; ctx.fillStyle = '#6a4426'; ctx.fillRect(x - 2, y, 36, 4); ctx.fillRect(x - 2, y + 7, 36, 4); ctx.fillStyle = '#4a2e1a'; ctx.fillRect(x, y - 4, 3, 18); ctx.fillRect(x + 29, y - 4, 3, 18); } });   // planches qui barrent le chemin du sud
+    if (!forestOpen(S) && (scene === 'farm' || /^farm:[13]$/.test(scene))) {   // 19/11 : énorme arbre tombé en travers du chemin de la forêt
+      const lot = scene === 'farm' ? (S.farmLot || 0) : +scene.slice(5);
+      if (lot % 2 === 1) { const tx = scene === 'farm' ? 46 : 28, ty = scene === 'farm' ? 3 : 8; list.push({ z: ty + 3, d: () => {
+        const x = tx * T, y = ty * T, R2 = (a, b, w, h, k) => { ctx.fillStyle = k; ctx.fillRect(x + a, y + b, w, h); };
+        R2(-2, 50, 30, 4, 'rgba(20,12,8,.3)');
+        R2(4, 2, 14, 50, '#6e4426'); R2(4, 2, 4, 50, '#8a5a32'); R2(15, 2, 3, 50, '#4e2e18'); for (let k = 6; k < 50; k += 7) R2(6, k, 9, 1, '#5a3820');   // tronc couché
+        R2(3, 50, 16, 6, '#d9a870'); R2(7, 52, 8, 2, '#b07a48'); R2(10, 53, 2, 1, '#8a5a32');   // bout coupé (cernes)
+        for (const [a, b, r] of [[2, -10, 12], [16, -6, 11], [8, -16, 10], [-4, -2, 8], [22, 4, 8]]) { ctx.fillStyle = '#2f6a2a'; ctx.beginPath(); ctx.arc(x + a + 8, y + b + 8, r, 0, 7); ctx.fill(); ctx.fillStyle = '#4a9a3a'; ctx.beginPath(); ctx.arc(x + a + 6, y + b + 6, r * .6, 0, 7); ctx.fill(); }   // ramure
+        R2(-6, 20, 12, 3, '#5a3820'); R2(16, 32, 12, 3, '#5a3820');   // branches cassées
+      } }); }
+    }
     if (scene === 'town') list.push({ z: STAND_POS.y + .9, d: () => {   // 19/11 : l'étal de vente, à côté de la fontaine
       const x = STAND_POS.x * T, y = STAND_POS.y * T, R2 = (a, b, w, h, k) => { ctx.fillStyle = k; ctx.fillRect(x + a, y + b, w, h); }, lots = (S.stand && S.stand.lots) || [];
       R2(0, 14, 32, 3, 'rgba(30,15,5,.3)');

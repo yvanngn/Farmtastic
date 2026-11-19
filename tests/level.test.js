@@ -32,14 +32,14 @@ test('lot 8 : 1 XP par arbre ou caillou cassé, 5 par objet fabriqué, plusieurs
   const T = { pxp: 0, fin: true }; seedQuestXp(T, Q); assert.equal(questXpTick({ S: T, bus: g.bus }, Q), 0, 'déjà fait avant le lot 8 : pas d’XP d’un coup');
 });
 
-test('lot 8 : passage de niveau annoncé ; forêt au niveau 3, caverne au niveau 5, recettes selon le niveau', () => {
-  const { g, S, toasts } = makeGame({ state: { pxp: 0 } });
+test('lot 8 : passage de niveau annoncé ; 19/11 : forêt barrée par un gros arbre (hache en cuivre), caverne au niveau 5', () => {
+  const { g, S, toasts, clock } = makeGame({ state: { pxp: 0 } });
   const ups = []; g.bus.on('levelUp', e => ups.push(e));
   gainPxp(g, LEVELS[3], 'test'); assert.deepEqual(ups.map(u => u.level), [1, 2, 3]);
-  assert.ok(toasts().some(t => /Niveau 3/.test(t) && /forêt/.test(t)));
-  S.pxp = LEVELS[2]; assert.equal(zoneOpen(S, 'foret'), false); S.scene = 'farm'; S.farmLot = 1;
-  assert.equal(act(g, 47, 5), 'locked', 'forêt fermée avant le niveau 3'); assert.equal(S.scene, 'farm');
-  S.pxp = LEVELS[3]; assert.equal(act(g, 47, 5), 'door'); assert.equal(S.scene, 'foret');
+  S.scene = 'farm'; S.farmLot = 1; S.sel = 'axe'; S.tools.axe = 1;
+  assert.equal(act(g, 47, 5), 'locked'); assert.match(toasts().at(-1), /pas assez costaude/); assert.equal(S.scene, 'farm');
+  S.tools.axe = 2; for (let i = 0; i < 10 && S.scene === 'farm'; i++) { act(g, 47, 5); clock.t += 1000; }
+  assert.equal(S.scene, 'foret', 'arbre abattu à la hache en cuivre : le chemin est ouvert');
   assert.equal(zoneOpen({ pxp: LEVELS[4] }, 'wild'), false); assert.equal(zoneOpen({ pxp: LEVELS[5] }, 'wild'), true);
   for (const id of ['campfire', 'chest', 'chaudron']) assert.equal(HAND_RECIPES[id].lvl, 1, 'recettes du début : niveau 1');
   for (const id of ['confiture_baies', 'confiture_mures']) assert.equal(POT_RECIPES[id].lvl, 1);
