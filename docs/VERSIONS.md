@@ -2,6 +2,7 @@
 
 Semver horodaté (heure de Paris). Patch automatique à chaque publication ; mineure et majeure sur décision de l'utilisateur.
 
+- **0.1.83** — 2026-11-19 21:45 — les enseignes restent visibles quand le héros passe derrière un bâtiment
 - **0.1.82** — 2026-11-19 21:42 — derrière un bâtiment ou un lampadaire, seuls ses pixels cachent le héros (plus le sol autour)
 - **0.1.81** — 2026-11-19 21:38 — derrière un bâtiment, le toit cache le héros (sans transparence)
 - **0.1.80** — 2026-11-19 21:36 — plus d'effet translucide derrière les bâtiments

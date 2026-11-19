@@ -339,9 +339,9 @@ let swing = null;
     ctx.imageSmoothingEnabled = false;
     if (!cache.__pal) { const col = scene !== 'wild' && scene !== 'grange'; harmonize(cache, col); for (const o of cache.__over || []) { const k = document.createElement('canvas'); k.width = o.w; k.height = o.h; k.getContext('2d').drawImage(o.im, 0, 0); o.im = harmonize(k, col) || k; } }   // 19/11 : bâtiments retenus, mêmes couleurs que le décor   // lot 11g : palette unique + contours colorés (une fois par décor)
     ctx.drawImage(cache, 0, 0);
-    if (cache.__signs && cache.__signs.length) {   // enseignes réécrites nettes, à la résolution de l'écran (lisibles à tout zoom)
+    const drawSigns = (only) => { if (!(cache.__signs && cache.__signs.length)) return;   // enseignes nettes (19/11 : redessinées si un toit vient de recouvrir le héros)   // enseignes réécrites nettes, à la résolution de l'écran (lisibles à tout zoom)
       ctx.save(); ctx.setTransform(1, 0, 0, 1, 0, 0);
-      for (const sg of cache.__signs) {
+      for (const sg of cache.__signs) { if (only && !only.some(r => sg.x < r[2] && sg.x + sg.w > r[0] && sg.y < r[3] && sg.y + sg.h > r[1])) continue;
         const sx = Math.round((sg.x - camX) * scale), sy = Math.round((sg.y - camY) * scale), sw = Math.round(sg.w * scale), sh = Math.round(sg.h * scale);
         if (sx > cv.width || sy > cv.height || sx + sw < 0 || sy + sh < 0) continue;
         ctx.fillStyle = '#3f2615'; ctx.fillRect(sx, sy, sw, sh); ctx.fillStyle = '#e8c26a'; ctx.fillRect(sx + scale, sy + scale, sw - 2 * scale, sh - 2 * scale);
@@ -351,7 +351,8 @@ let swing = null;
         ctx.fillStyle = '#3b2414'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(sg.text, sx + sw / 2, sy + sh / 2 + scale * .3);
       }
       ctx.restore(); ctx.textAlign = 'start'; ctx.textBaseline = 'alphabetic';
-    }
+    };
+    drawSigns();
     const x0 = Math.max(0, (cam.x / T | 0) - 2), y0 = Math.max(0, (cam.y / T | 0) - 1);
     const x1 = Math.min(SC.W - 1, ((cam.x + vw) / T | 0) + 2), y1 = Math.min(SC.H - 1, ((cam.y + vh) / T | 0) + 3);
     if (outside) drawWaterShimmer(ctx, x0, y0, x1, y1, now);
@@ -583,12 +584,13 @@ let swing = null;
     for (const f of worldFx) if (f.k === 'chip') list.push({ z: f.floor / T, d: () => { ctx.globalAlpha = Math.min(1, f.life * 3); ctx.fillStyle = f.col; ctx.fillRect(Math.round(f.x), Math.round(f.y), 2, 2); ctx.globalAlpha = 1; } });
     list.sort((a, b) => a.z - b.z).forEach(o => o.d());
     if (!g.ride && !g.introHidden && cache.__over) {   // 19/11 : derrière un bâtiment ou un lampadaire, seuls ses pixels (pas le sol) recouvrent le héros
-      const hx = Math.round(S.x * T - 16), hy = Math.round(S.y * T - 40), hw = 32, hh = 44, feet = S.y * T;
+      const hx = Math.round(S.x * T - 16), hy = Math.round(S.y * T - 40), hw = 32, hh = 44, feet = S.y * T; let covered = null;
       for (const o of cache.__over) {
         if (feet >= o.base - 2 || hx >= o.x + o.w || hx + hw <= o.x || hy >= o.y + o.h || hy + hh <= o.y) continue;
         const x0 = Math.max(hx, o.x), y0 = Math.max(hy, o.y), x1 = Math.min(hx + hw, o.x + o.w), y1 = Math.min(hy + hh, o.y + o.h);
-        ctx.drawImage(o.im, x0 - o.x, y0 - o.y, x1 - x0, y1 - y0, x0, y0, x1 - x0, y1 - y0);
+        ctx.drawImage(o.im, x0 - o.x, y0 - o.y, x1 - x0, y1 - y0, x0, y0, x1 - x0, y1 - y0); (covered ||= []).push([x0, y0, x1, y1]);
       }
+      if (covered) drawSigns(covered);
     }
 
     if (SC.rooms) { // tout ce qui n'est pas la salle courante est masqué
