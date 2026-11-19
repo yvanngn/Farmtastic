@@ -87,6 +87,21 @@ def masks(sheet, hairRef):   # cheveux : couleurs proches de celles du haut de l
     return hair
 def to_url(im):
     b = io.BytesIO(); Image.fromarray(im).save(b, 'PNG'); return 'data:image/png;base64,' + base64.b64encode(b.getvalue()).decode()
+REF = {}
+def hair_mask(sh, W, Hh, ncol, ref=None):   # R = cheveux : couleurs du haut du crâne, dans la moitié haute, reliées au sommet
+    rgb = sh[..., :3].astype(int); a = sh[..., 3] > 0; yy = np.arange(sh.shape[0])[:, None] % Hh
+    inner = ndimage.binary_erosion(a, iterations=2)   # sans le contour sombre
+    if ref is None:
+        ref = []
+        for ri in range(sh.shape[0] // Hh):
+            for ci in range(ncol):
+                sl = (slice(ri * Hh, (ri + 1) * Hh), slice(ci * W, (ci + 1) * W)); cell = sh[sl]; top = np.nonzero(cell[..., 3].any(1))[0][0]
+                m_ = inner[sl][top:top + 6]; ref += list(cell[top:top + 6][m_][:, :3].astype(int))
+        ref = np.array(ref); lum = ref.sum(1); ref = np.unique(ref[(lum > 90) & (lum < 520)], axis=0)
+    d = np.min([np.abs(rgb - c).sum(2) for c in ref], 0)
+    cand = inner & (d < 26) & (yy < Hh * .5)
+    lab, _ = ndimage.label(cand); keep = set(np.unique(lab[(yy < Hh * .25) & cand])) - {0}
+    return np.isin(lab, list(keep)), ref
 lines = []
 for sex, path in (('h', 'docs/sprites/heros.jpg'), ('f', 'docs/sprites/heroine.jpg')):
     V = build(grid(os.path.join(ROOT, path)))
@@ -95,24 +110,8 @@ for sex, path in (('h', 'docs/sprites/heros.jpg'), ('f', 'docs/sprites/heroine.j
         sh = np.zeros((Hh * 3, W * 4, 4), 'uint8')
         for ri, r in enumerate(rows):
             for ci, c in enumerate(r): sh[ri * Hh:(ri + 1) * Hh, ci * W:(ci + 1) * W] = pad(c, W, Hh)
-        # masque : R = cheveux (bruns du crâne, dans la moitié haute de chaque image), G = yeux (bleus/gris foncés du visage)
-        rgb = sh[..., :3].astype(int); a = sh[..., 3] > 0; yy = np.arange(sh.shape[0])[:, None] % Hh
-        inner = ndimage.binary_erosion(a, iterations=2)   # sans le contour sombre
-        ref = []
-        for ri in range(3):
-            for ci in range(4):
-                sl = (slice(ri * Hh, (ri + 1) * Hh), slice(ci * W, (ci + 1) * W)); cell = sh[sl]; top = np.nonzero(cell[..., 3].any(1))[0][0]
-                m_ = inner[sl][top:top + 6]; ref += list(cell[top:top + 6][m_][:, :3].astype(int))
-        ref = np.array(ref); lum = ref.sum(1); ref = np.unique(ref[(lum > 90) & (lum < 520)], axis=0)
-        d = np.min([np.abs(rgb - c).sum(2) for c in ref], 0)
-        cand = inner & (d < 26) & (yy < Hh * .5)
-        lab, _ = ndimage.label(cand); keep = set(np.unique(lab[(yy < Hh * .2) & cand])) - {0}
-        hair = np.isin(lab, list(keep))
-        r_, g_, b_ = rgb[..., 0], rgb[..., 1], rgb[..., 2]
-        skin = (r_ > 200) & (g_ > 150) & (b_ > 100)
-        nearSkin = ndimage.binary_dilation(skin, iterations=1)
-        eyes = np.zeros_like(a)   # yeux : à faire plus tard (trop peu de pixels distincts)
-        mk = np.zeros_like(sh); mk[..., 0] = hair * 255; mk[..., 1] = eyes * 255; mk[..., 3] = 255
+        hair, ref = hair_mask(sh, W, Hh, 4); REF[sex] = ref
+        mk = np.zeros_like(sh); mk[..., 0] = hair * 255; mk[..., 3] = 255; eyes = np.zeros(1)
         Image.fromarray(sh).save(os.path.join(ROOT, f'assets/sprites/hero_{sex}_{k}.png'))
         fw = round(W * H / Hh)
         lines.append(f"  hero_{sex}_{k}: {{ fw: {fw}, fh: {H}, sw: {W}, sh: {Hh}, n: 4, url: '{to_url(sh)}', mask: '{to_url(mk)}' }}")
@@ -123,22 +122,26 @@ head, tail = js.rsplit('};', 1); head = head.rstrip().rstrip(',')
 js = head + ',\n' + ',\n'.join(lines) + '\n};' + tail
 open(p, 'w').write(js)
 
-# ---- 19/11 : coups de pioche de l'héroïne (docs/sprites/heroine-pioche.jpg) : 3 temps par direction (levée haute, levée,
-# frappe), têtes alignées au centre de l'image (la pioche dépasse de chaque côté).
-PICK = {'f': 'docs/sprites/heroine-pioche.jpg'}
+# ---- 19/11 : coups d'outils (planches fournies) : 3 temps par direction (levée haute, levée, frappe), têtes alignées ;
+# masque des cheveux pris avec les couleurs de cheveux de la planche de marche (pour ne pas teinter le manche).
+TOOLS = [
+    ('f', 'pick', 'docs/sprites/heroine-pioche.jpg', lambda F, L, B: [[F[3], F[2], F[1]], [B[2], B[2], B[0]], [L[2], L[2], L[0]]]),
+    ('f', 'axe', 'docs/sprites/heroine-hache.jpg', lambda F, L, B: [[F[3], F[2], F[0]], [B[2], B[2], B[0]], [L[2], L[2], L[0]]]),
+    ('h', 'axe', 'docs/sprites/heros-hache.jpg', lambda F, L, B: [[F[3], F[2], F[0]], [B[2], B[2], B[0]], [L[2], L[2], L[0]]]),
+]
 plines = []
-for sex, path in PICK.items():
-    F, L, R, B = grid(os.path.join(ROOT, path))
-    rows = [[F[3], F[2], F[1]], [B[2], B[2], B[0]], [L[2], L[2], L[0]]]   # dos et profil : la coiffure à queue de cheval reste la même
+for sex, tool, path, pick in TOOLS:
+    F, L, R, B = grid(os.path.join(ROOT, path)); rows = pick(F, L, B)
     Hh = max(c.shape[0] for r in rows for c in r)
     half = max(max(head_x(c), c.shape[1] - head_x(c)) for r in rows for c in r); W = int(np.ceil(half * 2)) + 2
     sh = np.zeros((Hh * 3, W * 3, 4), 'uint8')
     for ri, r in enumerate(rows):
         for ci, c in enumerate(r):
             h, w = c.shape[:2]; x = int(round(W / 2 - head_x(c))); sh[ri * Hh + Hh - h:ri * Hh + Hh, ci * W + x:ci * W + x + w] = c
-    Image.fromarray(sh).save(os.path.join(ROOT, f'assets/sprites/hero_{sex}_pick.png'))
-    plines.append(f"  hero_{sex}_pick: {{ fw: {round(W * H / Hh)}, fh: {H}, sw: {W}, sh: {Hh}, n: 3, url: '{to_url(sh)}' }}")
-    print('pioche', sex, W, Hh)
-js = open(p).read(); js = re.sub(r"\n  hero_[hf]_pick: \{[^\n]*", '', js)
+    hair, _ = hair_mask(sh, W, Hh, 3, REF[sex]); mk = np.zeros_like(sh); mk[..., 0] = hair * 255; mk[..., 3] = 255
+    Image.fromarray(sh).save(os.path.join(ROOT, f'assets/sprites/hero_{sex}_{tool}.png'))
+    plines.append(f"  hero_{sex}_{tool}: {{ fw: {round(W * H / Hh)}, fh: {H}, sw: {W}, sh: {Hh}, n: 3, url: '{to_url(sh)}', mask: '{to_url(mk)}' }}")
+    print('outil', sex, tool, W, Hh, 'cheveux', int(hair.sum()))
+js = open(p).read(); js = re.sub(r"\n  hero_[hf]_(pick|axe): \{[^\n]*", '', js)
 head, tail = js.rsplit('};', 1); js = head.rstrip().rstrip(',') + ',\n' + ',\n'.join(plines) + '\n};' + tail
 open(p, 'w').write(js)

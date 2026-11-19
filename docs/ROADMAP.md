@@ -156,6 +156,11 @@ Pour que **les scènes du jeu** atteignent le niveau de détail de l'image, scè
 - [x] **Un coffre pour ranger** : acheter le **plan du coffre** chez Harry (💡 60 $), le fabriquer (80 bois + 20 pierres). Le coffre quitte la quête principale « Premiers pas » ; Harry ne l'apprend plus gratuitement.
 - ⏳ Plus tard : la cabane agrandie vue de dehors (aujourd'hui seul l'intérieur change).
 
+## Coups de hache (19/11) ✅ v0.1.76
+- [x] Planches `heros-hache.jpg` et `heroine-hache.jpg` → coups de hache en 3 temps (levée haute, levée, frappe) pour le héros et l'héroïne.
+- [x] Couleur des cheveux : elle restait d'origine pendant les coups d'outil (les planches d'outils n'avaient pas de masque des cheveux) ; masque ajouté, pris avec les couleurs de cheveux de la planche de marche (le manche n'est pas teinté).
+- [ ] Pioche du héros (homme) : planche à fournir.
+
 ## Correctifs et équipement (19/11) ✅ v0.1.74
 - [x] Marche de dos : les deux jambes bougent l'une après l'autre (pas reconstitués à partir de la pose à l'arrêt), plus de raccord au niveau du sac.
 - [x] Marche de profil : plus de coupure au visage (têtes alignées en hauteur et en largeur, raccord au cou là où les deux images se rejoignent).

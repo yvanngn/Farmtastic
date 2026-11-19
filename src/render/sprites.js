@@ -199,9 +199,10 @@ function heroSheetImage(name, hairC) {
   g.putImageData(im, 0, 0); HERO_RECOLOR.set(key, cv); return cv;
 }
 // 19/11 : coup de pioche dessiné d'après la planche fournie (héroïne pour l'instant) : levée haute, levée, frappe.
-export const heroPickSheet = L => (L.hero || L.doll) && SHEETS['hero_' + (L.body === 'f' ? 'f' : 'h') + '_pick'] ? 'hero_' + (L.body === 'f' ? 'f' : 'h') + '_pick' : null;
-export function drawHeroPick(c, ox, oy, L, d, p) {
-  const name = heroPickSheet(L), S = SHEETS[name], img = name && heroSheetImage(name, L.hairC && HERO_HAIR.includes(L.hairC) ? L.hairC : ''); if (!img) return false;
+export const heroToolSheet = (L, tool = 'pick') => { const n = 'hero_' + (L.body === 'f' ? 'f' : 'h') + '_' + tool; return (L.hero || L.doll) && SHEETS[n] ? n : null; };   // 19/11 : pioche, hache
+export const heroPickSheet = L => heroToolSheet(L, 'pick');
+export function drawHeroPick(c, ox, oy, L, d, p, tool = 'pick') {
+  const name = heroToolSheet(L, tool), S = SHEETS[name], img = name && heroSheetImage(name, L.hairC && HERO_HAIR.includes(L.hairC) ? L.hairC : ''); if (!img) return false;
   const col = p < .3 ? 0 : p < .55 ? 1 : 2, row = d === 0 ? 0 : d === 1 ? 1 : 2, x = Math.round(ox + 6 - S.fw / 2), y = oy + 20 - S.fh;
   if (d === 3) { c.save(); c.translate(x + S.fw, y); c.scale(-1, 1); c.drawImage(img, col * S.sw, row * S.sh, S.sw, S.sh, 0, 0, S.fw, S.fh); c.restore(); }
   else c.drawImage(img, col * S.sw, row * S.sh, S.sw, S.sh, x, y, S.fw, S.fh);

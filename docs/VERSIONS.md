@@ -2,6 +2,7 @@
 
 Semver horodaté (heure de Paris). Patch automatique à chaque publication ; mineure et majeure sur décision de l'utilisateur.
 
+- **0.1.76** — 2026-11-19 21:19 — coups de hache (héros, héroïne) ; couleur des cheveux gardée pendant les coups d'outil
 - **0.1.75** — 2026-11-19 15:08 — profil : le visage ne clignote plus (même tête, recalée au pixel)
 - **0.1.74** — 2026-11-19 15:05 — marche de dos et de profil corrigées ; équipement ; bottes de vent
 - **0.1.73** — 2026-11-19 14:49 — essai : coup de pioche de l'héroïne d'après la planche fournie
