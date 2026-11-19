@@ -158,3 +158,10 @@ export function houseSprite(o) {
     return { im, ox: -PX, oy: -PY };
   });
 }
+
+// 19/11 : dessine un bâtiment (ou un lampadaire) dans le décor ET le retient : quand le héros passe derrière, seuls les
+// pixels du bâtiment (toit compris, sans le sol autour) sont redessinés par-dessus lui (renderer.js).
+export function blit(g, im, x, y) {
+  g.drawImage(im, x, y);
+  (g.canvas.__over ||= []).push({ im, x: Math.round(x), y: Math.round(y), w: im.width, h: im.height, base: Math.round(y) + im.height });
+}

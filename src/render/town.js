@@ -1,4 +1,4 @@
-import { fountainSprite, facadeSprite, houseSprite } from './props.js';
+import { fountainSprite, facadeSprite, houseSprite , blit } from './props.js';
 import { paintGrass, paintOchre, paintRoad, paintPlanks, softEdge, OCHRE, paintRiver, paintBridge, paintCliff, autotile, ROAD, canopy, dress, roofFor, softPatches, barrel } from './terrain.js';
 // Centre du village pré-rendu : place pavée, halle du marché, panneau d'affichage,
 // fontaine, lampadaires, bancs, jardinières et arbres. Reconstruit à chaque saison.
@@ -103,7 +103,7 @@ export function buildTown(season) {
     // ombre portée au sol
     g.fillStyle = 'rgba(40,20,10,.22)'; g.fillRect(ux + 4, uy + 46, uw, 4); g.fillRect(ux + uw, top + 14, 5, uy + 50 - top - 14);   // ombre portée (soleil en haut à gauche)
     { const F = facadeSprite(w, trim, trim2, opt);   // 18/11 (soir) : façade « pixel moderne » (src/render/props.js)
-      if (F) { g.drawImage(F.im, ux + F.ox, uy + F.oy); signBoard(R, ux + uw / 2, top + 20, sign);
+      if (F) { blit(g, F.im, ux + F.ox, uy + F.oy); signBoard(R, ux + uw / 2, top + 20, sign);
         if (!opt.balcony) for (const wx of (w > 3 ? [ux + 7, ux + uw - 19] : [ux + uw / 2 - 6])) for (const [fx, fc] of [[0, '#f07ab0'], [4, '#f6d24a'], [8, '#ffffff'], [11, '#e0402a']]) { R(wx + fx, top + 36, 2, 2, fc); R(wx + fx, top + 38, 1, 1, '#4a7a2a'); }
         if (opt.door) opt.door(ux + uw / 2 - 8, uy);
         deco(ux, uy, uw, top); return; } }
@@ -214,7 +214,8 @@ export function buildTown(season) {
     const ch = L[y][x], px = x * T, py = y * T;
     if (ch === 'b') { R(px + 1, py + 6, 14, 3, '#a8774a'); R(px + 1, py + 6, 14, 1, '#c99560'); R(px + 1, py + 2, 14, 2, '#8a5a32'); R(px + 2, py + 9, 2, 5, '#3f2615'); R(px + 12, py + 9, 2, 5, '#3f2615'); }
     if (ch === 'f') { R(px + 1, py + 8, 14, 7, '#8a5a32'); R(px + 1, py + 8, 14, 2, '#a8774a'); for (let k = 0; k < 5; k++) { R(px + 2 + k * 3, py + 5, 2, 3, '#3e8a34'); R(px + 2 + k * 3, py + 4, 2, 2, ['#f07ab0', '#f5e050', '#ffffff', '#9ab8ff'][k % 4]); } }
-    if (ch === 'L') { R(px + 7, py - 10, 2, 25, '#2b2730'); R(px + 5, py + 13, 6, 2, '#2b2730'); R(px + 4, py - 16, 8, 7, '#2b2730'); R(px + 5, py - 15, 6, 5, '#ffd98a'); R(px + 3, py - 17, 10, 2, '#3a3540'); }
+    if (ch === 'L') { const lc = document.createElement('canvas'); lc.width = 16; lc.height = 33; const lg = lc.getContext('2d'), r2 = (a, b, w, h, k) => { lg.fillStyle = k; lg.fillRect(a, b, w, h); };   // 19/11 : lampadaire retenu (le héros passe derrière)
+      r2(7, 7, 2, 25, '#2b2730'); r2(5, 30, 6, 2, '#2b2730'); r2(4, 1, 8, 7, '#2b2730'); r2(5, 2, 6, 5, '#ffd98a'); r2(3, 0, 10, 2, '#3a3540'); blit(g, lc, px, py - 17); }
   }
   canopy(g, W, H, (x, y) => (L[y] || '')[x] === 'T' && [[1, 0], [-1, 0], [0, 1], [0, -1]].filter(([a, b]) => (L[y + b] || '')[x + a] === 'T').length >= 2, season);   // lot 11b : canopée continue
   for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) if (L[y][x] === 'T') g.drawImage(treeSprite(season, (x + y) % 4), x * T - 9, y * T - 28);
@@ -273,7 +274,7 @@ export function buildQuartier(season) {
       const posts = [-2, w / 2 - 1, w - 1].filter(px => Math.abs(x0 + px - (dX0 + 8)) > 9);
       const F = houseSprite({ w, h: bot - top, wall: W, trim: TR, roof: o.roof || TR, falseFront: !!o.falseFront, chimney: o.chimney ? w - 16 : null, storeyY: o.storeys === 2 ? y0 - 2 - top : null,
         windows: wins0, lit: !!o.lit, porch: true, posts, door: { x: dX0 + 2 - x0, w: 12, h: 22 }, doorCol: o.door || '#7a4f2e' });   // 18/11 (soir) : maison « pixel moderne » (src/render/props.js)
-      if (F) { g.drawImage(F.im, x0 + F.ox, top + F.oy);
+      if (F) { blit(g, F.im, x0 + F.ox, top + F.oy);
         if (o.flowers) for (const [wx, wy] of wins0) for (let k = 0; k < 12; k += 3) R(x0 + wx + k, top + wy + 9, 2, 2, ['#f07ab0', '#f6d24a', '#ffffff', '#e0402a'][k / 3 | 0]);
         for (let k = 0; k < 2; k++) R(dX0 + 2 - k * 2, bot + 1 + k * 2, 12 + k * 4, 2, k ? '#7a5232' : '#a8774a');   // marches
         R(dX0 + 11, bot - 14, 2, 2, '#e8c26a'); R(dX0 + 6, bot - 30, 4, 1, '#9aa0a8'); R(dX0 + 5, bot - 29, 1, 2, '#9aa0a8'); R(dX0 + 10, bot - 29, 1, 2, '#9aa0a8');   // poignée, fer à cheval

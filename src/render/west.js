@@ -1,6 +1,6 @@
 // Farmwest (lot 2) : décors pré-rendus des nouvelles zones — rond-point, ranch du Maire, zone portuaire.
 // Style de docs/carte-region-farmwest.jpg : terre ocre, chemins de sable, planches, eau bleue. Dessiné une fois par saison.
-import { fountainSprite, houseSprite } from './props.js';
+import { fountainSprite, houseSprite , blit } from './props.js';
 import { CFG } from '../config.js';
 import { LAYOUTS } from '../world/scenes.js';
 import { rng } from '../world/map.js';
@@ -83,20 +83,20 @@ export function buildWest(name, season) {
     const px = x0 * T, py = y0 * T, w = (x1 - x0 + 1) * T, h = (y1 - y0 + 1) * T;
     R(px - 2, py + h, w + 4, 3, 'rgba(30,15,5,.3)');
     { const F = houseSprite({ w, h: h - 16, wall: '#c49060', trim: '#7a4a2a', roof: '#a8432f', roofH: 22, windows: [[10, 12], [w - 22, 12]], lit: true, porch: true, posts: [-2, w / 2 - 14, w / 2 + 12, w - 1], door: { x: w / 2 - 7, w: 14, h: 24 }, gableWin: true });
-      if (F) g.drawImage(F.im, px + F.ox, py + 16 + F.oy); }   // 18/11 (soir) : maison du ranch « pixel moderne »
+      if (F) blit(g, F.im, px + F.ox, py + 16 + F.oy); }   // 18/11 (soir) : maison du ranch « pixel moderne »
     if (!name.startsWith('farm:')) signBoard(R, px + w / 2, py + 17, 'MAIRIE');   // 19/11 : pas d'enseigne sur les fermes voisines
   }
   for (const [x0, y0, x1, y1] of block('B')) {   // grange rouge à croix blanches
     const px = x0 * T, py = y0 * T, w = (x1 - x0 + 1) * T, h = (y1 - y0 + 1) * T;
     R(px - 2, py + h, w + 4, 3, 'rgba(30,15,5,.3)');
     { const F = houseSprite({ w, h: h - 18, wall: '#b8432f', trim: '#f4ead2', roof: '#5a2a22', roofH: 22, planks: true, door: { x: w / 2 - 14, w: 28, h: 30, cross: true }, doorCol: '#8f3224', gableWin: true, lit: true });
-      if (F) g.drawImage(F.im, px + F.ox, py + 18 + F.oy); }   // 18/11 (soir) : grange « pixel moderne » (croix blanches)
+      if (F) blit(g, F.im, px + F.ox, py + 18 + F.oy); }   // 18/11 (soir) : grange « pixel moderne » (croix blanches)
   }
   for (const [x0, y0, x1, y1] of block('G')) {   // gare de l'Ouest : planches, auvent sur le quai, horloge, enseigne
     const px = x0 * T, py = y0 * T, w = (x1 - x0 + 1) * T, h = (y1 - y0 + 1) * T;
     R(px - 2, py + h, w + 4, 3, 'rgba(30,15,5,.3)');
     { const F = houseSprite({ w, h: h - 14, wall: '#b88a5a', trim: '#5b3a22', roof: '#3e5a7a', roofH: 24, windows: [[8, 16], [w - 20, 16]], door: { x: w / 2 - 7, w: 14, h: 24 } });
-      if (F) g.drawImage(F.im, px + F.ox, py + 14 + F.oy); }   // 18/11 (soir) : gare « pixel moderne »
+      if (F) blit(g, F.im, px + F.ox, py + 14 + F.oy); }   // 18/11 (soir) : gare « pixel moderne »
     disc(g, px + w / 2, py + 6, 6, '#3f2615'); disc(g, px + w / 2, py + 6, 5, '#f4ead2'); R(px + w / 2, py + 2, 1, 4, '#3b2414'); R(px + w / 2, py + 6, 3, 1, '#3b2414');   // horloge
     signBoard(R, px + w / 2, py + 14, 'GARE DE FARMWEST');   // enseigne réécrite nette à l'écran
     R(3 * T, py + h - 4, 3 * T, 4, '#6a4426'); for (let k = 0; k < 3; k++) R(3 * T + 4 + k * 16, py + h, 2, 10, '#5b3a22');   // auvent du quai
@@ -107,7 +107,7 @@ export function buildWest(name, season) {
     const px = x0 * T, py = y0 * T, w = (x1 - x0 + 1) * T, h = (y1 - y0 + 1) * T;
     R(px - 2, py + h, w + 4, 3, 'rgba(30,15,5,.3)');
     { const F = houseSprite({ w, h: h - 14, wall: '#9a7050', trim: '#5a3a22', roof: ROOFS[i % 3], roofH: 20, planks: true, door: { x: w / 2 - 12, w: 24, h: 26 }, doorCol: '#6a4426' });
-      if (F) g.drawImage(F.im, px + F.ox, py + 14 + F.oy); }   // 18/11 (soir) : entrepôt « pixel moderne »
+      if (F) blit(g, F.im, px + F.ox, py + 14 + F.oy); }   // 18/11 (soir) : entrepôt « pixel moderne »
     for (const bx of [px + 6, px + w - 18]) { R(bx, py + h - 12, 12, 12, '#a8774a'); R(bx, py + h - 12, 12, 1, '#c99560'); R(bx + 5, py + h - 12, 1, 12, '#7a5232'); }   // caisses
   });
   // 5. panneaux indicateurs

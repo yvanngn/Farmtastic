@@ -337,7 +337,7 @@ let swing = null;
     ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.fillStyle = '#16121f'; ctx.fillRect(0, 0, cv.width, cv.height);
     ctx.setTransform(scale, 0, 0, scale, -camX * scale, -camY * scale);
     ctx.imageSmoothingEnabled = false;
-    if (!cache.__pal) harmonize(cache, scene !== 'wild' && scene !== 'grange');   // lot 11g : palette unique + contours colorés (une fois par décor)
+    if (!cache.__pal) { const col = scene !== 'wild' && scene !== 'grange'; harmonize(cache, col); for (const o of cache.__over || []) { const k = document.createElement('canvas'); k.width = o.w; k.height = o.h; k.getContext('2d').drawImage(o.im, 0, 0); o.im = harmonize(k, col) || k; } }   // 19/11 : bâtiments retenus, mêmes couleurs que le décor   // lot 11g : palette unique + contours colorés (une fois par décor)
     ctx.drawImage(cache, 0, 0);
     if (cache.__signs && cache.__signs.length) {   // enseignes réécrites nettes, à la résolution de l'écran (lisibles à tout zoom)
       ctx.save(); ctx.setTransform(1, 0, 0, 1, 0, 0);
@@ -582,12 +582,12 @@ let swing = null;
     } });
     for (const f of worldFx) if (f.k === 'chip') list.push({ z: f.floor / T, d: () => { ctx.globalAlpha = Math.min(1, f.life * 3); ctx.fillStyle = f.col; ctx.fillRect(Math.round(f.x), Math.round(f.y), 2, 2); ctx.globalAlpha = 1; } });
     list.sort((a, b) => a.z - b.z).forEach(o => o.d());
-    if (!g.ride && !g.introHidden && (outside || SC.outdoor)) {   // 19/11 : derrière un bâtiment, le toit cache le héros (sans transparence)
-      const fx = Math.floor(S.x), fy = Math.floor(S.y), cols = [fx - 1, fx, fx + 1].filter(x => isBuildingTile(S, scene, x, fy + 1));
-      if (cols.length) {
-        const hx = Math.round(S.x * T - 16), hy = Math.round(S.y * T - 36), hw = 32, hh = 40;
-        const bx0 = Math.max(hx, Math.min(...cols) * T), bx1 = Math.min(hx + hw, (Math.max(...cols) + 1) * T), by1 = Math.min(hy + hh, (fy + 1) * T);
-        if (bx1 > bx0 && by1 > hy) ctx.drawImage(cache, bx0, hy, bx1 - bx0, by1 - hy, bx0, hy, bx1 - bx0, by1 - hy);
+    if (!g.ride && !g.introHidden && cache.__over) {   // 19/11 : derrière un bâtiment ou un lampadaire, seuls ses pixels (pas le sol) recouvrent le héros
+      const hx = Math.round(S.x * T - 16), hy = Math.round(S.y * T - 40), hw = 32, hh = 44, feet = S.y * T;
+      for (const o of cache.__over) {
+        if (feet >= o.base - 2 || hx >= o.x + o.w || hx + hw <= o.x || hy >= o.y + o.h || hy + hh <= o.y) continue;
+        const x0 = Math.max(hx, o.x), y0 = Math.max(hy, o.y), x1 = Math.min(hx + hw, o.x + o.w), y1 = Math.min(hy + hh, o.y + o.h);
+        ctx.drawImage(o.im, x0 - o.x, y0 - o.y, x1 - x0, y1 - y0, x0, y0, x1 - x0, y1 - y0);
       }
     }
 
