@@ -2,6 +2,7 @@
 
 Semver horodaté (heure de Paris). Patch automatique à chaque publication ; mineure et majeure sur décision de l'utilisateur.
 
+- **0.1.70** — 2026-11-19 14:06 — essai : nouvelle planche Myst (chibi) pour le héros
 - **0.1.69** — 2026-11-19 13:54 — essai : planche Myst pour le héros, sans perte
 - **0.1.68** — 2026-11-19 13:47 — fermes voisines, noms sur la carte, quartier par l'ouest, plus d'ombres de nuages
 - **0.1.67** — 2026-11-19 13:38 — performances : résolution plafonnée, 30 i/s au repos, économie d'énergie

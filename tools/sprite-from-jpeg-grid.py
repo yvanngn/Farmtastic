@@ -7,6 +7,8 @@ import sys, os, re, base64, io, numpy as np
 from PIL import Image
 from scipy import ndimage
 src, name, H = sys.argv[1], sys.argv[2], int(sys.argv[3])
+# ordre des lignes de la planche fournie → face, dos, profil ; ex. « 0,3,1L » (le L : profil déjà tourné vers la gauche)
+ORDER = (sys.argv[4] if len(sys.argv) > 4 else '0,1,2R').split(',')
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 a = np.array(Image.open(src).convert('RGB')).astype(float)
 def pitch_phase(ax):
@@ -21,22 +23,24 @@ for i, y in enumerate(ys):
     for j, x in enumerate(xs):
         o[i, j] = a[int(round(y - .7)):int(round(y + .7)) + 1, int(round(x - .7)):int(round(x + .7)) + 1].reshape(-1, 3).mean(0)
 o = o.round().clip(0, 255).astype('uint8')
-white = (o.astype(int).min(2) > 215)
+bgc = np.median(np.concatenate([o[0], o[-1], o[:, 0], o[:, -1]]), 0)
+white = np.abs(o.astype(int) - bgc).sum(2) < 40   # fond uni (blanc, lilas…)
 lab, _ = ndimage.label(white); border = set(np.unique(np.concatenate([lab[0], lab[-1], lab[:, 0], lab[:, -1]]))) - {0}
 bg = np.isin(lab, list(border))
 for k, sz in enumerate(ndimage.sum(white, lab, range(1, lab.max() + 1)), 1):   # trous de fond enfermés (entre les jambes) : transparents, sauf les petits reflets
     if sz >= 5: bg |= lab == k
 for _ in range(2):   # liseré clair laissé par le JPEG au bord de la silhouette → transparent
     edge = ndimage.binary_dilation(bg) & ~bg
-    light = (o.astype(int).min(2) > 150) & ((o.astype(int).max(2) - o.astype(int).min(2)) < 40)
+    light = np.abs(o.astype(int) - bgc).sum(2) < 90
     bg |= edge & light
 alpha = (~bg).astype('uint8') * 255
 rgba = np.dstack([o, alpha])
 fl, _ = ndimage.label(~bg)
 objs = [b for b in ndimage.find_objects(fl) if b is not None and (b[0].stop - b[0].start) > o.shape[0] // 6]
 objs.sort(key=lambda b: (b[0].start + b[0].stop) / 2)
-rows = [sorted(objs[k:k + 4], key=lambda b: b[1].start) for k in range(0, 12, 4)]
+rows = [sorted(objs[k:k + 4], key=lambda b: b[1].start) for k in range(0, len(objs) - len(objs) % 4, 4)]
 assert all(len(r) == 4 for r in rows), [len(r) for r in rows]
+flipSide = ORDER[2].endswith('R'); rows = [rows[int(k.rstrip('LR'))] for k in ORDER]
 cells = []
 for ri, r in enumerate(rows):
     y0, y1 = min(b[0].start for b in r), max(b[0].stop for b in r)
@@ -50,7 +54,7 @@ SW = max(c.size[0] for r in cells for c in r) + 2; SH = max(c.size[1] for r in c
 sh = Image.new('RGBA', (SW * 4, SH * 3))
 for ri, r in enumerate(cells):
     for ci, c in enumerate(r):
-        if ri == 2: c = c.transpose(Image.FLIP_LEFT_RIGHT)   # le profil fourni regarde à droite ; le jeu attend la gauche
+        if ri == 2 and flipSide: c = c.transpose(Image.FLIP_LEFT_RIGHT)   # le profil fourni regarde à droite ; le jeu attend la gauche
         sh.alpha_composite(c, (ci * SW + (SW - c.size[0]) // 2, ri * SH + SH - c.size[1]))   # pieds alignés en bas
 os.makedirs(os.path.join(ROOT, 'assets/sprites'), exist_ok=True)
 sh.save(os.path.join(ROOT, 'assets/sprites', name + '.png'))
