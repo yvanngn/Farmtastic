@@ -1,7 +1,7 @@
 // Écran de personnalisation du personnage.
 import { $ } from './dom.js';
 import { LOOK_OPTS, HAIR_NAMES, BODY_NAMES, BOTTOM_NAMES, WEST_OPTS, HAT_NAMES, YESNO } from '../data/look.js';
-import { drawChar } from '../render/sprites.js';
+import { drawChar, HERO_HAIR } from '../render/sprites.js';
 import { HERO_OPTS } from '../render/folk.js';
 import { GRASS } from '../render/ground.js';
 
@@ -18,14 +18,10 @@ export function createCustomizer({ getLook, getName, onStart, onContinue, onBack
       ? `<div class="chip ${L[k] === v ? 'sel' : ''}" style="background:${v}" data-k="${k}" data-v="${v}"></div>`
       : `<button class="${String(L[k] ?? '') === String(v) ? 'on' : ''}" data-k="${k}" data-v="${v}">${labels[v] ?? labels[i]}</button>`).join('') + '</div></div>';
     // 18/11 (soir) : héros en « pixel moderne » — sexe et plus de choix (src/render/folk.js, HERO_OPTS)
-    const O = HERO_OPTS, f = L.body === 'f', bt = (title, k) => sec(title, k, Object.keys(O[k]), O[k]);
-    $('#lookOpts').innerHTML = bt('Sexe', 'body') + sec('Peau', 'skin', O.skin, 1) + sec('Yeux', 'eye', O.eye, 1)
-      + bt('Coiffure', 'hair') + sec('Couleur des cheveux', 'hairC', O.hairC, 1) + (f ? '' : bt('Barbe', 'beard'))
-      + bt('Chapeau', 'hat') + (L.hat && L.hat !== 'paille' ? sec('Couleur du chapeau', 'hatC', O.hatC, 1) : '')
-      + bt('Haut', 'top') + sec('Couleur du haut', 'shirt', O.shirt, 1)
-      + bt('Par-dessus', 'extra') + (L.extra ? sec('Couleur', 'extraC', O.extraC, 1) : '')
-      + opt('Bandana', 'scarf', O.scarf) + bt('Bas', 'bottom') + sec('Couleur du bas', 'pants', O.pants, 1)
-      + sec('Chaussures', 'shoes', O.shoes, 1) + bt('Sac à dos', 'backpack');
+    // 19/11 : personnalisation simplifiée (planches fournies) : homme ou femme, sac à dos, couleur des cheveux
+    const O = HERO_OPTS, bt = (title, k) => sec(title, k, Object.keys(O[k]), O[k]);
+    $('#lookOpts').innerHTML = bt('Sexe', 'body') + bt('Sac à dos', 'backpack')
+      + `<div style="margin-top:8px"><b>Couleur des cheveux</b><div class="row">` + HERO_HAIR.map(v => v ? `<div class="chip ${L.hairC === v ? 'sel' : ''}" style="background:${v}" data-k="hairC" data-v="${v}"></div>` : `<button class="${!HERO_HAIR.includes(L.hairC) || !L.hairC ? 'on' : ''}" data-k="hairC" data-v="">Naturelle</button>`).join('') + '</div></div>';
   }
   // couleur facultative : « Aucun » puis le nuancier
   function opt(title, k, vals = WEST_OPTS[k]) {
@@ -64,7 +60,7 @@ export function createCustomizer({ getLook, getName, onStart, onContinue, onBack
       pctx.fillStyle = GRASS[0]; pctx.fillRect(0, 0, 36, 50);
       pctx.fillStyle = '#5a9a3e'; for (const [x, y] of [[4, 8], [27, 6], [6, 36], [29, 33], [17, 4]]) { pctx.fillRect(x, y + 1, 1, 2); pctx.fillRect(x + 2, y + 1, 1, 2); pctx.fillRect(x + 1, y, 1, 3); }
       pctx.fillStyle = '#f07ab0'; pctx.fillRect(30, 40, 2, 2); pctx.fillStyle = '#f5e050'; pctx.fillRect(3, 24, 2, 2);
-      drawChar(pctx, 12, 27, getLook(), dir, dir >= 2 ? 1 + ((t / 85 | 0) % 8) : 0, t);
+      drawChar(pctx, 12, 27, getLook(), dir, 1 + ((t / 85 | 0) % 8), t);   // 19/11 : l'aperçu marche dans toutes les directions
     }
   };
 }

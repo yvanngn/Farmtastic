@@ -2,6 +2,7 @@
 
 Semver horodaté (heure de Paris). Patch automatique à chaque publication ; mineure et majeure sur décision de l'utilisateur.
 
+- **0.1.72** — 2026-11-19 14:31 — héros et héroïne d'après les planches fournies ; personnalisation simplifiée
 - **0.1.71** — 2026-11-19 14:07 — essai Myst : animation un peu plus lente (150 ms)
 - **0.1.70** — 2026-11-19 14:06 — essai : nouvelle planche Myst (chibi) pour le héros
 - **0.1.69** — 2026-11-19 13:54 — essai : planche Myst pour le héros, sans perte

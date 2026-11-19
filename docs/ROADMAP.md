@@ -156,6 +156,13 @@ Pour que **les scènes du jeu** atteignent le niveau de détail de l'image, scè
 - [x] **Un coffre pour ranger** : acheter le **plan du coffre** chez Harry (💡 60 $), le fabriquer (80 bois + 20 pierres). Le coffre quitte la quête principale « Premiers pas » ; Harry ne l'apprend plus gratuitement.
 - ⏳ Plus tard : la cabane agrandie vue de dehors (aujourd'hui seul l'intérieur change).
 
+## Lot 22 — Héros et héroïne d'après les planches fournies (19/11) ✅ v0.1.72
+- [x] Planches `docs/sprites/heros.jpg` et `heroine.jpg` (JPEG × 5,02) → `tools/hero-sheets.py` : dessin d'origine retrouvé sans perte, fond lilas retiré.
+- [x] Planches « simplifiées » : les poses fournies mélangeaient avec / sans sac et deux coiffures (héroïne) ; deux versions cohérentes (avec sac, sans sac) : profil = tête de l'arrêt reportée sur le pas (la coiffure ne change plus en marchant), dos sans sac à l'arrêt et dos avec sac en marche reconstitués (haut d'une pose + jambes de l'autre).
+- [x] Personnalisation simplifiée : Homme / Femme, sac à dos oui / non, couleur des cheveux (naturelle + 7 teintes, recoloration par masque des cheveux). L'aperçu marche dans toutes les directions.
+- [x] L'essai Myst est retiré (Myst garde son personnage).
+- [ ] Plus tard : couleur des yeux (trop peu de pixels distincts sur ces planches), poses avec outil en main.
+
 ## Essai du 19/11 (2) : nouvelle planche Myst (chibi, 4 lignes face / gauche / droite / dos, fond lilas, × 5,02) ✅ v0.1.70
 - [x] Outil généralisé : fond uni de n'importe quelle couleur, ordre des lignes en paramètre (`0,3,1L`). 30 × 48 pixels par image, affichées à 46 pixels du monde.
 

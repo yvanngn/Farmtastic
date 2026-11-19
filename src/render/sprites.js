@@ -178,13 +178,30 @@ function sheetImage(name) {
   im.src = SHEETS[name].url;
   return null;
 }
-// 19/11 : planche fournie par l'utilisateur (Myst) essayée sur le héros, sans perte (pixels d'origine, agrandis à l'écran).
-// Réglages → « Héros : planche Myst (essai) ». 4 poses par ligne, une toutes les 105 ms comme la marche du héros.
-export const heroTestSheet = () => { try { return (localStorage.getItem('ferme_hero_test') ?? '1') === '1'; } catch { return false; } };
-export const TEST_SHEET_MS = 150;   // 19/11 : une pose toutes les 150 ms (105 ms paraissait trop rapide)
-function drawTestSheet(c, ox, oy, d, f, t = 0) {
-  const img = sheetImage('myst_test'); if (!img) return false;
-  const S = SHEETS.myst_test, col = f ? Math.floor(t / TEST_SHEET_MS) % 4 : 0, row = d === 0 ? 0 : d === 1 ? 1 : 2, x = Math.round(ox + 6 - S.fw / 2), y = oy + 20 - S.fh;
+// 19/11 : le héros et l'héroïne viennent des planches fournies par l'utilisateur (tools/hero-sheets.py), avec ou sans sac à dos.
+// Les cheveux se recolorent (masque des cheveux, teinte choisie modulée par la lumière d'origine). Une pose toutes les 150 ms.
+export const HERO_SHEET_MS = 150;
+export const HERO_HAIR = ['', '#2a2026', '#4a2c1a', '#d8a850', '#b8482a', '#e8e0d0', '#6a6a72', '#3a5a9a'];   // '' = naturel
+export const heroSheetName = L => 'hero_' + (L.body === 'f' ? 'f' : 'h') + '_' + (L.backpack === 0 || L.backpack === false ? 'n' : 'p');
+const HERO_RECOLOR = new Map();
+function heroSheetImage(name, hairC) {
+  const base = sheetImage(name); if (!base || !base.complete || !base.naturalWidth) return base && base.complete ? base : null;
+  if (!hairC) return base;
+  const key = name + hairC; if (HERO_RECOLOR.has(key)) return HERO_RECOLOR.get(key);
+  const S = SHEETS[name]; if (!S.mask) return base;
+  const mk = S._maskIm || (S._maskIm = Object.assign(new Image(), { src: S.mask })); if (!mk.complete || !mk.naturalWidth) return base;
+  const w = base.naturalWidth, h = base.naturalHeight, cv = document.createElement('canvas'); cv.width = w; cv.height = h;
+  const g = cv.getContext('2d', { willReadFrequently: true }); g.drawImage(base, 0, 0); const im = g.getImageData(0, 0, w, h);
+  const mc = document.createElement('canvas'); mc.width = w; mc.height = h; const mg = mc.getContext('2d'); mg.drawImage(mk, 0, 0); const m = mg.getImageData(0, 0, w, h).data;
+  const t = [1, 3, 5].map(k => parseInt(hairC.slice(k, k + 2), 16)), d = im.data;
+  for (let i = 0; i < d.length; i += 4) if (m[i] > 128) { const l = (d[i] * .3 + d[i + 1] * .59 + d[i + 2] * .11) / 96;   // 96 ≈ luminance moyenne des cheveux d'origine
+    for (let k = 0; k < 3; k++) d[i + k] = Math.max(0, Math.min(255, Math.round(l <= 1 ? t[k] * l : t[k] + (255 - t[k]) * (l - 1) * .6))); }
+  g.putImageData(im, 0, 0); HERO_RECOLOR.set(key, cv); return cv;
+}
+function drawHeroPlanche(c, ox, oy, L, d, f, t = 0) {
+  const name = heroSheetName(L), S = SHEETS[name]; if (!S) return false;
+  const img = heroSheetImage(name, L.hairC && HERO_HAIR.includes(L.hairC) ? L.hairC : ''); if (!img) return false;
+  const col = f ? Math.floor(t / HERO_SHEET_MS) % 4 : 0, row = d === 0 ? 0 : d === 1 ? 1 : 2, x = Math.round(ox + 6 - S.fw / 2), y = oy + 20 - S.fh;
   if (d === 3) { c.save(); c.translate(x + S.fw, y); c.scale(-1, 1); c.drawImage(img, col * S.sw, row * S.sh, S.sw, S.sh, 0, 0, S.fw, S.fh); c.restore(); }
   else c.drawImage(img, col * S.sw, row * S.sh, S.sw, S.sh, x, y, S.fw, S.fh);
   return true;
@@ -244,7 +261,7 @@ function drawHeroSheet(c, ox, oy, L, d, f) {
 }
 export function drawChar(c, ox, oy, L, d, f, t = 0, noArm = false) {
   groundShadow(c, ox + 6, oy + 19, L.stout || L.muscle ? 9 : L.kid ? 6 : 7, 2);
-  if ((L.hero || L.doll) && heroTestSheet() && drawTestSheet(c, ox, oy, d, f, t)) return;   // 19/11 : essai de la planche Myst pour le héros
+  if ((L.hero || L.doll) && drawHeroPlanche(c, ox, oy, L, d, f, t)) return;   // 19/11 : héros / héroïne d'après les planches fournies
   if (!L.oldDraw && drawFolk(c, ox, oy, L, d, f)) return;   // 18/11 (soir) : personnages en « pixel moderne » (src/render/folk.js)
   if (!L.oldDraw && drawPaperDoll(c, ox, oy, L, d, f)) return;   // 18/11 : tout le monde en poupée dessinée par le code (src/render/paperdoll.js)
   if (L.sheet && drawSheet(c, ox, oy, L, d, f)) return;
