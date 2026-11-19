@@ -2,6 +2,7 @@
 
 Semver horodaté (heure de Paris). Patch automatique à chaque publication ; mineure et majeure sur décision de l'utilisateur.
 
+- **0.1.60** — 2026-11-19 07:52 — profil épaissi, marche façon Stardew, pioche à l'endroit, joystick sans déplacement au toucher
 - **0.1.59** — 2026-11-19 07:47 — lot 15 : journal, carrière, saloon, chevaux, cabane moitié prix, quêtes lisibles
 - **0.1.58** — 2026-11-18 22:02 — lot 14 : premier champ (courrier des graines, carrés partout, semis en glissant, blé en 1 jour, récolte d'un coup, paille 1 $)
 - **0.1.57** — 2026-11-18 21:38 — flèches sans nom, grange rouge nette, héros transparent derrière les toits, images Gemini supprimées

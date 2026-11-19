@@ -311,7 +311,13 @@ export function drawSwing(c, S, tool, p) {
     const sx = ox + 11, sy = oy + 4, hy = Math.round(sy - 8 * f);
     const pts = []; for (let k = 0; k <= 8; k++) pts.push([sx, Math.round(sy + (hy - sy) * k / 8)]);
     if (S.dir === 0) armPix(pts, [sx, hy]);
-    c.save(); c.translate(sx + 2, hy); c.scale(1, Math.abs(f) < .25 ? (f < 0 ? -.25 : .25) : f); draw(c); c.restore();
+    const fs = Math.abs(f) < .25 ? (f < 0 ? -.25 : .25) : f;
+    if (tool === 'pick') {   // 19/11 : la tête de la pioche reste à l'endroit (pointes vers le sol), seul le manche suit le raccourci
+      const rows = TOOL_ART.pick, px = (r0, r1, X, Y, sc) => { for (let y = r0; y < r1; y++) for (let x = 0; x < rows[y].length; x++) { const k = rows[y][x]; if (k !== '.') { c.fillStyle = TP[k]; c.fillRect(X + x - 6, Math.round(Y + (y - 13) * sc), 1, Math.max(1, Math.ceil(Math.abs(sc)))); } } };
+      px(6, rows.length, sx + 2, hy, fs);
+      const yTop = Math.round(hy + (6 - 13) * fs) + (fs < 0 ? 0 : -6);
+      px(0, 6, sx + 2, yTop + 13, 1);
+    } else { c.save(); c.translate(sx + 2, hy); c.scale(1, fs); draw(c); c.restore(); }
     if (S.dir === 1) armPix(pts, [sx, hy]);
     return;
   }

@@ -8,7 +8,7 @@ Pour la liste à cocher de tout ce qu'on peut accomplir : `docs/COMPLETION.md`.
 Le héros (**Cloud Jimny** par défaut) arrive en train à Farmwest pour reprendre une cabane abandonnée sur l'une des **4 fermes du Nord**, que personne n'ose habiter à cause de la légende du fantôme. Il retape sa ferme, cultive, cuisine, fabrique, se lie d'amitié avec les habitants et explore la région. Jeu solo ou à plusieurs (une ferme par joueur).
 
 ## 2. Commandes
-- **Se déplacer** : joystick (écran tactile) ou flèches / ZQSD / WASD.
+- **Se déplacer** : joystick (écran tactile) ou flèches / ZQSD / WASD. Dès qu'on se sert du joystick, toucher l'écran ne fait plus marcher le héros : on touche seulement ce qui est à portée.
 - **Agir** : bouton ✋ ou espace (couper, casser, ramasser, parler, réparer…). Un court délai caché sépare deux actions quand on reste appuyé.
 - **Outils** : barre d'outils sous la scène (touches 1-8, Tab pour la roue des outils).
 - **Menus** : 🗺️ carte (ferme et région), 📜 menu (sac, recettes, poissons, quêtes, métiers, forge, liens), 💾 sauvegarde, ⚙ réglages (zoom, son). Clavier : E menu, I sac, M carte, Échap ferme.

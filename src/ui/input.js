@@ -35,7 +35,10 @@ export function createInput(cv, g, renderer, { isActive, onMenu }) {
       hold = setInterval(() => { if (repairAt(g.S, tx, ty) && Math.hypot(tx + .5 - g.S.x, ty + .5 - g.S.y) < 3.2) act(g, tx, ty); }, 420);   // un coup de marteau toutes les 0,4 s
     }
     dragMode = farmAction(g, tx, ty) || (S.scene || 'farm') === 'farm' && !!(ITEMS[S.sel] && ITEMS[S.sel].seed);   // 18/11 : graines en main → on glisse sur tous les carrés (façon Hay Day)
-    if (!dragMode) g.player.target = { tx, ty, reach: isHouse(tx, ty) || isGrange(tx, ty) ? 2.5 : 1.4 };
+    const reach = isHouse(tx, ty) || isGrange(tx, ty) ? 2.5 : 1.4;
+    // 19/11 : au joystick (téléphone), toucher l'écran ne fait plus marcher le héros : on agit seulement sur ce qui est à portée
+    if (!dragMode && g.joyMode && e.pointerType !== 'mouse') { if (Math.hypot(tx + .5 - S.x, ty + .5 - S.y) <= reach + .4) g.player.target = { tx, ty, reach }; return; }
+    if (!dragMode) g.player.target = { tx, ty, reach };
   });
   cv.addEventListener('pointermove', e => {
     if (!dragging || !dragMode) return;

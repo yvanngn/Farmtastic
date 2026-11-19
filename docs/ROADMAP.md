@@ -156,6 +156,12 @@ Pour que **les scènes du jeu** atteignent le niveau de détail de l'image, scè
 - [x] **Un coffre pour ranger** : acheter le **plan du coffre** chez Harry (💡 60 $), le fabriquer (80 bois + 20 pierres). Le coffre quitte la quête principale « Premiers pas » ; Harry ne l'apprend plus gratuitement.
 - ⏳ Plus tard : la cabane agrandie vue de dehors (aujourd'hui seul l'intérieur change).
 
+## Lot 16 — Profil, pioche, joystick, marche (demande du 19/11) ✅ v0.1.60
+- [x] Profil plus épais (buste, jambes, bras) pour tous les personnages.
+- [x] Marche refaite façon Stardew : 4 poses (contact, passage, contact inverse, passage), jambes qui pivotent à la hanche, jambe arrière repliée au passage, bras opposés, rebond du corps ; une pose toutes les 105 ms.
+- [x] Pioche de face / de dos : la tête reste à l'endroit, pointes vers le sol ; seul le manche suit le raccourci.
+- [x] Téléphone : dès qu'on touche le joystick, toucher l'écran ne fait plus marcher le héros (on agit seulement sur ce qui est à portée).
+
 ## Lot 15 — Journal, carrière, saloon (demande du 19/11) ✅ v0.1.59
 Décrit par l'utilisateur : cabane à moitié prix ; journal dans la cabane (200 dernières activités, onglets quêtes en cours / liens / histoire, onglet gardé) ; chevaux sans tête ; intérieur du saloon (scène, bar, tables, toilettes) ; plus de cailloux à la ferme : carrière au nord, cailloux qui repoussent, bordure de gros cailloux plus longs à casser, passage aléatoire vers une autre carrière (autre architecture, autres filons) ; filons plus gros, filons rares qui scintillent ; quêtes illisibles (jaune sur beige).
 - [x] Cabane 40 bois + 15 pierres ; agrandissement 80 bois + 30 pierres.

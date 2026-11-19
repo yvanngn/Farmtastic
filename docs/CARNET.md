@@ -88,6 +88,7 @@ Légende : ✅ fait · ⏳ à faire · ❓ question pour l'utilisateur · 💡 i
 - ✅ **Lot 9** (v0.1.19) : demandes de fabrication, une par habitant et par semaine, + panneau.
 - ✅ **Lot 2e** (v0.1.50) : rivière autour du centre-ville, route de l'est montagne ↔ port, port ↔ plage.
 - ✅ **Lot 12** (v0.1.51) : cabane du pêcheur (Rouky, Rox), quête de la canne, petits tas à creuser. ⏳ Plus tard : canne améliorable, butin des tas à faire évoluer.
+- ✅ **Lot 16** (v0.1.60) : profil épaissi, marche en 4 poses façon Stardew, pioche à l'endroit, joystick sans déplacement au toucher.
 - ✅ **Lot 15** (v0.1.59) : journal de la cabane, carrière et carrière profonde, saloon, chevaux, cabane à moitié prix, quêtes lisibles.
 - ✅ **Lot 14** (v0.1.58) : premier champ (courrier des graines, carrés à la pelle partout, semis en glissant, blé en 1 jour, récolte d'un coup, paille 1 $).
 - ✅ **18/11** (v0.1.57) : plus de noms sur les flèches de sortie ; grange rouge nettoyée ; héros en transparence derrière les toits ; images Gemini supprimées.

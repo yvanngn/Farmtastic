@@ -46,6 +46,6 @@ export function updatePlayer(g, dt, keys, onArrive) {
     tryMove(S, dx / l * sp, dy / l * sp);
     if (P.target && Math.hypot(S.x - bx, S.y - by) < sp * 0.1) P.target = null; // bloqué
     S.dir = dirFrom(dx, dy);
-    P.walkT += dt; P.walkFrame = 1 + ((P.walkT * 1000 / 85 | 0) % 8);   // 7e : cycle de 8 images (~85 ms)
+    P.walkT += dt; P.walkFrame = 1 + ((P.walkT * 1000 / 105 | 0) % 8);   // 7e : cycle de 8 images ; 19/11 : une pose toutes les 105 ms (foulée de 420 ms, façon Stardew)
   } else P.walkFrame = 0;
 }

@@ -15,7 +15,7 @@ export function createControls(g, input, { onAct, onTools, onItems }) {
     if (!dead) g.player.target = null;
   }
   stick.addEventListener('pointerdown', e => {
-    e.preventDefault(); id = e.pointerId; stick.setPointerCapture(id);
+    e.preventDefault(); id = e.pointerId; stick.setPointerCapture(id); g.joyMode = true;   // 19/11 : on joue au joystick → plus de déplacement au toucher de l'écran
     const r = stick.getBoundingClientRect(); cx = r.left + r.width / 2; cy = r.top + r.height / 2; R = r.width / 2;
     stick.classList.add('actif'); move(e);
   });

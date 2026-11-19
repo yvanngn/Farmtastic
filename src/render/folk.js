@@ -235,18 +235,25 @@ function buildSide(c, s) {
   const parts = [], feat = [], add = (path, mat, z) => parts.push({ path, mat, z });
   const cx = 31, cy = 37, rx = c.kid ? 17 : 15.5, ry = c.kid ? 18.5 : 17, top = cy - ry;
   const neckY = cy + ry - 2, shY = neckY + 2, hipY = 96, footY = 128;
-  const g = c.garments || [], legW = c.legW || (c.stout ? 11 : 9.5), footH = 8;
-  const tw = (c.stout ? 26 : c.muscle ? 24 : c.f || c.kid ? 18 : 20), belly = c.stout ? 5 : 0;
-  const swing = [5, 0, -5, 0][s] || 0, bob = s % 2 ? -2 : 0;
+  const g = c.garments || [], legW = c.legW || (c.stout ? 12.5 : 11.5), footH = 8;   // 19/11 : profil plus épais (jambes, buste, bras)
+  const tw = (c.stout ? 31 : c.muscle ? 29 : c.f || c.kid ? 23 : 26), belly = c.stout ? 5 : 0;
+  // 19/11 : vraie foulée de profil (4 temps, façon Stardew) : contact (jambes écartées, corps bas) → passage (une jambe repliée
+  // qui se lève, corps haut) → contact inverse → passage. Les jambes pivotent à la hanche, les bras à l'épaule, à l'opposé.
+  const ang = [.34, 0, -.34, 0][s] || 0, bob = s % 2 ? -2 : 0, liftNear = s === 3 ? 5 : 0, liftFar = s === 1 ? 5 : 0;
+  const swing = 0;
   const leg = (dx, z, mat) => { // jambe + pied (bout vers la droite)
-    const x = cx - legW / 2 + dx;
+    const x = cx - legW / 2 + dx, n0 = parts.length;
     if (!c.dress || c.noFeet) { if (!c.dress) add(RR(x, hipY - 6, legW, footY - footH + 2 - (hipY - 6), 2), mat, z); }
     if (c.shorts) add(RR(x, hipY - 6, legW, 12, 3), 'over', z + .1);
     if (c.socks) add(RR(x + 1, footY - footH - 7, legW - 2, 8, 1), 'sock', z + .2);
     if (!c.noFeet) add(P2(p => { p.moveTo(x - 1, footY - footH); p.lineTo(x + legW - 1, footY - footH); p.quadraticCurveTo(x + legW + 5, footY - footH + 1, x + legW + 5, footY - 2); p.lineTo(x + legW + 5, footY); p.lineTo(x - 1, footY); }), 'shoe', z + .3);
+    if (c.dress) return;
+    const a = z < 2 ? -ang : ang, up = z < 2 ? liftFar : liftNear, hx = x + legW / 2, hy = hipY - 4;
+    const M = new DOMMatrix().translate(hx, hy).rotate(a * 57.3).translate(-hx, -hy - up);
+    for (let i = n0; i < parts.length; i++) { const q = new Path2D(); q.addPath(parts[i].path, M); parts[i] = { ...parts[i], path: q }; }
   };
   const legMat = c.shorts ? 'skin' : 'pant';
-  leg(-swing, 1, legMat); leg(swing, 2, legMat);
+  leg(-2, 1, legMat); leg(2, 2, legMat);
   // buste
   const torso = P2(p => { p.moveTo(cx - tw / 2, shY + 5); p.quadraticCurveTo(cx - tw / 2, shY, cx - tw / 2 + 5, shY); p.lineTo(cx + tw / 2 - 4, shY); p.quadraticCurveTo(cx + tw / 2 + belly, shY + 4, cx + tw / 2 + belly, hipY - 14); p.quadraticCurveTo(cx + tw / 2 + belly, hipY + 2, cx + tw / 2 - 2, hipY + 2); p.lineTo(cx - tw / 2 + 1, hipY + 2); });
   add(torso, 'top', 3);
@@ -267,7 +274,7 @@ function buildSide(c, s) {
   if (g.includes('chef')) for (let k = 0; k < 3; k++) feat.push({ t: 'btn', x: cx + tw / 2 - 3, y: shY + 10 + k * 9, col: '#c8c4bc' });
   if (g.includes('pipe')) feat.push({ t: 'px', x: cx + rx + 2, y: cy + 11, w: 3, h: 1, col: '#5a3a22' }, { t: 'px', x: cx + rx + 6, y: cy + 8, w: 2, h: 3, col: '#5a3a22' });
   // bras (le bras proche, qui se balance à l'opposé de la jambe proche)
-  const armW = c.muscle ? 11 : c.stout ? 10 : 9, armL = c.armL || 30, ax = cx - armW / 2 - 1, as = -swing * .8;
+  const armW = c.muscle ? 12.5 : c.stout ? 11.5 : 11, armL = c.armL || 30, ax = cx - armW / 2 - 1, as = -ang * 22;
   const armP = P2(p => { p.moveTo(ax, shY + 4); p.quadraticCurveTo(ax, shY + 1, ax + armW / 2, shY + 1); p.quadraticCurveTo(ax + armW, shY + 1, ax + armW, shY + 4); p.lineTo(ax + armW + as, shY + armL); p.lineTo(ax + as, shY + armL); });
   const sleeveMat = g.includes('coat') || g.includes('jacket') ? 'coat' : (c.sleeve || 'top');
   const armMat = c.bareArms || c.rolled ? 'skin' : sleeveMat, AM = '_' + armMat, SM = '_' + sleeveMat;   // le bras a sa propre matière : un trait le détache du buste
@@ -393,7 +400,7 @@ const CACHE = new Map();
 export function folkSprite(spec, d = 0, f = 0) {
   if (typeof document === 'undefined') return null;
   probe ||= document.createElement('canvas').getContext('2d');
-  const s = f ? ((f - 1) >> 1) % 4 : 0, key = JSON.stringify(spec) + '|' + d + '|' + s;
+  const s = f ? (f - 1) % 4 : 0, key = JSON.stringify(spec) + '|' + d + '|' + s;
   let im = CACHE.get(key);
   if (im) return im;
   const m = d >= 2 ? buildSide(spec, s) : buildFront(spec, d === 1, s);
