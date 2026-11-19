@@ -86,10 +86,15 @@ def build(cells):
     Lp, Ln = compose(L[2], L[3], None), compose(L[0], L[1], None)
     # dos : marche synthétique à partir de la pose à l'arrêt (une jambe puis l'autre), plus de raccord visible
     Bn_idle = sym(compose(B[1], B[0], .8))   # haut du pas sans sac (rendu symétrique : bras le long du corps) + jambes de l'arrêt
+    # 19/11 : de dos, on reprend les pas fournis (bras qui se balance) et leur miroir pour l'autre pas ;
+    # avec sac : la tête de l'arrêt est reportée sur le pas (même coiffure)
+    mir = lambda c: c[:, ::-1].copy()
+    Bp = compose(B[0], B[3], None, .2, .4)
     return {
-        'p': [[F[0], F[1], F[2], F[3]], [B[0], step_legs(B[0], 'L'), B[0], step_legs(B[0], 'R')], [L[2], Lp, L[2], Lp]],
-        'n': [[F[0], F[1], F[2], F[3]], [Bn_idle, step_legs(Bn_idle, 'L'), Bn_idle, step_legs(Bn_idle, 'R')], [L[0], Ln, L[0], Ln]],
+        'p': [[F[0], F[1], F[2], F[3]], [B[0], Bp, B[0], mir(Bp)], [L[2], Lp, L[2], Lp]],
+        'n': [[F[0], F[1], F[2], F[3]], [Bn_idle, B[1], Bn_idle, mir(B[1])], [L[0], Ln, L[0], Ln]],
     }
+
 def masks(sheet, hairRef):   # cheveux : couleurs proches de celles du haut de la tête ; yeux : pixels bleutés du visage
     rgb = sheet[..., :3].astype(int); m = np.zeros(sheet.shape[:2] + (3,), 'uint8')
     d = np.min([np.abs(rgb - c).sum(2) for c in hairRef], 0)

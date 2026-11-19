@@ -2,6 +2,7 @@
 
 Semver horodaté (heure de Paris). Patch automatique à chaque publication ; mineure et majeure sur décision de l'utilisateur.
 
+- **0.1.79** — 2026-11-19 21:30 — de dos : vrai balancement des bras (pas fournis + leur miroir)
 - **0.1.78** — 2026-11-19 21:27 — de dos, les bras se balancent en marchant
 - **0.1.77** — 2026-11-19 21:23 — héros un peu plus petit
 - **0.1.76** — 2026-11-19 21:19 — coups de hache (héros, héroïne) ; couleur des cheveux gardée pendant les coups d'outil
