@@ -21,7 +21,8 @@ Menu → 🎽 Équipement : tête, corps, pieds, accessoire. Le manteau d'hiver 
 - **Cadre du haut** (argent, date, météo, énergie) : il s'efface quand on reste immobile et revient dès qu'on bouge.
 
 ## 3. Une journée
-- Une journée dure **environ 20 minutes** (6 h → 1 h du matin). La nuit tombe à 18 h.
+- Une journée dure **environ 15 minutes** (6 h → 1 h du matin). La nuit tombe à 18 h.
+- Un mois (une saison) dure **30 jours** ; la semaine va du **lundi au dimanche**. Le week-end, les habitants ne travaillent pas : ils se promènent en ville ou à la plage.
 - **Énergie** : chaque coup d'outil en coûte (un peu aussi chaque coup de marteau quand on répare). Manger prend un petit moment : on ne peut pas enchaîner les bouchées. On la regagne en dormant (tente ou cabane) et en mangeant (baies, mûres, plats).
 - **Pas couché à 1 h** : on se réveille à la clinique, et Hailey se fait payer.
 - **La nuit** : rêve ou prémonition, énergie qui remonte, sauvegarde automatique.

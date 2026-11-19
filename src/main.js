@@ -150,7 +150,7 @@ async function startPicked(name) {
   openGame(gm);
   const old = p.kind === 'join' ? await saver.load() : null;   // déjà membre de cette partie : on reprend sa ferme
   if (old) { g.S = old; g.S.name = name; }
-  else { g.S = defaultState(); g.S.look = look; g.S.name = name; g.S.objs = genObjects(); }
+  else { g.S = defaultState(); g.S.look = look; g.S.name = name; g.S.treeSeed = (Math.random() * 1e9) | 0; g.S.objs = genObjects(g.S.treeSeed); }   // 19/11 : arbres placés au hasard à chaque nouvelle partie
   g.S.game = { id: gm.id, code: gm.code, mode: gm.mode }; g.S.farmLot = gm.lot || 0;
   begin();
   if (gm.mode === 'multi') setTimeout(() => toast(`👥 Code de la partie : ${gm.code} — envoie-le à tes amis !`), 1200);
@@ -167,7 +167,7 @@ async function continueGame(gm) {
   const s = await saver.load();
   if (!s) { toast('⚠️ Sauvegarde introuvable pour cette partie.'); return; }
   title.close(); custom.close();
-  g.S = s; if (!g.S.objs) g.S.objs = genObjects();
+  g.S = s; if (!g.S.objs) g.S.objs = genObjects(g.S.treeSeed || 12345);
   g.S.game = { id: gm.id, code: gm.code || null, mode: gm.mode || 'solo' }; if (gm.lot != null) g.S.farmLot = gm.lot;
   begin();
 }

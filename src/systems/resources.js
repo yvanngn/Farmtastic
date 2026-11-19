@@ -1,3 +1,4 @@
+import { AXE_GROVE } from '../data/repairs.js';
 // Bois et pierre. La puissance de l'outil (palier) retire autant de PV par coup
 // et réduit l'énergie dépensée. Casser des pierres donne de l'XP de minage.
 import { CFG } from '../config.js';
@@ -96,17 +97,16 @@ export function regrow(g) {
 
 // Lot 8 : à chaque changement de saison, on remet autant d'arbres et de cailloux qu'au départ (même si la ferme a été vidée) :
 // une nouvelle génération (graine de la saison) remplit les cases restées libres, sans dépasser le nombre de départ.
-export function seasonRestock(g) {
-  const S = g.S, start = genObjects(), fresh = genObjects(12345 + (S.year || 1) * 4 + (S.season || 0) * 977);
-  const count = o => { let t = 0, r = 0; for (const k in o) { const x = o[k].t; if (x === 'tree') t++; else if (x === 'rock' || x === 'rock_big') r++; } return { t, r }; };
-  const want = count(start), have = count(S.objs); let added = 0;
-  const px = Math.floor(S.x), py = Math.floor(S.y), queued = new Set((S.rockQueue || []).map(q => q.k)), pots = new Set((S.pots || []).map(p => key(p.x, p.y)));
+export function seasonRestock(g) {   // 19/11 : à chaque saison, les arbres adultes sont replacés ailleurs, au hasard (même nombre qu'au départ)
+  const S = g.S, seed = (S.treeSeed || 12345) + (S.year || 1) * 4099 + (S.season || 0) * 977, fresh = genObjects(seed);
+  const px = Math.floor(S.x), py = Math.floor(S.y), pots = new Set((S.pots || []).map(p => key(p.x, p.y)));
+  for (const k in S.objs) { const o = S.objs[k], [x, y] = k.split(',').map(Number); if (o.t === 'tree' && !AXE_GROVE.some(([a, b]) => a === x && b === y)) delete S.objs[k]; }
+  let added = 0;
   for (const k in fresh) {
-    const o = fresh[k], tree = o.t === 'tree', rock = o.t === 'rock' || o.t === 'rock_big';
-    if (!(tree || rock) || (tree ? have.t >= want.t : have.r >= want.r)) continue;
+    const o = fresh[k]; if (o.t !== 'tree') continue;
     const [x, y] = k.split(',').map(Number);
-    if (S.objs[k] || queued.has(k) || pots.has(k) || (x === px && y === py) || !freeForObj(x, y) || isSolid({ ...S, scene: 'farm' }, x, y)) continue;
-    S.objs[k] = tree ? newTree(o.k) : newRock(o.t === 'rock_big'); tree ? have.t++ : have.r++; added++;
+    if (S.objs[k] || pots.has(k) || (x === px && y === py) || !freeForObj(x, y) || isSolid({ ...S, scene: 'farm' }, x, y)) continue;
+    S.objs[k] = newTree(o.k); added++;
   }
   return added;
 }

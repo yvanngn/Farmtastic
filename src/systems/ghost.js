@@ -2,7 +2,7 @@
 // l'esprit d'une vieille femme qui pleure, qui disparaît quand on s'approche. Lui parler viendra plus tard (objet à venir).
 import { GHOST, GHOST_LINES } from '../data/npcs.js';
 
-const dayNo = S => (S.year - 1) * 112 + S.season * 28 + S.day;
+const dayNo = S => (S.year - 1) * 120 + S.season * 30 + S.day;
 export const ghostQ = S => ((S.quests ||= {}).ghost ||= {});
 const think = (g, lines) => g.bus.emit('say', { name: g.S.name, color: '#ffdf8a', lines });
 const night = S => S.minute >= GHOST.from;

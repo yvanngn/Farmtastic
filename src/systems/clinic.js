@@ -9,7 +9,7 @@ export const CLINIC_BED = { x: 2.5, y: 4.6 };
 // Hailey travaille-t-elle en ce moment ? Sinon (jour de repos, nuit), elle vient quand même mais le tarif est doublé.
 export function haileyOff(S) {
   if (!HAILEY.routine) return null;
-  if (routineDay(S) % 7 === 0) return 'repos';
+  if ((routineDay(S) - 1) % 7 >= 5) return 'repos';   // 19/11 : week-end
   return routinePlace(HAILEY, S) === 'clinique' ? null : 'nuit';
 }
 export function toClinic(g, why = 'fatigue') {

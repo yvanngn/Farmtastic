@@ -135,7 +135,7 @@ export function createMenu(g, opts) {
         return card(`<div class="t">${j.i} <b>${j.n}</b></div><div>Niveau ${l}/10</div><div class="bar"><i style="width:${nx ? Math.min(100, xp / nx * 100) : 100}%"></i></div><small>${nx ? `${xp}/${nx} XP` : 'Niveau max'}</small>`); }).join('') + '</div>';
     },
     quests(S) {
-      const dn = (S.year - 1) * 112 + S.season * 28 + S.day;
+      const dn = (S.year - 1) * 120 + S.season * 30 + S.day;
       const one = id => {
         const { q, done, cur } = questProgress(S, id);
         return card(`<div class="t" style="font-size:1.1em">${q.i} <b>${q.n}</b></div><ol class="etapes">` + q.steps.map((st, i) =>

@@ -27,7 +27,7 @@ export function newDay(g, slept) {
   const S = g.S;
   S.day++;
   let newSeason = false;
-  if (S.day > 28) { S.day = 1; S.season = (S.season + 1) % 4; if (S.season === 0) S.year++; newSeason = true; }
+  if (S.day > CFG.MONTH_DAYS) { S.day = 1; S.season = (S.season + 1) % 4; if (S.season === 0) S.year++; newSeason = true; }   // 19/11 : un mois (une saison) = 30 jours
   S.minute = CFG.DAY_START;
   g.timeAcc = 0;
   if (slept) S.energy = S.maxE;
@@ -80,3 +80,9 @@ export function remind18(g) {
   g.bus.emit('toast', '🌙 18h : pense à aller dormir bientôt. Pas couché(e) à 1h → infirmerie (10 % de frais) !');
   return true;
 }
+
+// 19/11 : jours de la semaine, du lundi au dimanche (le 1er jour de la partie est un lundi). Le week-end, on ne travaille pas.
+export const dayIndex = S => ((S.year || 1) - 1) * 4 * CFG.MONTH_DAYS + (S.season || 0) * CFG.MONTH_DAYS + (S.day || 1);
+export const weekday = S => (dayIndex(S) - 1) % 7;          // 0 = lundi … 6 = dimanche
+export const weekdayName = S => CFG.WEEKDAYS[weekday(S)];
+export const isWeekend = S => weekday(S) >= 5;

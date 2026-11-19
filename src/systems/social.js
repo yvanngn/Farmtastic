@@ -103,10 +103,10 @@ function alongDir(pts, t, back) {
 // Routine quotidienne qui varie un peu chaque jour (Hailey pour commencer). Renvoie le lieu du moment.
 // Étape : [heure, lieu] ; heure ou lieu peuvent être une liste (une variante choisie selon le jour) ;
 // un lieu « x? » n'a lieu qu'un soir sur deux (sinon on reste à l'étape d'avant).
-export const routineDay = S => (S.year - 1) * 112 + S.season * 28 + S.day;
+export const routineDay = S => (S.year - 1) * 120 + S.season * 30 + S.day;
 export function routinePlace(n, S) {
   const d = routineDay(S), pick = (v, k) => Array.isArray(v) ? v[(d * 7 + k * 3) % v.length] : v;
-  const steps = d % 7 === 0 ? n.routine.repos : n.routine.travail;
+  const steps = (d - 1) % 7 >= 5 ? n.routine.repos : n.routine.travail;   // 19/11 : repos le samedi et le dimanche
   let at = null;
   steps.forEach(([h, p], k) => {
     const from = pick(h, k); let place = pick(p, k + 1);
@@ -122,12 +122,21 @@ export function orbitNPC(n, t) {
   const vx = -Math.sin(a) * o.rx, vy = Math.cos(a) * o.ry;
   n.dir = Math.abs(vx) > Math.abs(vy) ? (vx < 0 ? 2 : 3) : (vy < 0 ? 1 : 0);
 }
+// 19/11 : lieux de détente du week-end (samedi : la place du centre-ville ; dimanche : le parc et la plage)
+const LEISURE_SAT = [{ scene: 'town', x: 13.5, y: 9.6 }, { scene: 'town', x: 22.5, y: 9.6 }, { scene: 'town', x: 18.5, y: 5.6 }, { scene: 'town', x: 12.6, y: 6.6 }];
+const LEISURE_SUN = [{ scene: 'plage', x: 22.5, y: 7.5 }, { scene: 'plage', x: 26.5, y: 8.5 }, { scene: 'town', x: 14.5, y: 9.6 }];
 export function placeNPC(n, S, OUT_FROM, OUT_TO) {
   if (n.mystic) return placeMyst(n, S);
   if (n.routine) { const p = n.places[routinePlace(n, S)]; n.scene = p.scene; n.x = p.x; n.y = p.y; n.walking = false; faceP(n, S); return; }
   if (n.stay) { n.scene = n.home; Object.assign(n, n.inside); n.walking = false; faceP(n, S); return; }   // reste chez lui (Suzie, Jade)
   if (n.worker) { // au travail de longues heures, sinon introuvable
-    const w = n.worker, on = S.minute >= w.from && S.minute < w.to;
+    const w = n.worker, day = S.minute >= w.from && S.minute < w.to, off = !n.napping && (routineDay(S) - 1) % 7 >= 5;
+    if (off) {   // 19/11 : le week-end, pas de travail : on se promène sur la place du centre-ville (ou au parc le dimanche)
+      const sun = (routineDay(S) - 1) % 7 === 6, h = [...n.id].reduce((a, c) => a + c.charCodeAt(0), 0), spots = sun ? LEISURE_SUN : LEISURE_SAT, p = spots[h % spots.length];
+      const outNow = S.minute >= 600 && S.minute < 1140;
+      n.scene = outNow ? p.scene : (n.home || 'none'); Object.assign(n, outNow ? { x: p.x, y: p.y } : (n.inside || w.at)); n.walking = false; faceP(n, S); n.sleeping = false; return;
+    }
+    const on = day;
     n.scene = on ? w.scene : (n.home || 'none'); Object.assign(n, on ? w.at : (n.inside || w.at)); n.walking = false; n.dir = 0;
     if (n.napping) n.sleeping = on;   // lot 12 : Rouky fait la sieste dehors le jour
     return;

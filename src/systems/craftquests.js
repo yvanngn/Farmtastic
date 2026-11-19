@@ -12,7 +12,7 @@ import { add, has } from './inventory.js';
 
 export const CRAFT_HEART_PTS = 60;   // 💡 points d'amitié pour une demande livrée (250 points = 1 cœur)
 export const BOARD = 'panneau';
-const dayNo = S => (S.year - 1) * 112 + S.season * 28 + S.day;
+const dayNo = S => (S.year - 1) * 120 + S.season * 30 + S.day;
 export const weekNo = S => Math.floor((dayNo(S) - 1) / 7);
 // 💡 récompense : deux fois la valeur de vente, plus 20 $ pour la peine.
 export const craftReward = (out, qty) => 2 * ((ITEMS[out] && ITEMS[out].p) || 5) * qty + 20;

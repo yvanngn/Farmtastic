@@ -30,7 +30,7 @@ test('dormir seulement après 18h, énergie pleine', () => {
 });
 
 test('changement de saison et d’année', () => {
-  const { g, S } = makeGame({ state: { day: 28, season: 3 } });
+  const { g, S } = makeGame({ state: { day: 30, season: 3 } });
   newDay(g, true);
   assert.deepEqual([S.day, S.season, S.year], [1, 0, 2]);
 });

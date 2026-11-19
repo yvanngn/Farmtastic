@@ -133,12 +133,12 @@ test('lot 8 : beaucoup plus d’arbres et de cailloux au départ, et autant remi
   const { newDay } = await import('../src/systems/time.js');
   const o = genObjects(), n = t => Object.values(o).filter(x => t.includes(x.t)).length;
   assert.ok(n(['tree']) >= 150, `départ : ${n(['tree'])} arbres`); assert.equal(n(['rock', 'rock_big', 'boulder']), 0, '19/11 : plus de cailloux à la ferme');
-  const { g } = makeGame(); g.S.objs = {}; g.S.x = 5.5; g.S.y = 6.8; g.S.day = 28;
+  const { g } = makeGame(); g.S.objs = {}; g.S.x = 5.5; g.S.y = 6.8; g.S.day = 30;
   newDay(g, true);
-  const m = t => Object.values(g.S.objs).filter(x => t.includes(x.t)).length;
-  assert.ok(m(['tree']) >= n(['tree']) * .8 && m(['rock', 'rock_big']) >= n(['rock', 'rock_big']) * .8, `remis : ${m(['tree'])} / ${m(['rock', 'rock_big'])}`);
-  assert.ok(m(['tree']) <= n(['tree']) && m(['rock', 'rock_big']) <= n(['rock', 'rock_big']) + 10, 'jamais plus qu’au départ');
-  assert.equal(seasonRestock(g), 0, 'ferme déjà pleine : rien de plus');
+  const m = t => Object.values(g.S.objs).filter(x => t.includes(x.t)).length, keys = () => Object.keys(g.S.objs).filter(k => g.S.objs[k].t === 'tree').sort().join();
+  assert.ok(m(['tree']) >= n(['tree']) * .8 && m(['tree']) <= n(['tree']) * 1.2, `remis : ${m(['tree'])}`);
+  const before = keys(); g.S.season = (g.S.season + 1) % 4; seasonRestock(g);
+  assert.notEqual(keys(), before, '19/11 : à chaque saison, les arbres sont placés ailleurs');
 });
 
 test('coups de hache et de pioche plus lents (un geste à la fois) ; un meilleur outil va plus vite ; moins d’énergie par coup', async () => {

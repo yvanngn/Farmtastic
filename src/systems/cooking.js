@@ -5,7 +5,7 @@ import { add, has, canAdd, scatter } from './inventory.js';
 import { gainJob } from './jobs.js';
 import { gainPxp, XP, recipeOpen } from './level.js';
 
-const dayNo = S => (S.year - 1) * 112 + S.season * 28 + S.day;
+const dayNo = S => (S.year - 1) * 120 + S.season * 30 + S.day;
 export const knows = (S, id) => (S.recipes || []).includes(id);
 export const canCraftHand = (S, id) => knows(S, id) && recipeOpen(S, HAND_RECIPES[id]) && Object.entries(HAND_RECIPES[id].in).every(([k, n]) => has(S, k, n));
 

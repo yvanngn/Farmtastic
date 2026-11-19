@@ -3,7 +3,7 @@ import { DAILY_FROM, DAILY_FIRST, DAILY_POOL } from '../data/daily.js';
 import { add, has } from './inventory.js';
 import { gainPxp, XP } from './level.js';
 
-export const dayNo = S => (S.year - 1) * 112 + S.season * 28 + S.day;
+export const dayNo = S => (S.year - 1) * 120 + S.season * 30 + S.day;
 export function dailyQuest(g) {
   const S = g.S, d = dayNo(S);
   if (d < DAILY_FROM) return null;

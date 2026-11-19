@@ -50,7 +50,7 @@ import { scatter } from './inventory.js';
 import { useEnergy } from './player.js';
 import { toolTier, hasTool } from './skills.js';
 import { energyCost, hitReady } from '../data/tools.js';
-const dayN = S => (S.year - 1) * 112 + S.season * 28 + S.day;
+const dayN = S => (S.year - 1) * 120 + S.season * 30 + S.day;
 const W = () => LAYOUTS.foret[0].length, H = () => LAYOUTS.foret.length;
 export const isForestTree = (x, y) => x > 0 && y > 0 && x < W() - 1 && y < H() - 1 && LAYOUTS.foret[y][x] === 'T';
 const seasonN = S => (S.year - 1) * 4 + S.season;

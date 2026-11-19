@@ -156,6 +156,13 @@ Pour que **les scènes du jeu** atteignent le niveau de détail de l'image, scè
 - [x] **Un coffre pour ranger** : acheter le **plan du coffre** chez Harry (💡 60 $), le fabriquer (80 bois + 20 pierres). Le coffre quitte la quête principale « Premiers pas » ; Harry ne l'apprend plus gratuitement.
 - ⏳ Plus tard : la cabane agrandie vue de dehors (aujourd'hui seul l'intérieur change).
 
+## Calendrier et arbres (19/11) ✅ v0.1.84
+- [x] Arbres de la ferme placés au hasard à chaque nouvelle partie, et replacés ailleurs à chaque saison (même nombre ; le petit bois de la hache reste).
+- [x] Journée un peu plus rapide : 1 minute de jeu = 0,78 s (≈ 15 min par jour au lieu de 20).
+- [x] Un mois (une saison) dure 30 jours.
+- [x] Jours de la semaine (le 1er jour est un lundi), affichés dans le cadre du haut. Le week-end, les habitants ne travaillent pas : samedi sur la place du centre-ville, dimanche à la plage ou sur la place (10 h – 19 h), chez eux sinon. Hailey (clinique) se repose le samedi et le dimanche.
+- [ ] Plus tard : boutiques fermées le week-end ? activités variées.
+
 ## Coups de hache (19/11) ✅ v0.1.76
 - [x] Planches `heros-hache.jpg` et `heroine-hache.jpg` → coups de hache en 3 temps (levée haute, levée, frappe) pour le héros et l'héroïne.
 - [x] Couleur des cheveux : elle restait d'origine pendant les coups d'outil (les planches d'outils n'avaient pas de masque des cheveux) ; masque ajouté, pris avec les couleurs de cheveux de la planche de marche (le manche n'est pas teinté).

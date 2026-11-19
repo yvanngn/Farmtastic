@@ -64,8 +64,8 @@ test('interagir avec le décor : un petit texte du héros', () => {
   assert.notEqual(act2(g, 10, 3), 'look', 'le lit sert à dormir');
 });
 
-test('le temps passe plus lentement : 1 minute de jeu = 1 seconde', () => {
-  assert.equal(CFG.MS_PER_MIN, 1000);
+test('19/11 : journée un peu plus rapide (1 minute de jeu = 0,78 s), mois de 30 jours', () => {
+  assert.equal(CFG.MS_PER_MIN, 780); assert.equal(CFG.MONTH_DAYS, 30);
 });
 
 test('index.html (GitHub Pages) est à jour avec play.html (claude.ai)', async () => {

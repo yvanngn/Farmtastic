@@ -71,7 +71,7 @@ export function isSolid(S, x, y) {
   if (S.scene === 'foret') syncForest(S);   // lot 11 : labyrinthe de la saison
   if (S.scene === 'foret' && x === FOREST_CHEST.x && y === FOREST_CHEST.y) return true;   // lot 8 : le coffre du labyrinthe
   if (S.scene === 'foret' && S.foret && S.foret.shrooms && S.foret.shrooms[x + ',' + y]) return false;
-  if (S.scene === 'foret' && S.foret && ((S.foret.cut && S.foret.cut[x + ',' + y] != null && (S.year - 1) * 112 + S.season * 28 + S.day - S.foret.cut[x + ',' + y] < 4) || (S.foret.gone && S.foret.gone[x + ',' + y] === (S.year - 1) * 4 + S.season))) return false;   // arbre coupé : souche 4 jours, ou souche arrachée jusqu'à la saison suivante (19/11)
+  if (S.scene === 'foret' && S.foret && ((S.foret.cut && S.foret.cut[x + ',' + y] != null && (S.year - 1) * 120 + S.season * 30 + S.day - S.foret.cut[x + ',' + y] < 4) || (S.foret.gone && S.foret.gone[x + ',' + y] === (S.year - 1) * 4 + S.season))) return false;   // arbre coupé : souche 4 jours, ou souche arrachée jusqu'à la saison suivante (19/11)
   if (S.scene && S.scene !== 'farm') { const t = tileAt(S.scene, x, y); if (t === '%') return !quarryMouthOpen(S, x, y);   // 19/11 : bouche de tunnel ouverte ce jour-là
     if (S.scene === 'grange' && (t === 'p' || t === 'r') && S.grange && S.grange.broken.includes(x + ',' + y)) return false; return SOLID_TILES.includes(t); }
   if (x < 0 || y < 0 || x >= CFG.W || y >= CFG.H) return true;

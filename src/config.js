@@ -8,7 +8,9 @@ export const CFG = {
   W: 48, H: 36,              // taille de la carte (tuiles)
   AUTOSAVE_MS: 30000,        // sauvegarde auto
   NET_MS: 100,               // 10 envois réseau / s max
-  MS_PER_MIN: 1000,          // 1 min de jeu = 1 s réelle (une journée ≈ 20 min)
+  MS_PER_MIN: 780,           // 19/11 : un peu plus rapide (1 min de jeu = 0,78 s ; une journée ≈ 15 min)
+  MONTH_DAYS: 30,            // 19/11 : un mois (une saison) dure 30 jours
+  WEEKDAYS: ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'],
   DAY_START: 360,            // 6h00
   DAY_END: 1560,             // 2h00 : évanouissement
   SLEEP_FROM: 1080,

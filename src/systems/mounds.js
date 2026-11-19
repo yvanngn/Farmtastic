@@ -15,7 +15,7 @@ export const MOUNDS_PER_ZONE = 20;
 export const MOUND_LOOT = [['rien', .10], ['stone', .30], ['wood', .25], ['champignon', .20], ['bone', .15]];
 export const MOUND_QTY = { stone: [1, 3], wood: [1, 3], champignon: [1, 1], bone: [1, 1] };   // 💡 quantités
 
-const dayNum = S => ((S.year || 1) - 1) * 112 + (S.season || 0) * 28 + (S.day || 1);
+const dayNum = S => ((S.year || 1) - 1) * 120 + (S.season || 0) * 30 + (S.day || 1);
 const size = sc => sc === 'farm' ? [CFG.W, CFG.H] : [LAYOUTS[sc][0].length, LAYOUTS[sc].length];
 const hash = s => { let h = 2166136261; for (const c of s) h = Math.imul(h ^ c.charCodeAt(0), 16777619); return h >>> 0; };
 
