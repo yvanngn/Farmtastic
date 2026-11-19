@@ -156,6 +156,10 @@ Pour que **les scènes du jeu** atteignent le niveau de détail de l'image, scè
 - [x] **Un coffre pour ranger** : acheter le **plan du coffre** chez Harry (💡 60 $), le fabriquer (80 bois + 20 pierres). Le coffre quitte la quête principale « Premiers pas » ; Harry ne l'apprend plus gratuitement.
 - ⏳ Plus tard : la cabane agrandie vue de dehors (aujourd'hui seul l'intérieur change).
 
+## Essai du 19/11 : planche Myst sur le héros ✅ v0.1.69
+- [x] Planche fournie (JPEG agrandi × 3,75) → `tools/sprite-from-jpeg-grid.py` : pas de la grille retrouvé, une couleur par pixel du dessin (bruit JPEG gommé), fond blanc et liseré clair retirés, profil retourné ; 3 × 4 poses, 34 × 69 pixels par image, affichées à 46 pixels du monde (jamais réduites à l'écran).
+- [x] Le héros utilise cette planche (marche 4 poses, 105 ms) ; Réglages → « 🧪 Héros : planche Myst (essai) » pour revenir au héros personnalisé.
+
 ## Lot 21 — Fermes voisines, carte, quartier (demande du 19/11) ✅ v0.1.68
 - [x] Plus d'ombres de nuages.
 - [x] Rond-point → zone résidentielle : on arrive par l'ouest (à gauche), plus par le haut.
