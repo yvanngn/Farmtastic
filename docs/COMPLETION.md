@@ -23,6 +23,7 @@ Le détail de chaque point est dans `docs/MANUEL.md`.
 - [ ] Pioche, hache, faucille, épée au palier Cuivre · Fer · Or · Iridium
 
 ## Ferme
+- [ ] Consulter le grand panneau de la place (calendrier, météo)
 - [ ] Cabane retapée · [ ] Cabane agrandie · [ ] Lit installé · [ ] Grange rafistolée · [ ] Premier coffre · [ ] Chaudron · [ ] Première récolte
 - [ ] Un animal de chaque espèce (poule, lapin, cochon, mouton, chien, chat)
 

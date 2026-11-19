@@ -110,6 +110,16 @@ export function buildWest(name, season) {
       if (F) blit(g, F.im, px + F.ox, py + 14 + F.oy); }   // 18/11 (soir) : entrepôt « pixel moderne »
     for (const bx of [px + 6, px + w - 18]) { R(bx, py + h - 12, 12, 12, '#a8774a'); R(bx, py + h - 12, 12, 1, '#c99560'); R(bx + 5, py + h - 12, 1, 12, '#7a5232'); }   // caisses
   });
+  for (const [x0, y0, x1, y1] of block('K')) drawPlankPile(R, x0 * T, y0 * T, (x1 - x0 + 1) * T, (y1 - y0 + 1) * T);   // 19/11 : tas de planches (fermes voisines)
+  for (const [x0, y0, x1, y1] of block('!')) {   // 19/11 : le grand panneau d'affichage de la place (calendrier, météo)
+    const px = x0 * T, py = y0 * T, w = (x1 - x0 + 1) * T, h = (y1 - y0 + 1) * T;
+    R(px - 2, py + h - 2, w + 4, 4, 'rgba(30,15,5,.3)');
+    R(px + 6, py - 4, 4, h + 2, '#5b3a22'); R(px + w - 10, py - 4, 4, h + 2, '#5b3a22');   // pieds
+    R(px - 2, py - 22, w + 4, 30, '#3f2615'); R(px, py - 20, w, 26, '#c99560'); R(px - 4, py - 25, w + 8, 4, '#8a5a32'); R(px - 4, py - 25, w + 8, 1, '#b07a48');   // planche + petit toit
+    for (let k = 0; k < 7; k++) { const cx = px + 3 + k * 8.5; R(cx, py - 14, 7, 7, '#f4ead2'); R(cx, py - 14, 7, 2, k === 0 ? '#c8402e' : '#7a8a9a'); }   // cases du calendrier
+    for (let k = 0; k < 4; k++) { const cx = px + 6 + k * 14; R(cx, py - 4, 10, 8, '#e8f0f4'); R(cx + 3, py - 2, 4, 4, k % 2 ? '#9aa4b0' : '#f2c040'); }   // météo J à J+3
+    signBoard(R, px + w / 2, py - 27, 'CALENDRIER');
+  }
   // 5. panneaux indicateurs
   for (const [k, txt] of Object.entries(SIGNS[name] || {})) {
     const [x, y] = k.split(',').map(Number), px = x * T, py = y * T;
@@ -154,4 +164,12 @@ function drawBoat(R, x, y) {
   for (let k = 0; k < 20; k++) R(x + 17, y - 20 + k, Math.round(k * .7) + 1, 1, '#f4ead2');   // voile
   for (let k = 0; k < 14; k++) R(x + 14 - Math.round(k * .6), y - 14 + k, Math.round(k * .6) + 1, 1, '#e8dcc0');
   R(x + 16, y - 24, 6, 3, '#a8302b');   // fanion
+}
+// 19/11 : tas de planches à la place de la cabane (fermes autres que la principale). Partagé avec le sol de la ferme.
+export function drawPlankPile(R, px, py, w, h) {
+  R(px + 4, py + h - 10, w - 8, 6, 'rgba(30,15,5,.25)');
+  const by = py + h - 16, cols = ['#a8774a', '#c99560', '#8a5a32'];
+  for (let k = 0; k < 5; k++) { const off = (k % 2) * 6, len = w - 20 - (k * 4), y = by - k * 5; R(px + 10 + off, y, len, 5, cols[k % 3]); R(px + 10 + off, y, len, 1, '#e0b884'); R(px + 10 + off, y + 4, len, 1, '#5b3a22'); for (let j = 14; j < len; j += 22) R(px + 10 + off + j, y + 2, 1, 1, '#3b2414'); }   // planches empilées (clous)
+  R(px + 2, by + 2, 26, 4, '#b07a48'); R(px + w - 30, by - 3, 24, 4, '#8a5a32');   // planches éparses au sol
+  R(px + w - 18, by - 30, 3, 10, '#6a4426'); R(px + w - 22, by - 30, 11, 2, '#6a4426');   // poutre dressée
 }

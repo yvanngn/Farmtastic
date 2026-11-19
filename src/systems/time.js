@@ -1,3 +1,4 @@
+import { forecastNewDay } from './calendar.js';
 import { standNewDay } from './stand.js';
 import { cropsNewDay } from './farming.js';
 import { mailNewDay } from './mail.js';
@@ -32,7 +33,7 @@ export function newDay(g, slept) {
   g.timeAcc = 0;
   if (slept) S.energy = S.maxE;
   else g.bus.emit('toast', "🌙 Nuit passée dehors sans dormir : aucune énergie récupérée. Dors sous ta tente !");   // l'énergie reste comme elle était
-  S.weather = rollWeather(S.season, g.rnd());
+  S.weather = rollWeather(S.season, g.rnd()); forecastNewDay(g);   // 19/11 : la météo prévue sur le panneau de la place
   rollRainbow(g);
   animalsNewDay(S);
   socialNewDay(S);

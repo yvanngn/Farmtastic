@@ -216,6 +216,13 @@ function drawHeroPlanche(c, ox, oy, L, d, f, t = 0) {
   else c.drawImage(img, col * S.sw, row * S.sh, S.sw, S.sh, x, y, S.fw, S.fh);
   return true;
 }
+function drawNpcPlanche(c, ox, oy, L, d, f, t = 0) {
+  const S = SHEETS[L.planche], img = S && sheetImage(L.planche); if (!img) return false;
+  const col = f ? Math.floor(t / HERO_SHEET_MS) % 4 : 0, row = d === 0 ? 0 : d === 1 ? 1 : 2, x = Math.round(ox + 6 - S.fw / 2), y = oy + 20 - S.fh;
+  if (d === 3) { c.save(); c.translate(x + S.fw, y); c.scale(-1, 1); c.drawImage(img, col * S.sw, row * S.sh, S.sw, S.sh, 0, 0, S.fw, S.fh); c.restore(); }
+  else c.drawImage(img, col * S.sw, row * S.sh, S.sw, S.sh, x, y, S.fw, S.fh);
+  return true;
+}
 function drawSheet(c, ox, oy, L, d, f) {
   const img = sheetImage(L.sheet); if (!img) return false;
   const S = SHEETS[L.sheet], n = S.n || 4, col = f ? ((f - 1) * n / WALK_N | 0) % n : 0, row = d === 0 ? 0 : d === 1 ? 1 : 2;
@@ -271,7 +278,8 @@ function drawHeroSheet(c, ox, oy, L, d, f) {
 }
 export function drawChar(c, ox, oy, L, d, f, t = 0, noArm = false) {
   groundShadow(c, ox + 6, oy + 19, L.stout || L.muscle ? 9 : L.kid ? 6 : 7, 2);
-  if ((L.hero || L.doll) && drawHeroPlanche(c, ox, oy, L, d, f, t)) return;   // 19/11 : héros / héroïne d'après les planches fournies
+  if ((L.hero || L.doll) && drawHeroPlanche(c, ox, oy, L, d, f, t)) return;
+  if (L.planche && drawNpcPlanche(c, ox, oy, L, d, f, t)) return;   // 19/11 : habitants d'après les nouvelles planches (Luna, Manu)   // 19/11 : héros / héroïne d'après les planches fournies
   if (!L.oldDraw && drawFolk(c, ox, oy, L, d, f)) return;   // 18/11 (soir) : personnages en « pixel moderne » (src/render/folk.js)
   if (!L.oldDraw && drawPaperDoll(c, ox, oy, L, d, f)) return;   // 18/11 : tout le monde en poupée dessinée par le code (src/render/paperdoll.js)
   if (L.sheet && drawSheet(c, ox, oy, L, d, f)) return;

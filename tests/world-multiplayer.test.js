@@ -63,9 +63,9 @@ test('chaque joueur a sa ferme : on ne voit sur la sienne que ceux du même empl
 
 test('Farmwest 2d : ferme → forêt (à l’est) → caverne (fermée)', async () => {
   const { SCENES } = await import('../src/world/scenes.js');
-  assert.ok(SCENES.farm.doors.some(d => d.to === 'foret'));
+  const { FARM_LINKS } = await import('../src/data/buildings.js'); assert.equal(FARM_LINKS[0].E, 'foret', '19/11 : la forêt à l’est de la ferme principale');
   assert.equal(SCENES.farm.doors.some(d => d.to === 'town' || d.to === 'wild'), false);
-  assert.ok(SCENES.foret.doors.some(d => d.to === 'farm') && SCENES.foret.doors.some(d => d.to === 'wild'));
+  assert.ok(SCENES.foret.doors.some(d => d.to === 'lot' && d.lot === 0) && SCENES.foret.doors.some(d => d.to === 'wild'));
   const { g, S } = makeGame({ state: { scene: 'foret' } });
   assert.equal(act(g, 29, 9), 'locked', 'la caverne est fermée');
   assert.equal(act(g, 0, 9), 'door'); assert.equal(S.scene, 'farm');

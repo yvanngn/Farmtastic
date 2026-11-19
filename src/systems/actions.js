@@ -122,9 +122,10 @@ function act0(g, tx, ty) {
   if (digTreasure(g, tx, ty)) return 'treasure';
   { const f = pickFlower(g, tx, ty); if (f === false) return 'noknife'; if (f === 'progress') return 'progress'; if (f) return 'pick'; }
   { const N = natureAt(S, sc); if (N && N.rocks[key(tx, ty)]) return hitNature(g, tx, ty) ? 'hit' : 'none'; }
-  const d = doorAt(sc, tx, ty);
-  { const fd = d && farmDoor(S, d); if (fd) { const who = Object.values(g.others || {}).find(o => o.farmLot === fd.lot); enterScene(g, fd.scene, fd.spawn); if (fd.scene !== 'farm') g.bus.emit('toast', `🏡 ${fd.name} — ${who ? 'la ferme de ' + who.name : 'personne n’y habite pour l’instant'}`); return 'door'; }
-    if (d && d.to.startsWith('lot:')) return 'none'; }   // 19/11 : fermes voisines
+  let d = doorAt(sc, tx, ty);
+  { const fd = d && farmDoor(S, d); if (fd) { if (!fd.to) return 'none';   // 19/11 : sorties des fermes (FARM_LINKS)
+    if (fd.lot == null) d = { ...d, to: fd.to, spawn: fd.spawn };
+    else { const who = Object.values(g.others || {}).find(o => o.farmLot === fd.lot); enterScene(g, fd.to, fd.spawn); if (fd.to !== 'farm') g.bus.emit('toast', `🏡 ${fd.name} — ${who ? 'la ferme de ' + who.name : 'personne n’y habite pour l’instant'}`); return 'door'; } } }
   if (d && d.to === 'foret' && !forestOpen(S) && !ADMIN.on) { const r = chopForestBlocker(g, tx, ty); return r === 'open' ? (enterScene(g, d.to, d.spawn), 'door') : 'locked'; }   // 19/11 : un gros arbre barre la forêt (hache en cuivre)
   if (d && d.to !== 'foret' && ZONE_LEVEL[d.to] && !zoneOpen(S, d.to) && !ADMIN.on) { g.bus.emit('sfx', 'denied'); g.bus.emit('toast', d.to === 'foret' ? `🌲 Les arbres sont si serrés qu'on ne passe pas… (niveau ${ZONE_LEVEL.foret} requis)` : `🔒 La caverne attendra : niveau ${ZONE_LEVEL[d.to]} requis.`); return 'locked'; }   // lot 8 : zones débloquées par le niveau
   if (d && d.to === 'wild' && !isOpen(S)) { g.bus.emit('sfx', 'denied'); g.bus.emit('toast', 'La grille de la caverne est fermée à clé. Le Maire saura peut-être…'); return 'locked'; }
@@ -144,6 +145,7 @@ function act0(g, tx, ty) {
   if (tileAt(sc, tx, ty) === 'G') { g.bus.emit('toast', '🧊 Une grotte gelée, bouchée par des éboulis et de la glace. Impossible d’entrer… pour l’instant.'); return 'locked'; }
   if (sc === 'wild' && tileAt(sc, tx, ty) === 'S') { g.bus.emit('sfx', 'denied'); g.bus.emit('toast', '⬇️ Un escalier s’enfonce vers l’étage 2… bloqué par des éboulis pour l’instant.'); return 'stairs'; }
   if (sc === 'wild') return S.wild && S.wild.rocks[key(tx, ty)] ? (hitZRock(g, tx, ty) ? 'hit' : 'none') : 'none';
+  if (sc === 'place') { const t = tileAt(sc, tx, ty), ui = t === '$' ? 'stand' : t === '!' ? 'calendar' : null; if (ui) { g.bus.emit('sfx', 'ui'); g.bus.emit('open', ui); return ui; } }   // 19/11 : la place du panneau
   if (sc === 'town') { const ui = UI_TILES[tileAt(sc, tx, ty)]; if (ui) { g.bus.emit('sfx', 'ui'); g.bus.emit('open', ui); return ui; } return 'none'; }
   if (isHome(sc)) {
     const t = tileAt(sc, tx, ty);

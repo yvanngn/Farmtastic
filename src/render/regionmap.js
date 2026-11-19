@@ -11,9 +11,9 @@ import { FARM_LOTS } from '../data/buildings.js';
 
 export const RW = 88, RH = 48, RT = 16;
 // Où se trouve chaque zone du jeu sur la carte (en cases), pour le repère du joueur.
-export const FARM_RECT = l => ({ x: 37 + l.c * 8, y: 2 + l.r * 8, w: 7, h: 6 });
+export const FARM_RECT = l => ({ x: 35 + l.c * 8, y: 1 + l.r * 6, w: 7, h: 5 });   // 19/11 : nouvelle disposition (3 fermes à l'ouest, la principale au milieu)
 export const REGION_POS = {
-  gare: [9, 19], golgolas: [8, 24], carriere: [39, 0], carriere2: [38, 0], town: [24, 20], resto: [24, 20], bar: [24, 20], rondpoint: [44, 20], quartier: [50, 23], ranch: [51, 30],
+  gare: [9, 19], golgolas: [8, 24], carriere: [46, 2], carriere2: [45, 1], place: [46, 13], town: [24, 20], resto: [24, 20], bar: [24, 20], rondpoint: [44, 20], quartier: [40, 26], ranch: [51, 30],
   parc: [46, 39], plage: [25, 40], port: [74, 40], foret: [62, 9], wild: [79, 5], montagne: [78, 20]
 };
 export function regionPos(S) {
@@ -23,8 +23,8 @@ export function regionPos(S) {
   return { x: R.x + R.w / 2, y: R.y + R.h / 2 };
 }
 export const LABELS = [
-  ['Les 4 Fermes', 48, 1.1], ['Carrière', 39.5, 1.4], ['Clairière', 8.5, 27.6], ['Forêt', 62, 7], ['Caverne Sombre', 79, 1.2], ['Montagne', 79, 13.2], ['Gare', 9, 16],
-  ['Centre-ville', 24, 25], ['Zone Résidentielle', 51, 24.6], ['Ranch du Maire', 51, 27.6], ['Fête Foraine', 47, 40.6],
+  ['Fermes', 38.5, 0.9], ['Carrière', 46.5, 0.9], ['Place du panneau', 46.5, 16.4], ['Clairière', 8.5, 27.6], ['Forêt', 62, 7], ['Caverne Sombre', 79, 1.2], ['Montagne', 79, 13.2], ['Gare', 9, 16],
+  ['Centre-ville', 24, 25], ['Zone Résidentielle', 40, 30.4], ['Ranch du Maire', 51, 27.6], ['Fête Foraine', 47, 40.6],
   ['Cabane du Pêcheur', 25, 44.8], ['Zone Portuaire', 74, 46.2]
 ];
 
@@ -55,7 +55,7 @@ export function regionLayout() {
   // chemins de sable
   set('.', 3, 19, 69, 20);              // grande route est-ouest (gare → centre-ville → rond-point → est)
   set('.', 43, 1, 44, 38);              // route nord-sud (les 4 fermes → rond-point → fête foraine)
-  set('.', 36, 8, 51, 8);               // allée entre les fermes
+  set('.', 35, 6, 51, 6); set('.', 35, 12, 51, 12); set('.', 42, 0, 42, 16);   // 19/11 : allées entre les fermes
   set('.', 63, 9, 64, 40); set('.', 63, 9, 78, 10);   // vers la forêt et la caverne, puis le port
   set('.', 23, 13, 24, 30); set('.', 17, 2, 29, 3); set('.', 16, 3, 16, 12);   // rue du centre-ville, chemin du nord
   set('.', 38, 22, 58, 22); set('.', 45, 34, 63, 34);
@@ -65,9 +65,11 @@ export function regionLayout() {
   // voie ferrée jusqu'à la gare
   set('r', 4, 0, 4, 17); set('r', 4, 18, 8, 18);
   // champs des 4 fermes
-  set('k', 36, 0, 42, 1);   // 19/11 : la carrière, au nord des fermes
+
   set('g', 4, 22, 11, 27); set('.', 9, 21, 10, 23);   // la clairière de Golgolas, au sud de la gare
   for (const l of FARM_LOTS) { const R = FARM_RECT(l); set('s', R.x, R.y, R.x + R.w - 1, R.y + R.h - 1); set('u', R.x + 3, R.y + 1, R.x + R.w - 1, R.y + R.h - 1); }
+  set('k', 43, 0, 49, 4);   // 19/11 : la carrière, au nord de la ferme principale
+  set('.', 43, 13, 49, 15);   // 19/11 : la place du panneau, entre la ferme principale et le rond-point
   return m.map(r => r.join(''));
 }
 
@@ -129,6 +131,7 @@ export function buildRegionMap(season = 0) {
   autotile(g, RW, RH, (x, y) => { const ch = at(x, y); return ch === '.' ? 'chemin' : ch === 'b' ? 'sable' : ch === 's' || ch === 'r' ? 'ocre' : ch === 'g' ? 'herbe' : ch === 'F' ? 'foret' : null; }, { chemin: 1, sable: 1, ocre: 2, herbe: 3, foret: 4 }, { ocre: '#d4a868', herbe: B, foret: shade(B, .8) });
   // 2. le rond-point : fontaine
   { const cx = 44 * RT, cy = 20 * RT; disc(g, cx, cy + 2, 20, 'rgba(40,20,10,.25)'); disc(g, cx, cy, 20, '#a8a29a'); disc(g, cx, cy, 16, '#5aa0d8'); disc(g, cx - 3, cy - 3, 6, '#9ad0f0'); disc(g, cx, cy, 5, '#c8c2ba'); R(cx - 1, cy - 12, 2, 10, '#e8f4fc'); }
+  { const x = 45 * RT, y = 13 * RT - 4; R(x + 4, y + 10, 3, 12, '#5b3a22'); R(x + 41, y + 10, 3, 12, '#5b3a22'); R(x, y, 48, 14, '#3f2615'); R(x + 2, y + 2, 44, 10, '#c99560'); for (let k = 0; k < 6; k++) R(x + 5 + k * 7, y + 4, 5, 5, '#f4ead2'); R(x + 56, y + 8, 20, 10, '#8a5a32'); for (let k = 0; k < 5; k++) R(x + 54 + k * 5, y + 2, 5, 5, k % 2 ? '#f4ead2' : '#c8402e'); }   // 19/11 : le grand panneau et l'étal
   // 3. caverne : entrée dans la roche, éboulis
   { const cx = 79 * RT, cy = 5 * RT; g.fillStyle = '#4e4038'; g.beginPath(); g.ellipse(cx, cy, 30, 26, 0, Math.PI, 0); g.fill(); g.fillStyle = '#16121a'; g.beginPath(); g.ellipse(cx, cy + 6, 18, 18, 0, Math.PI, 0); g.fill(); R(cx - 18, cy + 6, 36, 8, '#16121a');
     for (const [a, b] of [[-26, 8], [22, 10], [-12, 16], [14, 18]]) { disc(g, cx + a, cy + b, 4, '#7a6a5e'); disc(g, cx + a - 1, cy + b - 1, 2, '#9a8a7e'); } }
@@ -136,7 +139,9 @@ export function buildRegionMap(season = 0) {
   const mts = [[73, 21, 100, 76], [80, 20, 130, 110], [87, 22, 100, 80], [71, 26, 90, 58], [76, 27, 110, 76], [83, 27, 110, 72], [88, 27, 70, 52], [79, 29, 90, 48]];
   for (const [mx, my, w, h] of mts) mountain(g, mx * RT, my * RT + 8, w, h, season);
   // 5. bâtiments
-  for (const l of FARM_LOTS) { const F = FARM_RECT(l), x = F.x * RT, y = F.y * RT; house(g, x + 4, y + 18, 26, 26, '#b8432f', '#5a2a22', { peak: true }); house(g, x + 6, y + 64, 18, 20, '#9a6a3c', '#4a3a2a'); R(x + 2, y + 2, F.w * RT - 4, 2, '#8a5a32'); R(x + 2, y + F.h * RT - 3, F.w * RT - 4, 2, '#8a5a32'); }
+  for (const l of FARM_LOTS) { const F = FARM_RECT(l), x = F.x * RT, y = F.y * RT;
+    if (l.id === 0) house(g, x + 4, y + 18, 26, 26, '#b8432f', '#5a2a22', { peak: true }); else for (let k = 0; k < 4; k++) R(x + 6 + (k % 2) * 3, y + 34 - k * 4, 22, 3, k % 2 ? '#c99560' : '#8a5a32');   // 19/11 : tas de planches
+    house(g, x + 6, y + 52, 18, 20, '#9a6a3c', '#4a3a2a'); R(x + 2, y + 2, F.w * RT - 4, 2, '#8a5a32'); R(x + 2, y + F.h * RT - 3, F.w * RT - 4, 2, '#8a5a32'); }
   house(g, 7 * RT, 17 * RT - 4, 50, 34, '#a8703a', '#5a3a22', { sign: true, chimney: true });   // la gare
   house(g, 5 * RT, 23 * RT, 40, 30, '#b8a8c8', '#4a6a8a', { peak: true });   // 19/11 : le centre de Golgolas, dans sa clairière
   R(6 * RT, 21 * RT - 4, 64, 10, '#a8774a'); for (let k = 0; k < 64; k += 4) R(6 * RT + k, 21 * RT - 4, 1, 10, '#7a5232');   // quai

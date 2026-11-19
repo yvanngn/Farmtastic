@@ -3,7 +3,7 @@
 // Toutes les répliques sont à faire valider par l'utilisateur (liste numérotée dans docs/CARNET.md).
 export const LUNA = {
   id: 'luna', name: 'Luna', de: "d'elle", color: '#c9a0ff', voice: 'voiceLuna',
-  look: { folk: 'luna', body: 'f', bottom: 'pant', skin: '#f1c7a5', hair: 1, curly: true, hairC: '#7a4a2a', hat: 'cowboy', bandana: '#c0392b', shirt: '#a8432f', plaid: true, pants: '#d8cfc0', shoes: '#6a3a1e' },   // 18/11 : poupée dessinée par le code (src/render/paperdoll.js), tenue d'après son sprite
+  look: { planche: 'luna_v2', folk: 'luna', body: 'f', bottom: 'pant', skin: '#f1c7a5', hair: 1, curly: true, hairC: '#7a4a2a', hat: 'cowboy', bandana: '#c0392b', shirt: '#a8432f', plaid: true, pants: '#d8cfc0', shoes: '#6a3a1e' },   // 18/11 : poupée dessinée par le code (src/render/paperdoll.js), tenue d'après son sprite
   home: 'luna', outScene: 'quartier', day: { x: 9.5, y: 7.4 }, inside: { x: 5.5, y: 4.6 },
   walks: [{ scene: 'foret', from: 960, to: 1020, every: 2, at: { x: 10.5, y: 7.5 } }],   // balade en forêt, un jour sur deux, 16 h – 17 h (💡)
   // Personnalité (💡 proposée par Claude, à valider) : ancienne informaticienne, rêve d'une ferme, budget serré, bricole sa maison.
@@ -63,7 +63,7 @@ export const LUNA = {
 // en vacances ; les gens croient qu'il travaille dur pour eux. Une enquête sur lui viendra plus tard.
 export const CHEF = {
   id: 'chef', name: 'Manuel', title: 'Maire', color: '#e8c26a', voice: 'voiceChef', de: 'de lui',
-  look: { folk: 'manu', body: 'h', bottom: 'pant', skin: '#e8a982', hair: 0, hairC: '#8a8480', beard: '#9a9490', hat: 'cowboy', shirt: '#f2efe8', vest: '#2f5a3a', pants: '#5a4030', shoes: '#7a3e1e', stout: true },   // 18/11 : poupée dessinée par le code (src/render/paperdoll.js), tenue d'après son sprite
+  look: { planche: 'manu_v2', folk: 'manu', body: 'h', bottom: 'pant', skin: '#e8a982', hair: 0, hairC: '#8a8480', beard: '#9a9490', hat: 'cowboy', shirt: '#f2efe8', vest: '#2f5a3a', pants: '#5a4030', shoes: '#7a3e1e', stout: true },   // 18/11 : poupée dessinée par le code (src/render/paperdoll.js), tenue d'après son sprite
   home: 'ranch_maison', inside: { x: 3.5, y: 4.6 }, outScene: 'town', day: { x: 18.5, y: 8.6 },
   // trajet villa → place (le matin) et retour (le soir), à pied : porte de la villa, allée est, place
   walks: [{ scene: 'foret', from: 780, to: 840, every: 3, at: { x: 19.5, y: 13.5 } }],  // promenade digestive, un jour sur trois, 13 h – 14 h (💡)
@@ -354,14 +354,14 @@ export const INTRO_MYST = {
     { x: 31, t: "Après le pont, c'est le rond-point. Les fermes sont juste au nord." }
   ],
   rond: [
-    "Nous y voilà. Les quatre fermes du Nord sont là-haut, autour du chemin en croix.",
-    "Choisis celle qui te plaît."
+    "Nous y voilà. Au nord, la place du grand panneau : le calendrier, la météo et l'étal pour vendre tes produits. 🆕",
+    "Ta ferme est juste au-dessus. Les trois autres, à l'ouest, n'ont plus qu'un tas de planches à la place de la cabane. 🆕"
   ],
   fin: [
-    "Bon choix. Le cocher va te déposer devant chez toi.",
+    "Le cocher va te déposer devant chez toi. 🆕",
     "Ta cabane ne tiendra pas la nuit. Ouvre ton sac 🎒, choisis la tente et appuie sur « Déployer », juste à côté de la cabane.",
     "Ta liste des tâches 📜, en haut à droite, te dira quoi faire. Et le plan est dans 🗺️.",
-    "Moi, j'habite au fond de la zone résidentielle, à l'est du rond-point. … Et si tu entends des bruits la nuit, ce n'est sûrement rien. À plus tard."
+    "Moi, j'habite au fond de la zone résidentielle, au sud de la fontaine. 🆕 … Et si tu entends des bruits la nuit, ce n'est sûrement rien. À plus tard."
   ]
 };
 

@@ -2,7 +2,8 @@ import { houseSprite , blit } from './props.js';
 // Couche statique pré-rendue (sol texturé, rivages, clôtures, bâtiments).
 // Reconstruite uniquement au changement de saison. L'eau animée est dessinée à part.
 import { CFG } from '../config.js';
-import { ground, isFence, isPond, rng, isHedge, isFarmGap } from '../world/map.js';
+import { ground, isFence, isPond, rng, isHedge, isFarmGap, FARM_LOT } from '../world/map.js';
+import { drawPlankPile } from './west.js';
 import { shade, disc } from './pixel.js';
 import { BUILDINGS } from '../data/buildings.js';
 import { signBoard } from './pixfont.js';
@@ -76,7 +77,8 @@ export function buildGround(season, built = {}, fixed = { house: true, grange: t
   }
 
   drawGate(R);
-  drawHouse(g, R); if (!fixed.house) drawRuins(R, 2 * T + 4, 6 * T + 12, 10, 80, 'house');
+  if (FARM_LOT !== 0 && !fixed.house) drawPlankPile(R, 2 * T, 1 * T, 5 * T, 4 * T);   // 19/11 : pas de cabane, un tas de planches (sauf ferme principale)
+  else { drawHouse(g, R); if (!fixed.house) drawRuins(R, 2 * T + 4, 6 * T + 12, 10, 80, 'house'); }
   drawGrange(R); if (!fixed.grange) drawRuins(R, 10 * T, 14 * T, 1 * T + 10 - 18, 5 * T, 'grange');
   // haies le long des bords sans sortie (bas et droite) : on voit tout de suite où sont les chemins
   for (let y = 0; y < CFG.H; y++) for (let x = 0; x < CFG.W; x++) if (isHedge(x, y)) {

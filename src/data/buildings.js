@@ -15,8 +15,17 @@ export const WORKBENCH = { n: "Réparer l'établi", i: '🛠️', cost: { money:
 // En solo, les autres restent « libres » mais sont déjà visibles sur la carte de la région.
 // Les 4 fermes des joueurs, côte à côte en haut à gauche de la région, séparées par des chemins en croix.
 export const FARM_LOTS = [
-  { id: 0, n: 'Ferme Nord-Ouest', c: 0, r: 0 },
-  { id: 1, n: 'Ferme Nord-Est', c: 1, r: 0 },
-  { id: 2, n: 'Ferme Sud-Ouest', c: 0, r: 1 },
-  { id: 3, n: 'Ferme Sud-Est', c: 1, r: 1 }
+  // 19/11 : nouvelle disposition (voir docs/ROADMAP.md, lot 23) : la ferme principale au nord de la place du panneau,
+  // la ferme du Sud-Ouest à l'ouest de la place, la ferme de l'Ouest à l'ouest de la principale, la ferme du Nord-Ouest au-dessus.
+  { id: 0, n: 'La ferme principale', c: 1, r: 1 },
+  { id: 1, n: 'Ferme du Sud-Ouest', c: 0, r: 2 },
+  { id: 2, n: 'Ferme de l’Ouest', c: 0, r: 1 },
+  { id: 3, n: 'Ferme du Nord-Ouest', c: 0, r: 0 }
 ];
+// 19/11 : sorties de chaque ferme (N, S, E, O) : n° de ferme voisine ou zone ; absent = fermé (haie, barrière, falaise)
+export const FARM_LINKS = {
+  0: { N: 'carriere', S: 'place', E: 'foret', W: 2 },
+  1: { N: 2, E: 'place' },
+  2: { N: 3, S: 1, E: 0 },
+  3: { S: 2, E: 'carriere' }
+};

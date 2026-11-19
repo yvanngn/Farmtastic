@@ -6,9 +6,12 @@ import { inRect } from '../world/map.js';
 import { add } from './inventory.js';
 
 export const repairState = (S, id) => ((S.repair ||= {})[id] ||= { wood: 0, stone: 0 });
+// 19/11 : sur les fermes autres que la principale, la cabane n'est qu'un tas de planches : le double de matériaux.
+export const isPlankPile = S => (S.farmLot || 0) !== 0;
+export const needOf = (S, id) => id === 'house' && isPlankPile(S) ? Object.fromEntries(Object.entries(REPAIRS[id].need).map(([k, v]) => [k, v * 2])) : REPAIRS[id].need;
 export function isRepaired(S, id) {
   const r = S.repair && S.repair[id];
-  return !!r && Object.entries(REPAIRS[id].need).every(([k, v]) => (r[k] || 0) >= v);
+  return !!r && Object.entries(needOf(S, id)).every(([k, v]) => (r[k] || 0) >= v);
 }
 const onFarm = S => (S.scene || 'farm') === 'farm';
 // Bâtiment encore délabré sur cette case (le toucher = déposer).
@@ -23,7 +26,7 @@ export function contribute(g, id) {
   const S = g.S, R = REPAIRS[id], st = repairState(S, id);
   if (isRepaired(S, id)) return false;
   let moved = '';
-  for (const [k, need] of Object.entries(R.need)) {
+  for (const [k, need] of Object.entries(needOf(S, id))) {
     const give = Math.min(REPAIR_STEP, S.inv[k] || 0, need - (st[k] || 0));
     if (give > 0) { add(g, k, -give); st[k] = (st[k] || 0) + give; moved += `+${give}${k === 'wood' ? '🪵' : '🪨'} `; }
   }
@@ -33,7 +36,7 @@ export function contribute(g, id) {
   gainJob(g, 'charpentier', 1);   // métier de charpentier : chaque coup de marteau compte   // l'explication « reste appuyé avec le marteau » n'est plus utile
   g.bus.emit('sfx', 'pick'); g.bus.emit('pop', { t: moved.trim(), x: (R.x0 + R.x1) / 2, y: R.y1 });
   if (isRepaired(S, id)) {
-    g.bus.emit('sfx', 'levelup'); g.bus.emit('toast', `✅ ${R.n} est réparée !`); g.bus.emit('repaired', id);
+    g.bus.emit('sfx', 'levelup'); g.bus.emit('toast', id === 'house' && isPlankPile(S) ? '✅ Les planches sont devenues une cabane !' : `✅ ${R.n} est réparée !`); g.bus.emit('repaired', id);
     if (id === 'house') g.bus.emit('toast', '📜 Nouvelles quêtes secondaires : agrandir la cabane, fabriquer un lit et un coffre (plans chez Harry Fordson, le charpentier).');
     if (id === 'house2') g.bus.emit('toast', '🏠 Ta cabane est plus grande : il y a de la place pour s’installer !');
   }

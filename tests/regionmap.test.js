@@ -12,7 +12,7 @@ test('lot 10 : carte de la région en grand, comme l’image (≈ 1400 × 770 px
   assert.ok(count('F') > 600, 'des forêts denses'); assert.ok(count('w') > 300, 'rivière et mer');
   assert.ok(count('=') >= 6, 'des ponts'); assert.ok(count('^') > 10, 'falaise du centre-ville'); assert.ok(count('k') > 50, 'roche de la caverne');
   assert.ok(count('u') >= 4 * 12, 'les champs des 4 fermes');
-  for (const t of ['Les 4 Fermes', 'Forêt', 'Caverne Sombre', 'Montagne', 'Gare', 'Centre-ville', 'Zone Résidentielle', 'Ranch du Maire', 'Fête Foraine', 'Cabane du Pêcheur', 'Zone Portuaire']) assert.ok(LABELS.some(l => l[0] === t), t);
+  for (const t of ['Fermes', 'Carrière', 'Place du panneau', 'Forêt', 'Caverne Sombre', 'Montagne', 'Gare', 'Centre-ville', 'Zone Résidentielle', 'Ranch du Maire', 'Fête Foraine', 'Cabane du Pêcheur', 'Zone Portuaire']) assert.ok(LABELS.some(l => l[0] === t), t);
 });
 
 test('lot 10 : position du joueur sur la carte pour chaque zone extérieure, et sur sa propre ferme', () => {

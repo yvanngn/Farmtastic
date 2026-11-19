@@ -263,6 +263,13 @@ Décrit par l'utilisateur : cabane à moitié prix ; journal dans la cabane (200
 - [x] Étapes des quêtes : couleurs foncées lisibles sur le papier beige.
 - [ ] 💡 À valider : 24 coups pour un gros caillou de bordure, 3 jours de repousse, filons de la carrière profonde (étain 15 %, fer 50 %, or 35 %).
 
+## Lot 23 — Nouvelle disposition des fermes, place du panneau, Luna et Manu (demande du 19/11) ✅ v0.1.86
+- [x] Fontaine au nord de la zone résidentielle ; au nord, la **place du panneau** (calendrier : météo J à J+3, événements à venir) avec l'**étal** déplacé à côté.
+- [x] Ferme principale au nord de la place, attribuée d'office (plus de choix). Forêt à l'est, carrière au nord.
+- [x] Ferme du Sud-Ouest (ouest de la place), de l'Ouest (ouest de la principale), du Nord-Ouest (au-dessus ; la carrière à l'est).
+- [x] Seule la ferme principale a une cabane délabrée ; les 3 autres ont un **tas de planches** qui coûte le double.
+- [x] Luna et Manu d'après leurs nouvelles planches (tools/npc-sheets.py). 💡 ranch à l'est du rond-point ; 💡 événements du calendrier : début de saison, dernier jour de la fête, week-ends.
+
 ## Lot 14 — Le premier champ (demande du 18/11) ✅ v0.1.58
 Décrit par l'utilisateur : le lendemain du jour où l'on obtient la pelle, un courrier arrive avec des graines de blé en pièce jointe. Planter fait partie des quêtes principales. On crée des carrés à la pelle par terre, puis, comme dans Hay Day, on choisit les graines dans le sac et on glisse sur tous les carrés. Le blé pousse en 1 jour ; à la faucille on récolte tout d'un coup sans se déplacer. Tuto. La paille se vend 1 $.
 - [x] Courrier des graines (boîte aux lettres de la ferme) + quête principale « Le premier champ » + tuto (dans le courrier et bulles au premier carré, premier semis, première récolte).

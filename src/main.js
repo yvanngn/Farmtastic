@@ -73,6 +73,7 @@ import { buryGame, unburyGame, readTomb, visibleGames, removeFromIndex, deleteOn
 import { createGamesPanel } from './ui/gamesPanel.js';
 import { createInventoryGrid } from './ui/inventoryGrid.js';
 import { createSellPanel } from './ui/sellPanel.js';
+import { createCalendarPanel } from './ui/calendarPanel.js';
 import { createStandPanel } from './ui/standPanel.js';
 import { standTick } from './systems/stand.js';
 import { yvanGift } from './systems/equip.js';
@@ -92,7 +93,8 @@ if (adminSaved()) { ADMIN.on = true; document.body.classList.add('admin'); }
 const wheel = createWheel(g, audio);
 const invGrid = createInventoryGrid(g, audio);
 const sellPanel = createSellPanel(g, audio);
-const standPanel = createStandPanel(g, audio);   // 19/11 : l'étal du centre-ville
+const standPanel = createStandPanel(g, audio);   // 19/11 : l'étal (sur la place du panneau)
+const calendarPanel = createCalendarPanel(g, audio);   // 19/11 : le grand panneau (calendrier, météo)
 const chestPanel = createChestPanel(g, audio);
 createFishPanel(g, audio);
 createParcPanel(g, audio);
@@ -112,7 +114,7 @@ function wireBus() {
   g.bus.on('openChest', c => chestPanel.open(c));
   g.bus.on('showMap', () => { mapView.open(); toast('🗺️ Le plan est toujours là : bouton 🗺️ en haut à droite (ou touche M).'); });
   g.bus.on('clinic', e => { const h = NPCS.hailey, lines = e && e.off === 'repos' ? h.clinicRepos : e && e.off === 'nuit' ? h.clinicNuit : h.clinic; setTimeout(() => g.bus.emit('say', { name: h.name, color: h.color, voice: h.voice, lines }), 600); });
-  g.bus.on('open', what => what === 'journal' ? menu.openJournal() : what === 'board' ? board.open() : what === 'sell' ? sellPanel.open() : what === 'stand' ? standPanel.open() : what === 'quests' ? menu.open('quests', true) : menu.open(what, true));
+  g.bus.on('open', what => what === 'journal' ? menu.openJournal() : what === 'board' ? board.open() : what === 'sell' ? sellPanel.open() : what === 'stand' ? standPanel.open() : what === 'calendar' ? calendarPanel.open() : what === 'quests' ? menu.open('quests', true) : menu.open(what, true));
 }
 wireBus();
 

@@ -171,7 +171,7 @@ test('Myst attend sur le quai, vient parler après les pensées du héros (plan,
 test('lot 8 : plus de gare dans la ferme (falaise sur tout le bord ouest) ; plus de villa en ville (le Maire vit au ranch)', () => {
   for (let y = 0; y < 36; y++) assert.ok(!isStation(2, y) && !isPlatform(1, y));
   assert.equal(isSolid({ scene: 'farm' }, 0, 20), true, 'la falaise');
-  for (let y = 0; y < 36; y++) assert.ok(isCliff(0, y));
+  for (let y = 0; y < 36; y++) assert.equal(isCliff(0, y), y < 4 || y > 6, '19/11 : passage vers la ferme de l’Ouest');
   for (let x = 3; x <= 16; x++) assert.equal(ground(x, 20), 'path');
   assert.ok(!LAY.town.some(r => r.includes('W')), 'villa effacée');
 });
@@ -189,8 +189,10 @@ import { LUNA, FRANCK } from '../src/data/npcs.js';
 
 test('Farmwest : ferme → rond-point → zone résidentielle, où habitent Luna et Franck', () => {
   const { g, S } = start({ minute: 600 });
-  assert.equal(act(g, 16, 35), 'door'); assert.equal(S.scene, 'rondpoint');
-  assert.equal(act(g, 25, 8), 'door'); assert.equal(S.scene, 'quartier');
+  assert.equal(act(g, 16, 35), 'door'); assert.equal(S.scene, 'place', '19/11 : la place du panneau, au sud de la ferme');
+  assert.equal(act(g, 12, 17), 'door'); assert.equal(S.scene, 'rondpoint');
+  assert.equal(act(g, 12, 17), 'door'); assert.equal(S.scene, 'quartier', 'la zone résidentielle, au sud de la fontaine');
+  assert.equal(act(g, 22, 0), 'door'); assert.equal(S.scene, 'rondpoint'); S.scene = 'quartier';
   assert.ok(LAY.quartier.some(r => r.includes('X')));
   registerNPC(g, LUNA); placeNPC(g.npcs.luna, S, OUT_FROM, OUT_TO);
   assert.equal(g.npcs.luna.scene, 'quartier', 'Luna sort dans le quartier');
@@ -201,7 +203,7 @@ test('Farmwest : ferme → rond-point → zone résidentielle, où habitent Luna
 });
 
 test('Farmwest 2d : la route de l’est mène à la forêt ; le centre-ville est à l’ouest du rond-point', () => {
-  const { g, S } = start({ farmLot: 1, flags: { foretTree: true } });   // 19/11 : la forêt est à l'est des fermes de droite (à gauche, c'est la voisine)
+  const { g, S } = start({ flags: { foretTree: true } });   // 19/11 : la forêt est à l'est de la ferme principale
   for (let x = 2; x <= 46; x++) assert.equal(ground(x, 5), 'path');
   assert.equal(act(g, 47, 5), 'door'); assert.equal(S.scene, 'foret');
   assert.ok(SCENES.town.doors.some(d => d.x === 33 && d.to === 'rondpoint'), 'à l’est du centre-ville : le pont vers le rond-point');
@@ -245,16 +247,16 @@ test('mode test : outils, caverne, vitesse ; plage ouverte, pas de canne sinon',
 
 test('Farmwest lot 2 : rond-point, ranch du Maire et port reliés', () => {
   const { g, S } = start({ minute: 600 });
-  act(g, 16, 35); assert.equal(S.scene, 'rondpoint');
+  act(g, 16, 35); act(g, 12, 17); assert.equal(S.scene, 'rondpoint');
   assert.ok(isSolid(S, 12, 8), 'la fontaine au centre');
   assert.equal(act(g, 0, 8), 'door'); assert.equal(S.scene, 'town');
-  S.scene = 'rondpoint'; assert.equal(act(g, 12, 17), 'door'); assert.equal(S.scene, 'ranch');
+  S.scene = 'rondpoint'; assert.equal(act(g, 25, 8), 'door'); assert.equal(S.scene, 'ranch', '19/11 : le ranch à l’est');
   assert.ok(isSolid(S, 5, 12), 'la clôture de l’enclos');
   assert.equal(act(g, 31, 15), 'door'); assert.equal(S.scene, 'port');
   assert.ok(!isSolid(S, 18, 14), 'on marche sur le ponton'); assert.ok(isSolid(S, 15, 14), 'pas dans l’eau');
   assert.equal(act(g, 0, 6), 'door'); assert.equal(S.scene, 'ranch');
   assert.equal(act(g, 15, 0), 'door'); assert.equal(S.scene, 'rondpoint');
-  assert.equal(act(g, 12, 0), 'door'); assert.equal(S.scene, 'farm');
+  assert.equal(act(g, 12, 0), 'door'); assert.equal(S.scene, 'place'); assert.equal(act(g, 12, 0), 'door'); assert.equal(S.scene, 'farm');
 });
 
 test('Farmwest 2d : plage au sud (mer en bas), rivière et pont au rond-point, maison du Maire au ranch', () => {
@@ -266,7 +268,7 @@ test('Farmwest 2d : plage au sud (mer en bas), rivière et pont au rond-point, m
   S.scene = 'ranch'; assert.equal(act(g, 6, 5), 'door'); assert.equal(S.scene, 'ranch_maison');
 });
 
-test('Farmwest lot 3 : train → Myst → diligence (arrêts le temps des explications) → choix de la ferme → ferme', async () => {
+test('Farmwest lot 3 : train → Myst → diligence (arrêts le temps des explications) → ferme principale (plus de choix)', async () => {
   const { introTick, introActive, TRAIN_MS, RIDE } = await import('../src/systems/intro.js');
   const { INTRO_MYST } = await import('../src/data/npcs.js');
   const g = createGame({ state: defaultState(), rnd: () => .5, now: () => 0 });
@@ -290,8 +292,7 @@ test('Farmwest lot 3 : train → Myst → diligence (arrêts le temps des explic
   }
   assert.equal(stops, 1 + INTRO_MYST.arrets.length, 'la légende puis un arrêt par bâtiment');
   assert.equal(g.S.scene, 'rondpoint');
-  introTick(g, .1); const ask = said.at(-1); assert.equal(ask.choices.length, 4);
-  ask.onChoose(2); assert.equal(g.S.farmLot, 2); end();
+  introTick(g, .1); assert.equal(said.at(-1).choices, undefined, '19/11 : plus de choix de ferme'); assert.equal(g.S.farmLot, 0); end();
   assert.equal(introActive(g.S), false); assert.equal(g.S.scene, 'farm'); assert.equal(g.S.intro.myst, 'done');
 });
 

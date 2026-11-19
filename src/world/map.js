@@ -8,7 +8,8 @@ export const isPlot = (x, y) => inRect(x, y, 4, 8, 13, 13);
 export const isPen = (x, y) => inRect(x, y, 19, 7, 32, 12);
 export const PEN_BOUNDS = { x0: 19.5, y0: 8.5, w: 13, h: 4 };
 export const ROAM_BOUNDS = { x0: 3, y0: 5.6, w: 12, h: 1.6 };
-import { BUILDINGS, BUILD_Y0, BUILD_Y1 } from '../data/buildings.js';
+import { BUILDINGS, BUILD_Y0, BUILD_Y1, FARM_LINKS } from '../data/buildings.js';
+export { FARM_LINKS };
 // Bâtiment construit sur cette case (null sinon). built = S.built.
 export function buildingAt(built, x, y) {
   if (!built || y < BUILD_Y0 || y > BUILD_Y1) return null;
@@ -32,15 +33,18 @@ export const isForest = (x) => x >= 34;
 // Haies sur les bords de la ferme qui ne mènent nulle part (bas et droite), pour voir où sont les sorties.
 // 19/11 : les 4 fermes (2 × 2). La ferme du joueur s'ouvre vers ses voisines : à l'est (colonne de gauche) ou à l'ouest
 // (colonne de droite), au sud (rangée du haut) ou au nord (rangée du bas), par un portail en x 30-31.
-let FARM_LOT = 0;
+export let FARM_LOT = 0;
 export const setFarmLot = l => { FARM_LOT = (l | 0) % 4; };
 export const farmLotNow = () => FARM_LOT;
 export const lotCR = l => ({ c: l % 2, r: l >> 1 });
-export const isFarmGap = (x, y) => { const { c, r } = lotCR(FARM_LOT); return (c === 1 && x === 0 && y >= 4 && y <= 6) || (r === 0 && y === 35 && (x === 30 || x === 31)) || (r === 1 && y === 0 && (x === 30 || x === 31)); };
+// 19/11 : sorties de chaque ferme (N, S, E, O) : n° de ferme voisine ou zone ; absent = fermé (haie, barrière, falaise)
+const linkOf = dir => (FARM_LINKS[FARM_LOT] || {})[dir] != null;
+export const isFarmGap = (x, y) => linkOf('W') && x === 0 && y >= 4 && y <= 6;
+const closedEdge = (x, y) => (!linkOf('S') && y === 35 && x >= 15 && x <= 17) || (!linkOf('E') && x === 47 && y >= 4 && y <= 6);
 export const isHedge0 = (x, y) => (y === 35 && (x < 15 || x > 17)) || (x === 47 && ((y >= 8 && y < 35) || y <= 3 || y === 7));
 // Bord nord de la ferme : une barrière en bois ; bord ouest (au-dessus de la gare) : une falaise rocheuse.
-export const isHedge = (x, y) => isHedge0(x, y) && !isFarmGap(x, y);
-export const isFarmFence = (x, y) => y === 0 && x > 0 && x < 47 && x !== 16 && !isFarmGap(x, y);   // 19/11 : passage vers la carrière
+export const isHedge = (x, y) => (isHedge0(x, y) && !isFarmGap(x, y)) || closedEdge(x, y);
+export const isFarmFence = (x, y) => y === 0 && x > 0 && x < 47 && (x !== 16 || !linkOf('N'));   // 19/11 : passage vers la carrière
 export const isCliff = (x, y) => x === 0 && !isFarmGap(x, y);   // lot 8 : plus de gare dans la ferme, la falaise court sur tout le bord ouest
 // Lot 8 : plus de gare dans la ferme (la gare est une zone à part, à l'ouest du centre-ville).
 export const isStation = () => false;

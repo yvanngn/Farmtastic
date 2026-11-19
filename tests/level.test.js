@@ -36,7 +36,7 @@ test('lot 8 : passage de niveau annoncé ; 19/11 : forêt barrée par un gros ar
   const { g, S, toasts, clock } = makeGame({ state: { pxp: 0 } });
   const ups = []; g.bus.on('levelUp', e => ups.push(e));
   gainPxp(g, LEVELS[3], 'test'); assert.deepEqual(ups.map(u => u.level), [1, 2, 3]);
-  S.scene = 'farm'; S.farmLot = 1; S.sel = 'axe'; S.tools.axe = 1;
+  S.scene = 'farm'; S.farmLot = 0; S.sel = 'axe'; S.tools.axe = 1;
   assert.equal(act(g, 47, 5), 'locked'); assert.match(toasts().at(-1), /pas assez costaude/); assert.equal(S.scene, 'farm');
   S.tools.axe = 2; for (let i = 0; i < 10 && S.scene === 'farm'; i++) { act(g, 47, 5); clock.t += 1000; }
   assert.equal(S.scene, 'foret', 'arbre abattu à la hache en cuivre : le chemin est ouvert');

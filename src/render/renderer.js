@@ -321,7 +321,7 @@ let swing = null;
     if (cacheSeason !== S.season || cacheScene !== scene || (scene === 'foret' && cacheForest !== forestKey)) {   // lot 11 : nouveau labyrinthe
       cacheForest = forestKey;
       SIGN_SINK.list = [];
-      cache = outside ? farmGround() : scene === 'wild' ? (interiors['wild' + S.season] ||= buildWild(S.season)) : scene === 'foret' ? (interiors['foret' + forestKey + ':' + S.season] ||= buildWild(S.season, 'foret')) : scene === 'town' ? (interiors['town' + S.season] ||= buildTown(S.season)) : scene === 'quartier' ? (interiors['quartier' + S.season] ||= buildQuartier(S.season)) : (scene === 'montagne' || scene === 'plage') ? (interiors[scene] ||= buildBiome(scene, S.season)) : scene === 'parc' ? (interiors['parc' + S.season] ||= buildParc(S.season)) : (scene === 'carriere' || scene === 'carriere2') ? (interiors[scene + S.season] ||= buildQuarry(scene, S.season)) : (scene === 'rondpoint' || scene === 'ranch' || scene === 'port' || scene === 'gare' || scene === 'golgolas' || /^farm:\d$/.test(scene)) ? (interiors[scene + S.season] ||= buildWest(scene, S.season)) : (scene === 'resto' ? (interiors['resto' + !!(S.resto && S.resto.oven)] ||= buildInterior(scene, S)) : (scene === 'house' || scene === 'maison') ? (interiors[scene + !!S.workbench + (S.bed !== false)] ||= buildInterior(scene, S)) : (interiors[scene] ||= buildInterior(scene, S)));
+      cache = outside ? farmGround() : scene === 'wild' ? (interiors['wild' + S.season] ||= buildWild(S.season)) : scene === 'foret' ? (interiors['foret' + forestKey + ':' + S.season] ||= buildWild(S.season, 'foret')) : scene === 'town' ? (interiors['town' + S.season] ||= buildTown(S.season)) : scene === 'quartier' ? (interiors['quartier' + S.season] ||= buildQuartier(S.season)) : (scene === 'montagne' || scene === 'plage') ? (interiors[scene] ||= buildBiome(scene, S.season)) : scene === 'parc' ? (interiors['parc' + S.season] ||= buildParc(S.season)) : (scene === 'carriere' || scene === 'carriere2') ? (interiors[scene + S.season] ||= buildQuarry(scene, S.season)) : (scene === 'rondpoint' || scene === 'place' || scene === 'ranch' || scene === 'port' || scene === 'gare' || scene === 'golgolas' || /^farm:\d$/.test(scene)) ? (interiors[scene + S.season] ||= buildWest(scene, S.season)) : (scene === 'resto' ? (interiors['resto' + !!(S.resto && S.resto.oven)] ||= buildInterior(scene, S)) : (scene === 'house' || scene === 'maison') ? (interiors[scene + !!S.workbench + (S.bed !== false)] ||= buildInterior(scene, S)) : (interiors[scene] ||= buildInterior(scene, S)));
       if (!cache.__signs) cache.__signs = SIGN_SINK.list; SIGN_SINK.list = null;   // enseignes de ce décor
       if (cacheSeason !== S.season) initWeather();
       cacheSeason = S.season; cacheScene = scene;
@@ -432,7 +432,7 @@ let swing = null;
         ctx.fillStyle = 'rgba(0,0,0,.55)'; ctx.fillRect(x - 1, y - 1, 18, 5); ctx.fillStyle = '#f2a03a'; ctx.fillRect(x, y, Math.round(16 * p), 3); } });
     }
     if (sky) { // sorties : flèches animées et nom de la destination, au bord de l'écran
-      const NAMES = { farm: 'Ma ferme', quartier: 'Zone résidentielle', gare: 'Gare', resto: 'Restaurant', rondpoint: 'Rond-point', ranch: 'Ranch du Maire', port: 'Zone portuaire', town: 'Centre-ville', foret: 'Forêt', wild: 'Caverne sombre', plage: 'Cabane du pêcheur', montagne: 'Montagne', rouky: 'Chez Rouky' }, seen = new Set();
+      const NAMES = { farm: 'Ma ferme', place: 'Place du panneau', carriere: 'Carrière', quartier: 'Zone résidentielle', gare: 'Gare', resto: 'Restaurant', rondpoint: 'Rond-point', ranch: 'Ranch du Maire', port: 'Zone portuaire', town: 'Centre-ville', foret: 'Forêt', wild: 'Caverne sombre', plage: 'Cabane du pêcheur', montagne: 'Montagne', rouky: 'Chez Rouky' }, seen = new Set();
       for (const d of SC.doors || []) {
         const W = SC.W, H = SC.H, edge = d.x === 0 ? 'g' : d.x === W - 1 ? 'd' : d.y === 0 ? 'h' : d.y === H - 1 ? 'b' : null;
         if (!edge || !NAMES[d.to] || seen.has(d.to + edge)) continue; seen.add(d.to + edge);
@@ -538,9 +538,9 @@ let swing = null;
       ctx.fillStyle = '#5a3a22'; ctx.fillRect(x + 7, y + 4, 2, 12); ctx.fillStyle = '#3a5a8a'; ctx.fillRect(x + 3, y - 2, 10, 7); ctx.fillStyle = '#5a7aaa'; ctx.fillRect(x + 3, y - 2, 10, 2); ctx.fillStyle = '#1e2a40'; ctx.fillRect(x + 3, y + 5, 10, 1);
       ctx.fillStyle = un ? '#e0402a' : '#8a2a1a'; ctx.fillRect(x + 12, un ? y - 6 : y, 2, un ? 6 : 4); if (un) ctx.fillRect(x + 12, y - 6, 4, 2); } });
     if (scene === 'gare' && !(S.golgo && S.golgo.read)) list.push({ z: 13, d: () => { const x = 10 * T, y = 12 * T + 8; ctx.fillStyle = '#6a4426'; ctx.fillRect(x - 2, y, 36, 4); ctx.fillRect(x - 2, y + 7, 36, 4); ctx.fillStyle = '#4a2e1a'; ctx.fillRect(x, y - 4, 3, 18); ctx.fillRect(x + 29, y - 4, 3, 18); } });   // planches qui barrent le chemin du sud
-    if (!forestOpen(S) && (scene === 'farm' || /^farm:[13]$/.test(scene))) {   // 19/11 : énorme arbre tombé en travers du chemin de la forêt
+    if (!forestOpen(S) && (scene === 'farm' || scene === 'farm:0')) {   // 19/11 : énorme arbre tombé en travers du chemin de la forêt
       const lot = scene === 'farm' ? (S.farmLot || 0) : +scene.slice(5);
-      if (lot % 2 === 1) { const tx = scene === 'farm' ? 46 : 28, ty = scene === 'farm' ? 3 : 8; list.push({ z: ty + 3, d: () => {
+      if (lot === 0) { const tx = scene === 'farm' ? 46 : 28, ty = scene === 'farm' ? 3 : 8; list.push({ z: ty + 3, d: () => {
         const x = tx * T, y = ty * T, R2 = (a, b, w, h, k) => { ctx.fillStyle = k; ctx.fillRect(x + a, y + b, w, h); };
         R2(-2, 50, 30, 4, 'rgba(20,12,8,.3)');
         R2(4, 2, 14, 50, '#6e4426'); R2(4, 2, 4, 50, '#8a5a32'); R2(15, 2, 3, 50, '#4e2e18'); for (let k = 6; k < 50; k += 7) R2(6, k, 9, 1, '#5a3820');   // tronc couché
@@ -549,7 +549,7 @@ let swing = null;
         R2(-6, 20, 12, 3, '#5a3820'); R2(16, 32, 12, 3, '#5a3820');   // branches cassées
       } }); }
     }
-    if (scene === 'town') list.push({ z: STAND_POS.y + .9, d: () => {   // 19/11 : l'étal de vente, à côté de la fontaine
+    if (scene === 'place') list.push({ z: STAND_POS.y + .9, d: () => {   // 19/11 : l'étal de vente, sur la place du panneau
       const x = STAND_POS.x * T, y = STAND_POS.y * T, R2 = (a, b, w, h, k) => { ctx.fillStyle = k; ctx.fillRect(x + a, y + b, w, h); }, lots = (S.stand && S.stand.lots) || [];
       R2(0, 14, 32, 3, 'rgba(30,15,5,.3)');
       R2(1, -14, 2, 28, '#5a3a22'); R2(29, -14, 2, 28, '#5a3a22');   // poteaux

@@ -77,19 +77,16 @@ export function introTick(g, dt) {
 // Fermes déjà prises (multijoueur) : par un autre joueur de la partie.
 export function takenLots(g) { const t = {}; for (const id in g.others || {}) { const o = g.others[id]; if (o && o.farmLot != null) t[o.farmLot] = o.name || 'un autre joueur'; } return t; }
 
+// 19/11 : plus de choix de ferme : la ferme principale (0) si elle est libre, sinon la première libre.
+export const firstFreeLot = g => { const taken = takenLots(g), lot = FARM_LOTS.find(l => taken[l.id] == null); return lot ? lot.id : 0; };
 function askFarm(g) {
-  const S = g.S, taken = takenLots(g);
-  S.intro.step = 'choisit';
-  g.introWait = true;
-  g.bus.emit('say', { name: MYST.name, color: MYST.color, voice: MYST.voice, lines: INTRO_MYST.rond,
-    choices: FARM_LOTS.map(l => taken[l.id] != null ? `${l.n} (prise par ${taken[l.id]})` : l.n),
-    onChoose: i => { g.introWait = false; if (!chooseFarm(g, i)) S.intro.step = 'choix'; } });
+  const S = g.S; S.farmLot = firstFreeLot(g); S.intro.step = 'fin';
+  myst(g, [...INTRO_MYST.rond, ...INTRO_MYST.fin], () => finishIntro(g));
 }
-
-// Choix de la ferme (appelé par le choix du dialogue). Une ferme prise ne se choisit pas.
+// (gardé pour les anciennes sauvegardes / tests : choisir une ferme libre)
 export function chooseFarm(g, i) {
   const S = g.S, I = S.intro, taken = takenLots(g);
-  if (!FARM_LOTS[i] || taken[i] != null) { g.bus.emit('sfx', 'denied'); g.bus.emit('toast', 'Cette ferme est déjà prise : choisis-en une autre.'); return false; }
+  if (!FARM_LOTS[i] || taken[i] != null) { g.bus.emit('sfx', 'denied'); g.bus.emit('toast', 'Cette ferme est déjà prise.'); return false; }
   S.farmLot = i; I.step = 'fin';
   myst(g, INTRO_MYST.fin, () => finishIntro(g));
   return true;
@@ -99,7 +96,7 @@ export function skipIntro(g) {
   const S = g.S;
   if (!introActive(S)) return false;
   g.introWait = false; g.introHidden = false; g.ride = null;
-  if (S.farmLot == null || S.intro.step !== 'fin') { const taken = takenLots(g), lot = FARM_LOTS.find(l => taken[l.id] == null); S.farmLot = lot ? lot.id : 0; }
+  if (S.farmLot == null || S.intro.step !== 'fin') S.farmLot = firstFreeLot(g);
   return finishIntro(g);
 }
 export function finishIntro(g) {
