@@ -7,7 +7,7 @@ import os, re, io, base64, numpy as np
 from PIL import Image
 from scipy import ndimage
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-H = 46
+H = 42   # 19/11 : un peu plus petit (46 → 42 pixels du monde)
 def grid(path):
     a = np.array(Image.open(path).convert('RGB')).astype(float)
     def pp(ax):
