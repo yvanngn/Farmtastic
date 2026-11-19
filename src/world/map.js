@@ -3,7 +3,7 @@ import { CFG } from '../config.js';
 export const SPAWN = { x: 5.5, y: 6.8 };
 export const inRect = (x, y, x0, y0, x1, y1) => x >= x0 && x <= x1 && y >= y0 && y <= y1;
 export const isHouse = (x, y) => inRect(x, y, 2, 1, 6, 4);
-export const isBin = (x, y) => x === 8 && y === 4;
+export const isBin = () => false;   // 19/11 : plus de bac de vente (l'étal du centre-ville le remplace)
 export const isPlot = (x, y) => inRect(x, y, 4, 8, 13, 13);
 export const isPen = (x, y) => inRect(x, y, 19, 7, 32, 12);
 export const PEN_BOUNDS = { x0: 19.5, y0: 8.5, w: 13, h: 4 };

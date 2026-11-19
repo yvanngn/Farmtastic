@@ -466,6 +466,9 @@ LAYOUTS.gare = (() => {
 })();
 // Rond-point (26 × 18) : chemins en croix, anneau autour de la fontaine (lot 8 : plus de panneaux indicateurs)
 LAYOUTS.gare = (() => { const m = LAYOUTS.gare.map(r => r.split('')), H = m.length; for (let y = 10; y < H - 1; y++) { m[y][10] = '.'; m[y][11] = '.'; } m[H - 1][10] = 'D'; m[H - 1][11] = 'D'; return m.map(r => r.join('')); })();
+// 19/11 : l'étal de vente (façon Hay Day), à côté de la fontaine du centre-ville.
+export const STAND_POS = { x: 19, y: 7, w: 2 };
+LAYOUTS.town = LAYOUTS.town.map((r, y) => y === STAND_POS.y ? r.slice(0, STAND_POS.x) + '$$' + r.slice(STAND_POS.x + 2) : r);
 // 19/11 : la carrière, au nord des fermes. Bordée de gros cailloux cassables (o). Trois bouches de tunnel (%) dans la paroi
 // nord : chaque jour, une seule est ouverte (au hasard du jour) et mène à la carrière profonde, d'une tout autre architecture.
 export const QUARRY_MOUTHS = [{ x: 6, y: 0 }, { x: 16, y: 0 }, { x: 26, y: 0 }];
@@ -537,9 +540,9 @@ LAYOUTS.port = (() => {
   return m.map(r => r.join(''));
 })();
 
-export const SOLID_TILES = '#WDBKTPCHNYXMQUJAOVZFLfprEmncwGRIxyzqjuhe^k';   // k boîte aux lettres (lot 8)   // ^ falaise (7b)   // e escalier (maison d'Ed)   // h haie de bordure   // + attractions du parc (R I x y z q j u)   // w eau (mer, lac), G grotte   // m n lits de la clinique, c bureau  // A = fauteuil (Franck) / marchand d'animaux (village)
+export const SOLID_TILES = '#WDBKTPCHNYXMQUJAOVZFLfprEmncwGRIxyzqjuhe^k$';   // $ étal de vente (19/11)   // k boîte aux lettres (lot 8)   // ^ falaise (7b)   // e escalier (maison d'Ed)   // h haie de bordure   // + attractions du parc (R I x y z q j u)   // w eau (mer, lac), G grotte   // m n lits de la clinique, c bureau  // A = fauteuil (Franck) / marchand d'animaux (village)
 // Tuiles qui ouvrent une interface.
-export const UI_TILES = { M: 'market', Q: 'board', U: 'upgrades', J: 'carpenter', A: 'animals', O: 'bakery', V: 'butcher', Z: 'fishmonger' };
+export const UI_TILES = { $: 'stand', M: 'market', Q: 'board', U: 'upgrades', J: 'carpenter', A: 'animals', O: 'bakery', V: 'butcher', Z: 'fishmonger' };
 
 export const SCENES = {
   farm: { W: CFG.W, H: CFG.H, doors: [

@@ -13,6 +13,7 @@ import { BUILDINGS } from '../data/buildings.js';
 import { SHOPS } from '../data/shops.js';
 import { QUESTS, questProgress, questVisible } from '../systems/quests.js';
 import { journal, setJournalTab, storySoFar } from '../systems/journal.js';
+import { xpBar } from '../systems/level.js';
 import { isUnlocked } from '../systems/market.js';
 import { canRepairBench, repairBench } from '../systems/economy.js';
 import { WORKBENCH } from '../data/buildings.js';
@@ -34,8 +35,8 @@ import { slots, usedSlots, stackSize } from '../systems/inventory.js';
 import { canUpgrade, upgradeTool, miningLevel, nextXp, toolTier, hasTool } from '../systems/skills.js';
 
 const JTABS = { journal: '📝 Activités', quests: '⭐ Quêtes en cours', social: '💞 Liens', histoire: '📖 Histoire' };   // 19/11 : onglets du journal
-const TABS = { sac: 'Sac', recettes: '📜 Recettes', poissons: '🐟 Poissons', quests: 'Quêtes', metiers: '🧑‍🔧 Métiers', forge: 'Forge', social: 'Liens' };
-const TITLES = { recettes: '📜 Recettes', poissons: '🐟 Carnet de pêche', market: '🏪 Marché', upgrades: '🧰 Magasin d\'amélioration', carpenter: '🪚 Charpentier', workshop: '🛠️ Établi', animals: '🐾 Marchand d\'animaux', bakery: '🥖 Boulangerie', igorShop: '⚒️ Boutique d’Igor', butcher: '🥩 Boucherie', fishmonger: '🐟 Poissonnerie' };
+const TABS = { sac: 'Sac', poissons: '🐟 Poissons', metiers: '🧑‍🔧 Métiers', forge: 'Forge', social: 'Liens' };   // 19/11 : recettes et quêtes ont leur bouton près de l'action
+const TITLES = { recettes: '🛠️ Recettes', quests: '⭐ Quêtes', poissons: '🐟 Carnet de pêche', market: '🏪 Marché', upgrades: '🧰 Magasin d\'amélioration', carpenter: '🪚 Charpentier', workshop: '🛠️ Établi', animals: '🐾 Marchand d\'animaux', bakery: '🥖 Boulangerie', igorShop: '⚒️ Boutique d’Igor', butcher: '🥩 Boucherie', fishmonger: '🐟 Poissonnerie' };
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 const it = id => ITEMS[id] || { n: id, i: '❔', p: 0 };
 
@@ -205,7 +206,8 @@ export function createMenu(g, opts) {
   function render() {
     $('#tabs').innerHTML = Object.entries(jmode ? JTABS : TABS).map(([k, v]) => `<button data-t="${k}" class="${k === tab ? 'on' : ''}">${v}</button>`).join('');
     const G = g.S.game, code = G && G.mode === 'multi' && G.code && !$('#tabs').hidden ? `<p class="info code-partie">👥 Code pour rejoindre la partie : <b>${esc(G.code)}</b></p>` : '';
-    $('#tabBody').innerHTML = code + views[tab](g.S);
+    const xb = xpBar(g.S), prof = !jmode && !$('#tabs').hidden ? `<div class="profil"><b>${esc(g.S.name)}</b><span>Niv. ${xb.level}</span><div class="bar xp" title="${xb.need ? xb.cur + ' / ' + xb.need + ' XP' : 'Niveau maximum'}"><i style="width:${Math.round(xb.p * 100)}%"></i></div><small>${xb.need ? xb.cur + ' / ' + xb.need + ' XP' : 'max'}</small></div>` : '';   // 19/11 : nom et XP passent dans le menu
+    $('#tabBody').innerHTML = prof + code + views[tab](g.S);
     if (tab === 'market') renderPlayers();
   }
   $('#tabs').onclick = e => { const t = e.target.dataset.t; if (t) { tab = t; if (jmode) setJournalTab(g.S, t); audio.play('ui'); render(); } };   // 19/11 : l'onglet du journal est gardé dans la sauvegarde

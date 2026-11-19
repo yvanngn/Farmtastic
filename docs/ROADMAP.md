@@ -156,6 +156,13 @@ Pour que **les scènes du jeu** atteignent le niveau de détail de l'image, scè
 - [x] **Un coffre pour ranger** : acheter le **plan du coffre** chez Harry (💡 60 $), le fabriquer (80 bois + 20 pierres). Le coffre quitte la quête principale « Premiers pas » ; Harry ne l'apprend plus gratuitement.
 - ⏳ Plus tard : la cabane agrandie vue de dehors (aujourd'hui seul l'intérieur change).
 
+## Lot 17 — Boutons, cadre météo, étal de vente (demande du 19/11) ✅ v0.1.61
+- [x] Menu : plus d'onglets Recettes ni Quêtes ; bouton ⭐ Quêtes à côté du bouton d'action (🛠️ Recettes à côté) ; icône du menu ☰.
+- [x] Cadre du haut : plus de nom ni d'XP (ils passent en tête du menu) ; il s'efface quand on ne bouge plus (2,5 s) et revient quand on bouge.
+- [x] Panneau de réparation : « La cabane » au lieu de « La cabane est délabrée ».
+- [x] Bac de vente retiré. **Étal** à côté de la fontaine du centre-ville (façon Hay Day) : 10 objets au plus au début ; prix Bas (×1) → vendu en 1 à 3 min, ×1,25 → 3 à 6 min, ×1,5 → 8 à 12 min, ×1,75 → 15 à 25 min, Fort (×2) → pendant la nuit ; l'acheteur est un habitant (bulle d'info + journal). Les habitants y vendent aussi 3 lots par jour, à 2,5 × le prix 💡.
+- [ ] Plus tard : agrandir l'étal (plus de 10 objets), habitants qui marchent jusqu'à l'étal.
+
 ## Lot 16 — Profil, pioche, joystick, marche (demande du 19/11) ✅ v0.1.60
 - [x] Profil plus épais (buste, jambes, bras) pour tous les personnages.
 - [x] Marche refaite façon Stardew : 4 poses (contact, passage, contact inverse, passage), jambes qui pivotent à la hanche, jambe arrière repliée au passage, bras opposés, rebond du corps ; une pose toutes les 105 ms.

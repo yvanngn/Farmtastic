@@ -24,9 +24,9 @@ test('collisions : bords, maison, obstacles', () => {
   assert.equal(S.x, 6.5, 'bloqué par le rocher');
 });
 
-test('actions : bac = vente, maison = sommeil', () => {
+test('actions : plus de bac (19/11), maison = sommeil', () => {
   const { g, S } = makeGame({ state: { inv: { wheat: 1 }, money: 0 } });
-  assert.equal(act(g, 8, 4), 'sell');
+  assert.notEqual(act(g, 8, 4), 'sell');
   assert.equal(S.money, 0, 'rien n’est vendu sans choisir');
   const d = S.day; assert.notEqual(act(g, 3, 3), 'sleep', 'trop tôt pour dormir'); assert.equal(S.day, d);
 });

@@ -77,7 +77,6 @@ export function buildGround(season, built = {}, fixed = { house: true, grange: t
 
   drawGate(R);
   drawHouse(g, R); if (!fixed.house) drawRuins(R, 2 * T + 4, 6 * T + 12, 10, 80, 'house');
-  drawBin(R);
   drawGrange(R); if (!fixed.grange) drawRuins(R, 10 * T, 14 * T, 1 * T + 10 - 18, 5 * T, 'grange');
   // haies le long des bords sans sortie (bas et droite) : on voit tout de suite où sont les chemins
   for (let y = 0; y < CFG.H; y++) for (let x = 0; x < CFG.W; x++) if (isHedge(x, y)) {

@@ -125,7 +125,8 @@ label { font-size: .85em; color: var(--doux) }
   border: 2px solid var(--or); background: radial-gradient(circle at 40% 30%, rgba(255,223,138,.35), rgba(30,24,52,.8)) !important }
 .rond { width: calc(var(--act) * .62); height: calc(var(--act) * .62); font-size: calc(var(--act) * .28) }
 #bItems { right: calc(var(--act) * .2); bottom: calc(var(--act) * 1.06) }
-#bRecipes { right: calc(var(--act) * 1.08); bottom: calc(var(--act) * .12) }   /* à gauche du bouton d'action (les outils sont dans la barre du bas) */
+#bRecipes { right: calc(var(--act) * 1.08); bottom: calc(var(--act) * .12) }
+#bQuests { right: calc(var(--act) * .98); bottom: calc(var(--act) * .92) }   /* 19/11 : quêtes, en diagonale au-dessus des recettes */   /* à gauche du bouton d'action (les outils sont dans la barre du bas) */
 #droite button.presse, #bAct:active { transform: scale(.92); box-shadow: 0 0 18px rgba(255,223,138,.6) }
 @media (hover: hover) and (pointer: fine) { #stick { display: none } }
 
@@ -477,3 +478,17 @@ body.bande[data-nrj="vert"] #nrjVert { bottom: calc(var(--bande) + var(--pad) * 
 .journal { list-style: none; margin: 0; padding: 0; display: grid; gap: 3px }
 .journal li { padding: 3px 6px; border-bottom: 1px solid rgba(120, 80, 40, .2) }
 .journal small { display: block; opacity: .75 }
+/* 19/11 : étal de vente */
+.st-pick { display: flex; flex-wrap: wrap; gap: 4px; margin: 4px 0 }
+.st-it { display: flex; flex-direction: column; align-items: center; padding: 3px 5px; min-width: 40px }
+.st-it.on { outline: 2px solid #ffe08a }
+.st-form { display: grid; gap: 6px; margin: 6px 0; padding: 8px; background: rgba(0, 0, 0, .2); border-radius: 8px }
+.st-prix { display: flex; gap: 4px; flex-wrap: wrap }
+.st-prix button.on { background: #e8c26a; color: #3a2410 }
+
+/* 19/11 : le cadre météo / argent s'efface quand on ne bouge plus, revient quand on bouge */
+#hud { transition: opacity .5s }
+#hud.repos { opacity: 0; pointer-events: none }
+#hXpRow[hidden], #hName[hidden] { display: none !important }
+.profil { display: flex; gap: 10px; align-items: center; margin: 0 0 8px }
+.profil .bar { flex: 1; max-width: 220px }

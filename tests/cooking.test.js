@@ -63,5 +63,5 @@ test('16/11 : mûres sur les ronces, confiture de baies à +45 ⚡, tuto de la v
   assert.equal(ITEMS.confiture_baies.eat.e, 45);
   const said = []; g.bus.on('say', d => said.push(d));
   add(g, 'wood', 3); add(g, 'stone', 1);
-  assert.equal(said.length, 1); assert.ok(said[0].lines.some(l => /bac de vente/.test(l)));
+  assert.equal(said.length, 1); assert.ok(said[0].lines.some(l => /étal/.test(l)));
 });

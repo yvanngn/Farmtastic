@@ -25,8 +25,8 @@ export const canAdd = (S, id, n = 1) => room(S, id) >= n;
 
 // Renvoie la quantité réellement ajoutée (peut être partielle si le sac est plein).
 export const SELL_TIP = [
-  '💰 Tu peux vendre ce que tu ramasses dans le bac de vente, juste à côté de la cabane.',
-  'Touche le bac : choisis chaque objet et sa quantité (−, +, Tout), puis vends. Le total s’affiche avant.',
+  '💰 Tu peux vendre ce que tu ramasses à ton étal, au centre-ville, à côté de la fontaine.',
+  'Choisis l’objet, la quantité et le prix : moins cher, les habitants l’achètent en quelques minutes ; au prix fort, il faut attendre la nuit.',
   'Garde quand même du bois et des pierres : il en faut pour réparer la cabane !'
 ];
 export function add(g, id, n = 1) {

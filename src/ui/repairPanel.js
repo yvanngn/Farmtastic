@@ -11,7 +11,7 @@ export function createRepairPanel(g) {
   g.bus.on('repaired', id => { shownId = id; doneUntil = performance.now() + 2500; render(id, true); });
   function render(id, done) {
     const R = REPAIRS[id], st = repairState(g.S, id);
-    el.innerHTML = `<b>${done ? '✅ ' : '🔨 '}${R.n} ${done ? 'est réparée !' : 'est délabrée'}</b>`
+    el.innerHTML = `<b>${done ? '✅ ' : '🔨 '}${R.n} ${done ? 'est réparée !' : ''}</b>`
       + Object.entries(R.need).map(([k, need]) => {
         const v = Math.min(need, st[k] || 0), full = v >= need;
         return `<div class="rp-row"><span>${ICON[k]} ${NAME[k]}</span><div class="rp-bar"><i style="width:${v / need * 100}%"></i></div><span class="rp-n">${full ? '<em>✔</em>' : `${v}/${need}`}</span></div>`;

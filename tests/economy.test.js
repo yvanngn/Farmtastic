@@ -175,5 +175,5 @@ test('bac de vente : on choisit quoi vendre et combien ; les ventes sont notées
   assert.equal(S.money, gain); assert.ok(gain > 0);
   assert.deepEqual(S.saleLog.map(x => [x.id, x.n]), [['wood', 4], ['berry', 3]]);
   const opened = []; g.bus.on('open', w => opened.push(w));
-  assert.equal(act(g, 8, 4), 'sell'); assert.deepEqual(opened, ['sell'], 'toucher le bac ouvre la fenêtre de vente');
+  S.scene = 'town'; assert.equal(act(g, 19, 7), 'stand'); assert.deepEqual(opened, ['stand'], '19/11 : l’étal du centre-ville remplace le bac');
 });

@@ -11,7 +11,8 @@ Le héros (**Cloud Jimny** par défaut) arrive en train à Farmwest pour reprend
 - **Se déplacer** : joystick (écran tactile) ou flèches / ZQSD / WASD. Dès qu'on se sert du joystick, toucher l'écran ne fait plus marcher le héros : on touche seulement ce qui est à portée.
 - **Agir** : bouton ✋ ou espace (couper, casser, ramasser, parler, réparer…). Un court délai caché sépare deux actions quand on reste appuyé.
 - **Outils** : barre d'outils sous la scène (touches 1-8, Tab pour la roue des outils).
-- **Menus** : 🗺️ carte (ferme et région), 📜 menu (sac, recettes, poissons, quêtes, métiers, forge, liens), 💾 sauvegarde, ⚙ réglages (zoom, son). Clavier : E menu, I sac, M carte, Échap ferme.
+- **Menus** : 🗺️ carte (ferme et région), ☰ menu (nom, niveau et XP en tête ; sac, poissons, métiers, forge, liens), 💾 sauvegarde, ⚙ réglages (zoom, son). À côté du bouton d'action : ⭐ quêtes et 🛠️ recettes. Clavier : E menu, I sac, M carte, Échap ferme.
+- **Cadre du haut** (argent, date, météo, énergie) : il s'efface quand on reste immobile et revient dès qu'on bouge.
 
 ## 3. Une journée
 - Une journée dure **environ 20 minutes** (6 h → 1 h du matin). La nuit tombe à 18 h.
@@ -54,7 +55,7 @@ Le héros (**Cloud Jimny** par défaut) arrive en train à Farmwest pour reprend
 - **Grange** : à rafistoler (100 bois + 60 pierres) ; on y trouve la pelle.
 - **Champ** : le lendemain du jour où l'on trouve la pelle, un **courrier** arrive (boîte aux lettres) avec **20 graines de blé**. À la pelle, on bêche des **carrés** sur l'herbe libre de la ferme ; on choisit les graines dans le sac et on **glisse** sur les carrés pour tout semer. Le **blé pousse en 1 jour** ; le lendemain, à la **faucille**, toucher un épi mûr récolte **tout le champ d'un coup**, sans bouger. Chaque carré donne 2 blés et 3 **pailles** (1 $ pièce).
 - **Coffre** : rangement (80 bois + 20 pierres), plan acheté chez Harry (60 $).
-- **Bac de vente** : tout se vend là.
+- **Vendre** : à l'**étal**, au centre-ville, à côté de la fontaine (façon Hay Day). 10 objets en vente au plus au début. On choisit le prix : au plus bas, un habitant achète en 1 à 3 minutes ; plus cher, il faut attendre plus longtemps ; au prix fort (× 2), la vente se fait pendant la nuit. Les habitants y vendent aussi quelques objets chaque jour, assez cher.
 - **Animaux** : poule, lapin, cochon, mouton, chien et chat (marchand d'animaux du centre-ville).
 
 ## 8. Fabriquer et cuisiner

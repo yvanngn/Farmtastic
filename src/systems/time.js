@@ -1,3 +1,4 @@
+import { standNewDay } from './stand.js';
 import { cropsNewDay } from './farming.js';
 import { mailNewDay } from './mail.js';
 // Temps qui passe, jours, saisons, sommeil.
@@ -36,7 +37,8 @@ export function newDay(g, slept) {
   animalsNewDay(S);
   socialNewDay(S);
   regrow(g);
-  cropsNewDay(S); mailNewDay(g);   // 18/11 : le blé mûrit en un jour ; courrier des graines le lendemain de la pelle
+  cropsNewDay(S); mailNewDay(g); standNewDay(g);   // 19/11 : l'étal vend pendant la nuit
+    // 18/11 : le blé mûrit en un jour ; courrier des graines le lendemain de la pelle
   if (newSeason && S.objs) seasonRestock(g);
   if (newSeason) syncForest(S);   // lot 11 : nouveau labyrinthe dans la forêt   // lot 8 : la nature reprend ses droits à chaque saison
   g.enemies.length = 0;

@@ -135,7 +135,7 @@ import { buildParc, buildBiome, buildQuartier, buildTown, TOWN_LIGHTS } from './
 import { buildWest } from './west.js';
 import { buildQuarry } from './quarry.js';
 import { quarryMouthOpen } from '../world/quarrymouth.js';
-import { QUARRY_MOUTHS } from '../world/scenes.js';
+import { QUARRY_MOUTHS, STAND_POS } from '../world/scenes.js';
 import { PICKUPS, isBroken } from '../systems/grange.js';
 import { buildWild, drawMob, drawZRock, drawShroom, drawForestTree } from './wild.js';
 import { MUSHROOMS } from '../data/items.js';
@@ -519,6 +519,17 @@ let swing = null;
       ctx.fillStyle = '#5a3a22'; ctx.fillRect(x + 7, y + 4, 2, 12); ctx.fillStyle = '#3a5a8a'; ctx.fillRect(x + 3, y - 2, 10, 7); ctx.fillStyle = '#5a7aaa'; ctx.fillRect(x + 3, y - 2, 10, 2); ctx.fillStyle = '#1e2a40'; ctx.fillRect(x + 3, y + 5, 10, 1);
       ctx.fillStyle = un ? '#e0402a' : '#8a2a1a'; ctx.fillRect(x + 12, un ? y - 6 : y, 2, un ? 6 : 4); if (un) ctx.fillRect(x + 12, y - 6, 4, 2); } });
     if (scene === 'gare' && !(S.golgo && S.golgo.read)) list.push({ z: 13, d: () => { const x = 10 * T, y = 12 * T + 8; ctx.fillStyle = '#6a4426'; ctx.fillRect(x - 2, y, 36, 4); ctx.fillRect(x - 2, y + 7, 36, 4); ctx.fillStyle = '#4a2e1a'; ctx.fillRect(x, y - 4, 3, 18); ctx.fillRect(x + 29, y - 4, 3, 18); } });   // planches qui barrent le chemin du sud
+    if (scene === 'town') list.push({ z: STAND_POS.y + .9, d: () => {   // 19/11 : l'étal de vente, à côté de la fontaine
+      const x = STAND_POS.x * T, y = STAND_POS.y * T, R2 = (a, b, w, h, k) => { ctx.fillStyle = k; ctx.fillRect(x + a, y + b, w, h); }, lots = (S.stand && S.stand.lots) || [];
+      R2(0, 14, 32, 3, 'rgba(30,15,5,.3)');
+      R2(1, -14, 2, 28, '#5a3a22'); R2(29, -14, 2, 28, '#5a3a22');   // poteaux
+      for (let k = 0; k < 8; k++) R2(-2 + k * 4.5, -18, 5, 6, k % 2 ? '#f4ead2' : '#c8402e');   // auvent rayé
+      for (let k = 0; k < 8; k++) R2(-2 + k * 4.5, -12, 5, 2, k % 2 ? '#d8cbb0' : '#a8302b');
+      R2(0, 2, 32, 12, '#8a5a32'); R2(0, 2, 32, 2, '#b07a48'); for (let k = 3; k < 32; k += 7) R2(k, 5, 1, 9, '#6a4226');   // comptoir
+      const cols = ['#e8c26a', '#c84a4a', '#8ac06a', '#c99560', '#9aa4b0'];
+      for (let k = 0; k < Math.min(5, Math.max(lots.length, 2)); k++) { const cx = 3 + k * 6; R2(cx, -3, 5, 5, '#a8774a'); R2(cx + 1, -4, 3, 2, lots[k] ? cols[k % 5] : '#7a5a3a'); }   // cageots
+      R2(10, 9, 12, 4, '#f4ead2'); R2(12, 10, 2, 2, '#3a2410'); R2(15, 10, 2, 2, '#3a2410'); R2(18, 10, 2, 2, '#3a2410');   // ardoise
+    } });
     if (scene === 'carriere') for (const m of QUARRY_MOUTHS) if (quarryMouthOpen(S, m.x, m.y)) list.push({ z: m.y + .1, d: () => {   // 19/11 : la bouche de tunnel ouverte aujourd'hui
       const x = m.x * T, y = m.y * T; ctx.fillStyle = '#4a2a1a'; ctx.fillRect(x - 3, y - 2, 22, 18); ctx.fillStyle = '#120a08'; ctx.fillRect(x - 1, y + 2, 18, 14); ctx.fillRect(x + 1, y, 14, 2);
       ctx.fillStyle = '#6a4a2a'; ctx.fillRect(x - 3, y - 2, 3, 18); ctx.fillRect(x + 16, y - 2, 3, 18); ctx.fillRect(x - 3, y - 3, 22, 3);   // étais en bois

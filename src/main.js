@@ -70,10 +70,13 @@ import { buryGame, unburyGame, readTomb, visibleGames, removeFromIndex, deleteOn
 import { createGamesPanel } from './ui/gamesPanel.js';
 import { createInventoryGrid } from './ui/inventoryGrid.js';
 import { createSellPanel } from './ui/sellPanel.js';
+import { createStandPanel } from './ui/standPanel.js';
+import { standTick } from './systems/stand.js';
 import { createChestPanel } from './ui/chestPanel.js';
 import { createMultiplayer, lerpOthers } from './net/multiplayer.js';
 
 const g = createGame();
+let hudIdle = 0;
 journalHook(g);   // 19/11 : le journal note chaque activité
 let started = false, net = { sb: null, uid: null }, mp = null, games = [], game = null, pending = null;
 const cv = $('#game');
@@ -85,6 +88,7 @@ if (adminSaved()) { ADMIN.on = true; document.body.classList.add('admin'); }
 const wheel = createWheel(g, audio);
 const invGrid = createInventoryGrid(g, audio);
 const sellPanel = createSellPanel(g, audio);
+const standPanel = createStandPanel(g, audio);   // 19/11 : l'étal du centre-ville
 const chestPanel = createChestPanel(g, audio);
 createFishPanel(g, audio);
 createParcPanel(g, audio);
@@ -104,7 +108,7 @@ function wireBus() {
   g.bus.on('openChest', c => chestPanel.open(c));
   g.bus.on('showMap', () => { mapView.open(); toast('🗺️ Le plan est toujours là : bouton 🗺️ en haut à droite (ou touche M).'); });
   g.bus.on('clinic', e => { const h = NPCS.hailey, lines = e && e.off === 'repos' ? h.clinicRepos : e && e.off === 'nuit' ? h.clinicNuit : h.clinic; setTimeout(() => g.bus.emit('say', { name: h.name, color: h.color, voice: h.voice, lines }), 600); });
-  g.bus.on('open', what => what === 'journal' ? menu.openJournal() : what === 'board' ? board.open() : what === 'sell' ? sellPanel.open() : menu.open(what, true));
+  g.bus.on('open', what => what === 'journal' ? menu.openJournal() : what === 'board' ? board.open() : what === 'sell' ? sellPanel.open() : what === 'stand' ? standPanel.open() : what === 'quests' ? menu.open('quests', true) : menu.open(what, true));
 }
 wireBus();
 
@@ -224,7 +228,8 @@ $('#bSave').onclick = () => doSave(true);
   f.addEventListener('pointerdown', e => { e.preventDefault(); on(true); }); for (const ev of ['pointerup', 'pointerleave', 'pointercancel']) f.addEventListener(ev, () => on(false));
   $('#bIntroSkip').onclick = () => { if (!introActive(g.S)) return; audio.play('ui'); on(false); dialog.reset(); skipIntro(g); }; }
 $('#bBag').onclick = () => { audio.play('ui'); menu.open(); };
-$('#bRecipes').onclick = () => { audio.play('ui'); menu.open('recettes', true); };   // seulement les recettes (le menu complet reste en haut)
+$('#bRecipes').onclick = () => { audio.play('ui'); menu.open('recettes', true); };
+$('#bQuests').onclick = () => { audio.play('ui'); menu.open('quests', true); };   // 19/11 : les quêtes, à côté du bouton d'action   // seulement les recettes (le menu complet reste en haut)
 // Revenir au menu principal : on sauvegarde, puis on recharge le jeu sur l'écran titre (tout repart proprement, multijoueur compris).
 g.bus.on('toTitle', () => {
   if (!started) return;
@@ -307,7 +312,8 @@ function loop(now) {
     for (let i = g.fx.length - 1; i >= 0; i--) { const f = g.fx[i]; f.life -= dt; f.y -= dt * 0.75; if (f.life <= 0) g.fx.splice(i, 1); }
     renderer.updateParticles(dt);
     renderer.render(now);
-    if ((hudT += dt) > 0.25) { hudT = 0; if (started && !introActive(g.S)) { questXpTick(g, QUESTS); letterTick(g); } hud.update(); repairPanel.update(started && !dialog.isOpen && !document.querySelector('.overlay.on')); }
+    { const mv = !!g.player.walkFrame; if (mv) hudIdle = 0; else hudIdle += dt; $('#hud').classList.toggle('repos', hudIdle > 2.5); }   // 19/11 : météo / argent visibles quand on bouge
+    if ((hudT += dt) > 0.25) { hudT = 0; if (started && !introActive(g.S)) { questXpTick(g, QUESTS); letterTick(g); standTick(g); } hud.update(); repairPanel.update(started && !dialog.isOpen && !document.querySelector('.overlay.on')); }
   }
   if (custom.isOpen()) custom.draw(now);
   if (title.isOpen()) title.draw(now);
