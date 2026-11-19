@@ -2,6 +2,7 @@
 
 Semver horodaté (heure de Paris). Patch automatique à chaque publication ; mineure et majeure sur décision de l'utilisateur.
 
+- **0.1.63** — 2026-11-19 08:57 — étal ×0,5 à ×2, outils sans palier, énergie, une discussion par jour, Ed, icônes
 - **0.1.62** — 2026-11-19 08:52 — musiques variées, icônes pixel moderne, sac affiché pendant les réparations
 - **0.1.61** — 2026-11-19 08:48 — boutons quêtes/recettes, cadre du haut allégé, étal de vente du centre-ville
 - **0.1.60** — 2026-11-19 07:52 — profil épaissi, marche façon Stardew, pioche à l'endroit, joystick sans déplacement au toucher

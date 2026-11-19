@@ -7,28 +7,29 @@ import { add, has } from './inventory.js';
 import { sellable } from './economy.js';
 
 export const STAND_CAP = 10;                          // objets en vente au début
-export const PRICE_STEPS = [1, 1.25, 1.5, 1.75, 2];   // × prix de base
+export const PRICE_STEPS = [0.5, 0.75, 1, 1.5, 2];   // × prix de base (19/11 : de la moitié au double)
 export const OFFERS_PER_DAY = 3, OFFER_MULT = 2.5;    // 💡 offres des habitants : 3 par jour, 2,5 × le prix de base
 export const BUYERS = ['Myst', 'Luna', 'Franck', 'Hailey', 'Manu', 'Igor', 'Ed', 'Suzie', 'Remy', 'Harry', 'Rouky'];
 const ST = S => (S.stand ||= { lots: [], offers: [], day: null, log: [] });
 export const stand = S => S.stand || { lots: [], offers: [], day: null, log: [] };
 export const used = S => stand(S).lots.reduce((a, l) => a + l.n, 0);
 export const unitPrice = (id, mult) => Math.max(1, Math.round(ITEMS[id].p * mult));
-// Délai de vente (ms) selon le prix : ×1 → 1 à 3 min ; ×1,25 → 3 à 6 ; ×1,5 → 8 à 12 ; ×1,75 → 15 à 25 ; ×2 → la nuit.
+// 19/11 (règles de l'utilisateur) : × 0,5 → vendu en 2 à 3 min ; de × 0,51 à × 0,99 → vendu dans la journée (5 à 15 min) ;
+// de × 1 à × 1,99 → vendu pendant la nuit ; × 2 → au bout de 2 nuits.
 export function saleDelay(mult, r) {
-  if (mult >= 2) return Infinity;
-  const [a, b] = mult <= 1 ? [1, 3] : mult <= 1.25 ? [3, 6] : mult <= 1.5 ? [8, 12] : [15, 25];
+  if (mult >= 1) return Infinity;
+  const [a, b] = mult <= .5 ? [2, 3] : [5, 15];
   return Math.round((a + (b - a) * r) * 60000);
 }
-export const waitLabel = m => m >= 2 ? 'après la nuit' : m <= 1 ? '1 à 3 min' : m <= 1.25 ? '3 à 6 min' : m <= 1.5 ? '8 à 12 min' : '15 à 25 min';
-
+export const nightsFor = mult => mult >= 2 ? 2 : mult >= 1 ? 1 : 0;
+export const waitLabel = m => m >= 2 ? 'en 2 jours' : m >= 1 ? 'après la nuit' : m <= .5 ? 'en 2 à 3 min' : 'dans la journée';
 export function listItem(g, id, n, mult) {
   const S = g.S, st = ST(S);
   if (!sellable(id) || !PRICE_STEPS.includes(mult)) return false;
   n = Math.min(n | 0, STAND_CAP - used(S), S.inv[id] || 0);
   if (n <= 0 || !has(S, id, n)) { g.bus.emit('toast', used(S) >= STAND_CAP ? `🧺 L’étal est plein (${STAND_CAP} objets au plus).` : 'Rien à mettre en vente.'); return false; }
   add(g, id, -n);
-  st.lots.push({ id, n, mult, price: unitPrice(id, mult) * n, t0: g.now(), wait: saleDelay(mult, g.rnd()) });
+  st.lots.push({ id, n, mult, price: unitPrice(id, mult) * n, t0: g.now(), wait: saleDelay(mult, g.rnd()), nights: nightsFor(mult) });
   g.bus.emit('sfx', 'ui'); g.bus.emit('inv');
   return true;
 }
@@ -48,10 +49,10 @@ export function standTick(g) {
   for (let i = st.lots.length - 1; i >= 0; i--) { const l = st.lots[i]; if (g.now() - l.t0 >= l.wait) { sell(g, l, i); k++; } }
   return k;
 }
-// Au matin : tout ce qui restait (même au prix fort) est vendu pendant la nuit ; nouvelles offres des habitants.
+// Au matin : ce qui attendait la nuit est vendu (au prix fort, il faut 2 nuits) ; nouvelles offres des habitants.
 export function standNewDay(g) {
   const S = g.S, st = ST(S);
-  for (let i = st.lots.length - 1; i >= 0; i--) sell(g, st.lots[i], i);
+  for (let i = st.lots.length - 1; i >= 0; i--) { const l = st.lots[i]; l.nights = (l.nights || 0) - 1; if (l.nights <= 0) sell(g, l, i); }
   rollOffers(g);
 }
 const POOL = () => Object.keys(ITEMS).filter(id => { const it = ITEMS[id]; return sellable(id) && it.p >= 2 && !it.seed && !it.keep; });

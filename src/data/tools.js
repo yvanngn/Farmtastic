@@ -12,7 +12,7 @@ export const upgradeCost = tier => ({ money: 600 * tier * tier, stone: 30 * tier
 export const MIN_PICK = { rock: 1, rock_big: 1, boulder: 2 };
 // Énergie par coup selon le palier de l'outil.
 // Énergie par coup (abaissée : les coups sont plus lents, un arbre de base coûte 4 ⚡ au lieu de 8) 💡
-export const energyCost = tier => (tier >= 3 ? 0.3 : 0.5);
+export const energyCost = tier => (tier >= 3 ? 0.4 : 0.65);   // 19/11 : un peu plus fatigant (0,5 → 0,65 ; 0,3 → 0,4 dès le fer)
 // Un coup de hache ou de pioche à la fois : on attend la fin du geste (CFG.HIT_MS) avant le suivant.
 export function hitReady(g) {
   const ms = CFG.HIT_MS, t = g.now();

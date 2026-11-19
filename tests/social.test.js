@@ -48,8 +48,7 @@ test('Luna : sa vie se dévoile une réplique par jour, et seulement avec assez 
   S.social.luna.asked = LUNA.questions.map(q => q.id); // pas de question pour ce test
   talk(g, 'luna');
   assert.equal(said[0], LUNA.story[0].t);
-  talk(g, 'luna');
-  assert.equal(said[1], LUNA.story[0].t, 'le même jour, elle répète');
+  assert.equal(talk(g, 'luna'), 'already', '19/11 : une seule discussion par jour'); assert.equal(said.length, 1);
   for (let d = 0; d < 5; d++) { socialNewDay(S); talk(g, 'luna'); }
   assert.deepEqual(S.social.luna.seen, [0, 1, 2], 'sans cœur, seulement les 3 premières');
   assert.ok(LUNA.chat.includes(said.at(-1)));

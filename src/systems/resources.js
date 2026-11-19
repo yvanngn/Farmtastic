@@ -31,7 +31,7 @@ export function hitObject(g, x, y) {
     g.bus.emit('sfx', 'denied'); g.bus.emit('toast', `Ce jeune ${TREE_KINDS[treeKind(o, x, y)].n.toLowerCase()} pousse encore (${left} j) 🌱`); return false;
   }
   const tier = toolTier(S, tool), need = MIN_PICK[o.t] || 1;
-  if (tier < need) { g.bus.emit('sfx', 'denied'); g.bus.emit('toast', `Pioche « ${TIER_NAMES[need]} » requise (forge)`); return false; }
+  if (tier < need) { g.bus.emit('sfx', 'denied'); g.bus.emit('toast', `${({ pick: 'Il faut une meilleure pioche', axe: 'Il faut une meilleure hache', sickle: 'Il faut une meilleure faucille' })[tool] || 'Il faut un meilleur outil'} (forge d’Igor).`); return false; }   // 19/11 : on ne nomme plus le palier
   if (!hitReady(g)) return 'wait';   // le geste précédent n'est pas fini
   if (!useEnergy(g, energyCost(tier))) return false;
   o.hp -= tier; o.shake = 0.25;

@@ -67,11 +67,11 @@ test('casser des pierres donne de l’XP et fait monter de niveau', () => {
   assert.ok(sounds().includes('levelup'));
 });
 
-test('gros rocher : pioche Cuivre requise', () => {
+test('gros rocher : il faut une meilleure pioche (sans nommer le palier)', () => {
   const { g, S, toasts } = makeGame();
   S.sel = 'pick'; S.objs['40,10'] = { t: 'boulder', hp: 6 };
   assert.equal(hitObject(g, 40, 10), false);
-  assert.match(toasts()[0], /Cuivre/);
+  assert.match(toasts()[0], /meilleure pioche/); assert.doesNotMatch(toasts()[0], /Cuivre/);
   S.tools.pick = 2;
   hitObject(g, 40, 10); hitObject(g, 40, 10); hitObject(g, 40, 10);
   assert.equal(S.objs['40,10'], undefined); ramasse(g);
@@ -93,7 +93,7 @@ test('un outil amélioré coûte moins d’énergie et frappe plus fort', () => 
   S.sel = 'axe'; S.tools.axe = 3; S.objs['30,20'] = { t: 'tree', hp: 3 };
   hitObject(g, 30, 20);
   assert.equal(S.objs['30,20'], undefined, 'abattu en un coup');
-  assert.equal(S.energy, 99.7);
+  assert.equal(Math.round(S.energy * 100) / 100, 99.6);
   const e = { x: S.x + 1, y: S.y, hp: 100, cd: 0, hit: 0 };
   g.enemies.push(e); S.tools.sword = 3;
   attack(g, e);

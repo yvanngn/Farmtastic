@@ -12,7 +12,7 @@ export function createStandPanel(g, audio) {
   ov.innerHTML = '<div class="panel box sell-panel"><div class="row" style="justify-content:space-between;margin:0"><h2>🧺 Mon étal</h2><button id="standClose" aria-label="Fermer">✕</button></div><div id="standBody"></div></div>';
   document.body.appendChild(ov);
   const body = ov.querySelector('#standBody');
-  let sel = null, n = 1, mi = 0, timer = 0;
+  let sel = null, n = 1, mi = 2, timer = 0;
   ov.querySelector('#standClose').onclick = () => { audio.play('ui'); ov.classList.remove('on'); clearInterval(timer); };
   const mm = ms => { const s = Math.max(0, Math.ceil(ms / 1000)); return `${Math.floor(s / 60)} min ${String(s % 60).padStart(2, '0')}`; };
   function render() {
@@ -20,16 +20,16 @@ export function createStandPanel(g, audio) {
     const ids = invOrder(S).filter(sellable);
     if (sel && !(S.inv[sel] > 0)) sel = null;
     const max = sel ? Math.max(1, Math.min(free, S.inv[sel])) : 1; n = Math.min(Math.max(1, n), max);
-    const lots = st.lots.map((l, i) => `<div class="sell-row on"><span class="sell-ic">${iconHTML(l.id)}</span><div class="sell-n"><b>${l.n} × ${ITEMS[l.id].n}</b><small>${l.price} $ · ${l.wait === Infinity ? '🌙 vendu pendant la nuit' : '⏳ ' + mm(l.t0 + l.wait - g.now())}</small></div><button data-un="${i}" class="mini">Retirer</button></div>`).join('');
+    const lots = st.lots.map((l, i) => `<div class="sell-row on"><span class="sell-ic">${iconHTML(l.id)}</span><div class="sell-n"><b>${l.n} × ${ITEMS[l.id].n}</b><small>${l.price} $ · ${l.wait === Infinity ? (l.nights >= 2 ? '🌙🌙 vendu dans 2 nuits' : '🌙 vendu pendant la nuit') : '⏳ ' + mm(l.t0 + l.wait - g.now())}</small></div><button data-un="${i}" class="mini">Retirer</button></div>`).join('');
     const pick = ids.map(id => `<button data-sel="${id}" class="st-it${sel === id ? ' on' : ''}" title="${ITEMS[id].n}">${iconHTML(id)}<small>×${S.inv[id]}</small></button>`).join('');
     const m = PRICE_STEPS[mi];
     const form = sel ? `<div class="st-form"><b>${ITEMS[sel].n}</b> · quantité <button data-q="-1">−</button> <b>${n}</b> <button data-q="1">+</button>
-      <div class="st-prix">${PRICE_STEPS.map((p, i) => `<button data-m="${i}" class="${i === mi ? 'on' : ''}">${p === 1 ? 'Bas' : p === 2 ? 'Fort' : '×' + p}</button>`).join('')}</div>
+      <div class="st-prix">${PRICE_STEPS.map((p, i) => `<button data-m="${i}" class="${i === mi ? 'on' : ''}">×${String(p).replace('.', ',')}</button>`).join('')}</div>
       <div>Prix : <b>${unitPrice(sel, m) * n} $</b> (${unitPrice(sel, m)} $/u) · vendu ${waitLabel(m)}</div>
       <button data-list class="primaire" ${free > 0 ? '' : 'disabled'}>Mettre en vente</button></div>` : '<p class="info">Choisis un objet de ton sac à mettre en vente.</p>';
     const off = offers.map((o, i) => `<div class="sell-row"><span class="sell-ic">${iconHTML(o.id)}</span><div class="sell-n"><b>${o.n} × ${ITEMS[o.id].n}</b><small>vendu par ${o.who} · ${o.price} $</small></div><button data-buy="${i}" class="mini" ${S.money >= o.price ? '' : 'disabled'}>Acheter</button></div>`).join('');
     const log = st.log.slice(0, 8).map(x => `<li>${x.who} : ${x.n} × ${ITEMS[x.id]?.n || x.id} → ${x.v} $</li>`).join('');
-    body.innerHTML = `<p class="info">Les habitants passent devant la fontaine et achètent de temps en temps. Moins cher = vendu plus vite ; au prix fort, il faut attendre la nuit. Place : ${used(S)}/${STAND_CAP}.</p>
+    body.innerHTML = `<p class="info">Les habitants passent devant la fontaine et achètent de temps en temps. À moitié prix, c’est vendu en 2 à 3 min ; un peu moins cher, dans la journée ; au prix normal ou plus, pendant la nuit ; au double, il faut 2 jours. Place : ${used(S)}/${STAND_CAP}.</p>
       <h3>En vente</h3>${lots || '<p class="info">Rien pour l’instant.</p>'}
       <h3>Ajouter</h3><div class="st-pick">${pick || '<p class="info">Rien à vendre dans ton sac.</p>'}</div>${form}
       <h3>🛒 Offres des habitants</h3>${off || '<p class="info">Plus rien aujourd’hui. Repasse demain.</p>'}

@@ -88,6 +88,7 @@ Légende : ✅ fait · ⏳ à faire · ❓ question pour l'utilisateur · 💡 i
 - ✅ **Lot 9** (v0.1.19) : demandes de fabrication, une par habitant et par semaine, + panneau.
 - ✅ **Lot 2e** (v0.1.50) : rivière autour du centre-ville, route de l'est montagne ↔ port, port ↔ plage.
 - ✅ **Lot 12** (v0.1.51) : cabane du pêcheur (Rouky, Rox), quête de la canne, petits tas à creuser. ⏳ Plus tard : canne améliorable, butin des tas à faire évoluer.
+- ✅ **Lot 19** (v0.1.63) : étal × 0,5 à × 2, messages d'outils sans palier, énergie un peu plus chère, une discussion par jour, Ed hors du saloon, toutes les icônes.
 - ✅ **Lot 18** (v0.1.62) : musiques plus variées (6 phrases, modulations), icônes d'objets « pixel moderne », sac affiché pendant les réparations.
 - ✅ **Lot 17** (v0.1.61) : boutons Quêtes / Recettes, cadre du haut allégé, étal de vente du centre-ville (bac retiré).
 - ✅ **Lot 16** (v0.1.60) : profil épaissi, marche en 4 poses façon Stardew, pioche à l'endroit, joystick sans déplacement au toucher.

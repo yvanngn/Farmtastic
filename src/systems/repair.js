@@ -1,3 +1,4 @@
+import { useEnergy } from './player.js';
 import { gainJob } from './jobs.js';
 // Réparation des bâtiments délabrés (cabane, grange) et outils trouvés dehors. Logique pure.
 import { REPAIRS, REPAIR_STEP, FIELD_TOOLS } from '../data/repairs.js';
@@ -17,6 +18,7 @@ export const repairAt = (S, x, y) => onFarm(S) ? Object.keys(REPAIRS).find(id =>
 export const repairNear = S => onFarm(S) ? Object.keys(REPAIRS).find(id => { const R = REPAIRS[id]; return !isRepaired(S, id) && ready(S, id) && (!R.after || S.sel === 'hammer') && S.x >= R.x0 - 1 && S.x <= R.x1 + 2 && S.y >= R.y0 && S.y <= R.y1 + 4; }) || null : null;
 
 // Dépose ce qu'on a sur soi, jusqu'à remplir les jauges.
+export const REPAIR_ENERGY = 0.2;
 export function contribute(g, id) {
   const S = g.S, R = REPAIRS[id], st = repairState(S, id);
   if (isRepaired(S, id)) return false;
@@ -26,6 +28,7 @@ export function contribute(g, id) {
     if (give > 0) { add(g, k, -give); st[k] = (st[k] || 0) + give; moved += `+${give}${k === 'wood' ? '🪵' : '🪨'} `; }
   }
   if (!moved) { g.bus.emit('sfx', 'denied'); g.bus.emit('toast', 'Il te manque du bois ou des pierres : va en chercher !'); return false; }
+  useEnergy(g, REPAIR_ENERGY);   // 19/11 : réparer fatigue un tout petit peu
   (S.tips ||= {}).hammer = true;
   gainJob(g, 'charpentier', 1);   // métier de charpentier : chaque coup de marteau compte   // l'explication « reste appuyé avec le marteau » n'est plus utile
   g.bus.emit('sfx', 'pick'); g.bus.emit('pop', { t: moved.trim(), x: (R.x0 + R.x1) / 2, y: R.y1 });

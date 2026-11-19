@@ -291,7 +291,7 @@ export const ED = {
   traits: ['Barman du saloon', 'Ancien chauffeur routier', 'Aime le contact des gens', 'Rêve d’ouvrir un magasin en ville', 'Mari de Suzie, papa de Jade'],
   taste: { adore: [], aime: ['berry_cooked', 'confiture_baies'], naime: ['slime'], deteste: [] },   // 💡 en attendant les boissons
   story: [
-    { h: 0, t: "Bienvenue au saloon ! Moi c'est Ed. Installe-toi, c'est la maison." },
+    { h: 0, t: "Bienvenue au saloon ! Moi c'est Ed. Installe-toi, c'est la maison.", away: "Salut ! Moi c'est Ed, je tiens le saloon du centre-ville. Passe me voir un de ces soirs !" },   // 19/11 : 🆕 hors du saloon
     { h: 1, t: "Avant, je conduisais des camions. Des milliers de kilomètres, tout seul dans la cabine." },
     { h: 2, t: "Ce qui me manquait, c'était les gens. Alors j'ai posé le camion et j'ai ouvert ce saloon." }
   ],
@@ -300,6 +300,7 @@ export const ED = {
     { t: 'Ta famille ?', lines: ["Suzie, ma femme, et notre petite Jade. On habite la grande maison au bout du quartier."] }
   ],
   chat: ["Qu'est-ce que je te sers ? …Ah, c'est vrai, la carte est encore vide.", "Un jour, j'aurai mon magasin en ville. Tu verras.", "Un bon saloon, c'est un endroit où on se sent attendu."],
+  chatAway: ["Ah, une journée sans comptoir, ça fait du bien.", "Un jour, j'aurai mon magasin en ville. Tu verras.", "Jade a encore dessiné sur les murs… Suzie n'est pas ravie."],   // 19/11 : 🆕 quand il n'est pas au saloon
   questions: []
 };
 // Suzie (femme d'Ed) et Jade (leur enfant) : histoire à écrire plus tard (voir le carnet). Elles restent à la maison pour l'instant.

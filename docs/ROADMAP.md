@@ -156,11 +156,19 @@ Pour que **les scènes du jeu** atteignent le niveau de détail de l'image, scè
 - [x] **Un coffre pour ranger** : acheter le **plan du coffre** chez Harry (💡 60 $), le fabriquer (80 bois + 20 pierres). Le coffre quitte la quête principale « Premiers pas » ; Harry ne l'apprend plus gratuitement.
 - ⏳ Plus tard : la cabane agrandie vue de dehors (aujourd'hui seul l'intérieur change).
 
+## Lot 19 — Étal, outils, énergie, discussions (demande du 19/11) ✅ v0.1.63
+- [x] Étal : prix de × 0,5 à × 2. × 0,5 → vendu en 2 à 3 min ; × 0,51 à × 0,99 → dans la journée ; × 1 à × 1,99 → pendant la nuit ; × 2 → en 2 jours.
+- [x] Outils : plus de nom de palier dans les messages (« Il faut une meilleure pioche / hache / faucille »).
+- [x] Énergie : couper et casser coûtent un peu plus (0,65 au lieu de 0,5 ; 0,4 au lieu de 0,3 dès le fer) ; chaque coup de marteau de réparation coûte 0,2.
+- [x] Discussions : une seule par jour et par habitant (sauf quête spéciale) ; après, une bulle « Tu as déjà parlé à … aujourd’hui ».
+- [x] Ed ne dit « Bienvenue au saloon » qu'au saloon ; ailleurs, réplique et petites phrases à lui 🆕.
+- [x] Dernières icônes d'objets en « pixel moderne ».
+
 ## Lot 18 — Musique, icônes, réparation (demande du 19/11) ✅ v0.1.62
 - [x] Musiques : 6 phrases avant de boucler (au lieu d'une) : modulation à la quarte puis un ton plus bas, mélodie ornée, décalée, à l'octave, allégée ; grille d'accords inversée une phrase sur deux ; arpèges qui changent de motif ; nuances.
 - [x] Icônes d'objets refaites en « pixel moderne » 32 × 32 (tente violette, feu de camp, bûches, pierre, sachets de graines, blé, paille, minerais, champignons, fleurs, poissons, pain, coffre, baies, mûres, œuf, os, sac, maïs, carotte, laine, clôture, gemmes, gelée, chaudron, bonnet) ; affichées plus grandes dans le sac et à l'étal.
 - [x] Réparation : à côté de chaque jauge, ce qu'on a dans le sac (🎒) ; « Reste à apporter » toujours affiché.
-- [ ] Icônes encore à refaire : plats (ragoût, soupe, tisane), confitures, viandes, crevettes, saumon, truffe, bague, manteau, peluches, barbe à papa, potion.
+- [x] Toutes les icônes d'objets refaites (v0.1.63).
 
 ## Lot 17 — Boutons, cadre météo, étal de vente (demande du 19/11) ✅ v0.1.61
 - [x] Menu : plus d'onglets Recettes ni Quêtes ; bouton ⭐ Quêtes à côté du bouton d'action (🛠️ Recettes à côté) ; icône du menu ☰.

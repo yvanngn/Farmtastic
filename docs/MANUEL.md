@@ -55,7 +55,7 @@ Le héros (**Cloud Jimny** par défaut) arrive en train à Farmwest pour reprend
 - **Grange** : à rafistoler (100 bois + 60 pierres) ; on y trouve la pelle.
 - **Champ** : le lendemain du jour où l'on trouve la pelle, un **courrier** arrive (boîte aux lettres) avec **20 graines de blé**. À la pelle, on bêche des **carrés** sur l'herbe libre de la ferme ; on choisit les graines dans le sac et on **glisse** sur les carrés pour tout semer. Le **blé pousse en 1 jour** ; le lendemain, à la **faucille**, toucher un épi mûr récolte **tout le champ d'un coup**, sans bouger. Chaque carré donne 2 blés et 3 **pailles** (1 $ pièce).
 - **Coffre** : rangement (80 bois + 20 pierres), plan acheté chez Harry (60 $).
-- **Vendre** : à l'**étal**, au centre-ville, à côté de la fontaine (façon Hay Day). 10 objets en vente au plus au début. On choisit le prix : au plus bas, un habitant achète en 1 à 3 minutes ; plus cher, il faut attendre plus longtemps ; au prix fort (× 2), la vente se fait pendant la nuit. Les habitants y vendent aussi quelques objets chaque jour, assez cher.
+- **Vendre** : à l'**étal**, au centre-ville, à côté de la fontaine (façon Hay Day). 10 objets en vente au plus au début. On choisit le prix, de la moitié au double du prix de base : à × 0,5, un habitant achète en 2 à 3 minutes ; un peu moins cher que le prix de base, dans la journée ; au prix de base ou plus, pendant la nuit ; au double, au bout de 2 jours. Les habitants y vendent aussi quelques objets chaque jour, assez cher.
 - **Animaux** : poule, lapin, cochon, mouton, chien et chat (marchand d'animaux du centre-ville).
 
 ## 8. Fabriquer et cuisiner
@@ -75,7 +75,7 @@ Le héros (**Cloud Jimny** par défaut) arrive en train à Farmwest pour reprend
 - **Niveaux 1 à 10** (niveau 10 vers 5100 XP). La forêt s'ouvre au **niveau 3**, la caverne au **niveau 5** (⏳ quête qui l'ouvre).
 
 ## 11. Habitants et amitié
-- On gagne de l'amitié en **parlant** (une fois par jour) et en **offrant** des objets (une fois par jour). 10 cœurs maximum ; chaque palier dévoile un peu de leur vie.
+- On gagne de l'amitié en **parlant** (une seule discussion par jour et par habitant, sauf quête spéciale) et en **offrant** des objets (une fois par jour). 10 cœurs maximum ; chaque palier dévoile un peu de leur vie.
 - Leurs **goûts** se découvrent en offrant (📜 → Liens).
 - Habitants : **Myst**, **Luna**, **Franck**, **Hailey** (clinique), **Manu** (le Maire, ranch), **Igor** (forgeron), **Ed** (saloon), **Suzie**, **Jade**, **Remy Gusto** (restaurant), **Harry Fordson** (charpentier), le **cocher**, l'**esprit** de la vieille femme (la nuit, sur la ferme) ; **Rouky** et **Rox** (cabane du pêcheur).
 

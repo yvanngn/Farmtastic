@@ -25,15 +25,17 @@ export function registerNPC(g, npc) {
 }
 
 // Choisit la réplique du jour : la prochaine réplique d'histoire débloquée, sinon une petite phrase.
+// 19/11 : l'habitant est-il à son travail ? (Ed ne dit « bienvenue au saloon » qu'au saloon)
+const atWork = n => !n.worker || n.scene === n.worker.scene;
 export function nextLine(g, id) {
   const r = g.S.social[id], n = g.npcs[id];
   if (n.story) {
     if (!r.talked) {
       const i = n.story.findIndex((l, k) => !r.seen.includes(k) && l.h <= hearts(r));
-      if (i >= 0) { r.seen.push(i); return n.story[i].t; }
+      if (i >= 0) { r.seen.push(i); return atWork(n) || !n.story[i].away ? n.story[i].t : n.story[i].away; }
     } else if (r.seen.length) return n.story[r.seen[r.seen.length - 1]].t; // elle répète ce qu'elle vient de dire
   }
-  const lines = n.chat || n.dialog || ['…'];
+  const lines = (!atWork(n) && n.chatAway) || n.chat || n.dialog || ['…'];
   return lines[g.rnd() * lines.length | 0];
 }
 
@@ -46,6 +48,7 @@ export function talk(g, id) {
   if (id === 'golgolas' && golgolasTalk(g, n)) { if (!r.talked) { r.points += 20; r.talked = true; r.talks++; } return true; }   // lot 13
   if (id === 'rouky' && roukyTalk(g, n)) { if (!r.talked) { r.points += 20; r.talked = true; r.talks++; } return true; }   // lot 12 : la canne de Rouky
   if (id === 'cuistot' && cuistotTalk(g, n)) { if (!r.talked) { r.points += 20; r.talked = true; r.talks++; } return true; }   // quête du four (lot 5)
+  if (r.talked) { g.bus.emit('toast', `💬 Tu as déjà parlé à ${n.name} aujourd’hui. Reviens demain !`); return 'already'; }   // 19/11 : une discussion par jour (hors quête spéciale)
   // une question de temps en temps (1 discussion sur 3), une seule fois chacune
   const q = !r.talked && r.talks % 3 === 2 && (n.questions || []).find(x => !r.asked.includes(x.id) && x.h <= hearts(r));
   const line = q ? q.q : nextLine(g, id);

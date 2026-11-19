@@ -40,7 +40,7 @@ test('arbre : hache obligatoire, 3 coups, bois récolté', () => {
   assert.equal(S.objs['30,20'], undefined);
   assert.ok(S.drops.some(d => d.id === 'wood'), 'le bois tombe par terre');
   ramasse(g); assert.equal(S.inv.wood, 5);
-  assert.equal(S.energy, 98.5, '0,5 énergie par coup (coups plus lents depuis la v0.1.26)');
+  assert.equal(Math.round(S.energy * 100) / 100, 98.05, '0,65 énergie par coup (19/11)');
 });
 
 test('énergie insuffisante bloque l’action', () => {
@@ -155,7 +155,7 @@ test('coups de hache et de pioche plus lents (un geste à la fois) ; un meilleur
     const base = timeToFell(1), fer = timeToFell(3);
     assert.ok(base.ms >= 7 * 650, 'arbre à la hache de base : 8 coups, au moins 4,5 s');
     assert.ok(fer.ms < base.ms / 2, 'la hache en fer fait gagner beaucoup de temps');
-    assert.equal(base.e, 8 * energyCost(1)); assert.ok(base.e <= 4, 'un arbre coûte au plus 4 ⚡ avec la hache de base');
+    assert.ok(Math.abs(base.e - 8 * energyCost(1)) < 1e-9); assert.ok(base.e <= 5.5, 'un arbre coûte au plus 5,5 ⚡ avec la hache de base (19/11)');
     const { g, S, clock } = makeGame({ state: { sel: 'pick', energy: 100 } }); S.objs = { '20,20': { t: 'rock', hp: 6 } }; S.x = 20.5; S.y = 21;
     hitObject(g, 20, 20); assert.equal(hitObject(g, 20, 20), 'wait', 'pas de second coup avant la fin du geste');
     clock.t += 650; assert.equal(hitObject(g, 20, 20), true);

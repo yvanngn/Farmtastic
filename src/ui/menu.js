@@ -83,7 +83,7 @@ export function createMenu(g, opts) {
     forge(S) {
       const lvl = miningLevel(S), xp = S.skills.mining.xp, nx = nextXp(xp), pct = nx ? Math.round(xp / nx * 100) : 100;
       const why = { plans: 'Plans de forge : caravane 🐪', level: 'Niveau de minage insuffisant', money: "Pas assez d'argent", stone: 'Pas assez de pierre', max: 'Palier maximum' };
-      return `<div class="xp"><b>⛏️ Minage niveau ${lvl}</b><span>${xp}${nx ? ' / ' + nx : ''} XP</span><div class="bar"><i style="width:${pct}%;background:linear-gradient(90deg,#c99a3a,#ffdf8a)"></i></div><small>Cassez des pierres pour gagner de l'expérience. Les gros rochers demandent une pioche Cuivre.</small></div>`
+      return `<div class="xp"><b>⛏️ Minage niveau ${lvl}</b><span>${xp}${nx ? ' / ' + nx : ''} XP</span><div class="bar"><i style="width:${pct}%;background:linear-gradient(90deg,#c99a3a,#ffdf8a)"></i></div><small>Cassez des pierres pour gagner de l'expérience. Les gros rochers demandent une meilleure pioche.</small></div>`
         + '<div class="grid">' + UPGRADABLE.filter(id => hasTool(S, id)).map(id => {
           const t = TOOLS.find(x => x.id === id), ic = iconHTML(id), tier = toolTier(S, id), r = canUpgrade(S, id), c = r.cost;
           return card(`<div class="t">${ic} <b>${t.n}</b></div><div class="tierlbl t${tier}">${TIER_NAMES[tier]}</div>`
