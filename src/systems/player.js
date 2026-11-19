@@ -32,9 +32,13 @@ export function knockout(g) {
 }
 
 // Manger / boire un objet consommable.
+// 19/11 : manger prend un petit moment (animation) : impossible d'enchaîner les bouchées.
+export const EAT_MS = 900;
+export const eating = g => g.eating && g.now() - g.eating.t0 < EAT_MS ? g.eating : null;
 export function consume(g, id) {
   const e = ITEMS[id] && ITEMS[id].eat;
-  if (!e || !has(g.S, id)) return false;
+  if (!e || !has(g.S, id) || eating(g)) return false;
+  g.eating = { id, t0: g.now() };
   add(g, id, -1);
   g.S.energy = Math.min(g.S.maxE, g.S.energy + (e.e || 0));
   g.S.hp = Math.min(g.S.maxHp, g.S.hp + (e.h || 0));

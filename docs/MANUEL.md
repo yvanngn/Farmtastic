@@ -16,7 +16,7 @@ Le héros (**Cloud Jimny** par défaut) arrive en train à Farmwest pour reprend
 
 ## 3. Une journée
 - Une journée dure **environ 20 minutes** (6 h → 1 h du matin). La nuit tombe à 18 h.
-- **Énergie** : chaque coup d'outil en coûte. On la regagne en dormant (tente ou cabane) et en mangeant (baies, mûres, plats).
+- **Énergie** : chaque coup d'outil en coûte (un peu aussi chaque coup de marteau quand on répare). Manger prend un petit moment : on ne peut pas enchaîner les bouchées. On la regagne en dormant (tente ou cabane) et en mangeant (baies, mûres, plats).
 - **Pas couché à 1 h** : on se réveille à la clinique, et Hailey se fait payer.
 - **La nuit** : rêve ou prémonition, énergie qui remonte, sauvegarde automatique.
 
@@ -35,7 +35,7 @@ Le héros (**Cloud Jimny** par défaut) arrive en train à Farmwest pour reprend
 - On n'a **jamais deux fois le même outil**, même à plusieurs.
 
 ## 5. Ressources
-- **Arbres** (hache) → bois. Plus de cailloux à la ferme : ils sont à la **carrière**, au nord de la ferme (chemin au bout de l'allée centrale). Elle est pleine au premier passage et 3 cailloux repoussent chaque jour. Elle est bordée de **gros cailloux** (plus longs à casser, 4 à 6 pierres, ils repoussent en 3 jours).
+- **Arbres** (hache) → bois. Un arbre abattu laisse sa **souche** : coupée, elle donne encore 1 à 2 bois (l'arbre ne revient qu'à la saison suivante) ; laissée, elle repousse au bout de 4 jours, petit à petit. Pareil dans la forêt. Plus de cailloux à la ferme : ils sont à la **carrière**, au nord de la ferme (chemin au bout de l'allée centrale). Elle est pleine au premier passage ; une fois vidée, 6 cailloux reviennent chaque jour. Elle est bordée de **gros cailloux** (plus longs à casser, 4 à 6 pierres, ils repoussent en 3 jours).
 - **Carrière profonde** : chaque jour, l'une des trois bouches de tunnel de la paroi nord est ouverte (casser le gros caillou devant). Derrière, un canyon de grès rouge riche en **filons de fer et d'or**.
 - **Filons** → minerai ; les filons rares (fer, or) montrent un morceau de métal qui **scintille**.
 - **Fleurs et champignons** : couteau, en restant appuyé.

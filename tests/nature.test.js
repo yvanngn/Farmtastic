@@ -75,7 +75,7 @@ test('16/11 : on coupe les arbres de la forêt (hache) ; souche, puis ils repous
   for (let i = 0; i < TREE_HP; i++) assert.equal(act(g, x, y), 'hit');
   assert.ok(!forestTreeAt(S, x, y)); assert.equal(isSolid(S, x, y), false, 'souche : on passe');
   ramasse(g); assert.ok(S.inv.wood >= 3);
-  S.day += TREE_GROW_DAYS; assert.ok(forestTreeAt(S, x, y), 'repoussé');
+  S.day += 4; assert.ok(forestTreeAt(S, x, y), 'repoussé au bout de 4 jours (19/11)');
 });
 
 test('Farmwest lot 5 : sans couteau, on ne cueille pas les fleurs', () => {

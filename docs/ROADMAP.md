@@ -156,6 +156,13 @@ Pour que **les scènes du jeu** atteignent le niveau de détail de l'image, scè
 - [x] **Un coffre pour ranger** : acheter le **plan du coffre** chez Harry (💡 60 $), le fabriquer (80 bois + 20 pierres). Le coffre quitte la quête principale « Premiers pas » ; Harry ne l'apprend plus gratuitement.
 - ⏳ Plus tard : la cabane agrandie vue de dehors (aujourd'hui seul l'intérieur change).
 
+## Lot 20 — Souches, carrière, fleurs, cuisson, manger (demande du 19/11) ✅ v0.1.64
+- [x] Un arbre abattu laisse sa **souche** (ferme et forêt). Coupée : 1 à 2 bois de plus, et l'arbre ne revient qu'à la saison suivante (ferme : remise des arbres à chaque saison). Laissée : elle repousse au bout de 4 jours, petit à petit (rejet vert sur la souche, puis jeune pousse → arbre en 3 jours).
+- [x] Carrière vidée : 6 cailloux reviennent chaque jour jusqu'à la remplir.
+- [x] Fleurs plus grosses.
+- [x] Bug : avec des baies en main près du feu, le bouton d'action les mangeait au lieu de les griller.
+- [x] Manger : petite animation (l'aliment monte à la bouche, miettes, « miam ») ; on ne peut pas enchaîner les bouchées (0,9 s).
+
 ## Lot 19 — Étal, outils, énergie, discussions (demande du 19/11) ✅ v0.1.63
 - [x] Étal : prix de × 0,5 à × 2. × 0,5 → vendu en 2 à 3 min ; × 0,51 à × 0,99 → dans la journée ; × 1 à × 1,99 → pendant la nuit ; × 2 → en 2 jours.
 - [x] Outils : plus de nom de palier dans les messages (« Il faut une meilleure pioche / hache / faucille »).

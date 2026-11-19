@@ -26,7 +26,7 @@ import { BUSHES } from '../data/recipes.js';
 import { bushRipe, cookProgress } from '../systems/cooking.js';
 import { ghostVisible } from '../systems/ghost.js';
 import { SCATTER_MS } from '../systems/inventory.js';
-import { isForestTree, forestCut, forestChestFull } from '../systems/foret.js';
+import { isForestTree, forestCut, forestGone, forestChestFull } from '../systems/foret.js';
 import { CUEILLE_HITS } from '../systems/nature.js';
 import { GHOST } from '../data/npcs.js';
 // Buisson à baies (baies bleues quand il y en a).
@@ -89,11 +89,21 @@ import { VEINS } from '../data/nature.js';
 import { FLOWERS } from '../data/items.js';
 const FLOWER_COL = Object.fromEntries(FLOWERS.flat().map(f => [f.id, f.c]));
 // Petite fleur : tige, feuilles et corolle qui se balance un peu.
-function drawFlower(c, x, y, col, now) {
-  const px = x * T + 8, py = y * T + 13, s = Math.round(Math.sin(now / 700 + x * 3 + y) * .8);
-  c.fillStyle = '#3f7a28'; c.fillRect(px, py - 5, 1, 5); c.fillStyle = '#64ad3c'; c.fillRect(px - 2, py - 2, 2, 1); c.fillRect(px + 1, py - 3, 2, 1);
-  c.fillStyle = col; c.fillRect(px - 1 + s, py - 8, 3, 1); c.fillRect(px - 2 + s, py - 7, 5, 1); c.fillRect(px - 1 + s, py - 6, 3, 1);
-  c.fillStyle = '#f6d24a'; c.fillRect(px + s, py - 7, 1, 1);
+// 19/11 : souche (cernes, racines) ; un petit rejet vert apparaît quand elle va repousser.
+function drawStump(c, x, y, o) {
+  const px = x * T + (o.shake > 0 ? Math.round(Math.sin(o.shake * 40)) : 0), py = y * T, R = (a, b, w, h, k) => { c.fillStyle = k; c.fillRect(px + a, py + b, w, h); };
+  R(2, 13, 12, 2, 'rgba(20,12,8,.3)'); R(4, 7, 8, 7, '#6e4426'); R(3, 12, 10, 2, '#5b3a22'); R(2, 13, 3, 1, '#5b3a22'); R(11, 13, 3, 1, '#5b3a22');
+  R(4, 5, 8, 3, '#d9a870'); R(5, 6, 6, 1, '#b07a48'); R(7, 6, 2, 1, '#8a5a32'); R(4, 7, 1, 6, '#8a5a32'); R(10, 8, 1, 5, '#4a2c18');
+  if ((o.d || 0) >= 2) { R(11, 2, 1, 4, '#4f9a3a'); R(12, 2, 2, 1, '#7ac04a'); if (o.d >= 3) { R(9, 1, 2, 1, '#7ac04a'); R(10, 1, 1, 4, '#4f9a3a'); } }
+}
+function drawFlower(c, x, y, col, now) {   // 19/11 : fleurs plus grosses (5 pétales de 2 × 2, cœur, deux feuilles)
+  const px = x * T + 8, py = y * T + 14, s = Math.round(Math.sin(now / 700 + x * 3 + y) * .8), D = shade(col, .78);
+  c.fillStyle = 'rgba(20,30,10,.25)'; c.fillRect(px - 3, py, 7, 2);
+  c.fillStyle = '#3f7a28'; c.fillRect(px, py - 7, 1, 7); c.fillStyle = '#64ad3c'; c.fillRect(px - 3, py - 3, 3, 2); c.fillRect(px + 1, py - 4, 3, 2); c.fillStyle = '#3f7a28'; c.fillRect(px - 3, py - 2, 3, 1);
+  const cx = px + s, cy = py - 10;
+  for (const [dx, dy] of [[-1, -3], [-3, -1], [1, -1], [-2, 1], [0, 1]]) { c.fillStyle = col; c.fillRect(cx + dx, cy + dy, 2, 2); c.fillStyle = D; c.fillRect(cx + dx, cy + dy + 1, 2, 1); }
+  c.fillStyle = col; c.fillRect(cx - 1, cy - 1, 3, 3);
+  c.fillStyle = '#f6d24a'; c.fillRect(cx, cy, 1, 1); c.fillStyle = '#c89a20'; c.fillRect(cx, cy + 1, 1, 1);
 }
 // Filon : gros rocher sombre strié de la couleur du minerai.
 // 19/11 : filons plus gros (rocher de 20 × 18), veines de couleur du minerai ; les filons rares (fer, or) montrent un
@@ -134,6 +144,10 @@ import { buildInterior } from './interiors.js';
 import { buildParc, buildBiome, buildQuartier, buildTown, TOWN_LIGHTS } from './town.js';
 import { buildWest } from './west.js';
 import { buildQuarry } from './quarry.js';
+import { eating, EAT_MS } from '../systems/player.js';
+import { itemArt } from './itemart.js';
+const ART_IM = {};
+const artImage = id => { if (ART_IM[id] !== undefined) return ART_IM[id]; const u = itemArt(id); if (!u) return (ART_IM[id] = null); const im = new Image(); im.src = u; return (ART_IM[id] = im); };
 import { quarryMouthOpen } from '../world/quarrymouth.js';
 import { QUARRY_MOUTHS, STAND_POS } from '../world/scenes.js';
 import { PICKUPS, isBroken } from '../systems/grange.js';
@@ -347,13 +361,13 @@ let swing = null;
     const list = [], pickTier = toolTier(S, 'pick');
     if (outside) for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) {
       const o = S.objs[x + ',' + y];
-      if (o) list.push({ z: y + .9, d: () => o.t === 'bigtree' ? drawBigTree(ctx, x, y, S.season, now) : o.t === 'tree' ? drawTree(ctx, x, y, o, S.season, now) : drawRock(ctx, x, y, o, (MIN_PICK[o.t] || 1) > pickTier) });
+      if (o) list.push({ z: y + .9, d: () => o.t === 'bigtree' ? drawBigTree(ctx, x, y, S.season, now) : o.t === 'stump' ? drawStump(ctx, x, y, o) : o.t === 'tree' ? drawTree(ctx, x, y, o, S.season, now) : drawRock(ctx, x, y, o, (MIN_PICK[o.t] || 1) > pickTier) });
     }
     if (outside) for (const a of S.animals) list.push({ z: a.y, d: () => drawAnimal(ctx, a, now, ANIMALS[a.type]) });
     if (outside) for (const e of g.enemies) list.push({ z: e.y, d: () => drawSlime(ctx, e, now) });
     if (scene === 'foret') {
       for (let y = Math.max(1, y0); y <= Math.min(LAYOUTS.foret.length - 2, y1 + 2); y++) for (let x = Math.max(1, x0 - 1); x <= Math.min(LAYOUTS.foret[0].length - 2, x1 + 1); x++)
-        if (isForestTree(x, y)) { const cut = forestCut(S, x, y); list.push({ z: y + .9, d: () => drawForestTree(ctx, x, y, S.season, cut) }); }
+        if (isForestTree(x, y) && !forestGone(S, x, y)) { const cut = forestCut(S, x, y); list.push({ z: y + .9, d: () => drawForestTree(ctx, x, y, S.season, cut) }); }
       list.push({ z: FOREST_CHEST.y + .8, d: () => { drawChest(ctx, FOREST_CHEST.x, FOREST_CHEST.y); if (forestChestFull(S)) { ctx.fillStyle = 'rgba(255,240,170,' + (.2 + .15 * Math.sin(now / 300)) + ')'; ctx.fillRect(FOREST_CHEST.x * T, FOREST_CHEST.y * T + 2, 16, 12); } } });   // lot 8 : coffre au bout du labyrinthe
       const cols = {}; for (const ss of MUSHROOMS) for (const m of ss) cols[m.id] = m.c;
       for (const k in (S.foret && S.foret.shrooms) || {}) { const [x, y] = k.split(',').map(Number), m = S.foret.shrooms[k]; list.push({ z: y + .6, d: () => drawShroom(ctx, x, y, m, cols[m.sp]) }); }
@@ -546,6 +560,13 @@ let swing = null;
         ctx.fillStyle = r <= .2 ? '#ff2a2a' : r <= .5 ? '#f0a020' : '#6fd04a'; ctx.fillRect(bx + shake, by, Math.round(16 * r), 2);
       }
       if (swing && S.dir !== 1) drawSwing(ctx, S, swing.tool, swing.p);
+      const ea = eating(g); if (ea) {   // 19/11 : petite animation quand on mange (l'objet monte à la bouche, miettes)
+        const p = (g.now() - ea.t0) / EAT_MS, im = artImage(ea.id), hx = Math.round(S.x * T - 6), hy = Math.round(S.y * T - 19);
+        const lift = Math.min(1, p * 3), bite = p > .33 ? Math.round(Math.sin(p * 40)) : 0, sz = Math.round(12 * (p > .8 ? 1 - (p - .8) * 5 : 1));
+        if (im && im.complete && sz > 1) ctx.drawImage(im, hx + 6 - sz / 2, hy + 14 - Math.round(lift * 8) + bite - sz / 2, sz, sz);
+        if (p > .33) { ctx.fillStyle = '#e8c890'; for (let k = 0; k < 3; k++) { const q = (p * 3 + k * .3) % 1; ctx.fillRect(hx + 3 + k * 3, hy + 10 + Math.round(q * 10), 1, 1); } }
+        if (p > .7) { ctx.fillStyle = '#fff6c0'; ctx.font = 'bold 7px Nunito, sans-serif'; ctx.fillText('miam', hx - 2, hy - 2 - Math.round((p - .7) * 20)); }
+      }
     } });
     for (const f of worldFx) if (f.k === 'fall' && outside) list.push({ z: f.y + .95, d: () => {
       // l'arbre bascule autour du pied du tronc, de plus en plus vite, puis s'efface

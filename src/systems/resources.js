@@ -2,14 +2,14 @@
 // et réduit l'énergie dépensée. Casser des pierres donne de l'XP de minage.
 import { CFG } from '../config.js';
 import { freeForObj, key, isForest, newTree, newRock, genObjects, isSolid } from '../world/map.js';
-import { TREE_KINDS, TREE_KIND_IDS, TREE_GROW_DAYS, ROCK_DAYS, STONE_YIELD, FOREST } from '../data/forest.js';
+import { TREE_KINDS, TREE_KIND_IDS, TREE_GROW_DAYS, ROCK_DAYS, STONE_YIELD, FOREST, STUMP_DAYS, STUMP_HP, STUMP_WOOD } from '../data/forest.js';
 import { MIN_PICK, MINING_GAIN, TIER_NAMES, energyCost, hitReady } from '../data/tools.js';
 import { add, scatter } from './inventory.js';
 import { useEnergy } from './player.js';
 import { gainXp, toolTier, hasTool } from './skills.js';
 import { gainPxp, XP } from './level.js';
 
-export const TOOL_FOR = { tree: 'axe', rock: 'pick', rock_big: 'pick', boulder: 'pick' };
+export const TOOL_FOR = { stump: 'axe', tree: 'axe', rock: 'pick', rock_big: 'pick', boulder: 'pick' };
 export const isStone = t => t === 'rock' || t === 'rock_big' || t === 'boulder';
 // Anciennes sauvegardes : arbre sans essence ni âge = adulte, essence tirée de la position.
 export const treeKind = (o, x, y) => o.k || TREE_KIND_IDS[(x * 7 + y * 3) % 3];
@@ -41,6 +41,8 @@ export function hitObject(g, x, y) {
   if (isStone(o.t)) gainXp(g, 'mining', MINING_GAIN.hit);
   if (o.hp <= 0) {
     delete S.objs[k];
+    if (o.t === 'stump') { const n = STUMP_WOOD[0] + (g.rnd() * (STUMP_WOOD[1] - STUMP_WOOD[0] + 1) | 0); scatter(g, 'wood', n, x, y); g.bus.emit('pop', { t: '+' + n + '🪵', x, y }); return true; }   // 19/11 : la souche
+    if (o.t === 'tree') S.objs[k] = { t: 'stump', k: treeKind(o, x, y), d: 0, hp: STUMP_HP };   // 19/11 : l'arbre laisse sa souche
     gainPxp(g, o.t === 'boulder' ? 2 * XP.small : XP.small, o.t);   // lot 8 : 1 XP par petit objet cassé (💡 2 pour un gros rocher)
     if (o.t === 'tree') {
       const [a, b] = TREE_KINDS[treeKind(o, x, y)].wood, n = a + (g.rnd() * (b - a + 1) | 0); scatter(g, 'wood', n, x, y);
@@ -77,6 +79,7 @@ export function regrow(g) {
   const S = g.S;
   S.rockQueue = S.rockQueue || [];
   for (const k in S.objs) { const o = S.objs[k]; if (o.t === 'tree' && (o.g ?? TREE_GROW_DAYS) < TREE_GROW_DAYS) o.g = (o.g || 0) + 1; }
+  for (const k in S.objs) { const o = S.objs[k]; if (o.t === 'stump' && ++o.d >= STUMP_DAYS) S.objs[k] = newTree(o.k, 0); }   // 19/11 : la souche laissée repousse (jeune pousse)
   // pierres qui sortent de terre (si la case est restée libre)
   S.rockQueue = S.rockQueue.filter(q => {
     if (--q.d > 0) return true;

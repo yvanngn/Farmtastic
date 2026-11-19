@@ -37,7 +37,7 @@ test('arbre : hache obligatoire, 3 coups, bois récolté', () => {
   assert.match(toasts()[0], /hache/);
   S.sel = 'axe';
   hitObject(g, 30, 20); hitObject(g, 30, 20); hitObject(g, 30, 20);
-  assert.equal(S.objs['30,20'], undefined);
+  assert.equal(S.objs['30,20'].t, 'stump', '19/11 : il reste la souche');
   assert.ok(S.drops.some(d => d.id === 'wood'), 'le bois tombe par terre');
   ramasse(g); assert.equal(S.inv.wood, 5);
   assert.equal(Math.round(S.energy * 100) / 100, 98.05, '0,65 énergie par coup (19/11)');
@@ -149,7 +149,7 @@ test('coups de hache et de pioche plus lents (un geste à la fois) ; un meilleur
     const timeToFell = tier => {
       const { g, S, clock } = makeGame({ state: { sel: 'axe', energy: 100, tools: { axe: tier } } });
       S.objs = { '20,20': { t: 'tree', k: 'oak', g: 3, hp: 8 } }; S.x = 20.5; S.y = 21; const t0 = clock.t;
-      while (S.objs['20,20']) { hitObject(g, 20, 20); clock.t += 50; }
+      while (S.objs['20,20'] && S.objs['20,20'].t === 'tree') { hitObject(g, 20, 20); clock.t += 50; }
       return { ms: clock.t - t0, e: 100 - S.energy };
     };
     const base = timeToFell(1), fer = timeToFell(3);
@@ -165,4 +165,16 @@ test('coups de hache et de pioche plus lents (un geste à la fois) ; un meilleur
 test('19/11 : ferme sans cailloux ni gros rochers (tout est à la carrière)', async () => {
   const { genObjects } = await import('../src/world/map.js');
   for (const seed of [12345, 1, 2, 3]) assert.equal(Object.values(genObjects(seed)).filter(o => o.t === 'boulder' || o.t === 'rock' || o.t === 'rock_big').length, 0);
+});
+
+test('19/11 : souche — coupée elle donne un peu de bois ; laissée, elle repousse au bout de 4 jours', async () => {
+  const { regrow } = await import('../src/systems/resources.js');
+  const { g, S } = makeGame({ rnd: seq(0.5) });
+  S.sel = 'axe'; S.tools.axe = 3; S.objs['30,20'] = { t: 'tree', k: 'oak', hp: 3 }; S.objs['31,20'] = { t: 'tree', k: 'oak', hp: 3 };
+  hitObject(g, 30, 20); hitObject(g, 31, 20); assert.equal(S.objs['30,20'].t, 'stump');
+  const w = S.drops.filter(d => d.id === 'wood').reduce((a, d) => a + (d.n || 1), 0);
+  hitObject(g, 30, 20); assert.equal(S.objs['30,20'], undefined, 'souche arrachée');
+  assert.ok(S.drops.filter(d => d.id === 'wood').reduce((a, d) => a + (d.n || 1), 0) > w, 'un peu plus de bois');
+  for (let d = 0; d < 4; d++) regrow(g);
+  assert.equal(S.objs['31,20'].t, 'tree'); assert.equal(S.objs['31,20'].g, 0, 'repousse petit à petit');
 });

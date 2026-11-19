@@ -88,6 +88,7 @@ Légende : ✅ fait · ⏳ à faire · ❓ question pour l'utilisateur · 💡 i
 - ✅ **Lot 9** (v0.1.19) : demandes de fabrication, une par habitant et par semaine, + panneau.
 - ✅ **Lot 2e** (v0.1.50) : rivière autour du centre-ville, route de l'est montagne ↔ port, port ↔ plage.
 - ✅ **Lot 12** (v0.1.51) : cabane du pêcheur (Rouky, Rox), quête de la canne, petits tas à creuser. ⏳ Plus tard : canne améliorable, butin des tas à faire évoluer.
+- ✅ **Lot 20** (v0.1.64) : souches (bois en plus ou repousse en 4 jours), carrière qui se remplit, fleurs plus grosses, cuisson des baies réparée, animation quand on mange.
 - ✅ **Lot 19** (v0.1.63) : étal × 0,5 à × 2, messages d'outils sans palier, énergie un peu plus chère, une discussion par jour, Ed hors du saloon, toutes les icônes.
 - ✅ **Lot 18** (v0.1.62) : musiques plus variées (6 phrases, modulations), icônes d'objets « pixel moderne », sac affiché pendant les réparations.
 - ✅ **Lot 17** (v0.1.61) : boutons Quêtes / Recettes, cadre du haut allégé, étal de vente du centre-ville (bac retiré).
@@ -105,6 +106,7 @@ Légende : ✅ fait · ⏳ à faire · ❓ question pour l'utilisateur · 💡 i
 - ⏳ `docs/PARCOURS.md` à refaire pour le nouveau début (skill `parcours-debut`).
 
 ## 5. Idées de Claude (💡 à valider)
+- Lot 20 : souche 2 coups, 1 à 2 bois ; 6 cailloux par jour à la carrière ; 0,9 s pour manger.
 - Lot 17 : délais de vente par palier de prix ; 3 offres des habitants par jour à 2,5 × ; icônes ☰ menu, ⭐ quêtes, 🛠️ recettes ; cadre effacé après 2,5 s sans bouger.
 - Lot 15 : bordure 24 coups / 4-6 pierres / repousse 3 jours ; carrière 40 cailloux, 3 filons ; carrière profonde 16 cailloux, 8 filons (étain 15, fer 50, or 35) ; bouche ouverte tirée d'après la date ; décor du saloon.
 - Lot 14 : 20 graines dans le courrier ; 2 blés + 3 pailles par carré ; texte du courrier (signé « L'étal du marché ») 🆕.

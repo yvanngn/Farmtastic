@@ -3,6 +3,8 @@ import { letterTick } from './systems/golgolas.js';
 import { ensureMounds } from './systems/mounds.js';
 import { CFG } from './config.js';
 import { createGame } from './core/game.js';
+import { fireAt } from './systems/cooking.js';
+import { COOK } from './data/recipes.js';
 import { journalHook } from './systems/journal.js';
 import { defaultState } from './core/state.js';
 import { genObjects } from './world/map.js';
@@ -205,6 +207,8 @@ function doAction() {
     if (en) { attack(g, en.e); return; }
   }
   const it = ITEMS[S.sel];
+  const fireNear = (S.fires || []).some(f => Math.hypot(f.x + .5 - S.x, f.y + .5 - S.y) < 2.2);
+  if (fireNear && COOK[S.sel]) { const f = fireAt(S, ft.tx, ft.ty) ? { x: ft.tx, y: ft.ty } : S.fires.find(f => Math.hypot(f.x + .5 - S.x, f.y + .5 - S.y) < 2.2); act(g, f.x, f.y); return; }   // 19/11 : près du feu, les baies se grillent (au lieu d'être mangées)
   if (it && it.eat && !it.seed) { if (consume(g, S.sel)) audio.play('feed'); return; }
   act(g, ft.tx, ft.ty);
 }

@@ -33,8 +33,9 @@ test('poser le feu, puis griller des baies en restant 5 secondes à côté', () 
 });
 
 test('baies : +1 énergie crues, +5 cuites ; les buissons repoussent en 2 jours', () => {
-  const { g, S } = makeGame({ state: { inv: { berry: 1, berry_cooked: 1 }, energy: 10 } });
+  const { g, S, clock } = makeGame({ state: { inv: { berry: 1, berry_cooked: 1 }, energy: 10 } });
   consume(g, 'berry'); assert.equal(S.energy, 11);
+  assert.equal(consume(g, 'berry_cooked'), false, '19/11 : on mâche encore'); clock.t += 1000;
   consume(g, 'berry_cooked'); assert.equal(S.energy, 16);
   const [x, y] = BUSHES[0];
   assert.equal(isSolid(S, x, y), true);

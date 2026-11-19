@@ -44,7 +44,7 @@ export function pickShroom(g, x, y) {
 
 // Arbres de la forêt : on peut les couper (hache) comme à la ferme ; ils repoussent en TREE_GROW_DAYS jours.
 // Les arbres du bord restent (ils ferment la carte). État : S.foret.cut = { 'x,y': jourCoupé }, S.foret.hits = { 'x,y': coups }.
-import { TREE_GROW_DAYS } from '../data/forest.js';
+import { TREE_GROW_DAYS, STUMP_DAYS, STUMP_WOOD } from '../data/forest.js';
 import { TREE_HP } from '../world/map.js';
 import { scatter } from './inventory.js';
 import { useEnergy } from './player.js';
@@ -53,7 +53,21 @@ import { energyCost, hitReady } from '../data/tools.js';
 const dayN = S => (S.year - 1) * 112 + S.season * 28 + S.day;
 const W = () => LAYOUTS.foret[0].length, H = () => LAYOUTS.foret.length;
 export const isForestTree = (x, y) => x > 0 && y > 0 && x < W() - 1 && y < H() - 1 && LAYOUTS.foret[y][x] === 'T';
-export const forestCut = (S, x, y) => { const d = S.foret && S.foret.cut && S.foret.cut[key(x, y)]; return d != null && dayN(S) - d < TREE_GROW_DAYS; };
+const seasonN = S => (S.year - 1) * 4 + S.season;
+// 19/11 : coupé = souche pendant 4 jours (puis l'arbre repousse) ; souche coupée = rien jusqu'à la saison suivante.
+export const forestGone = (S, x, y) => { const v = S.foret && S.foret.gone && S.foret.gone[key(x, y)]; return v != null && v === seasonN(S); };
+export const forestStump = (S, x, y) => { const d = S.foret && S.foret.cut && S.foret.cut[key(x, y)]; return d != null && dayN(S) - d < STUMP_DAYS && !forestGone(S, x, y); };
+export const forestCut = (S, x, y) => forestStump(S, x, y) || forestGone(S, x, y);
+export function chopStump(g, x, y) {
+  const S = g.S; if (S.scene !== 'foret' || !isForestTree(x, y) || !forestStump(S, x, y)) return false;
+  if (S.sel !== 'axe') { g.bus.emit('sfx', 'denied'); g.bus.emit('toast', 'Il faut la hache 🪓 pour arracher la souche.'); return false; }
+  if (!hitReady(g)) return 'wait';
+  if (!useEnergy(g, energyCost(toolTier(S, 'axe')))) return false;
+  (S.foret.gone ||= {})[key(x, y)] = seasonN(S);
+  const n = STUMP_WOOD[0] + (g.rnd() * (STUMP_WOOD[1] - STUMP_WOOD[0] + 1) | 0); scatter(g, 'wood', n, x, y);
+  g.bus.emit('swing', 'axe'); g.bus.emit('sfx', 'break'); g.bus.emit('pop', { t: '+' + n + '🪵', x, y });
+  return true;
+}
 export const forestTreeAt = (S, x, y) => S.scene === 'foret' && isForestTree(x, y) && !forestCut(S, x, y);
 export function chopForest(g, x, y) {
   const S = g.S, k = key(x, y);

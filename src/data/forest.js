@@ -11,3 +11,7 @@ export const ROCK_DAYS = 3;             // une pierre met 3 jours à réapparaî
 export const STONE_YIELD = { rock: 1, rock_big: 2 };
 // lot 8 : beaucoup plus d'arbres et de cailloux au départ (💡 quantités)
 export const FOREST = { x0: 34, MAX_TREES: 150, MAX_ROCKS: 70, TREES_PER_DAY: 4, ROCKS_PER_DAY: 3 };
+
+// 19/11 : souches. Un arbre abattu laisse sa souche : coupée, elle donne encore un peu de bois (puis l'arbre ne revient qu'à la
+// saison suivante) ; laissée, elle repousse au bout de 4 jours, petit à petit (jeune pousse → arbre en 3 jours).
+export const STUMP_DAYS = 4, STUMP_HP = 2, STUMP_WOOD = [1, 2];

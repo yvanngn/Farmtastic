@@ -1,5 +1,5 @@
 import { repairOven } from './resto.js';
-import { forestTreeAt, chopForest, isForestChest, openForestChest } from './foret.js';
+import { forestTreeAt, chopForest, chopStump, isForestChest, openForestChest } from './foret.js';
 // Aiguillage d'une action sur une tuile, selon la scène (ferme ou intérieur).
 import { isBin, key, isPlot } from '../world/map.js';
 import { seaOpen } from './admin.js';
@@ -133,6 +133,7 @@ function act0(g, tx, ty) {
   if (sc === 'resto' && tileAt('resto', tx, ty) === 'O') return repairOven(g);   // le four du cuistot (lot 5)
   if (sc === 'foret' && isForestChest(tx, ty)) return openForestChest(g) ? 'chest' : 'none';   // lot 8 : coffre au bout du labyrinthe
   if (sc === 'foret' && forestTreeAt(S, tx, ty)) return chopForest(g, tx, ty) ? 'hit' : 'none';
+  if (sc === 'foret') { const r = chopStump(g, tx, ty); if (r) return 'hit'; }   // 19/11 : souche de la forêt
   if (sc === 'foret') { const r = pickShroom(g, tx, ty); return r === 'progress' ? 'progress' : r ? 'pick' : r === false ? 'noknife' : 'none'; }
   if (sc === 'parc') { const t = tileAt(sc, tx, ty), k = parcAt(t); if (k === 'ride') return ride(g, t) ? 'ride' : 'none'; if (k === 'game') return startGame(g, t) ? 'game' : 'none'; if (k === 'stall') return buyStall(g, t) ? 'buy' : 'none'; }
   if (tileAt(sc, tx, ty) === 'G') { g.bus.emit('toast', '🧊 Une grotte gelée, bouchée par des éboulis et de la glace. Impossible d’entrer… pour l’instant.'); return 'locked'; }
