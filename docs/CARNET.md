@@ -88,6 +88,7 @@ Légende : ✅ fait · ⏳ à faire · ❓ question pour l'utilisateur · 💡 i
 - ✅ **Lot 9** (v0.1.19) : demandes de fabrication, une par habitant et par semaine, + panneau.
 - ✅ **Lot 2e** (v0.1.50) : rivière autour du centre-ville, route de l'est montagne ↔ port, port ↔ plage.
 - ✅ **Lot 12** (v0.1.51) : cabane du pêcheur (Rouky, Rox), quête de la canne, petits tas à creuser. ⏳ Plus tard : canne améliorable, butin des tas à faire évoluer.
+- ✅ **Lot 15** (v0.1.59) : journal de la cabane, carrière et carrière profonde, saloon, chevaux, cabane à moitié prix, quêtes lisibles.
 - ✅ **Lot 14** (v0.1.58) : premier champ (courrier des graines, carrés à la pelle partout, semis en glissant, blé en 1 jour, récolte d'un coup, paille 1 $).
 - ✅ **18/11** (v0.1.57) : plus de noms sur les flèches de sortie ; grange rouge nettoyée ; héros en transparence derrière les toits ; images Gemini supprimées.
 - ✅ **Lot 13** (v0.1.56) : lettre de Golgolas au niveau 5, zone cachée au sud de la gare, météorite, centre niveau 1 (piles 15). ⏳ Centre niveau 2 à définir.
@@ -100,6 +101,7 @@ Légende : ✅ fait · ⏳ à faire · ❓ question pour l'utilisateur · 💡 i
 - ⏳ `docs/PARCOURS.md` à refaire pour le nouveau début (skill `parcours-debut`).
 
 ## 5. Idées de Claude (💡 à valider)
+- Lot 15 : bordure 24 coups / 4-6 pierres / repousse 3 jours ; carrière 40 cailloux, 3 filons ; carrière profonde 16 cailloux, 8 filons (étain 15, fer 50, or 35) ; bouche ouverte tirée d'après la date ; décor du saloon.
 - Lot 14 : 20 graines dans le courrier ; 2 blés + 3 pailles par carré ; texte du courrier (signé « L'étal du marché ») 🆕.
 - Lot 13 : boîte aux lettres en (8,5) à la ferme ; texte de la lettre et répliques de Golgolas 🆕 ; dons au centre par paquets de ce qu'on a en sac.
 - Lot 12 : 1 à 3 pierres ou bois par tas, 1 champignon (le courant de la saison, petit), 1 os ; 1 ⚡ et 1 XP par tas ; canne sommaire : attente × 1,6, pas de poisson de rareté < 2 ; répliques de Rouky 🆕 ; tenue de Rouky (casquette, barbe blanche, salopette).

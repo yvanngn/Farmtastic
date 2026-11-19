@@ -66,7 +66,7 @@ test('bois de l’est : de nouvelles pousses n’apparaissent que dans la zone, 
   for (let d = 0; d < 60; d++) regrow(g);
   const c = forestCount(S);
   assert.ok(c.trees <= FOREST.MAX_TREES && c.trees > 30, 'arbres : ' + c.trees);
-  assert.ok(c.rocks <= FOREST.MAX_ROCKS && c.rocks > 10, 'pierres : ' + c.rocks);
+  assert.equal(c.rocks, 0, '19/11 : plus de pierres qui repoussent à la ferme');
   for (const k in S.objs) assert.ok(+k.split(',')[0] >= FOREST.x0, 'rien ne repousse hors du bois : ' + k);
   const kinds = new Set(Object.entries(S.objs).filter(([, o]) => o.t === 'tree').map(([k, o]) => o.k));
   assert.deepEqual([...kinds].sort(), ['birch', 'oak', 'pine'], '3 essences');
@@ -132,7 +132,7 @@ test('lot 8 : beaucoup plus d’arbres et de cailloux au départ, et autant remi
   const { seasonRestock } = await import('../src/systems/resources.js');
   const { newDay } = await import('../src/systems/time.js');
   const o = genObjects(), n = t => Object.values(o).filter(x => t.includes(x.t)).length;
-  assert.ok(n(['tree']) >= 150 && n(['rock', 'rock_big']) >= 100, `départ : ${n(['tree'])} arbres, ${n(['rock', 'rock_big'])} cailloux`);
+  assert.ok(n(['tree']) >= 150, `départ : ${n(['tree'])} arbres`); assert.equal(n(['rock', 'rock_big', 'boulder']), 0, '19/11 : plus de cailloux à la ferme');
   const { g } = makeGame(); g.S.objs = {}; g.S.x = 5.5; g.S.y = 6.8; g.S.day = 28;
   newDay(g, true);
   const m = t => Object.values(g.S.objs).filter(x => t.includes(x.t)).length;
@@ -162,10 +162,7 @@ test('coups de hache et de pioche plus lents (un geste à la fois) ; un meilleur
   } finally { CFG.HIT_MS = old; }
 });
 
-test('ferme : peu de gros rochers au départ (réduits le 18/11)', async () => {
+test('19/11 : ferme sans cailloux ni gros rochers (tout est à la carrière)', async () => {
   const { genObjects } = await import('../src/world/map.js');
-  for (const seed of [12345, 1, 2, 3]) {
-    const n = Object.values(genObjects(seed)).filter(o => o.t === 'boulder').length;
-    assert.ok(n >= 1 && n <= 6, `graine ${seed} : ${n} gros rochers`);
-  }
+  for (const seed of [12345, 1, 2, 3]) assert.equal(Object.values(genObjects(seed)).filter(o => o.t === 'boulder' || o.t === 'rock' || o.t === 'rock_big').length, 0);
 });

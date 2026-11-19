@@ -156,6 +156,18 @@ Pour que **les scènes du jeu** atteignent le niveau de détail de l'image, scè
 - [x] **Un coffre pour ranger** : acheter le **plan du coffre** chez Harry (💡 60 $), le fabriquer (80 bois + 20 pierres). Le coffre quitte la quête principale « Premiers pas » ; Harry ne l'apprend plus gratuitement.
 - ⏳ Plus tard : la cabane agrandie vue de dehors (aujourd'hui seul l'intérieur change).
 
+## Lot 15 — Journal, carrière, saloon (demande du 19/11) ✅ v0.1.59
+Décrit par l'utilisateur : cabane à moitié prix ; journal dans la cabane (200 dernières activités, onglets quêtes en cours / liens / histoire, onglet gardé) ; chevaux sans tête ; intérieur du saloon (scène, bar, tables, toilettes) ; plus de cailloux à la ferme : carrière au nord, cailloux qui repoussent, bordure de gros cailloux plus longs à casser, passage aléatoire vers une autre carrière (autre architecture, autres filons) ; filons plus gros, filons rares qui scintillent ; quêtes illisibles (jaune sur beige).
+- [x] Cabane 40 bois + 15 pierres ; agrandissement 80 bois + 30 pierres.
+- [x] Journal sur la table de la cabane : 📝 Activités (200 dernières bulles d'info, datées), ⭐ Quêtes en cours, 💞 Liens, 📖 Histoire (étapes accomplies des quêtes principales). L'onglet est sauvegardé.
+- [x] Chevaux : encolure, tête allongée, oreille, museau, œil, bride.
+- [x] Saloon 16 × 11 : scène (rideaux, rampe de lumières, piano, micro), long comptoir (Ed derrière), étagère à bouteilles, tabourets, 4 tables rondes, cabane des toilettes (porte à lune, « WC »), tonneaux, crachoirs.
+- [x] Carrière (passage au nord de la ferme) : pleine au premier passage (40 cailloux, 3 filons), 3 cailloux de plus par jour ; bordure de gros cailloux (24 coups, 4 à 6 pierres, repoussent en 3 jours) ; chaque jour une des 3 bouches de la paroi nord est ouverte → carrière profonde (canyon de grès rouge, cristaux, filons de fer et d'or nombreux).
+- [x] Ferme : plus de cailloux ni de gros rochers (anciennes parties nettoyées au chargement).
+- [x] Filons plus gros ; fer et or : morceau de métal brut avec éclat qui scintille.
+- [x] Étapes des quêtes : couleurs foncées lisibles sur le papier beige.
+- [ ] 💡 À valider : 24 coups pour un gros caillou de bordure, 3 jours de repousse, filons de la carrière profonde (étain 15 %, fer 50 %, or 35 %).
+
 ## Lot 14 — Le premier champ (demande du 18/11) ✅ v0.1.58
 Décrit par l'utilisateur : le lendemain du jour où l'on obtient la pelle, un courrier arrive avec des graines de blé en pièce jointe. Planter fait partie des quêtes principales. On crée des carrés à la pelle par terre, puis, comme dans Hay Day, on choisit les graines dans le sac et on glisse sur tous les carrés. Le blé pousse en 1 jour ; à la faucille on récolte tout d'un coup sans se déplacer. Tuto. La paille se vend 1 $.
 - [x] Courrier des graines (boîte aux lettres de la ferme) + quête principale « Le premier champ » + tuto (dans le courrier et bulles au premier carré, premier semis, première récolte).

@@ -96,13 +96,27 @@ function drawFlower(c, x, y, col, now) {
   c.fillStyle = '#f6d24a'; c.fillRect(px + s, py - 7, 1, 1);
 }
 // Filon : gros rocher sombre strié de la couleur du minerai.
-function drawVein(c, x, y, o, col) {
-  const px = x * T + (o.shake > 0 ? Math.round(Math.sin(o.shake * 40)) : 0), py = y * T;
-  c.fillStyle = 'rgba(0,0,0,.28)'; c.fillRect(px + 1, py + 13, 14, 3);
-  c.fillStyle = '#4a4650'; c.fillRect(px + 2, py + 3, 12, 11); c.fillRect(px + 1, py + 5, 14, 8);
-  c.fillStyle = '#625e6a'; c.fillRect(px + 3, py + 3, 9, 3); c.fillStyle = '#34313a'; c.fillRect(px + 1, py + 12, 14, 2);
-  c.fillStyle = col; for (const [a, b] of [[4, 6], [5, 7], [9, 5], [10, 6], [11, 9], [6, 10], [7, 10], [12, 11]]) c.fillRect(px + a, py + b, 1, 1);
-  c.fillStyle = '#fff'; c.fillRect(px + 9, py + 5, 1, 1);
+// 19/11 : filons plus gros (rocher de 20 × 18), veines de couleur du minerai ; les filons rares (fer, or) montrent un
+// morceau de métal qui scintille (éclat en étoile animé) pour qu'on les repère de loin.
+const RARE_VEIN = { iron: ['#9aa4b0', '#e8eef4'], gold: ['#f2c832', '#fff4b0'] };
+function drawVein(c, x, y, o, col, now = 0) {
+  const px = x * T - 2 + (o.shake > 0 ? Math.round(Math.sin(o.shake * 40)) : 0), py = y * T - 4, P = (a, b, w, h, k) => { c.fillStyle = k; c.fillRect(px + a, py + b, w, h); };
+  c.fillStyle = 'rgba(0,0,0,.3)'; c.beginPath(); c.ellipse(px + 10, py + 18, 10, 3, 0, 0, 7); c.fill();
+  P(3, 4, 14, 14, '#4a4650'); P(1, 7, 18, 10, '#4a4650'); P(5, 2, 10, 3, '#5a5662');
+  P(4, 3, 9, 3, '#6a6674'); P(2, 7, 3, 6, '#5e5a68'); P(1, 15, 18, 2, '#302d36'); P(16, 7, 3, 9, '#38353e');
+  P(0, 7, 1, 9, '#24222a'); P(19, 7, 1, 9, '#24222a'); P(3, 1, 12, 1, '#24222a'); P(1, 17, 18, 1, '#24222a');   // contour
+  const D = shade(col, .7), Lc = shade(col, 1.25);
+  for (const [a, b, w] of [[4, 8, 4], [6, 9, 3], [10, 6, 3], [11, 7, 4], [12, 11, 3], [5, 12, 4], [14, 9, 2]]) { P(a, b, w, 1, col); P(a, b + 1, w, 1, D); P(a, b, 1, 1, Lc); }
+  const rare = RARE_VEIN[o.v];
+  if (rare) {   // morceau de métal brut, brillant
+    P(8, 8, 5, 4, rare[0]); P(9, 7, 3, 1, rare[0]); P(8, 8, 2, 1, rare[1]); P(12, 10, 1, 2, shade(rare[0], .7)); P(9, 12, 4, 1, shade(rare[0], .6));
+    const ph = (now / 900 + x * .37 + y * .61) % 1, a = Math.max(0, Math.sin(ph * Math.PI * 2));
+    c.save(); c.globalAlpha = .35 + .65 * a; c.fillStyle = '#ffffff';
+    const sx = px + 10, sy = py + 8, l = 1 + Math.round(a * 3);
+    c.fillRect(sx - l, sy, 2 * l + 1, 1); c.fillRect(sx, sy - l, 1, 2 * l + 1); c.fillStyle = rare[1]; c.fillRect(sx - 1, sy - 1, 3, 3); c.fillStyle = '#ffffff'; c.fillRect(sx, sy, 1, 1);
+    if (a > .7) { c.fillRect(px + 4, py + 5, 1, 1); c.fillRect(px + 15, py + 12, 1, 1); }
+    c.restore();
+  } else P(9, 5, 1, 1, '#ffffff');
 }
 // Arc-en-ciel : grand arc dont un pied touche le trésor ; il apparaît puis s'efface en douceur.
 function drawRainbow(c, fx, fy, minute, R) {
@@ -119,6 +133,9 @@ import { drawChar, drawTree, drawRock, drawCrop, drawAnimal, drawSlime, drawSwin
 import { buildInterior } from './interiors.js';
 import { buildParc, buildBiome, buildQuartier, buildTown, TOWN_LIGHTS } from './town.js';
 import { buildWest } from './west.js';
+import { buildQuarry } from './quarry.js';
+import { quarryMouthOpen } from '../world/quarrymouth.js';
+import { QUARRY_MOUTHS } from '../world/scenes.js';
 import { PICKUPS, isBroken } from '../systems/grange.js';
 import { buildWild, drawMob, drawZRock, drawShroom, drawForestTree } from './wild.js';
 import { MUSHROOMS } from '../data/items.js';
@@ -286,7 +303,7 @@ let swing = null;
     if (cacheSeason !== S.season || cacheScene !== scene || (scene === 'foret' && cacheForest !== forestKey)) {   // lot 11 : nouveau labyrinthe
       cacheForest = forestKey;
       SIGN_SINK.list = [];
-      cache = outside ? farmGround() : scene === 'wild' ? (interiors['wild' + S.season] ||= buildWild(S.season)) : scene === 'foret' ? (interiors['foret' + forestKey + ':' + S.season] ||= buildWild(S.season, 'foret')) : scene === 'town' ? (interiors['town' + S.season] ||= buildTown(S.season)) : scene === 'quartier' ? (interiors['quartier' + S.season] ||= buildQuartier(S.season)) : (scene === 'montagne' || scene === 'plage') ? (interiors[scene] ||= buildBiome(scene, S.season)) : scene === 'parc' ? (interiors['parc' + S.season] ||= buildParc(S.season)) : (scene === 'rondpoint' || scene === 'ranch' || scene === 'port' || scene === 'gare' || scene === 'golgolas') ? (interiors[scene + S.season] ||= buildWest(scene, S.season)) : (scene === 'resto' ? (interiors['resto' + !!(S.resto && S.resto.oven)] ||= buildInterior(scene, S)) : (scene === 'house' || scene === 'maison') ? (interiors[scene + !!S.workbench + (S.bed !== false)] ||= buildInterior(scene, S)) : (interiors[scene] ||= buildInterior(scene, S)));
+      cache = outside ? farmGround() : scene === 'wild' ? (interiors['wild' + S.season] ||= buildWild(S.season)) : scene === 'foret' ? (interiors['foret' + forestKey + ':' + S.season] ||= buildWild(S.season, 'foret')) : scene === 'town' ? (interiors['town' + S.season] ||= buildTown(S.season)) : scene === 'quartier' ? (interiors['quartier' + S.season] ||= buildQuartier(S.season)) : (scene === 'montagne' || scene === 'plage') ? (interiors[scene] ||= buildBiome(scene, S.season)) : scene === 'parc' ? (interiors['parc' + S.season] ||= buildParc(S.season)) : (scene === 'carriere' || scene === 'carriere2') ? (interiors[scene + S.season] ||= buildQuarry(scene, S.season)) : (scene === 'rondpoint' || scene === 'ranch' || scene === 'port' || scene === 'gare' || scene === 'golgolas') ? (interiors[scene + S.season] ||= buildWest(scene, S.season)) : (scene === 'resto' ? (interiors['resto' + !!(S.resto && S.resto.oven)] ||= buildInterior(scene, S)) : (scene === 'house' || scene === 'maison') ? (interiors[scene + !!S.workbench + (S.bed !== false)] ||= buildInterior(scene, S)) : (interiors[scene] ||= buildInterior(scene, S)));
       if (!cache.__signs) cache.__signs = SIGN_SINK.list; SIGN_SINK.list = null;   // enseignes de ce décor
       if (cacheSeason !== S.season) initWeather();
       cacheSeason = S.season; cacheScene = scene;
@@ -357,7 +374,7 @@ let swing = null;
       const N = S.nature && S.nature[scene];
       if (N) {
         for (const k in N.flowers) { const [x, y] = k.split(',').map(Number); if (x >= x0 && x <= x1 && y >= y0 && y <= y1) list.push({ z: y + .5, d: () => drawFlower(ctx, x, y, FLOWER_COL[N.flowers[k]] || '#fff', now) }); }
-        for (const k in N.rocks) { const [x, y] = k.split(',').map(Number), o = N.rocks[k]; if (x >= x0 && x <= x1 && y >= y0 && y <= y1) list.push({ z: y + .9, d: () => o.t === 'vein' ? drawVein(ctx, x, y, o, VEINS[o.v].c) : drawRock(ctx, x, y, o) }); }
+        for (const k in N.rocks) { const [x, y] = k.split(',').map(Number), o = N.rocks[k]; if (x >= x0 && x <= x1 && y >= y0 && y <= y1) list.push({ z: y + .9, d: () => o.t === 'vein' ? drawVein(ctx, x, y, o, VEINS[o.v].c, now) : drawRock(ctx, x, y, o) }); }
       }
       if (scene === 'farm' && rainbowVisible(S)) {
         const R = S.rainbow;
@@ -502,6 +519,10 @@ let swing = null;
       ctx.fillStyle = '#5a3a22'; ctx.fillRect(x + 7, y + 4, 2, 12); ctx.fillStyle = '#3a5a8a'; ctx.fillRect(x + 3, y - 2, 10, 7); ctx.fillStyle = '#5a7aaa'; ctx.fillRect(x + 3, y - 2, 10, 2); ctx.fillStyle = '#1e2a40'; ctx.fillRect(x + 3, y + 5, 10, 1);
       ctx.fillStyle = un ? '#e0402a' : '#8a2a1a'; ctx.fillRect(x + 12, un ? y - 6 : y, 2, un ? 6 : 4); if (un) ctx.fillRect(x + 12, y - 6, 4, 2); } });
     if (scene === 'gare' && !(S.golgo && S.golgo.read)) list.push({ z: 13, d: () => { const x = 10 * T, y = 12 * T + 8; ctx.fillStyle = '#6a4426'; ctx.fillRect(x - 2, y, 36, 4); ctx.fillRect(x - 2, y + 7, 36, 4); ctx.fillStyle = '#4a2e1a'; ctx.fillRect(x, y - 4, 3, 18); ctx.fillRect(x + 29, y - 4, 3, 18); } });   // planches qui barrent le chemin du sud
+    if (scene === 'carriere') for (const m of QUARRY_MOUTHS) if (quarryMouthOpen(S, m.x, m.y)) list.push({ z: m.y + .1, d: () => {   // 19/11 : la bouche de tunnel ouverte aujourd'hui
+      const x = m.x * T, y = m.y * T; ctx.fillStyle = '#4a2a1a'; ctx.fillRect(x - 3, y - 2, 22, 18); ctx.fillStyle = '#120a08'; ctx.fillRect(x - 1, y + 2, 18, 14); ctx.fillRect(x + 1, y, 14, 2);
+      ctx.fillStyle = '#6a4a2a'; ctx.fillRect(x - 3, y - 2, 3, 18); ctx.fillRect(x + 16, y - 2, 3, 18); ctx.fillRect(x - 3, y - 3, 22, 3);   // étais en bois
+      const t = (now / 300) % 1; ctx.fillStyle = `rgba(255,220,120,${.25 + .2 * Math.sin(now / 200)})`; ctx.fillRect(x + 6, y + 8, 4, 4); } });
     { const p = roxPos(g.npcs.rouky); if (p && p.scene === scene) list.push({ z: p.y, d: () => drawAnimal(ctx, { type: 'dog', x: p.x, y: p.y, moving: false }, now, null) }); }   // lot 12 : Rox, le chien de Rouky
     { const M = S.mounds && S.mounds[scene]; if (M) for (const k in M.at) { const [x, y] = k.split(',').map(Number); if (x >= x0 - 1 && x <= x1 + 1 && y >= y0 - 1 && y <= y1 + 1) list.push({ z: y + .2, d: () => drawMound(ctx, x, y) }); } }   // lot 12 : petits tas à creuser
     for (const id in g.others) { const o = g.others[id]; if (!o.look || (o.scene || 'farm') !== scene) continue; list.push({ z: o.y, d: () => { drawChar(ctx, Math.round(o.x * T - 6), Math.round(o.y * T - 19), o.look, o.dir, o.f, now + 777); label(o.name, o.x * T, o.y * T - 25); } }); }

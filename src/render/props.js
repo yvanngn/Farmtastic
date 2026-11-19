@@ -46,10 +46,13 @@ export function horse(coat, frame) {   // cheval au trot (4 images), 34 × 26, v
   return cached('horse' + coat + frame, () => {
     const p = [], A = (path, mat, z) => p.push({ path, mat, z }), k = [0, 1, 0, -1][frame], lift = [[3, 0], [0, 3], [0, 0], [3, 0]][frame];
     for (const [x, l, z] of [[7, lift[0], 1], [11, lift[1], 1.5], [22, lift[1], 1], [26, lift[0], 1.5]]) { A(RR(x, 15 + k, 3.4, 9 - l, 1), z === 1 ? 'coatD' : 'coat', z); A(RR(x - .3, 23 - l + k, 4, 2, .5), 'hoof', z + .1); }
-    A(E(17, 12 + k, 12, 6.5), 'coat', 3); A(POLY(25, 9 + k, 30, 1 + k, 34, 3 + k, 33, 7 + k, 29, 9 + k, 28, 14 + k), 'coat', 4);   // corps, encolure et tête
-    A(POLY(24, 8 + k, 29, 0 + k, 27, 0 + k, 22, 8 + k), 'mane', 5); A(POLY(5, 9 + k, 1, 12 + k, 2, 20 + k, 6, 13 + k), 'mane', 2.5);   // crinière, queue
-    A(RR(14, 9 + k, 2, 8, 1), 'harness', 6); A(RR(10, 10 + k, 16, 2, 1), 'harness', 6);
-    return draw(p, { coat, coatD: coat, mane: '#2a1a10', hoof: '#1a1010', harness: '#8a2a1a' }, 34, 26, {}, [{ t: 'px', x: 30, y: 2 + k, col: '#1a1010' }]);
+    A(E(16, 13 + k, 11, 6), 'coat', 3);   // corps
+    A(POLY(21, 10 + k, 24, 3 + k, 28, 2 + k, 28, 8 + k, 26, 14 + k), 'coat', 4);   // 19/11 : encolure
+    A(POLY(25, 2 + k, 28, 0 + k, 31, 1 + k, 34, 6 + k, 33, 9 + k, 30, 9 + k, 26, 6 + k), 'coat', 4.5);   // tête allongée
+    A(E(32.4, 7.6 + k, 1.8, 1.5), 'muzzle', 4.7); A(POLY(26, 2 + k, 26.5, -1 + k, 28.5, 1 + k), 'coatD', 4.6);   // museau, oreille
+    A(POLY(20, 10 + k, 24, 2 + k, 26.5, 1 + k, 23, 9 + k, 22, 12 + k), 'mane', 5); A(POLY(5, 10 + k, 1, 12 + k, 2, 20 + k, 6, 14 + k), 'mane', 2.5);   // crinière, queue
+    A(RR(13, 9 + k, 2, 8, 1), 'harness', 6); A(RR(9, 10 + k, 14, 2, 1), 'harness', 6); A(RR(27, 4 + k, 5, 1.2, .5), 'harness', 6);
+    return draw(p, { coat, coatD: coat, mane: '#2a1a10', hoof: '#1a1010', harness: '#8a2a1a', muzzle: '#3a2418' }, 34, 26, {}, [{ t: 'px', x: 29, y: 3 + k, col: '#1a1010' }]);
   });
 }
 

@@ -11,7 +11,7 @@ Le détail de chaque point est dans `docs/MANUEL.md`.
 - [ ] **Le premier champ** : lire le courrier · bêcher des carrés · semer le blé · tout récolter à la faucille
 
 ## Quêtes secondaires
-- [ ] **Agrandir la cabane** (160 bois + 60 pierres)
+- [ ] **Agrandir la cabane** (80 bois + 30 pierres)
 - [ ] **Un vrai lit** : plan chez Harry · fabriquer · installer
 - [ ] **Un coffre pour ranger** : plan chez Harry · fabriquer
 - [ ] **Aider Franck à sortir** : le rencontrer · 2 cœurs · 3 cœurs · 4 cœurs · ⏳ lui fabriquer l'objet qui l'animera
@@ -41,7 +41,7 @@ Le détail de chaque point est dans `docs/MANUEL.md`.
 
 ## Niveaux et zones
 - [ ] Niveau 3 (forêt) · [ ] niveau 5 (caverne) · [ ] niveau 10 (⏳ diligence)
-- [ ] Visiter chaque zone : gare · centre-ville · rond-point · zone résidentielle · ranch · fête foraine · cabane du pêcheur · port · forêt (coffre du labyrinthe) · montagne · caverne · clairière de Golgolas
+- [ ] Visiter chaque zone : gare · centre-ville · rond-point · zone résidentielle · ranch · fête foraine · cabane du pêcheur · port · forêt (coffre du labyrinthe) · montagne · caverne · clairière de Golgolas · carrière · carrière profonde
 
 ## Amitié (10 cœurs)
 - [ ] Myst · Luna · Franck · Hailey · Manu · Igor · Ed · Suzie · Jade · Remy · Harry · Rouky

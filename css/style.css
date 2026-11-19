@@ -251,9 +251,9 @@ img.pix { width: 1.15em; height: 1.15em; image-rendering: pixelated; vertical-al
 .affiche[style*="--k"]::before { background: var(--k) }
 #ovBoard .panel { width: min(760px, 100%) }
 .etapes { margin: 6px 0 2px 1.2em; display: grid; gap: 4px }
-.etapes .fait { color: var(--energie) }
-.etapes .encours { color: var(--or-vif); font-weight: 700 }
-.etapes .avenir { color: var(--doux); opacity: .7 }
+.etapes .fait { color: #2e6a2a }   /* 19/11 : lisible sur le fond beige */
+.etapes .encours { color: #7a2e08; font-weight: 700; background: rgba(232, 160, 60, .22); border-left: 3px solid #c0621a; padding: 1px 4px; border-radius: 4px }
+.etapes .avenir { color: #6a5a4a }
 .ecran { padding: 12px 0 4px; display: grid; gap: 4px }
 .ecran small { color: var(--doux) }
 /* Vie en cœurs, en haut au centre, seulement en combat */
@@ -472,3 +472,8 @@ body.bande[data-nrj="vert"] #nrjVert { bottom: calc(var(--bande) + var(--pad) * 
 @media (max-aspect-ratio: 1/1) { #dlg.haut { top: calc(var(--sa-t) + 52px); bottom: auto } }   /* téléphone en portrait : la place libre est en haut */
 .pnj .tete { display: flex; align-items: center; gap: 12px }
 .pnj .portrait { flex: none; image-rendering: pixelated; border-radius: 6px; background-color: #e8dcc0 !important; border: 2px solid #6a4a2a; }
+
+/* 19/11 : journal de la cabane */
+.journal { list-style: none; margin: 0; padding: 0; display: grid; gap: 3px }
+.journal li { padding: 3px 6px; border-bottom: 1px solid rgba(120, 80, 40, .2) }
+.journal small { display: block; opacity: .75 }

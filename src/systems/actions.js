@@ -32,6 +32,7 @@ import { ADMIN } from './admin.js';
 import { digMound, moundAt, ensureMounds } from './mounds.js';
 import { roxAt, petRox } from './rouky.js';
 import { openMailbox } from './mail.js';
+import { quarryMouthOpen } from '../world/quarrymouth.js';
 import { readLetter, hitMeteor, zoneOpen as golgoOpen, MAILBOX } from './golgolas.js';
 import { METEOR } from '../world/scenes.js';
 
@@ -122,6 +123,7 @@ function act0(g, tx, ty) {
   const d = doorAt(sc, tx, ty);
   if (d && ZONE_LEVEL[d.to] && !zoneOpen(S, d.to) && !ADMIN.on) { g.bus.emit('sfx', 'denied'); g.bus.emit('toast', d.to === 'foret' ? `🌲 Les arbres sont si serrés qu'on ne passe pas… (niveau ${ZONE_LEVEL.foret} requis)` : `🔒 La caverne attendra : niveau ${ZONE_LEVEL[d.to]} requis.`); return 'locked'; }   // lot 8 : zones débloquées par le niveau
   if (d && d.to === 'wild' && !isOpen(S)) { g.bus.emit('sfx', 'denied'); g.bus.emit('toast', 'La grille de la caverne est fermée à clé. Le Maire saura peut-être…'); return 'locked'; }
+  if (d && d.to === 'carriere2' && !quarryMouthOpen(S, d.x, d.y)) { g.bus.emit('toast', '🪨 La paroi est pleine ici. Un passage s’ouvre ailleurs chaque jour…'); return 'locked'; }   // 19/11
   if (d && d.to === 'golgolas' && !golgoOpen(S) && !ADMIN.on) { g.bus.emit('sfx', 'denied'); g.bus.emit('toast', '🚧 Des planches barrent le chemin du sud. Quelqu’un les retirera peut-être un jour…'); return 'locked'; }   // lot 13
   if (d && d.to === 'plage' && !seaOpen(S)) { g.bus.emit('sfx', 'denied'); g.bus.emit('toast', '🚧 Le chemin de la plage est barré pour l’instant.'); return 'locked'; }
   if (d && HOME_OWNER[d.to] && !canEnterHome(S, HOME_OWNER[d.to])) return knock(g, HOME_OWNER[d.to]);
@@ -140,6 +142,7 @@ function act0(g, tx, ty) {
   if (isHome(sc)) {
     const t = tileAt(sc, tx, ty);
     if (t === 'B' && S.bed === false && installBed(g)) return 'bed';
+    if (t === 'T' && (sc === 'house' || sc === 'maison')) { g.bus.emit('sfx', 'ui'); g.bus.emit('open', 'journal'); return 'journal'; }   // 19/11 : le journal sur la table
     if (t === 'E') { if (S.workbench) { g.bus.emit('sfx', 'ui'); g.bus.emit('open', 'workshop'); return 'workshop'; } g.bus.emit('sfx', 'denied'); g.bus.emit('toast', 'Un vieil établi tout branlant… Le charpentier du village pourrait le réparer.'); return 'broken'; }
     if (t === 'B' && S.bed === false) { g.bus.emit('sfx', 'denied'); g.bus.emit('toast', 'Il n’y a pas encore de lit ici… En attendant, la tente fera l’affaire.'); return 'nobed'; }
     return t === 'B' ? (sleep(g) ? 'sleep' : 'none') : 'none';

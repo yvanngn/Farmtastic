@@ -63,14 +63,18 @@ export const LAYOUTS = {
     '####D####'
   ],
   // Bar d'Ed : comptoir (K), tonneaux (Z), tables (T), plante (P)
-  bar: [
-    '##########',
-    '#WWWWWWWW#',
-    '#KKKKK.ZZ#',
-    '#........#',
-    '#.TT..P..#',
-    '#........#',
-    '####D#####'
+  bar: [   // 19/11 : vrai saloon — scène (X), comptoir (K) avec Ed derrière, tables (T), toilettes (u)
+    '################',
+    '#WWWWWWWWWWWWWW#',
+    '#XXXXX.........#',
+    '#XXXXX..KKKKKK.#',
+    '#XXXXX.........#',
+    '#..............#',
+    '#.TT...TT......#',
+    '#...........uu.#',
+    '#.TT...TT...uu.#',
+    '#...........uu.#',
+    '#######D########'
   ],
   // Maison d'Ed (rez-de-chaussée) : cuisine (K), table (T), fauteuil (A), escalier (e) vers l'étage
   ed: [
@@ -462,6 +466,37 @@ LAYOUTS.gare = (() => {
 })();
 // Rond-point (26 × 18) : chemins en croix, anneau autour de la fontaine (lot 8 : plus de panneaux indicateurs)
 LAYOUTS.gare = (() => { const m = LAYOUTS.gare.map(r => r.split('')), H = m.length; for (let y = 10; y < H - 1; y++) { m[y][10] = '.'; m[y][11] = '.'; } m[H - 1][10] = 'D'; m[H - 1][11] = 'D'; return m.map(r => r.join('')); })();
+// 19/11 : la carrière, au nord des fermes. Bordée de gros cailloux cassables (o). Trois bouches de tunnel (%) dans la paroi
+// nord : chaque jour, une seule est ouverte (au hasard du jour) et mène à la carrière profonde, d'une tout autre architecture.
+export const QUARRY_MOUTHS = [{ x: 6, y: 0 }, { x: 16, y: 0 }, { x: 26, y: 0 }];
+LAYOUTS.carriere = (() => {
+  const W = 32, H = 22, m = [];
+  for (let y = 0; y < H; y++) { const r = []; for (let x = 0; x < W; x++) r.push(y === 0 || x === 0 || x === W - 1 || y === H - 1 ? '^' : (y === 1 || y === H - 2 || x === 1 || x === W - 2) ? 'o' : '.'); m.push(r); }
+  for (const q of QUARRY_MOUTHS) m[q.y][q.x] = '%';
+  for (const [x, y] of [[9, 7], [10, 7], [22, 12], [22, 13], [21, 13], [12, 15]]) m[y][x] = '^';   // quelques éperons rocheux
+  m[H - 1][15] = 'D'; m[H - 1][16] = 'D'; m[H - 2][15] = '.'; m[H - 2][16] = '.';   // descente vers la ferme
+  return m.map(r => r.join(''));
+})();
+// Carrière profonde : canyon de grès rouge en terrasses, couloirs étroits, filons rares (fer, or) plus nombreux.
+LAYOUTS.carriere2 = [
+  '^^^^^^^^^^^^^^^^^^^^^^^^^^',
+  '^.....^^^.......^^^.....^^',
+  '^.....^^^.......^^^......^',
+  '^..^.....................^',
+  '^..^^^....^^^^.....^^^...^',
+  '^...^^....^^^^.....^^^...^',
+  '^.........^^.........^...^',
+  '^^^....................^^^',
+  '^^^...^^^.......^^.....^^^',
+  '^.....^^^.......^^.......^',
+  '^........................^',
+  '^...^^^.....^^......^^...^',
+  '^...^^^.....^^......^^...^',
+  '^........................^',
+  '^^^^........^^.......^^^^^',
+  '^^^^^.................^^^^',
+  '^^^^^^^^^^^^DD^^^^^^^^^^^^'
+];
 LAYOUTS.rondpoint = (() => {
   const W = 26, H = 18, m = grid(W, H, 's');
   for (let y = 0; y < H; y++) { m[y][12] = '.'; m[y][13] = '.'; } for (let x = 0; x < W; x++) { m[8][x] = '.'; m[9][x] = '.'; }
@@ -513,6 +548,7 @@ export const SCENES = {
     { x: 20, y: 7, to: 'pigsty', spawn: { x: 4.5, y: 5.4 } },
     { x: 28, y: 7, to: 'barn', spawn: { x: 5.5, y: 6.4 } },
     { x: 12, y: 4, to: 'grange', spawn: { x: 5.5, y: 5.2 } },
+    { x: 16, y: 0, to: 'carriere', spawn: { x: 15.9, y: 19.4 } },   // 19/11 : la carrière, au nord
     { x: 16, y: 35, to: 'rondpoint', spawn: { x: 13, y: 1.8 } }, { x: 15, y: 35, to: 'rondpoint', spawn: { x: 13, y: 1.8 } }, { x: 17, y: 35, to: 'rondpoint', spawn: { x: 13, y: 1.8 } },   // Farmwest : au sud des fermes, le rond-point
     { x: 47, y: 5, to: 'foret', spawn: { x: 1.6, y: 9.6 } }, { x: 47, y: 4, to: 'foret', spawn: { x: 1.6, y: 9.6 } }, { x: 47, y: 6, to: 'foret', spawn: { x: 1.6, y: 9.6 } }   // Farmwest : à l'est des fermes, la forêt
   ] },
@@ -542,7 +578,7 @@ export const SCENES = {
   plage: { W: 40, H: 20, outdoor: true, doors: [{ x: 19, y: 0, to: 'town', spawn: { x: 20.5, y: 29.8 } }, { x: 20, y: 0, to: 'town', spawn: { x: 20.5, y: 29.8 } },
     { x: 39, y: 9, to: 'port', spawn: { x: 1.6, y: 10.6 } }, { x: 39, y: 10, to: 'port', spawn: { x: 1.6, y: 10.6 } },   // lot 2e : vers le port
     { x: 12, y: 4, to: 'rouky', spawn: { x: 4.5, y: 5.4 } }] },   // lot 12 : la cabane de Rouky
-  town: { W: 34, H: 32, outdoor: true, doors: [{ x: 20, y: 31, to: 'plage', spawn: { x: 19.5, y: 1.8 } }, { x: 21, y: 31, to: 'plage', spawn: { x: 20.5, y: 1.8 } }, { x: 33, y: 10, to: 'rondpoint', spawn: { x: 1.6, y: 9 } }, { x: 0, y: 10, to: 'gare', spawn: { x: 21.4, y: 9 } }, { x: 15, y: 28, to: 'resto', spawn: { x: 6.5, y: 5.4 } }, { x: 11, y: 15, to: 'bar', spawn: { x: 4.5, y: 5.4 } }] },
+  town: { W: 34, H: 32, outdoor: true, doors: [{ x: 20, y: 31, to: 'plage', spawn: { x: 19.5, y: 1.8 } }, { x: 21, y: 31, to: 'plage', spawn: { x: 20.5, y: 1.8 } }, { x: 33, y: 10, to: 'rondpoint', spawn: { x: 1.6, y: 9 } }, { x: 0, y: 10, to: 'gare', spawn: { x: 21.4, y: 9 } }, { x: 15, y: 28, to: 'resto', spawn: { x: 6.5, y: 5.4 } }, { x: 11, y: 15, to: 'bar', spawn: { x: 7.5, y: 9.3 } }] },
   house: { W: 12, H: 9, doors: [{ x: 5, y: 8, to: 'farm', spawn: { x: 5.5, y: 5.9 } }] },
   maison: { W: 16, H: 11, doors: [{ x: 7, y: 10, to: 'farm', spawn: { x: 5.5, y: 5.9 } }] },   // la cabane agrandie (même porte sur la ferme)
   coop: { W: 10, H: 7, doors: [{ x: 4, y: 6, to: 'farm', spawn: { x: 24.5, y: 8.9 } }] },
@@ -554,7 +590,9 @@ export const SCENES = {
   franck: { W: 9, H: 7, doors: [{ x: 4, y: 6, to: 'quartier', spawn: { x: 10.5, y: 15.8 } }] },
   clinique: { W: 9, H: 7, doors: [{ x: 4, y: 6, to: 'quartier', spawn: { x: 28.5, y: 6.8 } }] },
   hailey: { W: 9, H: 7, doors: [{ x: 4, y: 6, to: 'quartier', spawn: { x: 26.5, y: 15.8 } }] },
-  bar: { W: 10, H: 7, doors: [{ x: 4, y: 6, to: 'town', spawn: { x: 11.5, y: 16.8 } }] },
+  carriere: { W: 32, H: 22, outdoor: true, doors: [{ x: 15, y: 21, to: 'farm', spawn: { x: 16.5, y: 1.4 } }, { x: 16, y: 21, to: 'farm', spawn: { x: 16.5, y: 1.4 } }, ...QUARRY_MOUTHS.map(q => ({ x: q.x, y: q.y, to: 'carriere2', spawn: { x: 12.9, y: 14.6 } }))] },
+  carriere2: { W: 26, H: 17, outdoor: true, doors: [{ x: 12, y: 16, to: 'carriere', spawn: { x: 16.5, y: 2.6 } }, { x: 13, y: 16, to: 'carriere', spawn: { x: 16.5, y: 2.6 } }] },
+  bar: { W: 16, H: 11, doors: [{ x: 7, y: 10, to: 'town', spawn: { x: 11.5, y: 16.8 } }] },
   ed: { W: 9, H: 7, doors: [{ x: 4, y: 6, to: 'quartier', spawn: { x: 34.5, y: 15.8 } }, { x: 7, y: 2, to: 'ed_etage', spawn: { x: 6.5, y: 2.8 } }] },
   ed_etage: { W: 9, H: 7, doors: [{ x: 7, y: 2, to: 'ed', spawn: { x: 6.5, y: 3.4 } }] },
   myst: { W: 9, H: 7, doors: [{ x: 4, y: 6, to: 'quartier', spawn: { x: 5.5, y: 27.8 } }] },

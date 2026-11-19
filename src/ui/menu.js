@@ -12,6 +12,7 @@ import { TIER_NAMES, UPGRADABLE, MAX_TIER } from '../data/tools.js';
 import { BUILDINGS } from '../data/buildings.js';
 import { SHOPS } from '../data/shops.js';
 import { QUESTS, questProgress, questVisible } from '../systems/quests.js';
+import { journal, setJournalTab, storySoFar } from '../systems/journal.js';
 import { isUnlocked } from '../systems/market.js';
 import { canRepairBench, repairBench } from '../systems/economy.js';
 import { WORKBENCH } from '../data/buildings.js';
@@ -32,6 +33,7 @@ import { ITEMS as ALL_ITEMS } from '../data/items.js';
 import { slots, usedSlots, stackSize } from '../systems/inventory.js';
 import { canUpgrade, upgradeTool, miningLevel, nextXp, toolTier, hasTool } from '../systems/skills.js';
 
+const JTABS = { journal: '📝 Activités', quests: '⭐ Quêtes en cours', social: '💞 Liens', histoire: '📖 Histoire' };   // 19/11 : onglets du journal
 const TABS = { sac: 'Sac', recettes: '📜 Recettes', poissons: '🐟 Poissons', quests: 'Quêtes', metiers: '🧑‍🔧 Métiers', forge: 'Forge', social: 'Liens' };
 const TITLES = { recettes: '📜 Recettes', poissons: '🐟 Carnet de pêche', market: '🏪 Marché', upgrades: '🧰 Magasin d\'amélioration', carpenter: '🪚 Charpentier', workshop: '🛠️ Établi', animals: '🐾 Marchand d\'animaux', bakery: '🥖 Boulangerie', igorShop: '⚒️ Boutique d’Igor', butcher: '🥩 Boucherie', fishmonger: '🐟 Poissonnerie' };
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
@@ -39,7 +41,7 @@ const it = id => ITEMS[id] || { n: id, i: '❔', p: 0 };
 
 export function createMenu(g, opts) {
   const { online, audio } = opts;
-  let tab = 'sac', recCat = 'feu';
+  let tab = 'sac', recCat = 'feu', jmode = false;
   const card = (h, cls = '') => `<div class="card ${cls}">${h}</div>`;
   // grille d'achat d'un commerce (×1 et ×5)
   const shopGrid = (S, id) => '<div class="grid">' + SHOPS[id].sells.filter(k => isUnlocked(S, k)).map(k => { const x = it(k);
@@ -142,6 +144,14 @@ export function createMenu(g, opts) {
       const col = (t, list) => `<div><h3>${t}</h3>${list.map(one).join('') || '<p class="info">Aucune pour l’instant.</p>'}</div>`;
       return `<div class="quetes-cols">${col('⭐ Quêtes principales', ids.filter(id => QUESTS[id].main))}${col('📋 Quêtes secondaires', ids.filter(id => !QUESTS[id].main))}</div>`;
     },
+    journal(S) {   // 19/11 : les 200 dernières activités, les plus récentes en haut
+      const L = journal(S).log;
+      return `<p class="info">📓 Les ${L.length} dernières activités (200 au plus).</p><ul class="journal">` + L.slice().reverse().map(e => `<li><small>${esc(e.w)}</small> ${esc(e.t)}</li>`).join('') + '</ul>' + (L.length ? '' : '<p class="info">Rien encore… La page est blanche.</p>');
+    },
+    histoire(S) {
+      const H = storySoFar(S);
+      return '<p class="info">📖 Ce que tu as vécu à Farmwest jusqu’ici.</p>' + (H.map(c => card(`<div class="t">${c.i} <b>${esc(c.n)}</b>${c.fini ? ' ✔' : ''}</div><ol class="etapes">${c.steps.map(t => `<li class="fait">${esc(t)}</li>`).join('')}</ol>`)).join('') || '<p class="info">Ton histoire ne fait que commencer.</p>');
+    },
     social(S) {
       const ids = Object.keys(S.social);
       // fiche de chaque habitant : cœurs, goûts découverts par degré, ce qu'on sait de sa vie
@@ -193,16 +203,17 @@ export function createMenu(g, opts) {
     bag: () => buyBag(g), bench: () => repairBench(g), build: id => build(g, id), stack: () => buyStack(g), up: id => upgradeTool(g, id)
   };
   function render() {
-    $('#tabs').innerHTML = Object.entries(TABS).map(([k, v]) => `<button data-t="${k}" class="${k === tab ? 'on' : ''}">${v}</button>`).join('');
+    $('#tabs').innerHTML = Object.entries(jmode ? JTABS : TABS).map(([k, v]) => `<button data-t="${k}" class="${k === tab ? 'on' : ''}">${v}</button>`).join('');
     const G = g.S.game, code = G && G.mode === 'multi' && G.code && !$('#tabs').hidden ? `<p class="info code-partie">👥 Code pour rejoindre la partie : <b>${esc(G.code)}</b></p>` : '';
     $('#tabBody').innerHTML = code + views[tab](g.S);
     if (tab === 'market') renderPlayers();
   }
-  $('#tabs').onclick = e => { const t = e.target.dataset.t; if (t) { tab = t; audio.play('ui'); render(); } };
+  $('#tabs').onclick = e => { const t = e.target.dataset.t; if (t) { tab = t; if (jmode) setJournalTab(g.S, t); audio.play('ui'); render(); } };   // 19/11 : l'onglet du journal est gardé dans la sauvegarde
   $('#tabBody').addEventListener('click', e => {
     for (const k in handlers) { const v = e.target.dataset[k]; if (v != null) { handlers[k](v); render(); return; } }
   });
   $('#bClose').onclick = () => $('#ovBag').classList.remove('on');
   // seul = ouvert depuis un lieu (halle du marché) : pas d'onglets
-  return { open(t, seul) { if (t) tab = t; else if (tab in TITLES) tab = 'sac'; $('#tabs').hidden = !!seul; $('#menuTitle').textContent = seul ? (TITLES[t] || '🏪') : '📜 Menu'; $('#ovBag').classList.add('on'); render(); } };
+  return { openJournal() { jmode = true; tab = journal(g.S).tab || 'journal'; $('#tabs').hidden = false; $('#menuTitle').textContent = '📓 Journal'; $('#ovBag').classList.add('on'); render(); },
+    open(t, seul) { jmode = false; if (t) tab = t; else if (tab in TITLES) tab = 'sac'; $('#tabs').hidden = !!seul; $('#menuTitle').textContent = seul ? (TITLES[t] || '🏪') : '📜 Menu'; $('#ovBag').classList.add('on'); render(); } };
 }

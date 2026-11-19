@@ -11,7 +11,9 @@ export const VEIN_ORE = [2, 4];    // minerais par filon
 export const ROCK_HP = 6;
 // Par lieu : fleurs du jour, cailloux et filons au maximum, nouveaux par jour.
 export const NATURE = {
-  farm: { flowers: 6, rocks: 4, rocksDay: 2, veins: 1, veinP: 0.35 },
+  farm: { flowers: 6, rocks: 0, rocksDay: 0, veins: 0, veinP: 0 },   // 19/11 : plus de cailloux à la ferme, tout est à la carrière
+  carriere: { flowers: 0, rocks: 40, rocksDay: 3, veins: 3, veinP: 0.6 },   // 19/11 : 3 cailloux de plus par jour
+  carriere2: { flowers: 0, rocks: 16, rocksDay: 3, veins: 8, veinP: 1, veinW: { tin: 15, iron: 50, gold: 35 } },   // carrière profonde : filons rares
   foret: { flowers: 8, rocks: 12, rocksDay: 2, veins: 2, veinP: 0.5 },
   montagne: { flowers: 0, rocks: 8, rocksDay: 3, veins: 5, veinP: 0.9 },   // plus de filons qu'ailleurs
   plage: { flowers: 0, rocks: 3, rocksDay: 1, veins: 0, veinP: 0 },

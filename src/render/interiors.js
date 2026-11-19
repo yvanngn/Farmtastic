@@ -77,6 +77,7 @@ export function buildInterior(name, S = {}) {
     }
     if (t === 'D') { R(px, py, T, T, '#3b2414'); R(px + 2, py + 2, 12, 12, '#5a3a22'); R(px + 3, py + 8, 10, 1, '#d6b46a'); R(px + 4, py + 10, 8, 4, '#8a3a2a'); }
   }
+  if (name === 'bar') { drawSaloon(R, g); return c; }   // 19/11 : saloon dessiné à part
   // meubles (dessinés après le sol, par blocs)
   const seen = new Set();
   const block = ch => { const pts = []; for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) if (L[y][x] === ch) pts.push([x, y]); return pts; };
@@ -86,7 +87,8 @@ export function buildInterior(name, S = {}) {
     R: ([x, y, w, h]) => { R(x + 1, y + 1, w - 2, h - 2, '#a8392c'); R(x + 3, y + 3, w - 6, h - 6, '#d0573f'); R(x + 5, y + 5, w - 10, h - 10, '#e8c26a'); R(x + 7, y + 7, w - 14, h - 14, '#a8392c'); for (let k = x + 3; k < x + w - 3; k += 4) { R(k, y, 1, 2, '#e8c26a'); R(k, y + h - 2, 1, 2, '#e8c26a'); } },
     B: ([x, y, w, h]) => { if ((name === 'house' || name === 'maison') && S.bed === false) { R(x + 2, y + 2, w - 4, 1, 'rgba(0,0,0,.18)'); R(x + 2, y + h - 3, w - 4, 1, 'rgba(0,0,0,.18)'); R(x + 2, y + 2, 1, h - 4, 'rgba(0,0,0,.18)'); R(x + w - 3, y + 2, 1, h - 4, 'rgba(0,0,0,.18)'); return; } R(x, y, w, h, '#5a3a22'); R(x + 1, y + 1, w - 2, 7, '#f4efe4'); R(x + 2, y + 2, w - 4, 4, '#ffffff'); R(x + 1, y + 9, w - 2, h - 11, '#3f6fb0'); for (let k = 0; k < w - 4; k += 4) R(x + 2 + k, y + 10, 2, h - 13, '#5b8fd0'); R(x + 1, y + h - 3, w - 2, 2, '#2f548a'); },
     K: ([x, y, w, h]) => { R(x, y, w, h, '#6b4226'); R(x, y, w, 4, '#c9b28a'); R(x, y + 4, w, 1, '#8a6a46'); for (let k = x + 2; k < x + w - 4; k += 8) { R(k, y + 6, 6, 8, '#835330'); R(k + 4, y + 9, 1, 2, '#e8c26a'); } R(x + w - 10, y - 2, 7, 4, '#3a3a40'); R(x + w - 9, y - 4, 5, 2, '#5a5a62'); },
-    T: ([x, y, w, h]) => { R(x + 1, y + 3, w - 2, h - 8, '#8a5a32'); R(x + 1, y + 3, w - 2, 2, '#b07a48'); R(x + 2, y + h - 5, 2, 5, '#5a3a22'); R(x + w - 4, y + h - 5, 2, 5, '#5a3a22'); disc(g, x + w / 2, y + 9, 3, '#f4efe4'); R(x + w / 2 - 1, y + 8, 2, 2, '#e08a3a'); },
+    T: ([x, y, w, h]) => { R(x + 1, y + 3, w - 2, h - 8, '#8a5a32'); R(x + 1, y + 3, w - 2, 2, '#b07a48'); R(x + 2, y + h - 5, 2, 5, '#5a3a22'); R(x + w - 4, y + h - 5, 2, 5, '#5a3a22'); if (name === 'house' || name === 'maison') { R(x + w / 2 - 7, y + 5, 14, 9, '#5a2a1a'); R(x + w / 2 - 6, y + 6, 6, 7, '#f4ead2'); R(x + w / 2 + 1, y + 6, 5, 7, '#efe2c4'); R(x + w / 2 - 5, y + 8, 4, 1, '#9a8a70'); R(x + w / 2 - 5, y + 10, 4, 1, '#9a8a70'); R(x + w / 2 + 2, y + 8, 3, 1, '#9a8a70'); R(x + w / 2 + 3, y + 3, 1, 6, '#c84a4a'); return; }   // 19/11 : le journal ouvert
+      disc(g, x + w / 2, y + 9, 3, '#f4efe4'); R(x + w / 2 - 1, y + 8, 2, 2, '#e08a3a'); },
     P: ([x, y, w, h]) => { R(x + 4, y + 9, 8, 7, '#b0603a'); R(x + 4, y + 9, 8, 2, '#c97a4f'); disc(g, x + 8, y + 5, 5, '#3e8a34'); disc(g, x + 6, y + 4, 2, '#6bb33f'); },
     C: ([x, y, w, h]) => { R(x + 1, y + 4, w - 2, h - 5, '#8a5a32'); R(x + 1, y + 4, w - 2, 4, '#b07a48'); R(x + 1, y + 8, w - 2, 1, '#e8c26a'); R(x + 7, y + 7, 2, 3, '#e8c26a'); },
     H: ([x, y, w, h]) => { R(x, y + 4, w, h - 6, '#6b4226'); R(x + 1, y + 5, w - 2, 5, '#e3c45e'); for (let k = x + 2; k < x + w - 2; k += 3) R(k, y + 4, 1, 2, '#f2d77a'); R(x, y + h - 3, w, 1, '#4a2c18'); },
@@ -122,4 +124,50 @@ export function buildInterior(name, S = {}) {
     draw[ch](bb);
   }
   return c;
+}
+
+// 19/11 : intérieur du saloon : scène à rideaux rouges et rampe de lumières, long comptoir et étagère à bouteilles,
+// tables rondes avec chaises, cabane des toilettes (porte à lune), lustre et crachoirs.
+function drawSaloon(R, g) {
+  const t = T, sh = (x, y, w, h) => R(x, y, w, h, 'rgba(30,15,5,.25)');
+  // étagère à bouteilles derrière le comptoir (sur le mur)
+  R(8 * t, t + 2, 6 * t, 2, '#4a2c18'); R(8 * t, t + 8, 6 * t, 2, '#4a2c18');
+  for (let i = 0; i < 22; i++) { const x = 8 * t + 3 + i * 4.2 | 0, col = ['#3a7a3a', '#8a3a2a', '#c9a64e', '#5a4a8a', '#e8e0c8'][i % 5]; R(x, t - 2 + (i % 2), 2, 4 - (i % 2), col); R(x, t - 3 + (i % 2), 1, 1, '#f4ead2'); R(x + 1, t + 4, 2, 4, ['#8a3a2a', '#3a7a3a', '#c9a64e'][i % 3]); }
+  R(7 * t + 4, t + 1, 8, 10, '#8a6a2a'); R(7 * t + 5, t + 2, 6, 8, '#f2a85a');   // petit tableau
+  // scène
+  const sx = t, sy = 2 * t, sw = 5 * t, shh = 3 * t;
+  R(sx, sy, sw, shh, '#7a4a28'); for (let k = 0; k < shh; k += 4) { R(sx, sy + k, sw, 1, '#5a3418'); } R(sx, sy + shh - 4, sw, 4, '#4a2c18'); R(sx, sy + shh - 5, sw, 1, '#c99560');
+  for (let k = 0; k < 6; k++) { const x = sx + 6 + k * 13; R(x, sy + shh - 3, 3, 2, '#ffe08a'); R(x + 1, sy + shh - 3, 1, 1, '#fff6d0'); }   // rampe de lumières
+  R(sx, sy - 2, sw, 5, '#a8302b'); for (let k = 0; k < sw; k += 6) R(sx + k, sy - 2, 3, 6, '#c8402e');   // lambrequin
+  R(sx, sy, 7, shh - 6, '#a8302b'); R(sx + sw - 7, sy, 7, shh - 6, '#a8302b'); R(sx + 2, sy, 2, shh - 6, '#c8402e'); R(sx + sw - 5, sy, 2, shh - 6, '#c8402e');   // rideaux
+  R(sx + 22, sy + 10, 14, 10, '#2a1a14'); R(sx + 23, sy + 11, 12, 3, '#3a2a20'); for (let k = 0; k < 6; k++) R(sx + 24 + k * 2, sy + 18, 1, 2, k % 2 ? '#1a1010' : '#f4ead2');   // piano
+  R(sx + 48, sy + 14, 2, 14, '#3a3a40'); R(sx + 46, sy + 12, 6, 3, '#5a5a62');   // micro
+  // comptoir
+  const bx = 8 * t, by = 3 * t;
+  sh(bx + 2, by + t - 1, 6 * t, 3);
+  R(bx, by + 3, 6 * t, t - 3, '#6b4226'); R(bx, by + 2, 6 * t, 4, '#b07a48'); R(bx, by + 2, 6 * t, 1, '#d4a070');
+  for (let k = 0; k < 6; k++) { R(bx + k * t + 3, by + 8, t - 6, 6, '#5a3820'); R(bx + k * t + 3, by + 8, t - 6, 1, '#835330'); }
+  R(bx, by + t - 2, 6 * t, 2, '#c9a64e');   // repose-pied en laiton
+  for (const [x, c] of [[bx + 10, '#e8c26a'], [bx + 40, '#c84a4a'], [bx + 70, '#e8e0c8']]) { R(x, by - 1, 3, 4, c); R(x, by - 1, 3, 1, '#fff6e0'); }   // verres
+  for (let k = 0; k < 6; k++) { const x = bx + 6 + k * t; R(x, by + t + 3, 5, 4, '#8a3a2a'); R(x + 2, by + t + 7, 1, 4, '#3a2a20'); }   // tabourets
+  // tables rondes et chaises
+  for (const [tx, ty] of [[2, 6], [7, 6], [2, 8], [7, 8]]) {
+    const cx = tx * t + t, cy = ty * t + 8;
+    for (const [ox, oy] of [[-14, 0], [14, 0]]) { R(cx + ox - 3, cy + oy - 2, 6, 6, '#6b4226'); R(cx + ox - 3, cy + oy - 6, 6, 4, '#835330'); }
+    g.fillStyle = 'rgba(30,15,5,.25)'; g.beginPath(); g.ellipse(cx, cy + 6, 11, 3, 0, 0, 7); g.fill();
+    g.fillStyle = '#8a5a32'; g.beginPath(); g.ellipse(cx, cy, 11, 6, 0, 0, 7); g.fill(); g.fillStyle = '#b07a48'; g.beginPath(); g.ellipse(cx, cy - 1, 10, 4.5, 0, 0, 7); g.fill();
+    R(cx - 1, cy + 5, 2, 4, '#4a2c18'); R(cx - 4, cy - 3, 3, 3, '#e8c26a'); R(cx + 2, cy - 2, 4, 2, '#f4ead2'); R(cx + 3, cy - 3, 2, 1, '#c84a4a');   // verre, cartes
+  }
+  // toilettes : cabane en planches, porte à lune, écriteau
+  const wx = 12 * t, wy = 7 * t;
+  sh(wx + 2, wy + 3 * t - 2, 2 * t, 3);
+  R(wx, wy - 6, 2 * t, 3 * t + 6, '#7a5236'); for (let k = 0; k < 2 * t; k += 5) R(wx + k, wy - 6, 1, 3 * t + 6, '#5a3a22');
+  R(wx - 2, wy - 8, 2 * t + 4, 4, '#4a2c18');
+  R(wx + 8, wy + 10, 16, 3 * t - 12, '#8a6a46'); R(wx + 9, wy + 11, 14, 3 * t - 14, '#a07a50'); R(wx + 20, wy + 26, 2, 3, '#e8c26a');
+  g.fillStyle = '#2a1a10'; g.beginPath(); g.arc(wx + 16, wy + 17, 3, 0, 7); g.fill(); g.fillStyle = '#a07a50'; g.beginPath(); g.arc(wx + 17.5, wy + 16, 3, 0, 7); g.fill();   // lune
+  R(wx + 9, wy - 2, 14, 7, '#e8dcc0'); R(wx + 11, wy, 2, 3, '#3a2a20'); R(wx + 14, wy, 1, 3, '#3a2a20'); R(wx + 16, wy, 1, 3, '#3a2a20'); R(wx + 18, wy, 3, 1, '#3a2a20'); R(wx + 18, wy + 2, 3, 1, '#3a2a20'); R(wx + 18, wy, 1, 3, '#3a2a20');   // « WC »
+  // crachoirs, tonneaux, lustre (au sol, son ombre)
+  for (const [x, y] of [[6 * t + 5, 5 * t + 8], [11 * t + 4, 9 * t + 6]]) { R(x, y, 6, 5, '#c9a64e'); R(x + 1, y, 4, 1, '#f5dd7a'); }
+  for (const [x, y] of [[14 * t + 2, 2 * t + 2], [14 * t + 2, 4 * t + 4]]) { R(x, y, 12, 13, '#7a4f2e'); R(x, y + 2, 12, 1, '#3a2a20'); R(x, y + 10, 12, 1, '#3a2a20'); R(x + 4, y + 5, 4, 2, '#c99560'); }
+  g.fillStyle = 'rgba(255,220,140,.10)'; g.beginPath(); g.ellipse(8 * t, 7 * t, 40, 18, 0, 0, 7); g.fill();
 }

@@ -287,7 +287,7 @@ export const INTRO_LINES = [
 export const ED = {
   id: 'ed', name: 'Ed', de: 'de lui', color: '#e0a84a', voice: 'voiceChef',
   look: { folk: 'ed', body: 'h', bottom: 'pant', skin: '#e8b48c', hair: 0, hairC: '#5a3a22', hat: 'cap', beard: '#6a3a1e', shirt: '#9a9aa0', suspenders: '#6a4426', towel: true, pants: '#6a4a2a', shoes: '#5a3a22', stout: true, tall: true },   // 18/11 : poupée dessinée par le code (src/render/paperdoll.js), tenue d'après son sprite
-  home: 'ed', inside: { x: 3.5, y: 4.6 }, worker: { scene: 'bar', at: { x: 3.5, y: 3.7 }, from: 660, to: 1410 },   // 💡 au bar de 11 h à 23 h 30
+  home: 'ed', inside: { x: 3.5, y: 4.6 }, worker: { scene: 'bar', at: { x: 10.5, y: 2.9 }, from: 660, to: 1410 },   // 💡 au bar de 11 h à 23 h 30
   traits: ['Barman du saloon', 'Ancien chauffeur routier', 'Aime le contact des gens', 'Rêve d’ouvrir un magasin en ville', 'Mari de Suzie, papa de Jade'],
   taste: { adore: [], aime: ['berry_cooked', 'confiture_baies'], naime: ['slime'], deteste: [] },   // 💡 en attendant les boissons
   story: [

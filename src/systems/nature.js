@@ -11,6 +11,7 @@ import { gainXp, toolTier, hasTool } from './skills.js';
 import { MINING_GAIN, energyCost, hitReady } from '../data/tools.js';
 import { isWet } from './weather.js';
 import { gainPxp, XP } from './level.js';
+import { ensureBorder, dayNum, BORDER_STONES } from './quarry.js';
 
 const dayId = S => S.year + '-' + S.season + '-' + S.day;
 const size = sc => sc === 'farm' ? [CFG.W, CFG.H] : [LAYOUTS[sc][0].length, LAYOUTS[sc].length];
@@ -28,6 +29,7 @@ export function freeSpot(S, sc, x, y) {
   if (sc === 'foret') return x > 0 && x < 27 && !FOREST_ROUTE.has(key(x, y)) &&   // lot 8 : jamais de caillou sur le chemin du labyrinthe
     !(S.foret && S.foret.shrooms && S.foret.shrooms[k]);
   if (sc === 'wild') return !(S.wild && S.wild.rocks && S.wild.rocks[k]) && !(x < 4 && y < 7);
+  if (sc === 'carriere' || sc === 'carriere2') return Math.hypot(x - S.x, y - S.y) > 2 && !(sc === 'carriere' && y >= L.length - 3 && (x === 15 || x === 16));
   return false;
 }
 
@@ -37,10 +39,10 @@ function spot(g, sc, tries = 300) {
   return null;
 }
 
-export function pickVein(r) {
-  const tot = Object.values(VEINS).reduce((a, v) => a + v.w, 0);
+export function pickVein(r, W) {
+  const w = id => W ? (W[id] || 0) : VEINS[id].w, tot = Object.keys(VEINS).reduce((a, id) => a + w(id), 0);
   let t = r * tot;
-  for (const [id, v] of Object.entries(VEINS)) { if ((t -= v.w) < 0) return id; }
+  for (const id of Object.keys(VEINS)) { if ((t -= w(id)) < 0) return id; }
   return 'copper';
 }
 
@@ -50,7 +52,7 @@ export function ensureNature(g, sc) {
   const C = NATURE[sc];
   if (!C) return null;
   const S = g.S; S.nature ||= {};
-  const N = S.nature[sc] ||= { day: null, flowers: {}, rocks: {} };
+  const first = !S.nature[sc], N = S.nature[sc] ||= { day: null, flowers: {}, rocks: {} };   // 19/11 : au premier passage, le lieu est déjà plein
   if (N.day === dayId(S)) return N;
   N.day = dayId(S); N.flowers = {};
   const fl = FLOWERS[S.season];
@@ -59,9 +61,10 @@ export function ensureNature(g, sc) {
     const v = g.rnd(); N.flowers[key(...p)] = v < P_RARE_FLOWER ? fl[2].id : v < P_RARE_FLOWER + P_MID_FLOWER ? fl[1].id : fl[0].id;
   }
   const rocks = Object.values(N.rocks).filter(o => o.t === 'rock').length;
-  for (let i = 0; i < Math.min(C.rocksDay, C.rocks - rocks); i++) { const p = spot(g, sc); if (p) N.rocks[key(...p)] = { t: 'rock', hp: ROCK_HP }; }
+  for (let i = 0; i < Math.min(first ? C.rocks : C.rocksDay, C.rocks - rocks); i++) { const p = spot(g, sc); if (p) N.rocks[key(...p)] = { t: 'rock', hp: ROCK_HP }; }
   const veins = Object.values(N.rocks).filter(o => o.t === 'vein').length;
-  if (veins < C.veins && g.rnd() < C.veinP) { const p = spot(g, sc); if (p) N.rocks[key(...p)] = { t: 'vein', v: pickVein(g.rnd()), hp: VEIN_HP }; }
+  for (let i = 0, n = first ? C.veins : 1; i < n && veins + i < C.veins; i++) if (g.rnd() < C.veinP) { const p = spot(g, sc); if (p) N.rocks[key(...p)] = { t: 'vein', v: pickVein(g.rnd(), C.veinW), hp: VEIN_HP }; }
+  if (sc === 'carriere') ensureBorder(S, N);   // 19/11 : gros cailloux de bordure
   return N;
 }
 
@@ -108,8 +111,10 @@ export function hitNature(g, x, y) {
   if (o.hp <= 0) {
     delete N.rocks[k];
     gainPxp(g, XP.small, 'rock');   // lot 8
-    scatter(g, 'stone', 1, x, y);
-    let txt = '+1🪨';
+    const nS = o.border ? BORDER_STONES[0] + (g.rnd() * (BORDER_STONES[1] - BORDER_STONES[0] + 1) | 0) : 1;   // 19/11 : gros caillou de bordure
+    if (o.border) (N.broken ||= {})[k] = dayNum(S);
+    scatter(g, 'stone', nS, x, y);
+    let txt = `+${nS}🪨`;
     if (o.t === 'vein') {
       const V = VEINS[o.v], n = VEIN_ORE[0] + (g.rnd() * (VEIN_ORE[1] - VEIN_ORE[0] + 1) | 0);
       scatter(g, V.ore, n, x, y); gainXp(g, 'mining', 15); txt += ` +${n} ${V.n.replace('Filon', 'minerai')}`;

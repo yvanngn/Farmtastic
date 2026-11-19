@@ -26,13 +26,13 @@ export const isGrange = (x, y) => inRect(x, y, 10, 1, 13, 4);
 export const isGate = (x, y) => x === 16 && y === 35; // portail vers le village
 export const isFence = (x, y, built) => inRect(x, y, 18, 6, 33, 13) && !isPen(x, y) && !(x === 18 && y === 9) && !buildingAt(built, x, y);
 export const isPond = (x, y) => ((x - 12) ** 2) / 25 + ((y - 24) ** 2) / 9 < 1;
-export const isPath = (x, y) => (y === 5 && x >= 2 && x <= 47) || (y === 20 && x >= 3 && x <= 15) || (x === 42 && y === 4) || (x === 16 && y >= 5 && y <= 35) || (y === 9 && x === 17)
+export const isPath = (x, y) => (y === 5 && x >= 2 && x <= 47) || (y === 20 && x >= 3 && x <= 15) || (x === 42 && y === 4) || (x === 16 && y >= 0 && y <= 35) || (y === 9 && x === 17)
   || (y >= 33 && x >= 15 && x <= 17) || (x >= 45 && y >= 4 && y <= 6);   // sorties élargies (vers le quartier, vers la ville)
 export const isForest = (x) => x >= 34;
 // Haies sur les bords de la ferme qui ne mènent nulle part (bas et droite), pour voir où sont les sorties.
 export const isHedge = (x, y) => (y === 35 && (x < 15 || x > 17)) || (x === 47 && ((y >= 8 && y < 35) || y <= 3 || y === 7));
 // Bord nord de la ferme : une barrière en bois ; bord ouest (au-dessus de la gare) : une falaise rocheuse.
-export const isFarmFence = (x, y) => y === 0 && x > 0 && x < 47;
+export const isFarmFence = (x, y) => y === 0 && x > 0 && x < 47 && x !== 16;   // 19/11 : passage vers la carrière
 export const isCliff = (x, y) => x === 0;   // lot 8 : plus de gare dans la ferme, la falaise court sur tout le bord ouest
 // Lot 8 : plus de gare dans la ferme (la gare est une zone à part, à l'ouest du centre-ville).
 export const isStation = () => false;
@@ -46,6 +46,7 @@ export function ground(x, y) {
   return isPond(x, y) ? 'water' : isPlot(x, y) ? 'soil' : isPath(x, y) ? 'path' : 'grass';
 }
 
+import { quarryMouthOpen } from './quarrymouth.js';
 import { tileAt, SOLID_TILES, FOREST_CHEST, syncForest } from './scenes.js';
 import { AXE_GROVE, BIG_TREE } from '../data/repairs.js';
 import { BUSHES } from '../data/recipes.js';
@@ -63,7 +64,8 @@ export function isSolid(S, x, y) {
   if (S.scene === 'foret' && x === FOREST_CHEST.x && y === FOREST_CHEST.y) return true;   // lot 8 : le coffre du labyrinthe
   if (S.scene === 'foret' && S.foret && S.foret.shrooms && S.foret.shrooms[x + ',' + y]) return false;
   if (S.scene === 'foret' && S.foret && S.foret.cut && S.foret.cut[x + ',' + y] != null && (S.year - 1) * 112 + S.season * 28 + S.day - S.foret.cut[x + ',' + y] < TREE_GROW_DAYS) return false;   // arbre coupé (repousse comme à la ferme)
-  if (S.scene && S.scene !== 'farm') { const t = tileAt(S.scene, x, y); if (S.scene === 'grange' && (t === 'p' || t === 'r') && S.grange && S.grange.broken.includes(x + ',' + y)) return false; return SOLID_TILES.includes(t); }
+  if (S.scene && S.scene !== 'farm') { const t = tileAt(S.scene, x, y); if (t === '%') return !quarryMouthOpen(S, x, y);   // 19/11 : bouche de tunnel ouverte ce jour-là
+    if (S.scene === 'grange' && (t === 'p' || t === 'r') && S.grange && S.grange.broken.includes(x + ',' + y)) return false; return SOLID_TILES.includes(t); }
   if (x < 0 || y < 0 || x >= CFG.W || y >= CFG.H) return true;
   return isPond(x, y) || isHouse(x, y) || isGrange(x, y) || x === 0 || isMystHouse(x, y) || isFranckHouse(x, y) || isLunaHouse(x, y) || !!buildingAt(S.built, x, y) || isGate(x, y) || isFence(x, y, S.built) || isBin(x, y) || !!(S.objs && S.objs[key(x, y)]);
 }
@@ -93,11 +95,9 @@ export function genObjects(seed = 12345) {
     const v = r(), kind = KINDS[r() * 3 | 0];
     if (isForest(x)) {
       if (v < 0.30) { if (trees++ < FOREST.MAX_TREES) o[key(x, y)] = newTree(kind); }
-      else if (v < 0.44) { if (rocks++ < FOREST.MAX_ROCKS) o[key(x, y)] = newRock(v >= 0.40); }
-      else if (v < 0.45) o[key(x, y)] = { t: 'boulder', hp: ROCK_HPS.boulder };   // 18/11 : gros rochers réduits (1 % des cases de la forêt au lieu de 2 %)
+      // 19/11 : plus de cailloux ni de gros rochers à la ferme : tout est à la carrière, au nord
     }
     else if (v < 0.10) o[key(x, y)] = newTree(kind);
-    else if (v < 0.19) o[key(x, y)] = newRock(v > 0.165);
   }
   for (const [x, y] of AXE_GROVE) o[key(x, y)] = newTree(KINDS[(x + y) % 3]);   // petit bois du sud
   for (const [dx, dy] of [[0, 0], [1, 0], [0, 1], [1, 1], [-1, 1], [-1, 0], [1, 2], [0, 2], [-1, 2]]) delete o[key(BIG_TREE.x + dx, BIG_TREE.y + dy)];

@@ -64,6 +64,7 @@ export function migrate(raw) {
   if (s.objs) for (const k of Object.keys(s.objs)) { const [x, y] = k.split(',').map(Number); if ((y === 5 && x <= 43) || (x >= 39 && x <= 46 && y <= 6) || (y === 20 && x <= 15)) delete s.objs[k]; }   // (lot 8 : plus de gare à l'ouest, cette zone se remplit aussi)
   if (raw.workbench === undefined) s.workbench = true; // avant le lot 12, on fabriquait déjà
   // Avant le lot 9, tout le champ était déjà prêt.
+  if (s.objs && !raw.quarry19) { for (const k in s.objs) if (['rock', 'rock_big', 'boulder'].includes(s.objs[k].t)) delete s.objs[k]; s.rockQueue = []; if (s.nature && s.nature.farm) s.nature.farm.rocks = {}; s.quarry19 = true; }   // 19/11 : cailloux de la ferme → carrière
   if (!raw.tilled) { s.tilled = {}; for (let y = 8; y <= 13; y++) for (let x = 4; x <= 13; x++) s.tilled[x + ',' + y] = 1; }
   if (!raw.grange) s.grange = { found: Object.keys(s.tools), broken: [] };
   s.skills = Object.assign(d.skills, raw.skills || {});

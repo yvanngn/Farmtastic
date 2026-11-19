@@ -1,7 +1,7 @@
 // Bâtiments délabrés au début : on les rafistole en déposant bois et pierres (jauges).
 export const REPAIRS = {
-  house: { n: 'La cabane', need: { wood: 80, stone: 30 }, x0: 2, y0: 1, x1: 6, y1: 4 },
-  house2: { n: 'Agrandir la cabane', need: { wood: 160, stone: 60 }, x0: 2, y0: 1, x1: 6, y1: 3, after: 'house' },   // sans la rangée de la porte (on doit pouvoir entrer)   // 18/11 : quête secondaire, le double de la cabane
+  house: { n: 'La cabane', need: { wood: 40, stone: 15 }, x0: 2, y0: 1, x1: 6, y1: 4 },
+  house2: { n: 'Agrandir la cabane', need: { wood: 80, stone: 30 }, x0: 2, y0: 1, x1: 6, y1: 3, after: 'house' },   // sans la rangée de la porte (on doit pouvoir entrer)   // 18/11 : quête secondaire, le double de la cabane ; 19/11 : coûts divisés par 2
   grange: { n: 'La grange', need: { wood: 100, stone: 60 }, x0: 10, y0: 1, x1: 13, y1: 4 }   // 💡 quantités
 };
 export const REPAIR_STEP = 1;   // 1 bois et 1 pierre par coup de marteau : c'est long au début (demande de l'utilisateur)

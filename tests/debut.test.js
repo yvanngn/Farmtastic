@@ -318,7 +318,7 @@ test('Farmwest lot 4 : quêtes principales (cabane, coffre, pioche, hache, pelle
   const ids = QUESTS.debut.steps.map(s => s.id); for (const k of ['cabane', 'pioche', 'hache', 'four', 'grange']) assert.ok(ids.includes(k), k);
   assert.ok(!ids.includes('coffre'), '18/11 : le coffre devient une quête secondaire'); assert.ok(QUESTS.coffre && !QUESTS.coffre.main);
   assert.ok(!ids.includes('cuisine') && !ids.includes('pelle'), 'confiture retirée ; pelle fusionnée avec la grange');
-  const { g, S } = start({ repair: { house: { wood: 79, stone: 30 }, grange: { wood: 0, stone: 0 } }, inv: { wood: 5, stone: 5 }, sel: 'hammer' });
+  const { g, S } = start({ repair: { house: { wood: 39, stone: 15 }, grange: { wood: 0, stone: 0 } }, inv: { wood: 5, stone: 5 }, sel: 'hammer' });
   assert.equal(questVisible(S, 'franck'), false, 'secondaire cachée'); assert.ok(questVisible(S, 'debut'));
   for (let i = 0; i < 3 && !isRepaired(S, 'house'); i++) contribute(g, 'house'); assert.ok(isRepaired(S, 'house'));
   assert.ok(!S.recipes.includes('chest'), 'le coffre s’apprend auprès de Harry (lot 6)'); assert.ok(questVisible(S, 'franck'));
@@ -330,7 +330,7 @@ test('Farmwest lot 6 (revu le 18/11) : Harry vend le plan du coffre ; métier de
   const { jobXp } = await import('../src/systems/jobs.js');
   const { craftHand } = await import('../src/systems/cooking.js');
   const { contribute } = await import('../src/systems/repair.js');
-  const { g, S } = start({ minute: 600, repair: { house: { wood: 70, stone: 30 }, grange: { wood: 0, stone: 0 } }, inv: { wood: 120, stone: 40 }, sel: 'hammer' });
+  const { g, S } = start({ minute: 600, repair: { house: { wood: 30, stone: 15 }, grange: { wood: 0, stone: 0 } }, inv: { wood: 120, stone: 40 }, sel: 'hammer' });
   registerNPC(g, HARRY); placeNPC(g.npcs.harry, S, 480, 1140); assert.equal(g.npcs.harry.scene, 'town');
   talk(g, 'harry'); assert.ok(!S.recipes.includes('chest'), 'pas avant la cabane');
   for (let i = 0; i < 20 && !isRepaired(S, 'house'); i++) contribute(g, 'house');
@@ -434,7 +434,7 @@ test('18/11 : quêtes secondaires de la cabane (agrandir, lit, coffre), visibles
   // agrandir : le double de la cabane, marteau en main, la porte reste libre
   assert.equal(repairAt(S, 3, 2), null, 'sans marteau, on regarde seulement'); S.sel = 'hammer'; assert.equal(repairAt(S, 3, 2), 'house2'); assert.equal(repairAt(S, 5, 4), null, 'la porte');
   for (let i = 0; i < 200 && !isRepaired(S, 'house2'); i++) contribute(g, 'house2');
-  assert.ok(isRepaired(S, 'house2')); assert.equal(S.repair.house2.wood, 160); assert.equal(S.repair.house2.stone, 60); assert.ok(questProgress(S, 'cabane2').done.every(Boolean));
+  assert.ok(isRepaired(S, 'house2')); assert.equal(S.repair.house2.wood, 80); assert.equal(S.repair.house2.stone, 30); assert.ok(questProgress(S, 'cabane2').done.every(Boolean));
   S.scene = 'farm'; S.x = 5.5; S.y = 5.6; assert.equal(act(g, 5, 4), 'door'); assert.equal(S.scene, 'maison', 'on entre dans la cabane agrandie');
   // lit : plan chez Harry → fabriquer → installer
   S.inv = { wood: 130, stone: 30 };

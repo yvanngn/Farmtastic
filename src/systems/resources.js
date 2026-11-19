@@ -88,11 +88,7 @@ export function regrow(g) {
     const k = freeForestTile(g); if (!k) break;
     S.objs[k] = newTree(TREE_KIND_IDS[g.rnd() * 3 | 0], 0); c.trees++;
   }
-  let planned = c.rocks + S.rockQueue.length;
-  for (let i = 0; i < FOREST.ROCKS_PER_DAY && planned < FOREST.MAX_ROCKS; i++) {
-    const k = freeForestTile(g); if (!k) break;
-    S.rockQueue.push({ k, d: ROCK_DAYS, big: g.rnd() < 0.35 }); planned++;
-  }
+  // 19/11 : plus de cailloux qui repoussent à la ferme (la carrière, au nord, s'en charge)
 }
 
 // Lot 8 : à chaque changement de saison, on remet autant d'arbres et de cailloux qu'au départ (même si la ferme a été vidée) :

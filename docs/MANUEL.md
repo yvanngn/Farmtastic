@@ -34,7 +34,9 @@ Le héros (**Cloud Jimny** par défaut) arrive en train à Farmwest pour reprend
 - On n'a **jamais deux fois le même outil**, même à plusieurs.
 
 ## 5. Ressources
-- **Arbres** (hache) → bois. **Cailloux** et **rochers** (pioche) → pierres. **Gros rochers** (pioche Cuivre) → beaucoup de pierres ; rares depuis le 18/11. **Filons** → minerai.
+- **Arbres** (hache) → bois. Plus de cailloux à la ferme : ils sont à la **carrière**, au nord de la ferme (chemin au bout de l'allée centrale). Elle est pleine au premier passage et 3 cailloux repoussent chaque jour. Elle est bordée de **gros cailloux** (plus longs à casser, 4 à 6 pierres, ils repoussent en 3 jours).
+- **Carrière profonde** : chaque jour, l'une des trois bouches de tunnel de la paroi nord est ouverte (casser le gros caillou devant). Derrière, un canyon de grès rouge riche en **filons de fer et d'or**.
+- **Filons** → minerai ; les filons rares (fer, or) montrent un morceau de métal qui **scintille**.
 - **Fleurs et champignons** : couteau, en restant appuyé.
 - **Baies et mûres** : buissons et ronces, repoussent en 2 jours.
 - Arbres et cailloux sont **remis à chaque saison**, autant qu'au départ.
@@ -46,7 +48,8 @@ Le héros (**Cloud Jimny** par défaut) arrive en train à Farmwest pour reprend
 
 ## 7. La ferme
 - **Tente** (dans le sac au départ) : à déployer à côté de la cabane, pour dormir les premières nuits.
-- **Cabane** : à retaper (80 bois + 30 pierres), puis à **agrandir** (160 bois + 60 pierres, marteau en main devant la cabane) : l'intérieur devient bien plus grand.
+- **Journal** : sur la table de la cabane. Il garde les 200 dernières activités et s'ouvre par onglets : activités, quêtes en cours, liens, histoire. Il se rouvre sur le dernier onglet choisi.
+- **Cabane** : à retaper (40 bois + 15 pierres), puis à **agrandir** (80 bois + 30 pierres, marteau en main devant la cabane) : l'intérieur devient bien plus grand.
 - **Lit** : plan chez Harry (80 $), à fabriquer (50 bois + 10 pierres) puis à installer dans la cabane ; avant, on dort sous la tente.
 - **Grange** : à rafistoler (100 bois + 60 pierres) ; on y trouve la pelle.
 - **Champ** : le lendemain du jour où l'on trouve la pelle, un **courrier** arrive (boîte aux lettres) avec **20 graines de blé**. À la pelle, on bêche des **carrés** sur l'herbe libre de la ferme ; on choisit les graines dans le sac et on **glisse** sur les carrés pour tout semer. Le **blé pousse en 1 jour** ; le lendemain, à la **faucille**, toucher un épi mûr récolte **tout le champ d'un coup**, sans bouger. Chaque carré donne 2 blés et 3 **pailles** (1 $ pièce).

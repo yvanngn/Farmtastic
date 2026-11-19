@@ -3,6 +3,7 @@ import { letterTick } from './systems/golgolas.js';
 import { ensureMounds } from './systems/mounds.js';
 import { CFG } from './config.js';
 import { createGame } from './core/game.js';
+import { journalHook } from './systems/journal.js';
 import { defaultState } from './core/state.js';
 import { genObjects } from './world/map.js';
 import { createRenderer } from './render/renderer.js';
@@ -73,6 +74,7 @@ import { createChestPanel } from './ui/chestPanel.js';
 import { createMultiplayer, lerpOthers } from './net/multiplayer.js';
 
 const g = createGame();
+journalHook(g);   // 19/11 : le journal note chaque activité
 let started = false, net = { sb: null, uid: null }, mp = null, games = [], game = null, pending = null;
 const cv = $('#game');
 const renderer = createRenderer(cv, g);
@@ -102,7 +104,7 @@ function wireBus() {
   g.bus.on('openChest', c => chestPanel.open(c));
   g.bus.on('showMap', () => { mapView.open(); toast('🗺️ Le plan est toujours là : bouton 🗺️ en haut à droite (ou touche M).'); });
   g.bus.on('clinic', e => { const h = NPCS.hailey, lines = e && e.off === 'repos' ? h.clinicRepos : e && e.off === 'nuit' ? h.clinicNuit : h.clinic; setTimeout(() => g.bus.emit('say', { name: h.name, color: h.color, voice: h.voice, lines }), 600); });
-  g.bus.on('open', what => what === 'board' ? board.open() : what === 'sell' ? sellPanel.open() : menu.open(what, true));
+  g.bus.on('open', what => what === 'journal' ? menu.openJournal() : what === 'board' ? board.open() : what === 'sell' ? sellPanel.open() : menu.open(what, true));
 }
 wireBus();
 
