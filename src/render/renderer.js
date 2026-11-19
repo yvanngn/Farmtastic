@@ -139,7 +139,7 @@ function drawRainbow(c, fx, fy, minute, R) {
   c.restore();
 }
 import { buildGround, drawWaterShimmer, LIGHTS, drawSoil } from './ground.js';
-import { drawChar, drawTree, drawRock, drawCrop, drawAnimal, drawSlime, drawSwing, treeSprite, KIND_SPRITE } from './sprites.js';
+import { heroPickSheet, drawHeroPick, drawChar, drawTree, drawRock, drawCrop, drawAnimal, drawSlime, drawSwing, treeSprite, KIND_SPRITE } from './sprites.js';
 import { buildInterior } from './interiors.js';
 import { buildParc, buildBiome, buildQuartier, buildTown, TOWN_LIGHTS } from './town.js';
 import { buildWest } from './west.js';
@@ -555,14 +555,16 @@ let swing = null;
     { const M = S.mounds && S.mounds[scene]; if (M) for (const k in M.at) { const [x, y] = k.split(',').map(Number); if (x >= x0 - 1 && x <= x1 + 1 && y >= y0 - 1 && y <= y1 + 1) list.push({ z: y + .2, d: () => drawMound(ctx, x, y) }); } }   // lot 12 : petits tas à creuser
     for (const id in g.others) { const o = g.others[id]; if (!o.look || (o.scene || 'farm') !== scene) continue; list.push({ z: o.y, d: () => { drawChar(ctx, Math.round(o.x * T - 6), Math.round(o.y * T - 19), o.look, o.dir, o.f, now + 777); label(o.name, o.x * T, o.y * T - 25); } }); }
     if (!g.ride && !g.introHidden) list.push({ z: S.y, d: () => {   // pendant la diligence (et l'arrivée en train), le héros est dedans
+      const pickArt = swing && swing.tool === 'pick' && heroPickSheet(S.look);   // 19/11 : coup de pioche dessiné (planche fournie)
+      if (pickArt) { if (!(g.player.iframe > 0 && ((now / 80) | 0) % 2)) drawHeroPick(ctx, Math.round(S.x * T - 6), Math.round(S.y * T - 19), S.look, S.dir, swing.p); } else {
       if (swing && S.dir === 1) drawSwing(ctx, S, swing.tool, swing.p);
-      if (!(g.player.iframe > 0 && ((now / 80) | 0) % 2)) drawChar(ctx, Math.round(S.x * T - 6), Math.round(S.y * T - 19), S.look, S.dir, g.player.walkFrame, now, !!swing);
+      if (!(g.player.iframe > 0 && ((now / 80) | 0) % 2)) drawChar(ctx, Math.round(S.x * T - 6), Math.round(S.y * T - 19), S.look, S.dir, g.player.walkFrame, now, !!swing); }
       if (document.body.dataset.nrj === 'tete' || S.energy / S.maxE <= .3) { // alerte : jauge au-dessus du héros quand l'énergie devient basse
         const r = Math.max(0, S.energy / S.maxE), bx = Math.round(S.x * T - 8), by = Math.round(S.y * T - (S.look.tall ? 29 : 26)), shake = r <= .3 ? Math.round(Math.sin(now / 40)) : 0;
         ctx.fillStyle = 'rgba(20,14,30,.8)'; ctx.fillRect(bx - 1 + shake, by - 1, 18, 4);
         ctx.fillStyle = r <= .2 ? '#ff2a2a' : r <= .5 ? '#f0a020' : '#6fd04a'; ctx.fillRect(bx + shake, by, Math.round(16 * r), 2);
       }
-      if (swing && S.dir !== 1) drawSwing(ctx, S, swing.tool, swing.p);
+      if (swing && S.dir !== 1 && !pickArt) drawSwing(ctx, S, swing.tool, swing.p);
       const ea = eating(g); if (ea) {   // 19/11 : petite animation quand on mange (l'objet monte à la bouche, miettes)
         const p = (g.now() - ea.t0) / EAT_MS, im = artImage(ea.id), hx = Math.round(S.x * T - 6), hy = Math.round(S.y * T - 19);
         const lift = Math.min(1, p * 3), bite = p > .33 ? Math.round(Math.sin(p * 40)) : 0, sz = Math.round(12 * (p > .8 ? 1 - (p - .8) * 5 : 1));

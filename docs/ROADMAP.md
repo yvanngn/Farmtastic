@@ -156,6 +156,10 @@ Pour que **les scènes du jeu** atteignent le niveau de détail de l'image, scè
 - [x] **Un coffre pour ranger** : acheter le **plan du coffre** chez Harry (💡 60 $), le fabriquer (80 bois + 20 pierres). Le coffre quitte la quête principale « Premiers pas » ; Harry ne l'apprend plus gratuitement.
 - ⏳ Plus tard : la cabane agrandie vue de dehors (aujourd'hui seul l'intérieur change).
 
+## Essai du 19/11 : coup de pioche de l'héroïne ✅ v0.1.73
+- [x] Planche `docs/sprites/heroine-pioche.jpg` → 3 temps par direction (levée haute, levée, frappe), têtes alignées ; remplace le bras dessiné quand l'héroïne pioche. Dos et profil : la pose à queue de cheval est gardée (cohérente avec la marche).
+- [ ] À faire si validé : héros (homme), hache, faucille, pelle, arrosage.
+
 ## Lot 22 — Héros et héroïne d'après les planches fournies (19/11) ✅ v0.1.72
 - [x] Planches `docs/sprites/heros.jpg` et `heroine.jpg` (JPEG × 5,02) → `tools/hero-sheets.py` : dessin d'origine retrouvé sans perte, fond lilas retiré.
 - [x] Planches « simplifiées » : les poses fournies mélangeaient avec / sans sac et deux coiffures (héroïne) ; deux versions cohérentes (avec sac, sans sac) : profil = tête de l'arrêt reportée sur le pas (la coiffure ne change plus en marchant), dos sans sac à l'arrêt et dos avec sac en marche reconstitués (haut d'une pose + jambes de l'autre).

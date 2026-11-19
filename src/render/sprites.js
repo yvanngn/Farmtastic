@@ -198,6 +198,15 @@ function heroSheetImage(name, hairC) {
     for (let k = 0; k < 3; k++) d[i + k] = Math.max(0, Math.min(255, Math.round(l <= 1 ? t[k] * l : t[k] + (255 - t[k]) * (l - 1) * .6))); }
   g.putImageData(im, 0, 0); HERO_RECOLOR.set(key, cv); return cv;
 }
+// 19/11 : coup de pioche dessiné d'après la planche fournie (héroïne pour l'instant) : levée haute, levée, frappe.
+export const heroPickSheet = L => (L.hero || L.doll) && SHEETS['hero_' + (L.body === 'f' ? 'f' : 'h') + '_pick'] ? 'hero_' + (L.body === 'f' ? 'f' : 'h') + '_pick' : null;
+export function drawHeroPick(c, ox, oy, L, d, p) {
+  const name = heroPickSheet(L), S = SHEETS[name], img = name && heroSheetImage(name, L.hairC && HERO_HAIR.includes(L.hairC) ? L.hairC : ''); if (!img) return false;
+  const col = p < .3 ? 0 : p < .55 ? 1 : 2, row = d === 0 ? 0 : d === 1 ? 1 : 2, x = Math.round(ox + 6 - S.fw / 2), y = oy + 20 - S.fh;
+  if (d === 3) { c.save(); c.translate(x + S.fw, y); c.scale(-1, 1); c.drawImage(img, col * S.sw, row * S.sh, S.sw, S.sh, 0, 0, S.fw, S.fh); c.restore(); }
+  else c.drawImage(img, col * S.sw, row * S.sh, S.sw, S.sh, x, y, S.fw, S.fh);
+  return true;
+}
 function drawHeroPlanche(c, ox, oy, L, d, f, t = 0) {
   const name = heroSheetName(L), S = SHEETS[name]; if (!S) return false;
   const img = heroSheetImage(name, L.hairC && HERO_HAIR.includes(L.hairC) ? L.hairC : ''); if (!img) return false;

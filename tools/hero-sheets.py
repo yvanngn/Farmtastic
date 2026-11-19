@@ -103,3 +103,23 @@ js = re.sub(r"\n  hero_[hf]_[pn]: \{[^\n]*", '', js)
 head, tail = js.rsplit('};', 1); head = head.rstrip().rstrip(',')
 js = head + ',\n' + ',\n'.join(lines) + '\n};' + tail
 open(p, 'w').write(js)
+
+# ---- 19/11 : coups de pioche de l'héroïne (docs/sprites/heroine-pioche.jpg) : 3 temps par direction (levée haute, levée,
+# frappe), têtes alignées au centre de l'image (la pioche dépasse de chaque côté).
+PICK = {'f': 'docs/sprites/heroine-pioche.jpg'}
+plines = []
+for sex, path in PICK.items():
+    F, L, R, B = grid(os.path.join(ROOT, path))
+    rows = [[F[3], F[2], F[1]], [B[2], B[2], B[0]], [L[2], L[2], L[0]]]   # dos et profil : la coiffure à queue de cheval reste la même
+    Hh = max(c.shape[0] for r in rows for c in r)
+    half = max(max(head_x(c), c.shape[1] - head_x(c)) for r in rows for c in r); W = int(np.ceil(half * 2)) + 2
+    sh = np.zeros((Hh * 3, W * 3, 4), 'uint8')
+    for ri, r in enumerate(rows):
+        for ci, c in enumerate(r):
+            h, w = c.shape[:2]; x = int(round(W / 2 - head_x(c))); sh[ri * Hh + Hh - h:ri * Hh + Hh, ci * W + x:ci * W + x + w] = c
+    Image.fromarray(sh).save(os.path.join(ROOT, f'assets/sprites/hero_{sex}_pick.png'))
+    plines.append(f"  hero_{sex}_pick: {{ fw: {round(W * H / Hh)}, fh: {H}, sw: {W}, sh: {Hh}, n: 3, url: '{to_url(sh)}' }}")
+    print('pioche', sex, W, Hh)
+js = open(p).read(); js = re.sub(r"\n  hero_[hf]_pick: \{[^\n]*", '', js)
+head, tail = js.rsplit('};', 1); js = head.rstrip().rstrip(',') + ',\n' + ',\n'.join(plines) + '\n};' + tail
+open(p, 'w').write(js)
