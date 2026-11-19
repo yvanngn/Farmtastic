@@ -11,7 +11,7 @@ Le héros (**Cloud Jimny** par défaut) arrive en train à Farmwest pour reprend
 - **Se déplacer** : joystick (écran tactile) ou flèches / ZQSD / WASD. Dès qu'on se sert du joystick, toucher l'écran ne fait plus marcher le héros : on touche seulement ce qui est à portée.
 - **Agir** : bouton ✋ ou espace (couper, casser, ramasser, parler, réparer…). Un court délai caché sépare deux actions quand on reste appuyé.
 - **Outils** : barre d'outils sous la scène (touches 1-8, Tab pour la roue des outils).
-- **Menus** : 🗺️ carte (ferme et région), ☰ menu (nom, niveau et XP en tête ; sac, poissons, métiers, forge, liens), 💾 sauvegarde, ⚙ réglages (zoom, son). À côté du bouton d'action : ⭐ quêtes et 🛠️ recettes. Clavier : E menu, I sac, M carte, Échap ferme.
+- **Menus** : 🗺️ carte (ferme et région), ☰ menu (nom, niveau et XP en tête ; sac, poissons, métiers, forge, liens), 💾 sauvegarde, ⚙ réglages (zoom, son, 🔋 économie d'énergie si le téléphone chauffe). À côté du bouton d'action : ⭐ quêtes et 🛠️ recettes. Clavier : E menu, I sac, M carte, Échap ferme.
 - **Cadre du haut** (argent, date, météo, énergie) : il s'efface quand on reste immobile et revient dès qu'on bouge.
 
 ## 3. Une journée

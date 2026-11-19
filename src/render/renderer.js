@@ -8,7 +8,7 @@ const ROOF_TILES = 'MUJRAHBEXCGNKOVZLPY';
 // 18/11 : tuile de bâtiment (le toit déborde au-dessus) : le héros derrière passe sous le toit, en transparence
 function isBuildingTile(S, scene, x, y) { if (scene === 'farm') return _isHouse(x, y) || _isGrange(x, y) || !!_bAt(S.built, x, y); const r = LAYOUTS[scene]; return !!(r && r[y] && ROOF_TILES.includes(r[y][x] || '')); }
 import { disc } from './pixel.js';
-import { getZoom, zoomScale } from '../ui/settingsPanel.js';
+import { getZoom, zoomScale, getEco } from '../ui/settingsPanel.js';
 import { QUARTIER, PARC_B } from '../world/scenes.js';
 // Caverne : la lumière du jour entre par la sortie ; quelques cristaux luisent.
 const CAVE_LIGHTS = [{ x: 8, y: 72, r: 60 }, { x: 25 * 16, y: 12 * 16, r: 18 }, { x: 44 * 16, y: 20 * 16, r: 18 }];
@@ -226,8 +226,11 @@ let swing = null;
   });
 
   function resize() {
-    dpr = Math.min(window.devicePixelRatio || 1, 3);
-    const w = cv.clientWidth || innerWidth, h = cv.clientHeight || innerHeight;   // lot 8 : la scène s'arrête au-dessus de la bande d'outils
+    // 19/11 (performances) : résolution plafonnée (2×, 1,5× en économie d'énergie) et au plus ~2,3 millions de pixels :
+    // un écran de téléphone à 3× faisait dessiner 3 fois plus de pixels pour un rendu pixel art identique.
+    const w = cv.clientWidth || innerWidth, h = cv.clientHeight || innerHeight;
+    dpr = Math.min(window.devicePixelRatio || 1, getEco() ? 1.5 : 2);
+    if (w * h * dpr * dpr > 2.3e6) dpr = Math.sqrt(2.3e6 / (w * h));   // lot 8 : la scène s'arrête au-dessus de la bande d'outils
     cv.width = Math.round(w * dpr); cv.height = Math.round(h * dpr);
     // ~12 tuiles sur le plus petit côté (réglable : Proche 9 / Normal 12 / Loin 15)
     scale = zoomScale(Math.min(cv.width, cv.height), getZoom(), T);   // 1 possible : « Très loin » sur petit écran

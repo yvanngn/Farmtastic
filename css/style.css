@@ -24,7 +24,7 @@
 * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent }
 html, body { height: 100%; overflow: hidden; background: var(--fond); color: var(--texte); font-family: var(--f-texte); user-select: none; -webkit-user-select: none }
 canvas { image-rendering: pixelated; display: block }
-#game { position: fixed; inset: 0; touch-action: none }
+#game { position: fixed; inset: 0; touch-action: none; image-rendering: pixelated }   /* 19/11 : résolution plafonnée, agrandie sans flou */
 
 .box {
   background: var(--verre); border: 1px solid var(--bord); border-radius: 14px;

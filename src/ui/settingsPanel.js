@@ -23,6 +23,10 @@ export function zoomScale(minSide, zoom, T = 16) {
 export const ZOOM_DEFAULT = 15;   // 17/11 : « Loin » par défaut (demande de l'utilisateur)
 const ZOOM_KEY = 'ferme_zoom_v2';   // 17/11 : nouvelle clé → tout le monde repart sur « Loin »
 export function getZoom() { try { const v = +localStorage.getItem(ZOOM_KEY); return ZOOMS[v] ? v : ZOOM_DEFAULT; } catch { return ZOOM_DEFAULT; } }
+// 19/11 : économie d'énergie (téléphone qui chauffe) : 30 images/s en permanence et résolution réduite.
+const ECO_KEY = 'ferme_eco';
+export function getEco() { try { return localStorage.getItem(ECO_KEY) === '1'; } catch { return false; } }
+function setEco(v) { try { localStorage.setItem(ECO_KEY, v ? '1' : '0'); } catch {} window.dispatchEvent(new Event('ferme-zoom')); }
 function setZoom(v) { try { localStorage.setItem(ZOOM_KEY, v); } catch {} window.dispatchEvent(new Event('ferme-zoom')); }
 import { versionLabel } from '../version.js';
 export function createSettingsPanel(audio, g) {
@@ -41,6 +45,7 @@ export function createSettingsPanel(audio, g) {
       <div class="ecran"><b>📱 Écran</b>
         <div class="row">${Object.entries(ORIENTS).map(([k, v]) => `<button data-orient="${k}" class="${getOrient() === k ? 'on' : ''}">${v}</button>`).join('')}</div>
         <div class="row"><button data-fs="1" class="primaire">⛶ Plein écran</button>${document.fullscreenElement ? '<button data-fs="0">Quitter</button>' : ''}</div>
+        <div class="row"><span>🔋 Économie d'énergie</span><button data-eco="1" class="${getEco() ? 'on' : ''}">Oui</button><button data-eco="0" class="${getEco() ? '' : 'on'}">Non</button></div>
         <div class="row"><span>🔍 Zoom</span>${Object.entries(ZOOMS).map(([k, v]) => `<button data-zoom="${k}" class="${getZoom() === +k ? 'on' : ''}">${v}</button>`).join('')}</div>
         <small>Le verrouillage de l'orientation marche en plein écran sur Android. Sur iPhone : Partager → « Sur l'écran d'accueil ».</small></div>
       <div class="ecran"><b>🛠️ Mode test</b>
@@ -59,6 +64,7 @@ export function createSettingsPanel(audio, g) {
     if (d.orient) { setOrient(d.orient); audio.play('ui'); if (document.fullscreenElement) toast(await goFullscreen(d.orient)); render(); return; }
     if (d.totitle) { $('#ovSet').classList.remove('on'); g.bus.emit('toTitle'); return; }
     if (d.zoom) { setZoom(+d.zoom); audio.play('ui'); render(); return; }
+    if (d.eco != null) { setEco(d.eco === '1'); audio.play('ui'); render(); return; }
     if (d.fs === '1') { toast(await goFullscreen()); render(); return; }
     if (d.fs === '0') { exitFullscreen(); setTimeout(render, 200); return; }
     if (d.admin) {

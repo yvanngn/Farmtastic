@@ -46,7 +46,7 @@ export function createAudio(g, storage) {
     ac = new AC();
     master = ac.createGain(); master.connect(ac.destination);
     musicBus = ac.createGain(); sfxBus = ac.createGain();
-    reverb = ac.createConvolver(); reverb.buffer = impulse(2.6, 3);
+    reverb = ac.createConvolver(); reverb.buffer = impulse(1.8, 3);   // 19/11 : réverbération plus courte (moins de calcul sur téléphone)
     const wet = ac.createGain(); wet.gain.value = 0.35; reverb.connect(wet); wet.connect(master);
     musicBus.connect(master); musicBus.connect(reverb); sfxBus.connect(master);
     noiseBuf = noise(2);

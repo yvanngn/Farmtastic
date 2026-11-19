@@ -14,7 +14,7 @@ import { createMenu } from './ui/menu.js';
 import { createCustomizer } from './ui/customize.js';
 import { createInput } from './ui/input.js';
 import { createAudio } from './audio/audio.js';
-import { createSettingsPanel, adminSaved } from './ui/settingsPanel.js';
+import { createSettingsPanel, adminSaved, getEco } from './ui/settingsPanel.js';
 import { $, toast } from './ui/dom.js';
 import { createControls } from './ui/controls.js';
 import { createWheel } from './ui/wheel.js';
@@ -273,8 +273,17 @@ window.Engine = {
 };
 
 // Boucle
-let last = performance.now(), hudT = 0, lastFrame = 0;
+let last = performance.now(), hudT = 0, lastFrame = 0, lastInput = 0;
+addEventListener('pointerdown', () => { lastInput = performance.now(); }, true); addEventListener('keydown', () => { lastInput = performance.now(); }, true);
+// 19/11 (performances) : 60 images/s quand on bouge ou qu'il se passe quelque chose, 30 au repos (ou toujours en économie d'énergie).
+function fastNeeded(now) {
+  if (getEco()) return false;
+  return !started || !!g.player.walkFrame || !!g.player.target || !!g.fishing || !!g.parcGame || !!g.ride || introActive(g.S) || now - lastInput < 1500 || !!document.querySelector('.overlay.on #fishFight:not([hidden])');
+}
+let lastDraw = 0;
 function loop(now) {
+  if (!fastNeeded(now) && now - lastDraw < 31) { requestAnimationFrame(loop); return; }
+  lastDraw = now;
   const dt = Math.min(0.05, (now - last) / 1000); last = now;
   if (started) {
     const arrivee = (g.S.intro && ['wait', 'sleep', 'talk'].includes(g.S.intro.myst)) || introActive(g.S);   // Farmwest : pendant le nouveau début aussi

@@ -2,6 +2,7 @@
 
 Semver horodaté (heure de Paris). Patch automatique à chaque publication ; mineure et majeure sur décision de l'utilisateur.
 
+- **0.1.67** — 2026-11-19 13:38 — performances : résolution plafonnée, 30 i/s au repos, économie d'énergie
 - **0.1.66** — 2026-11-19 11:33 — cadre du haut plus petit et plus vite effacé ; marche de face et de dos refaite
 - **0.1.65** — 2026-11-19 11:14 — accueil : Entrée valide de nouveau ; croix et Commencer toujours visibles sur petit écran
 - **0.1.64** — 2026-11-19 09:04 — souches, carrière qui se remplit, fleurs plus grosses, cuisson des baies, animation pour manger

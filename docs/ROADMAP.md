@@ -156,6 +156,12 @@ Pour que **les scènes du jeu** atteignent le niveau de détail de l'image, scè
 - [x] **Un coffre pour ranger** : acheter le **plan du coffre** chez Harry (💡 60 $), le fabriquer (80 bois + 20 pierres). Le coffre quitte la quête principale « Premiers pas » ; Harry ne l'apprend plus gratuitement.
 - ⏳ Plus tard : la cabane agrandie vue de dehors (aujourd'hui seul l'intérieur change).
 
+## Performances (19/11) ✅ v0.1.67
+- [x] Résolution du jeu plafonnée (2× l'écran, au plus ~2,3 millions de pixels) : sur un téléphone à 3×, deux fois moins de pixels à dessiner, sans flou (agrandissement « pixelated »).
+- [x] 30 images/s au repos, 60 dès qu'on bouge, qu'on touche l'écran, qu'on pêche ou pendant l'intro.
+- [x] Réglage « 🔋 Économie d'énergie » : 30 images/s en permanence et résolution 1,5×.
+- [x] Réverbération de la musique plus courte (moins de calcul audio).
+
 ## Correctifs du 19/11 (2) ✅ v0.1.66
 - [x] Cadre du haut plus petit, il s'efface après 1,2 s sans bouger (au lieu de 2,5 s).
 - [x] Marche de face / de dos refaite (4 temps, d'après Stardew Valley / Eastward) : contact (pied avant posé plus bas, talon arrière levé), passage (jambe pliée qui se lève, corps qui monte), bras qui avancent et reculent (la main monte et descend), à l'opposé des jambes.
