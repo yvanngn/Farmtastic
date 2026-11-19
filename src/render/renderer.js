@@ -3,7 +3,7 @@ import { coachBody, coachWheel, horse, locoSprite, wagonSprite, fountainSprite, 
 import { MAILBOX, METEOR_HITS } from '../systems/golgolas.js';
 import { hasUnread } from '../systems/mail.js';
 import { GOLGO_CENTER, METEOR } from '../world/scenes.js';
-import { isHouse as _isHouse, isGrange as _isGrange, buildingAt as _bAt } from '../world/map.js';
+import { isHouse as _isHouse, isGrange as _isGrange, buildingAt as _bAt, setFarmLot } from '../world/map.js';
 const ROOF_TILES = 'MUJRAHBEXCGNKOVZLPY';
 // 18/11 : tuile de bâtiment (le toit déborde au-dessus) : le héros derrière passe sous le toit, en transparence
 function isBuildingTile(S, scene, x, y) { if (scene === 'farm') return _isHouse(x, y) || _isGrange(x, y) || !!_bAt(S.built, x, y); const r = LAYOUTS[scene]; return !!(r && r[y] && ROOF_TILES.includes(r[y][x] || '')); }
@@ -204,7 +204,7 @@ export function createRenderer(cv, g) {
   let scale = 3, dpr = 1, cache = null, cacheSeason = -1, cacheScene = '', cacheForest = '';
   const interiors = {};
   let farm = null, farmSeason = -1;
-  function farmGround() { const b = g.S.built || {}, fx = { house: isRepaired(g.S, 'house'), grange: isRepaired(g.S, 'grange') }, key = g.S.season + JSON.stringify(b) + fx.house + fx.grange; if (farmSeason !== key) { farm = buildGround(g.S.season, b, fx); farmSeason = key; } return farm; }
+  function farmGround() { setFarmLot(g.S.farmLot); const b = g.S.built || {}, fx = { house: isRepaired(g.S, 'house'), grange: isRepaired(g.S, 'grange') }, key = g.S.season + JSON.stringify(b) + fx.house + fx.grange + ':' + (g.S.farmLot || 0); if (farmSeason !== key) { farm = buildGround(g.S.season, b, fx); farmSeason = key; } return farm; }
   let vignette = null, light = null, lastStep = 0;
   const cam = { x: 0, y: 0 }, screenFx = [], worldFx = [];
   const LQ = 4;
@@ -320,7 +320,7 @@ let swing = null;
     if (cacheSeason !== S.season || cacheScene !== scene || (scene === 'foret' && cacheForest !== forestKey)) {   // lot 11 : nouveau labyrinthe
       cacheForest = forestKey;
       SIGN_SINK.list = [];
-      cache = outside ? farmGround() : scene === 'wild' ? (interiors['wild' + S.season] ||= buildWild(S.season)) : scene === 'foret' ? (interiors['foret' + forestKey + ':' + S.season] ||= buildWild(S.season, 'foret')) : scene === 'town' ? (interiors['town' + S.season] ||= buildTown(S.season)) : scene === 'quartier' ? (interiors['quartier' + S.season] ||= buildQuartier(S.season)) : (scene === 'montagne' || scene === 'plage') ? (interiors[scene] ||= buildBiome(scene, S.season)) : scene === 'parc' ? (interiors['parc' + S.season] ||= buildParc(S.season)) : (scene === 'carriere' || scene === 'carriere2') ? (interiors[scene + S.season] ||= buildQuarry(scene, S.season)) : (scene === 'rondpoint' || scene === 'ranch' || scene === 'port' || scene === 'gare' || scene === 'golgolas') ? (interiors[scene + S.season] ||= buildWest(scene, S.season)) : (scene === 'resto' ? (interiors['resto' + !!(S.resto && S.resto.oven)] ||= buildInterior(scene, S)) : (scene === 'house' || scene === 'maison') ? (interiors[scene + !!S.workbench + (S.bed !== false)] ||= buildInterior(scene, S)) : (interiors[scene] ||= buildInterior(scene, S)));
+      cache = outside ? farmGround() : scene === 'wild' ? (interiors['wild' + S.season] ||= buildWild(S.season)) : scene === 'foret' ? (interiors['foret' + forestKey + ':' + S.season] ||= buildWild(S.season, 'foret')) : scene === 'town' ? (interiors['town' + S.season] ||= buildTown(S.season)) : scene === 'quartier' ? (interiors['quartier' + S.season] ||= buildQuartier(S.season)) : (scene === 'montagne' || scene === 'plage') ? (interiors[scene] ||= buildBiome(scene, S.season)) : scene === 'parc' ? (interiors['parc' + S.season] ||= buildParc(S.season)) : (scene === 'carriere' || scene === 'carriere2') ? (interiors[scene + S.season] ||= buildQuarry(scene, S.season)) : (scene === 'rondpoint' || scene === 'ranch' || scene === 'port' || scene === 'gare' || scene === 'golgolas' || /^farm:\d$/.test(scene)) ? (interiors[scene + S.season] ||= buildWest(scene, S.season)) : (scene === 'resto' ? (interiors['resto' + !!(S.resto && S.resto.oven)] ||= buildInterior(scene, S)) : (scene === 'house' || scene === 'maison') ? (interiors[scene + !!S.workbench + (S.bed !== false)] ||= buildInterior(scene, S)) : (interiors[scene] ||= buildInterior(scene, S)));
       if (!cache.__signs) cache.__signs = SIGN_SINK.list; SIGN_SINK.list = null;   // enseignes de ce décor
       if (cacheSeason !== S.season) initWeather();
       cacheSeason = S.season; cacheScene = scene;
@@ -610,21 +610,9 @@ let swing = null;
     if (!sky) { ctx.fillStyle = 'rgba(255,180,100,.07)'; ctx.fillRect(0, 0, cv.width, cv.height); }
     if (sky && dark < .25 && (S.weather === 'sun' || !S.weather)) {   // ambiance : lumière chaude venue d'en haut à gauche, ombres de nuages qui passent
       const lg = ctx.createLinearGradient(0, 0, cv.width * .8, cv.height); lg.addColorStop(0, 'rgba(255,236,180,.13)'); lg.addColorStop(.55, 'rgba(255,236,180,0)'); ctx.fillStyle = lg; ctx.fillRect(0, 0, cv.width, cv.height);
-      ctx.fillStyle = 'rgba(20,30,50,.07)';
-      for (let k = 0; k < 3; k++) { const cw = cv.width * (.5 + k * .15), cx = ((now / (90 + k * 30) + k * 900) % (cv.width + cw * 2)) - cw, cy = cv.height * (.2 + k * .3); ctx.beginPath(); ctx.ellipse(cx, cy, cw * .5, cw * .22, -.2, 0, 7); ctx.ellipse(cx + cw * .3, cy + cw * .05, cw * .35, cw * .18, -.2, 0, 7); ctx.fill(); }
+      // 19/11 : plus d'ombres de nuages (demande de l'utilisateur)
     }
     if (sky) { const [tr, tg, tb, ta] = timeTint(S.minute, S.weather); if (ta > .005) { ctx.fillStyle = `rgba(${tr},${tg},${tb},${ta})`; ctx.fillRect(0, 0, cv.width, cv.height); } }   // 7g : matin doré, soir orangé
-    if (sky && S.weather !== 'rain' && S.weather !== 'storm' && dark < .35) {   // 7g : ombres de nuages qui glissent sur le sol
-      const ca = S.weather === 'cloud' ? .13 : .07, drift = now / 1000 * 6;
-      for (let k = 0; k < 3; k++) {
-        const vw = cv.width / scale + 300, wx = camX - 150 + ((k * 211 + drift) % vw), wy = camY + ((k * 137) % 160) + 20;
-        const [sx, sy] = toScreen(wx, wy), rx = (70 + k * 22) * scale, ry = (34 + k * 9) * scale;
-        if (sx + rx < 0 || sx - rx > cv.width) continue;
-        const gr = ctx.createRadialGradient(sx, sy, 0, sx, sy, rx);
-        gr.addColorStop(0, `rgba(20,25,40,${ca})`); gr.addColorStop(.6, `rgba(20,25,40,${ca * .6})`); gr.addColorStop(1, 'rgba(20,25,40,0)');
-        ctx.save(); ctx.translate(sx, sy); ctx.scale(1, ry / rx); ctx.translate(-sx, -sy); ctx.fillStyle = gr; ctx.fillRect(sx - rx, sy - rx, rx * 2, rx * 2); ctx.restore();
-      }
-    }
     if (sky && (S.weather === 'rain' || S.weather === 'storm')) { ctx.fillStyle = 'rgba(70,95,160,.14)'; ctx.fillRect(0, 0, cv.width, cv.height); }
     if (sky && S.weather === 'snow') { ctx.fillStyle = 'rgba(200,220,255,.08)'; ctx.fillRect(0, 0, cv.width, cv.height); }
     if (dark > .02) {

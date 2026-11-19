@@ -30,10 +30,18 @@ export const isPath = (x, y) => (y === 5 && x >= 2 && x <= 47) || (y === 20 && x
   || (y >= 33 && x >= 15 && x <= 17) || (x >= 45 && y >= 4 && y <= 6);   // sorties élargies (vers le quartier, vers la ville)
 export const isForest = (x) => x >= 34;
 // Haies sur les bords de la ferme qui ne mènent nulle part (bas et droite), pour voir où sont les sorties.
-export const isHedge = (x, y) => (y === 35 && (x < 15 || x > 17)) || (x === 47 && ((y >= 8 && y < 35) || y <= 3 || y === 7));
+// 19/11 : les 4 fermes (2 × 2). La ferme du joueur s'ouvre vers ses voisines : à l'est (colonne de gauche) ou à l'ouest
+// (colonne de droite), au sud (rangée du haut) ou au nord (rangée du bas), par un portail en x 30-31.
+let FARM_LOT = 0;
+export const setFarmLot = l => { FARM_LOT = (l | 0) % 4; };
+export const farmLotNow = () => FARM_LOT;
+export const lotCR = l => ({ c: l % 2, r: l >> 1 });
+export const isFarmGap = (x, y) => { const { c, r } = lotCR(FARM_LOT); return (c === 1 && x === 0 && y >= 4 && y <= 6) || (r === 0 && y === 35 && (x === 30 || x === 31)) || (r === 1 && y === 0 && (x === 30 || x === 31)); };
+export const isHedge0 = (x, y) => (y === 35 && (x < 15 || x > 17)) || (x === 47 && ((y >= 8 && y < 35) || y <= 3 || y === 7));
 // Bord nord de la ferme : une barrière en bois ; bord ouest (au-dessus de la gare) : une falaise rocheuse.
-export const isFarmFence = (x, y) => y === 0 && x > 0 && x < 47 && x !== 16;   // 19/11 : passage vers la carrière
-export const isCliff = (x, y) => x === 0;   // lot 8 : plus de gare dans la ferme, la falaise court sur tout le bord ouest
+export const isHedge = (x, y) => isHedge0(x, y) && !isFarmGap(x, y);
+export const isFarmFence = (x, y) => y === 0 && x > 0 && x < 47 && x !== 16 && !isFarmGap(x, y);   // 19/11 : passage vers la carrière
+export const isCliff = (x, y) => x === 0 && !isFarmGap(x, y);   // lot 8 : plus de gare dans la ferme, la falaise court sur tout le bord ouest
 // Lot 8 : plus de gare dans la ferme (la gare est une zone à part, à l'ouest du centre-ville).
 export const isStation = () => false;
 export const isPlatform = () => false;
@@ -67,7 +75,7 @@ export function isSolid(S, x, y) {
   if (S.scene && S.scene !== 'farm') { const t = tileAt(S.scene, x, y); if (t === '%') return !quarryMouthOpen(S, x, y);   // 19/11 : bouche de tunnel ouverte ce jour-là
     if (S.scene === 'grange' && (t === 'p' || t === 'r') && S.grange && S.grange.broken.includes(x + ',' + y)) return false; return SOLID_TILES.includes(t); }
   if (x < 0 || y < 0 || x >= CFG.W || y >= CFG.H) return true;
-  return isPond(x, y) || isHouse(x, y) || isGrange(x, y) || x === 0 || isMystHouse(x, y) || isFranckHouse(x, y) || isLunaHouse(x, y) || !!buildingAt(S.built, x, y) || isGate(x, y) || isFence(x, y, S.built) || isBin(x, y) || !!(S.objs && S.objs[key(x, y)]);
+  return isPond(x, y) || isHouse(x, y) || isGrange(x, y) || isCliff(x, y) || isMystHouse(x, y) || isFranckHouse(x, y) || isLunaHouse(x, y) || !!buildingAt(S.built, x, y) || isGate(x, y) || isFence(x, y, S.built) || isBin(x, y) || !!(S.objs && S.objs[key(x, y)]);
 }
 
 // Générateur pseudo-aléatoire déterministe (même carte pour une même graine).

@@ -156,6 +156,13 @@ Pour que **les scènes du jeu** atteignent le niveau de détail de l'image, scè
 - [x] **Un coffre pour ranger** : acheter le **plan du coffre** chez Harry (💡 60 $), le fabriquer (80 bois + 20 pierres). Le coffre quitte la quête principale « Premiers pas » ; Harry ne l'apprend plus gratuitement.
 - ⏳ Plus tard : la cabane agrandie vue de dehors (aujourd'hui seul l'intérieur change).
 
+## Lot 21 — Fermes voisines, carte, quartier (demande du 19/11) ✅ v0.1.68
+- [x] Plus d'ombres de nuages.
+- [x] Rond-point → zone résidentielle : on arrive par l'ouest (à gauche), plus par le haut.
+- [x] Carte de la région : les noms des lieux reviennent ; la carrière (au nord des fermes) et la clairière de Golgolas (au sud de la gare) y sont dessinées et nommées.
+- [x] Les 3 autres fermes se visitent (solo et multi). Les 4 fermes forment un carré 2 × 2 : on passe chez la voisine de côté (à l'est pour les fermes de gauche, à l'ouest pour celles de droite, par un passage dans la falaise) et chez celle du dessus / dessous (portail en x 30-31). Les fermes de droite gardent la sortie vers la forêt à l'est. Une ferme voisine : maison, grange, champ clôturé ; en entrant, une bulle dit à qui elle est.
+- [ ] Plus tard : voir l'état réel de la ferme d'un autre joueur (cultures, bâtiments) quand on la visite.
+
 ## Performances (19/11) ✅ v0.1.67
 - [x] Résolution du jeu plafonnée (2× l'écran, au plus ~2,3 millions de pixels) : sur un téléphone à 3×, deux fois moins de pixels à dessiner, sans flou (agrandissement « pixelated »).
 - [x] 30 images/s au repos, 60 dès qu'on bouge, qu'on touche l'écran, qu'on pêche ou pendant l'intro.

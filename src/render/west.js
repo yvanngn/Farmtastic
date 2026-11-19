@@ -84,7 +84,7 @@ export function buildWest(name, season) {
     R(px - 2, py + h, w + 4, 3, 'rgba(30,15,5,.3)');
     { const F = houseSprite({ w, h: h - 16, wall: '#c49060', trim: '#7a4a2a', roof: '#a8432f', roofH: 22, windows: [[10, 12], [w - 22, 12]], lit: true, porch: true, posts: [-2, w / 2 - 14, w / 2 + 12, w - 1], door: { x: w / 2 - 7, w: 14, h: 24 }, gableWin: true });
       if (F) g.drawImage(F.im, px + F.ox, py + 16 + F.oy); }   // 18/11 (soir) : maison du ranch « pixel moderne »
-    signBoard(R, px + w / 2, py + 17, 'MAIRIE');
+    if (!name.startsWith('farm:')) signBoard(R, px + w / 2, py + 17, 'MAIRIE');   // 19/11 : pas d'enseigne sur les fermes voisines
   }
   for (const [x0, y0, x1, y1] of block('B')) {   // grange rouge à croix blanches
     const px = x0 * T, py = y0 * T, w = (x1 - x0 + 1) * T, h = (y1 - y0 + 1) * T;

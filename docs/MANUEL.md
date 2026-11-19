@@ -86,6 +86,7 @@ Le héros (**Cloud Jimny** par défaut) arrive en train à Farmwest pour reprend
 - **Demandes de fabrication** : une par habitant et par semaine (« 🛠️ Une demande ? »), et une au panneau.
 
 ## 13. La région
+Les **4 fermes** forment un carré (Nord-Ouest, Nord-Est, Sud-Ouest, Sud-Est) : on peut aller chez ses voisines, de côté et au-dessus / au-dessous, selon où est sa ferme (depuis la ferme de droite, on va à gauche ; la forêt est à l'est des fermes de droite). La carte de la région affiche le nom des lieux.
 Gare (ouest) · centre-ville (entouré par la rivière, ponts vers la gare, le rond-point et la plage) · les 4 fermes (nord) · rond-point et fontaine (centre) · zone résidentielle (est) · ranch du Maire · fête foraine (sud) · **cabane du pêcheur** (à la place de la station balnéaire, au sud du centre-ville) · zone portuaire (sud-est ; reliée au ranch, à la plage par le quai et à la montagne par la route de l'est) · forêt (nord-est, labyrinthe qui change à chaque saison) · montagne (est ; par la zone résidentielle ou par la route de l'est depuis le port) · caverne sombre.
 - ⏳ **Diligence** : débloquée au niveau 10, un arrêt à chaque carrefour.
 

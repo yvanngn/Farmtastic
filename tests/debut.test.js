@@ -201,7 +201,7 @@ test('Farmwest : ferme → rond-point → zone résidentielle, où habitent Luna
 });
 
 test('Farmwest 2d : la route de l’est mène à la forêt ; le centre-ville est à l’ouest du rond-point', () => {
-  const { g, S } = start();
+  const { g, S } = start({ farmLot: 1 });   // 19/11 : la forêt est à l'est des fermes de droite (à gauche, c'est la voisine)
   for (let x = 2; x <= 46; x++) assert.equal(ground(x, 5), 'path');
   assert.equal(act(g, 47, 5), 'door'); assert.equal(S.scene, 'foret');
   assert.ok(SCENES.town.doors.some(d => d.x === 33 && d.to === 'rondpoint'), 'à l’est du centre-ville : le pont vers le rond-point');

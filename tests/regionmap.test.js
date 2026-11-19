@@ -16,7 +16,7 @@ test('lot 10 : carte de la région en grand, comme l’image (≈ 1400 × 770 px
 });
 
 test('lot 10 : position du joueur sur la carte pour chaque zone extérieure, et sur sa propre ferme', () => {
-  for (const sc in SCENES) if (SCENES[sc].outdoor && sc !== 'farm') assert.ok(REGION_POS[sc], 'zone sans repère : ' + sc);
+  for (const sc in SCENES) if (SCENES[sc].outdoor && sc !== 'farm' && !/^farm:/.test(sc)) assert.ok(REGION_POS[sc], 'zone sans repère : ' + sc);
   for (const l of FARM_LOTS) { const p = regionPos({ scene: 'farm', farmLot: l.id }), R = FARM_RECT(l); assert.ok(p.x > R.x && p.x < R.x + R.w && p.y > R.y && p.y < R.y + R.h); }
   assert.deepEqual(regionPos({ scene: 'house', farmLot: 2 }), regionPos({ scene: 'farm', farmLot: 2 }), 'dans la maison : sur sa ferme');
 });

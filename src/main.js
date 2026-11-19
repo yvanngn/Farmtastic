@@ -3,6 +3,7 @@ import { letterTick } from './systems/golgolas.js';
 import { ensureMounds } from './systems/mounds.js';
 import { CFG } from './config.js';
 import { createGame } from './core/game.js';
+import { setFarmLot } from './world/map.js';
 import { fireAt } from './systems/cooking.js';
 import { COOK } from './data/recipes.js';
 import { journalHook } from './systems/journal.js';
@@ -283,7 +284,7 @@ function fastNeeded(now) {
 let lastDraw = 0;
 function loop(now) {
   if (!fastNeeded(now) && now - lastDraw < 31) { requestAnimationFrame(loop); return; }
-  lastDraw = now;
+  lastDraw = now; setFarmLot(g.S.farmLot);   // 19/11 : emplacement de ma ferme (passages vers les voisines)
   const dt = Math.min(0.05, (now - last) / 1000); last = now;
   if (started) {
     const arrivee = (g.S.intro && ['wait', 'sleep', 'talk'].includes(g.S.intro.myst)) || introActive(g.S);   // Farmwest : pendant le nouveau début aussi

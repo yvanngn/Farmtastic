@@ -37,7 +37,7 @@ test('lot 8 : passage de niveau annoncé ; forêt au niveau 3, caverne au niveau
   const ups = []; g.bus.on('levelUp', e => ups.push(e));
   gainPxp(g, LEVELS[3], 'test'); assert.deepEqual(ups.map(u => u.level), [1, 2, 3]);
   assert.ok(toasts().some(t => /Niveau 3/.test(t) && /forêt/.test(t)));
-  S.pxp = LEVELS[2]; assert.equal(zoneOpen(S, 'foret'), false); S.scene = 'farm';
+  S.pxp = LEVELS[2]; assert.equal(zoneOpen(S, 'foret'), false); S.scene = 'farm'; S.farmLot = 1;
   assert.equal(act(g, 47, 5), 'locked', 'forêt fermée avant le niveau 3'); assert.equal(S.scene, 'farm');
   S.pxp = LEVELS[3]; assert.equal(act(g, 47, 5), 'door'); assert.equal(S.scene, 'foret');
   assert.equal(zoneOpen({ pxp: LEVELS[4] }, 'wild'), false); assert.equal(zoneOpen({ pxp: LEVELS[5] }, 'wild'), true);

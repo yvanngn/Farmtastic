@@ -13,17 +13,17 @@ export const RW = 88, RH = 48, RT = 16;
 // Où se trouve chaque zone du jeu sur la carte (en cases), pour le repère du joueur.
 export const FARM_RECT = l => ({ x: 37 + l.c * 8, y: 2 + l.r * 8, w: 7, h: 6 });
 export const REGION_POS = {
-  gare: [9, 19], golgolas: [8, 30], carriere: [24, 2], carriere2: [24, 1], town: [24, 20], resto: [24, 20], bar: [24, 20], rondpoint: [44, 20], quartier: [50, 23], ranch: [51, 30],
+  gare: [9, 19], golgolas: [8, 24], carriere: [39, 0], carriere2: [38, 0], town: [24, 20], resto: [24, 20], bar: [24, 20], rondpoint: [44, 20], quartier: [50, 23], ranch: [51, 30],
   parc: [46, 39], plage: [25, 40], port: [74, 40], foret: [62, 9], wild: [79, 5], montagne: [78, 20]
 };
 export function regionPos(S) {
   const p = REGION_POS[S.scene];
   if (p) return { x: p[0] + .5, y: p[1] + .5 };
-  const l = FARM_LOTS[S.farmLot || 0] || FARM_LOTS[0], R = FARM_RECT(l);   // la ferme et ses intérieurs (maison, grange…)
+  const l = FARM_LOTS[/^farm:\d$/.test(S.scene || '') ? +S.scene.slice(5) : S.farmLot || 0] || FARM_LOTS[0], R = FARM_RECT(l);   // la ferme et ses intérieurs (maison, grange…)
   return { x: R.x + R.w / 2, y: R.y + R.h / 2 };
 }
 export const LABELS = [
-  ['Les 4 Fermes', 44, 1.1], ['Forêt', 62, 7], ['Caverne Sombre', 79, 1.2], ['Montagne', 79, 13.2], ['Gare', 9, 16],
+  ['Les 4 Fermes', 48, 1.1], ['Carrière', 39.5, 1.4], ['Clairière', 8.5, 27.6], ['Forêt', 62, 7], ['Caverne Sombre', 79, 1.2], ['Montagne', 79, 13.2], ['Gare', 9, 16],
   ['Centre-ville', 24, 25], ['Zone Résidentielle', 51, 24.6], ['Ranch du Maire', 51, 27.6], ['Fête Foraine', 47, 40.6],
   ['Cabane du Pêcheur', 25, 44.8], ['Zone Portuaire', 74, 46.2]
 ];
@@ -65,6 +65,8 @@ export function regionLayout() {
   // voie ferrée jusqu'à la gare
   set('r', 4, 0, 4, 17); set('r', 4, 18, 8, 18);
   // champs des 4 fermes
+  set('k', 36, 0, 42, 1);   // 19/11 : la carrière, au nord des fermes
+  set('g', 4, 22, 11, 27); set('.', 9, 21, 10, 23);   // la clairière de Golgolas, au sud de la gare
   for (const l of FARM_LOTS) { const R = FARM_RECT(l); set('s', R.x, R.y, R.x + R.w - 1, R.y + R.h - 1); set('u', R.x + 3, R.y + 1, R.x + R.w - 1, R.y + R.h - 1); }
   return m.map(r => r.join(''));
 }
@@ -136,6 +138,7 @@ export function buildRegionMap(season = 0) {
   // 5. bâtiments
   for (const l of FARM_LOTS) { const F = FARM_RECT(l), x = F.x * RT, y = F.y * RT; house(g, x + 4, y + 18, 26, 26, '#b8432f', '#5a2a22', { peak: true }); house(g, x + 6, y + 64, 18, 20, '#9a6a3c', '#4a3a2a'); R(x + 2, y + 2, F.w * RT - 4, 2, '#8a5a32'); R(x + 2, y + F.h * RT - 3, F.w * RT - 4, 2, '#8a5a32'); }
   house(g, 7 * RT, 17 * RT - 4, 50, 34, '#a8703a', '#5a3a22', { sign: true, chimney: true });   // la gare
+  house(g, 5 * RT, 23 * RT, 40, 30, '#b8a8c8', '#4a6a8a', { peak: true });   // 19/11 : le centre de Golgolas, dans sa clairière
   R(6 * RT, 21 * RT - 4, 64, 10, '#a8774a'); for (let k = 0; k < 64; k += 4) R(6 * RT + k, 21 * RT - 4, 1, 10, '#7a5232');   // quai
   for (const [x, y, wall, roof] of [[17, 14, '#9a6aaa', '#4a3a5a'], [20, 14, '#c84a3a', '#5a2a22'], [26, 14, '#c98a4a', '#7a3a22'], [28, 14, '#d8b878', '#8a4a2a'], [17, 22, '#9a6a3c', '#5a3a22'], [20, 22, '#c86a6a', '#5a2a3a'], [26, 22, '#e0d8c8', '#3e5a7a'], [29, 22, '#5a6a8a', '#24324a']])
     { R(x * RT - 4, (y + 3) * RT, 52, 8, '#a8774a'); house(g, x * RT, y * RT, 40, 44, wall, roof, { sign: true }); }   // centre-ville (trottoirs en planches)
