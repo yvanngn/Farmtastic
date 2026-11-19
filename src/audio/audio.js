@@ -108,15 +108,38 @@ export function createAudio(g, storage) {
     trackGain(name).gain.setTargetAtTime(1, t, 0.8);
     current = name; step = 0;
   }
+  // 19/11 : la musique varie sur 6 phrases avant de boucler (au lieu d'une) : modulation (la phrase passe à la quarte,
+  // puis un ton plus bas), mélodie ornée (notes de passage), mélodie décalée ou à l'octave, grille d'accords inversée,
+  // arpèges qui changent de motif (montant, descendant, brisé), et une légère variation de nuance.
+  const FORM = [
+    { key: 0, mel: 'plain', arp: [0, 'third', 7], rev: false },
+    { key: 0, mel: 'orn', arp: [7, 'third', 0], rev: false },
+    { key: 5, mel: 'plain', arp: [0, 7, 'third', 12], rev: true },
+    { key: 5, mel: 'shift', arp: [0, 'third', 7, 'third'], rev: false },
+    { key: -2, mel: 'oct', arp: [12, 7, 'third'], rev: true },
+    { key: 0, mel: 'sparse', arp: [0, 'third', 7], rev: false }
+  ];
+  function melAt(tr, k, mode) {
+    const n = tr.steps, M = tr.mel;
+    if (mode === 'shift') return M[(k - 2 + n) % n];
+    if (mode === 'sparse') return k % 4 === 0 ? M[k] ?? M[(k + 2) % n] : null;
+    if (mode === 'oct') return M[k] != null && k % 8 < 4 ? M[k] + 12 : M[k];
+    if (mode === 'orn' && M[k] == null) { const a = M[(k - 1 + n) % n], b = M[(k + 1) % n]; if (a != null && b != null && Math.abs(b - a) >= 3) return a + Math.sign(b - a) * 2; }
+    return M[k];
+  }
   function playStep(name, i, t) {
-    const tr = TRACKS[name], out = trackGains[name], bar = Math.floor(i / 8) % 4, root = tr.roots[bar];
-    const third = tr.minor && (root === -3 || root === 2) ? 3 : 4;
+    const tr = TRACKS[name], out = trackGains[name], ph = Math.floor(i / tr.steps) % FORM.length, F = FORM[ph], k = i % tr.steps;
+    const bar = Math.floor(k / 8) % 4, root = tr.roots[F.rev ? 3 - bar : bar] + F.key;
+    const third = tr.minor && (tr.roots[bar] === -3 || tr.roots[bar] === 2) ? 3 : 4, v = 0.85 + 0.15 * Math.sin(i * 0.7);
     if (i % 8 === 0) inst.pad(t, [hz(root - 12), hz(root - 12 + third), hz(root - 5)], (60 / tr.bpm) * 4.2, 1, out);
     if (i % 4 === 0) inst.bass(t, hz(root - 24), name === 'night' ? 0.6 : 1, out);
-    const m = tr.mel[i % tr.steps];
-    if (m != null) inst[tr.inst](t, hz(m), 1, out);
-    if (tr.gallop) { if (i % 4 === 2) inst.bass(t, hz(root - 17), 0.7, out); if (i % 2 === 1) inst.pluck(t, hz(root + [0, third, 7][(i >> 1) % 3]), 0.25, out); }   // rythme au galop (« boum-tchic »)
-    else if ((name === 'day' || name === 'title') && i % 2 === 1 && i % 8 !== 7) inst.pluck(t, hz(root + 12 + [0, third, 7][(i >> 1) % 3]), 0.35, out);
+    if (i % 8 === 6 && ph % 2) inst.bass(t, hz(root - 17), 0.5, out);   // petite relance de basse une phrase sur deux
+    const m = melAt(tr, k, F.mel);
+    if (m != null) inst[tr.inst](t, hz(m + F.key), v, out);
+    const arp = F.arp.map(x => x === 'third' ? third : x), a = arp[(i >> 1) % arp.length];
+    if (tr.gallop) { if (i % 4 === 2) inst.bass(t, hz(root - 17), 0.7, out); if (i % 2 === 1) inst.pluck(t, hz(root + a), 0.25 * v, out); }   // rythme au galop (« boum-tchic »)
+    else if ((name === 'day' || name === 'title') && i % 2 === 1 && i % 8 !== 7) inst.pluck(t, hz(root + 12 + a), 0.35 * v, out);
+    else if (i % 4 === 2 && ph >= 2) inst.pluck(t, hz(root + 12 + a), 0.18 * v, out);   // les musiques calmes gagnent un arpège doux à partir de la 3e phrase
   }
   function tick() {
     if (!ac || ac.state !== 'running') return;
@@ -125,7 +148,7 @@ export function createAudio(g, storage) {
     const tr = TRACKS[current], dt = 60 / tr.bpm / 2;
     while (nextT < ac.currentTime + 0.25) {
       if (effective(settings, 'music') > 0) playStep(current, step, nextT);
-      step = (step + 1) % (tr.steps * 2); nextT += dt;
+      step = (step + 1) % (tr.steps * FORM.length); nextT += dt;   // 19/11 : 6 phrases avant de boucler
     }
     if (ambience === 'crickets' && Math.random() < 0.18) cricket();
   }

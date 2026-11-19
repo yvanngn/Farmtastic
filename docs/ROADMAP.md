@@ -156,6 +156,12 @@ Pour que **les scènes du jeu** atteignent le niveau de détail de l'image, scè
 - [x] **Un coffre pour ranger** : acheter le **plan du coffre** chez Harry (💡 60 $), le fabriquer (80 bois + 20 pierres). Le coffre quitte la quête principale « Premiers pas » ; Harry ne l'apprend plus gratuitement.
 - ⏳ Plus tard : la cabane agrandie vue de dehors (aujourd'hui seul l'intérieur change).
 
+## Lot 18 — Musique, icônes, réparation (demande du 19/11) ✅ v0.1.62
+- [x] Musiques : 6 phrases avant de boucler (au lieu d'une) : modulation à la quarte puis un ton plus bas, mélodie ornée, décalée, à l'octave, allégée ; grille d'accords inversée une phrase sur deux ; arpèges qui changent de motif ; nuances.
+- [x] Icônes d'objets refaites en « pixel moderne » 32 × 32 (tente violette, feu de camp, bûches, pierre, sachets de graines, blé, paille, minerais, champignons, fleurs, poissons, pain, coffre, baies, mûres, œuf, os, sac, maïs, carotte, laine, clôture, gemmes, gelée, chaudron, bonnet) ; affichées plus grandes dans le sac et à l'étal.
+- [x] Réparation : à côté de chaque jauge, ce qu'on a dans le sac (🎒) ; « Reste à apporter » toujours affiché.
+- [ ] Icônes encore à refaire : plats (ragoût, soupe, tisane), confitures, viandes, crevettes, saumon, truffe, bague, manteau, peluches, barbe à papa, potion.
+
 ## Lot 17 — Boutons, cadre météo, étal de vente (demande du 19/11) ✅ v0.1.61
 - [x] Menu : plus d'onglets Recettes ni Quêtes ; bouton ⭐ Quêtes à côté du bouton d'action (🛠️ Recettes à côté) ; icône du menu ☰.
 - [x] Cadre du haut : plus de nom ni d'XP (ils passent en tête du menu) ; il s'efface quand on ne bouge plus (2,5 s) et revient quand on bouge.

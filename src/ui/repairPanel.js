@@ -14,11 +14,10 @@ export function createRepairPanel(g) {
     el.innerHTML = `<b>${done ? '✅ ' : '🔨 '}${R.n} ${done ? 'est réparée !' : ''}</b>`
       + Object.entries(R.need).map(([k, need]) => {
         const v = Math.min(need, st[k] || 0), full = v >= need;
-        return `<div class="rp-row"><span>${ICON[k]} ${NAME[k]}</span><div class="rp-bar"><i style="width:${v / need * 100}%"></i></div><span class="rp-n">${full ? '<em>✔</em>' : `${v}/${need}`}</span></div>`;
+        return `<div class="rp-row"><span>${ICON[k]} ${NAME[k]}</span><div class="rp-bar"><i style="width:${v / need * 100}%"></i></div><span class="rp-n">${full ? '<em>✔</em>' : `${v}/${need}`}</span><span class="rp-sac" title="Dans ton sac">🎒 ${g.S.inv[k] || 0}</span></div>`;   // 19/11 : ce qu'il reste dans le sac, en même temps
       }).join('')
-      + (done ? '' : (g.S.tips && g.S.tips.hammer)
-        ? `<small>Reste : ${Object.entries(R.need).map(([k, n]) => `${Math.max(0, n - (st[k] || 0))} ${ICON[k]}`).join(' · ')}</small>`   // après la 1re fois : seulement ce qui manque
-        : `<small>Prends le marteau 🔨 (roue des outils) et reste appuyé sur le bâtiment : il prend le bois et les pierres de ton sac.</small>`);
+      + (done ? '' : `<small>Reste à apporter : ${Object.entries(R.need).map(([k, n]) => `${Math.max(0, n - (st[k] || 0))} ${ICON[k]}`).join(' · ')}</small>`
+        + ((g.S.tips && g.S.tips.hammer) ? '' : `<small>Prends le marteau 🔨 (roue des outils) et reste appuyé sur le bâtiment : il prend le bois et les pierres de ton sac.</small>`));
     el.classList.toggle('done', done); el.hidden = false;
   }
   return {

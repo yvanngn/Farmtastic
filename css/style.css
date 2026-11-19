@@ -272,7 +272,7 @@ img.pix { width: 1.15em; height: 1.15em; image-rendering: pixelated; vertical-al
 #repairPanel b { display: block; margin-bottom: 6px; color: var(--or-vif) }
 #repairPanel.done b { color: #7ee07a }
 #repairPanel small { display: block; margin-top: 6px; opacity: .85 }
-.rp-row { display: grid; grid-template-columns: 6.5em 1fr 3.6em; gap: 8px; align-items: center; margin: 4px 0 }
+.rp-row { display: grid; grid-template-columns: 6.5em 1fr 3.6em 3.2em; gap: 8px; align-items: center; margin: 4px 0 }
 .rp-bar { height: 10px; border-radius: 5px; background: rgba(255,255,255,.15); overflow: hidden }
 .rp-bar i { display: block; height: 100%; background: linear-gradient(90deg, #c9873a, #f2c832); transition: width .2s }
 .rp-n { text-align: right; font-variant-numeric: tabular-nums }
@@ -492,3 +492,7 @@ body.bande[data-nrj="vert"] #nrjVert { bottom: calc(var(--bande) + var(--pad) * 
 #hXpRow[hidden], #hName[hidden] { display: none !important }
 .profil { display: flex; gap: 10px; align-items: center; margin: 0 0 8px }
 .profil .bar { flex: 1; max-width: 220px }
+
+/* 19/11 : icônes d'objets plus grandes dans le sac et les listes */
+.card .t img.pix, .sell-ic img.pix, .st-it img.pix { width: 2.4em; height: 2.4em; vertical-align: middle }
+.rp-sac { min-width: 3.2em; text-align: right; opacity: .9; font-size: .9em }

@@ -217,5 +217,5 @@ export function createMenu(g, opts) {
   $('#bClose').onclick = () => $('#ovBag').classList.remove('on');
   // seul = ouvert depuis un lieu (halle du marché) : pas d'onglets
   return { openJournal() { jmode = true; tab = journal(g.S).tab || 'journal'; $('#tabs').hidden = false; $('#menuTitle').textContent = '📓 Journal'; $('#ovBag').classList.add('on'); render(); },
-    open(t, seul) { jmode = false; if (t) tab = t; else if (tab in TITLES) tab = 'sac'; $('#tabs').hidden = !!seul; $('#menuTitle').textContent = seul ? (TITLES[t] || '🏪') : '📜 Menu'; $('#ovBag').classList.add('on'); render(); } };
+    open(t, seul) { jmode = false; if (t) tab = t; else if (tab in TITLES) tab = 'sac'; $('#tabs').hidden = !!seul; $('#menuTitle').textContent = seul ? (TITLES[t] || '🏪') : '☰ Menu'; $('#ovBag').classList.add('on'); render(); } };
 }
