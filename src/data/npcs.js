@@ -179,7 +179,7 @@ export const MYST = {
 // saturées et qu'elle reçoit le surplus ; de longues journées… elle frise le burn-out. (Histoire dévoilée par cœurs.)
 export const HAILEY = {
   id: 'hailey', name: 'Hailey', de: "d'elle", color: '#7cc8c0', voice: 'voiceLuna',
-  look: { folk: 'hailey', body: 'f', bottom: 'pant', skin: '#f3d0b4', hair: 1, curly: true, hairC: '#9a5a2a', shirt: '#f4f0e8', stetho: true, pants: '#3a5a8a', shoes: '#6a3a1e' },   // 18/11 : poupée dessinée par le code (src/render/paperdoll.js), tenue d'après son sprite
+  look: { planche: 'hailey_v2', folk: 'hailey', body: 'f', bottom: 'pant', skin: '#f3d0b4', hair: 1, curly: true, hairC: '#9a5a2a', shirt: '#f4f0e8', stetho: true, pants: '#3a5a8a', shoes: '#6a3a1e' },   // 18/11 : poupée dessinée par le code (src/render/paperdoll.js), tenue d'après son sprite
   home: 'hailey', inside: { x: 3.5, y: 3.7 },
   // Routine quotidienne (16/11, 💡 à adapter par l'utilisateur) : elle varie un peu chaque jour (voir docs/CARNET.md).
   // Lieux nommés, puis la journée : [heure de début, lieu]. Les variantes sont choisies selon le jour.
@@ -401,7 +401,7 @@ export const CUISTOT = {
 // envers Manu, le Maire. C'est lui qui apprend à faire le coffre (quête principale). Répliques 🆕.
 export const HARRY = {
   id: 'harry', name: 'Harry Fordson', title: 'charpentier', de: 'de lui', color: '#c99560', voice: 'voiceChef',
-  look: { folk: 'harry', body: 'h', bottom: 'pant', skin: '#e8b48c', hair: 0, hairC: '#a86a32', hat: 'plat', shirt: '#c0392b', plaid: true, toolbelt: true, pants: '#3a5a8a', shoes: '#5a3a22', tall: true },   // 18/11 : poupée dessinée par le code (src/render/paperdoll.js), tenue d'après son sprite
+  look: { planche: 'harry_v2', folk: 'harry', body: 'h', bottom: 'pant', skin: '#e8b48c', hair: 0, hairC: '#a86a32', hat: 'plat', shirt: '#c0392b', plaid: true, toolbelt: true, pants: '#3a5a8a', shoes: '#5a3a22', tall: true },   // 18/11 : poupée dessinée par le code (src/render/paperdoll.js), tenue d'après son sprite
   home: null, dayScene: 'town', day: { x: 7.5, y: 16.6 },   // devant son atelier
   traits: ['Charpentier de père en fils', 'Très doué', 'Malade, sans symptôme visible', 'Aimerait se marier un jour', 'Beaucoup de dettes envers Manu, le Maire'],
   taste: { adore: [], aime: ['wood'], naime: ['slime'], deteste: [] },   // 💡

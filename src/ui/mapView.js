@@ -8,6 +8,8 @@ import { isRipe } from '../systems/farming.js';
 import { LAYOUTS, TOWN_B } from '../world/scenes.js';
 import { FARM_LOTS } from '../data/buildings.js';
 import { harmonize } from '../render/pixel.js';
+import { REGION_IMG } from '../render/mapimage.js';
+let MAP_IMG = null;
 import { buildRegionMap, drawLabel, regionPos, FARM_RECT, LABELS, RW, RH } from '../render/regionmap.js';
 const T = CFG.T, LEVELS = [1, 1.6, 2.6, 4];
 
@@ -34,7 +36,9 @@ export function createMapView(g, renderer, audio) {
   function drawRegion(now) {
     const S = g.S;
     if (!fontAsked && document.fonts) { fontAsked = true; document.fonts.load('24px Rye').catch(() => {}); }   // police western des étiquettes
-    if (!regionCv || regionSeason !== S.season) { regionCv = harmonize(buildRegionMap(S.season), true); regionSeason = S.season; }
+    if (!MAP_IMG && typeof Image !== 'undefined') { MAP_IMG = new Image(); MAP_IMG.src = REGION_IMG; }   // 19/11 : la carte fournie par l'utilisateur (étiquettes comprises)
+    const useImg = MAP_IMG && MAP_IMG.complete && MAP_IMG.naturalWidth;
+    if (useImg) regionCv = MAP_IMG; else if (!regionCv || regionSeason !== S.season) { regionCv = harmonize(buildRegionMap(S.season), true); regionSeason = S.season; }
     const s = sc(), ox = cv.width / 2 - center.x * T * s, oy = cv.height / 2 - center.y * T * s, P = (x, y) => [ox + x * T * s, oy + y * T * s];
     ctx.fillStyle = '#2a4a6a'; ctx.fillRect(0, 0, cv.width, cv.height);
     ctx.imageSmoothingEnabled = s < 1; ctx.drawImage(regionCv, ox, oy, RW * T * s, RH * T * s);
@@ -47,7 +51,7 @@ export function createMapView(g, renderer, audio) {
       if (mine) { ctx.strokeStyle = `rgba(242,200,50,${.6 + .4 * Math.sin(now / 300)})`; ctx.lineWidth = 3 * d; ctx.strokeRect(x0 - 2 * d, y0 - 2 * d, w + 4 * d, h + 4 * d); }
       if (who) drawLabel(ctx, (mine ? '★ ' : '') + who, x0 + w / 2, y0 + h + fs * .3, fs * .62);
     }
-    for (const [t, x, y] of LABELS) { const [px, py] = P(x, y); drawLabel(ctx, t, px, py, fs * .7); }   // 19/11 : les noms des lieux reviennent (demande de l'utilisateur)
+    if (!useImg) for (const [t, x, y] of LABELS) { const [px, py] = P(x, y); drawLabel(ctx, t, px, py, fs * .7); }   // 19/11 : les noms des lieux reviennent (demande de l'utilisateur)
     // moi : point rouge qui pulse ; les autres joueurs : points bleus
     for (const o of others) { if (!o.scene) continue; const q = regionPos({ scene: o.scene, farmLot: o.farmLot }), [px, py] = P(q.x, q.y); ctx.fillStyle = '#5aa8ff'; ctx.beginPath(); ctx.arc(px, py, 5 * d, 0, 7); ctx.fill(); ctx.strokeStyle = '#fff'; ctx.lineWidth = 1.5 * d; ctx.stroke(); }
     const me = regionPos(S), [mx, my] = P(me.x, me.y), pr = (6 + Math.sin(now / 200) * 1.5) * d;
