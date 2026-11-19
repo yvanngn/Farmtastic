@@ -496,3 +496,8 @@ body.bande[data-nrj="vert"] #nrjVert { bottom: calc(var(--bande) + var(--pad) * 
 /* 19/11 : icônes d'objets plus grandes dans le sac et les listes */
 .card .t img.pix, .sell-ic img.pix, .st-it img.pix { width: 2.4em; height: 2.4em; vertical-align: middle }
 .rp-sac { min-width: 3.2em; text-align: right; opacity: .9; font-size: .9em }
+/* 19/11 : petits écrans — la barre du titre (avec la croix ✕) reste toujours visible en haut des fenêtres,
+   et le bouton « Commencer ▶ » reste visible en bas de la création du personnage. */
+.panel { --pp: clamp(12px, 3.5vmin, 20px); max-height: 100dvh; -webkit-overflow-scrolling: touch; overscroll-behavior: contain }
+.panel > .row:first-child, .sell-panel > .row:first-child { position: sticky; top: calc(-1 * var(--pp)); z-index: 6; margin: calc(-1 * var(--pp)) calc(-1 * var(--pp)) 6px !important; padding: var(--pp) var(--pp) 8px; background: var(--planches), #3b2616; box-shadow: 0 6px 8px -6px rgba(0, 0, 0, .6) }
+#ovLook .panel > .start-row { position: sticky; bottom: calc(-1 * var(--pp)); z-index: 6; margin: 12px calc(-1 * var(--pp)) calc(-1 * var(--pp)) !important; padding: 10px var(--pp) var(--pp); background: var(--planches), #3b2616; box-shadow: 0 -6px 8px -6px rgba(0, 0, 0, .6) }

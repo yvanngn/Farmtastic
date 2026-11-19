@@ -156,6 +156,10 @@ Pour que **les scènes du jeu** atteignent le niveau de détail de l'image, scè
 - [x] **Un coffre pour ranger** : acheter le **plan du coffre** chez Harry (💡 60 $), le fabriquer (80 bois + 20 pierres). Le coffre quitte la quête principale « Premiers pas » ; Harry ne l'apprend plus gratuitement.
 - ⏳ Plus tard : la cabane agrandie vue de dehors (aujourd'hui seul l'intérieur change).
 
+## Correctifs du 19/11 ✅ v0.1.65
+- [x] Écran d'accueil : au clavier, Entrée ne validait plus (le focus restait sur le titre derrière la fenêtre « Nouvelle partie »). Chaque fenêtre qui s'ouvre prend le focus sur son bouton principal ; flèches ↑ ↓ pour passer d'un bouton à l'autre ; Entrée dans le nom lance la partie.
+- [x] Petits écrans : la barre de titre des fenêtres (avec la croix ✕) reste toujours visible en haut ; « Commencer ▶ » reste visible en bas de la création du personnage.
+
 ## Lot 20 — Souches, carrière, fleurs, cuisson, manger (demande du 19/11) ✅ v0.1.64
 - [x] Un arbre abattu laisse sa **souche** (ferme et forêt). Coupée : 1 à 2 bois de plus, et l'arbre ne revient qu'à la saison suivante (ferme : remise des arbres à chaque saison). Laissée : elle repousse au bout de 4 jours, petit à petit (rejet vert sur la souche, puis jeune pousse → arbre en 3 jours).
 - [x] Carrière vidée : 6 cailloux reviennent chaque jour jusqu'à la remplir.

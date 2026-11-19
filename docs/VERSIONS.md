@@ -2,6 +2,7 @@
 
 Semver horodaté (heure de Paris). Patch automatique à chaque publication ; mineure et majeure sur décision de l'utilisateur.
 
+- **0.1.65** — 2026-11-19 11:14 — accueil : Entrée valide de nouveau ; croix et Commencer toujours visibles sur petit écran
 - **0.1.64** — 2026-11-19 09:04 — souches, carrière qui se remplit, fleurs plus grosses, cuisson des baies, animation pour manger
 - **0.1.63** — 2026-11-19 08:57 — étal ×0,5 à ×2, outils sans palier, énergie, une discussion par jour, Ed, icônes
 - **0.1.62** — 2026-11-19 08:52 — musiques variées, icônes pixel moderne, sac affiché pendant les réparations

@@ -338,3 +338,20 @@ function loop(now) {
   if (store) games = visibleGames(games, readTomb(store));   // parties effacées sur cet appareil
   if (games.length) title.setSave(true, games.length);
 })();
+
+// 19/11 : au clavier, chaque fenêtre qui s'ouvre reçoit le focus sur son bouton principal (Entrée valide), et les flèches
+// passent d'un bouton à l'autre. Avant, le focus restait sur l'écran titre derrière : Entrée ne validait plus rien.
+{
+  const topOverlay = () => [...document.querySelectorAll('.overlay.on')].pop();
+  const buttons = ov => [...ov.querySelectorAll('button:not([disabled]), input, select')].filter(b => b.offsetParent && !/Fermer/.test(b.getAttribute('aria-label') || ''));
+  const focusMain = ov => { if (!ov || ov.contains(document.activeElement)) return; const b = ov.querySelector('button.primaire:not([disabled])') || buttons(ov)[0]; b?.focus({ preventScroll: true }); };
+  new MutationObserver(ms => { for (const m of ms) if (m.target.classList?.contains('overlay') && m.target.classList.contains('on')) setTimeout(() => focusMain(m.target), 60); })
+    .observe(document.body, { subtree: true, attributes: true, attributeFilter: ['class'] });
+  addEventListener('keydown', e => {
+    const ov = topOverlay(); if (!ov || !['ArrowDown', 'ArrowUp'].includes(e.key) || e.target.tagName === 'INPUT') return;
+    const bs = buttons(ov); if (!bs.length) return; e.preventDefault();
+    const i = bs.indexOf(document.activeElement), j = i < 0 ? 0 : (i + (e.key === 'ArrowDown' ? 1 : -1) + bs.length) % bs.length;
+    bs[j].focus(); bs[j].scrollIntoView({ block: 'nearest' });
+  });
+  document.getElementById('iName')?.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); document.getElementById('bStart')?.click(); } });
+}
