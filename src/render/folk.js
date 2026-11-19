@@ -210,11 +210,24 @@ function buildFront(c, back, s) {
   }
   if (back) for (let i = feat.length - 1; i >= 0; i--) if (feat[i].t !== 'px' || true) feat.splice(i, 1);
   // marche (de face / de dos) : une jambe se lève, le corps rebondit, les bras se balancent
-  const lift = { L: s === 1 ? 4 : 0, R: s === 3 ? 4 : 0 }, sw = s === 1 ? 2.5 : s === 3 ? -2.5 : 0, bob = s % 2 ? -2 : 0;
+  // 19/11 : marche de face / de dos refaite (comparée à Stardew Valley, Eastward) : 4 temps.
+  // Contact (s0, s2) : un pied en avant (un peu plus bas), l'autre talon levé ; passage (s1, s3) : la jambe qui avance se plie
+  // (pied levé, jambe raccourcie), le corps monte ; les bras entiers pivotent à l'épaule, à l'opposé des jambes.
+  const lift = { L: s === 1 ? 7 : 0, R: s === 3 ? 7 : 0 }, plant = { L: s === 0 ? 2 : s === 2 ? -2 : 0, R: s === 2 ? 2 : s === 0 ? -2 : 0 };
+  const sw = [3, 6, -3, -6][s] || 0, bob = s % 2 ? -2.5 : 0;
+  const pivL = [aL + armW / 2, shY + 3], pivR = [aR + armW / 2, shY + 3];
   let out0 = parts.map(q => {
-    let dy = q.tag === 'L' ? -lift.L : q.tag === 'R' ? -lift.R : q.z >= 3 ? bob : 0;
-    if (q.tag === 'aL' && q.z === 5) dy -= sw * .4; if (q.tag === 'aR' && q.z === 5) dy += sw * .4;   // seules les mains se balancent un peu (les épaules suivent le corps)
-    if (!dy) return q; const p = new Path2D(); p.addPath(q.path, new DOMMatrix().translate(0, dy)); return { ...q, path: p };
+    let M = null;
+    if (q.tag === 'L' || q.tag === 'R') {
+      const up = lift[q.tag], pl = plant[q.tag];
+      if (q.z <= 1.5) M = new DOMMatrix().translate(0, -up + pl);   // pied
+      else { const k = (legH - up * .9) / legH; M = new DOMMatrix().translate(0, legTop).scale(1, k).translate(0, -legTop); }   // jambe repliée
+    } else if (q.tag === 'aL' || q.tag === 'aR') {
+      // bras vu de face : il avance / recule → la main monte / descend (raccourci), à peine d'écart sur le côté
+      const [px, py] = q.tag === 'aL' ? pivL : pivR, f = q.tag === 'aL' ? sw : -sw, k = 1 - Math.max(0, f) * .025;
+      M = new DOMMatrix().translate(0, bob).translate(px, py).rotate((q.tag === 'aL' ? 1 : -1) * Math.abs(f) * .35).scale(1, k).translate(-px, -py).translate(0, q.z >= 5 ? -f * .45 : 0);
+    } else if (q.z >= 3 && bob) M = new DOMMatrix().translate(0, bob);
+    if (!M) return q; const p = new Path2D(); p.addPath(q.path, M); return { ...q, path: p };
   });
   for (const f of feat) f.y += bob;
   // enfant : tout un peu plus petit (pieds au sol)

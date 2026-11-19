@@ -156,6 +156,10 @@ Pour que **les scènes du jeu** atteignent le niveau de détail de l'image, scè
 - [x] **Un coffre pour ranger** : acheter le **plan du coffre** chez Harry (💡 60 $), le fabriquer (80 bois + 20 pierres). Le coffre quitte la quête principale « Premiers pas » ; Harry ne l'apprend plus gratuitement.
 - ⏳ Plus tard : la cabane agrandie vue de dehors (aujourd'hui seul l'intérieur change).
 
+## Correctifs du 19/11 (2) ✅ v0.1.66
+- [x] Cadre du haut plus petit, il s'efface après 1,2 s sans bouger (au lieu de 2,5 s).
+- [x] Marche de face / de dos refaite (4 temps, d'après Stardew Valley / Eastward) : contact (pied avant posé plus bas, talon arrière levé), passage (jambe pliée qui se lève, corps qui monte), bras qui avancent et reculent (la main monte et descend), à l'opposé des jambes.
+
 ## Correctifs du 19/11 ✅ v0.1.65
 - [x] Écran d'accueil : au clavier, Entrée ne validait plus (le focus restait sur le titre derrière la fenêtre « Nouvelle partie »). Chaque fenêtre qui s'ouvre prend le focus sur son bouton principal ; flèches ↑ ↓ pour passer d'un bouton à l'autre ; Entrée dans le nom lance la partie.
 - [x] Petits écrans : la barre de titre des fenêtres (avec la croix ✕) reste toujours visible en haut ; « Commencer ▶ » reste visible en bas de la création du personnage.
