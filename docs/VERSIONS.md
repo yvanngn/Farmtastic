@@ -2,6 +2,7 @@
 
 Semver horodaté (heure de Paris). Patch automatique à chaque publication ; mineure et majeure sur décision de l'utilisateur.
 
+- **0.1.97** — 2026-11-20 14:22 — Ed, Igor, Jade et Suzie d'après leurs nouvelles planches
 - **0.1.96** — 2026-11-20 14:18 — Intro plus rapide (fondu sur la route), plus de carte à la fin de l'intro, forge d'Igor au centre-ville
 - **0.1.95** — 2026-11-20 14:07 — Dialogues : quêtes, courrier, tutos et messages à l'écran dans docs/DIALOGUES.md ; test de l'appli dans le navigateur (tools/audit.cjs)
 - **0.1.94** — 2026-11-20 13:57 — Quêtes « Le premier étal » (Suzie) et « La cuisine du chef » (Remy), prix libre à l'étal, chaudron façon Breath of the Wild, plus de feu de camp, décor redessiné au retour sur téléphone
