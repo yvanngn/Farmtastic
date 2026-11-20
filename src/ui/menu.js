@@ -38,7 +38,7 @@ import { NEED, SKILL_NAMES, SKILL_MAX } from '../data/tools.js';
 import { VEINS } from '../data/nature.js';
 
 const JTABS = { journal: '📝 Activités', quests: '⭐ Quêtes en cours', social: '💞 Liens', histoire: '📖 Histoire' };   // 19/11 : onglets du journal
-const TABS = { sac: 'Sac', equip: '🎽 Équipement', poissons: '🐟 Poissons', metiers: '🧑‍🔧 Métiers', forge: 'Forge', social: 'Liens', reglages: '⚙ Réglages' };   // 20/11 : les réglages (et la sauvegarde) passent dans le menu   // 19/11 : recettes et quêtes ont leur bouton près de l'action
+const TABS = { sac: 'Sac', equip: '🎽 Équipement', poissons: '🐟 Poissons', metiers: '🧑‍🔧 Métiers', forge: 'Forge', social: 'Liens', recettes: '📜 Recettes', reglages: '⚙ Réglages' };   // 20/11 : les réglages (et la sauvegarde) passent dans le menu   // 19/11 : recettes et quêtes ont leur bouton près de l'action
 const TITLES = { recettes: '🛠️ Recettes', quests: '⭐ Quêtes', poissons: '🐟 Carnet de pêche', market: '🏪 Marché', upgrades: '🧰 Magasin d\'amélioration', carpenter: '🪚 Charpentier', workshop: '🛠️ Établi', animals: '🐾 Marchand d\'animaux', bakery: '🥖 Boulangerie', igorShop: '⚒️ Boutique d’Igor', butcher: '🥩 Boucherie', fishmonger: '🐟 Poissonnerie' };
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 const it = id => ITEMS[id] || { n: id, i: '❔', p: 0 };
@@ -50,7 +50,7 @@ export function createMenu(g, opts) {
   // grille d'achat d'un commerce (×1 et ×5)
   const shopGrid = (S, id) => '<div class="grid">' + SHOPS[id].sells.filter(k => isUnlocked(S, k)).map(k => { const x = it(k);
     return card(`<div class="t">${iconHTML(k)} <b>${x.n}</b></div><div>${x.buy} $${x.eat ? ' · se mange' : ''}</div><div class="row" style="margin:0"><button data-buy="${k}" ${S.money >= x.buy ? '' : 'disabled'}>Acheter</button><button data-buy5="${k}" ${S.money >= x.buy * 5 ? '' : 'disabled'}>×5</button></div>`); }).join('') + '</div>';
-  const patternGrid = (S, shop) => { const ps = Object.entries(PATTERNS).filter(([, p]) => p.shop === shop); if (!ps.length) return '';
+  const patternGrid = (S, shop) => { const ps = Object.entries(PATTERNS).filter(([, p]) => p.shop === shop && p.recipe !== 'chaudron');   // 20/11 : le chaudron vient de Remy if (!ps.length) return '';
     return '<h3>📜 Patrons</h3><div class="grid">' + ps.map(([id, p]) => { const r = p.pot ? POT_RECIPES[p.recipe] : HAND_RECIPES[p.recipe], o = it(r.out), own = hasPattern(S, id);
       return card(`<div class="t">📜 <b>${p.n}</b></div><div>${o.i} ${o.n} : ${Object.entries(r.in).map(([k, n]) => `${iconHTML(k)}${n}`).join(' ')}</div><div>${p.price} $ · ${JOBS[p.job].i} ${JOBS[p.job].n}${p.pot ? ' · chaudron 🍲' : ''}</div>${own ? '<small>✅ Déjà appris</small>' : p.soon ? '<button disabled>⏳ Bientôt</button>' : `<button data-pattern="${id}" ${S.money >= p.price ? '' : 'disabled'}>Acheter le patron</button>`}`); }).join('') + '</div>'; };
   const views = {
@@ -68,12 +68,14 @@ export function createMenu(g, opts) {
           : `<div class="fish-row inconnu"><span class="fi">❔</span><div><b>???</b> <small>On dit qu'il vit dans ${f.zones.map(z => ZONE_NAMES[z]).join(' ou ')}.</small></div></div>`; }).join('') + '</div>';
     },
     recettes(S) {
-      const known = (S.recipes || []).filter(id => HAND_RECIPES[id]);
+      const known = (S.recipes || []).filter(id => HAND_RECIPES[id] && id !== 'campfire');   // 20/11 : plus de feu de camp
       const cats = Object.keys(RECIPE_CATS).filter(c => known.some(id => HAND_RECIPES[id].cat === c));
       if (!cats.includes(recCat)) recCat = cats[0];
       const tabsH = '<div class="rec-tabs">' + cats.map(c => `<button data-rcat="${c}" class="${c === recCat ? 'on' : ''}">${RECIPE_CATS[c]}</button>`).join('') + '</div>';
       return '<p class="info">Les recettes que tu connais, rangées par type. On les fabrique n\'importe où, avec ce qu\'on a sur soi.</p>' + tabsH + '<div class="grid">' + known.filter(id => HAND_RECIPES[id].cat === recCat).map(id => { const r = HAND_RECIPES[id];
-        return card(`<div class="t">${iconHTML(r.out)} <b>${it(r.out).n}</b> ×${r.q}</div><div>${Object.entries(r.in).map(([k, n]) => `${iconHTML(k)}${n} <small>(${S.inv[k] || 0})</small>`).join(' ')}</div>${recipeOpen(S, r) ? `<button data-hcraft="${id}" ${canCraftHand(S, id) ? '' : 'disabled'}>Fabriquer</button>` : `<button disabled>🔒 Niveau ${r.lvl}</button>`}`); }).join('') + '</div>';
+        return card(`<div class="t">${iconHTML(r.out)} <b>${it(r.out).n}</b> ×${r.q}</div><div>${Object.entries(r.in).map(([k, n]) => `${iconHTML(k)}${n} <small>(${S.inv[k] || 0})</small>`).join(' ')}</div>${recipeOpen(S, r) ? `<button data-hcraft="${id}" ${canCraftHand(S, id) ? '' : 'disabled'}>Fabriquer</button>` : `<button disabled>🔒 Niveau ${r.lvl}</button>`}`); }).join('') + '</div>'
+      + (() => { const dishes = (S.recipes || []).filter(id => POT_RECIPES[id]);   // 20/11 : plats découverts au chaudron
+        return '<h3>🍲 Au chaudron</h3>' + (dishes.length ? '<div class="grid">' + dishes.map(id => { const r = POT_RECIPES[id]; return card(`<div class="t">${iconHTML(r.out)} <b>${it(r.out).n}</b> ×${r.q}</div><div>${Object.entries(r.in).map(([k, n]) => `${iconHTML(k)}${n}`).join(' + ')}</div>`); }).join('') + '</div>' : '<p class="info">Aucun plat découvert pour l’instant : mets des ingrédients dans un chaudron pour voir ce que ça donne.</p>'); })();
     },
     sac(S) {
       const ids = Object.keys(S.inv);

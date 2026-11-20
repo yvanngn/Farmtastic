@@ -263,6 +263,12 @@ Décrit par l'utilisateur : cabane à moitié prix ; journal dans la cabane (200
 - [x] Étapes des quêtes : couleurs foncées lisibles sur le papier beige.
 - [ ] 💡 À valider : 24 coups pour un gros caillou de bordure, 3 jours de repousse, filons de la carrière profonde (étain 15 %, fer 50 %, or 35 %).
 
+## Lot 30 — Suzie et l'étal, cuisine au chaudron, décor qui disparaît (demande du 20/11) ✅ v0.1.94
+- [x] Quête principale « Le premier étal » : Suzie à l'étal, se présente, explique en gros (moins c'est cher, plus ça part vite), donne un bois.
+- [x] Étal : prix libre à l'unité (− / + et curseur, façon Hay Day), plus de taux ni de durée affichés ; durée avec un coefficient de hasard 💡 (× 0,6 à × 1,6), parfois une nuit de plus au-dessus de × 1,3.
+- [x] Quête principale « La cuisine du chef » : Remy offre le plan du chaudron (gratuit, une fois le four réparé) ; plus de feu de camp ni de baies sur le feu ; chaudron façon Breath of the Wild (ingrédients → cuisson → plat découvert) ; onglet 📜 Recettes dans le menu.
+- [x] Décor qui disparaît sur téléphone au retour dans l'appli : tout est redessiné au retour ; boutons « Rafraîchir l'affichage » et « Recharger le jeu » dans les réglages.
+
 ## Lot 29 — Trajets vérifiés, magasins, visée des outils (demande du 20/11) ✅ v0.1.93
 - [x] Test des trajets (tests/acces.test.js) : chaque sortie dépose sur une case praticable, près de la porte de retour. Corrigés : carrière profonde (arrivée dans la roche), porcherie.
 - [x] Plus de chemins qui ne mènent à rien (élagués automatiquement jusqu'au premier croisement ; test). Passage fermé → message « Ce passage est fermé pour l'instant ».

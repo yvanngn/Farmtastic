@@ -26,7 +26,7 @@ test('ne pas dormir : aucune énergie récupérée le lendemain (et pas d’amen
   assert.equal(S.energy, 40); assert.equal(S.money, 1000);
 });
 
-test('quête « Premiers pas » : déployer la tente depuis le sac, puis dormir, outils, feu, cabane', () => {
+test('quête « Premiers pas » : déployer la tente depuis le sac, puis dormir, outils, cabane (20/11 : plus de feu)', () => {
   const { g, S } = fresh({ x: 5.5, y: 7.2 });
   assert.equal(questProgress(S, 'debut').cur, 0);
   assert.equal(deployTent(g), true); assert.ok(S.tent);
@@ -38,7 +38,7 @@ test('quête « Premiers pas » : déployer la tente depuis le sac, puis dormir,
   assert.equal(questProgress(S, 'debut').cur, 2);
   S.tools = { pick: 1 }; assert.equal(questProgress(S, 'debut').cur, 3, 'la pioche, puis la hache');
   S.tools = { pick: 1, axe: 1 }; assert.equal(questProgress(S, 'debut').cur, 4);
-  S.fires = [{ x: 9, y: 9 }]; assert.equal(questProgress(S, 'debut').cur, 5, 'ensuite : retaper la cabane');
+  assert.equal(questProgress(S, 'debut').steps ? 0 : questProgress(S, 'debut').q.steps[questProgress(S, 'debut').cur].id, 'cabane', 'ensuite : retaper la cabane');
 });
 
 test('déployer la tente loin de la cabane : refusé avec une explication', () => {

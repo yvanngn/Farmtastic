@@ -69,7 +69,6 @@ const stockN = () => Object.values(S.stock).reduce((a, n) => a + n, 0);
 
 // Objectifs dans l'ordre où un joueur les suit (quêtes principales, puis secondaires)
 const GOALS = [
-  { id: 'feu', n: 'Feu de camp', wood: HAND_RECIPES.campfire.in.wood, stone: HAND_RECIPES.campfire.in.stone, xp: XP.craft + XP.step },
   { id: 'cabane', n: 'Cabane retapée', wood: REPAIRS.house.need.wood, stone: REPAIRS.house.need.stone, repair: true, xp: XP.step },
   { id: 'four', n: 'Four de Remy (couteau)', wood: OVEN_COST.wood, stone: OVEN_COST.stone, repair: true, town: true, xp: XP.step },
   { id: 'grange', n: 'Grange rafistolée (pelle) — fin de « Premiers pas »', wood: REPAIRS.grange.need.wood, stone: REPAIRS.grange.need.stone, repair: true, xp: XP.step + XP.questMain, then: () => { S.shovelDay = S.day; } },

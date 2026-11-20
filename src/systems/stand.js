@@ -16,20 +16,26 @@ export const used = S => stand(S).lots.reduce((a, l) => a + l.n, 0);
 export const unitPrice = (id, mult) => Math.max(1, Math.round(ITEMS[id].p * mult));
 // 19/11 (règles de l'utilisateur) : × 0,5 → vendu en 2 à 3 min ; de × 0,51 à × 0,99 → vendu dans la journée (5 à 15 min) ;
 // de × 1 à × 1,99 → vendu pendant la nuit ; × 2 → au bout de 2 nuits.
+// 20/11 : prix libre entre la moitié et le double (façon Hay Day), délai avec une part de hasard. Les règles ne sont plus
+// affichées : le joueur sait seulement que moins c'est cher, plus ça part vite.
+export const PRICE_MIN = 0.5, PRICE_MAX = 2;
+export const priceRange = id => { const p = ITEMS[id].p; return [Math.max(1, Math.round(p * PRICE_MIN)), Math.max(1, Math.round(p * PRICE_MAX))]; };
+export const LUCK = [0.6, 1.6];   // 💡 coefficient de hasard sur la durée
 export function saleDelay(mult, r) {
   if (mult >= 1) return Infinity;
-  const [a, b] = mult <= .5 ? [2, 3] : [5, 15];
-  return Math.round((a + (b - a) * r) * 60000);
+  const min = 2 + 13 * Math.max(0, Math.min(1, (mult - PRICE_MIN) / (1 - PRICE_MIN)));   // 2 min (moitié prix) → 15 min (presque le prix normal)
+  return Math.round(min * (LUCK[0] + (LUCK[1] - LUCK[0]) * r) * 60000);
 }
-export const nightsFor = mult => mult >= 2 ? 2 : mult >= 1 ? 1 : 0;
-export const waitLabel = m => m >= 2 ? 'en 2 jours' : m >= 1 ? 'après la nuit' : m <= .5 ? 'en 2 à 3 min' : 'dans la journée';
+export const nightsFor = (mult, r = 1) => mult < 1 ? 0 : (mult >= 1.75 ? 2 : 1) + (mult >= 1.3 && r < .25 ? 1 : 0);   // parfois une nuit de plus
+export const waitLabel = () => '';
 export function listItem(g, id, n, mult) {
   const S = g.S, st = ST(S);
-  if (!sellable(id) || !PRICE_STEPS.includes(mult)) return false;
+  if (!sellable(id) || !(mult > 0)) return false;
+  mult = Math.max(PRICE_MIN, Math.min(PRICE_MAX, mult));
   n = Math.min(n | 0, STAND_CAP - used(S), S.inv[id] || 0);
   if (n <= 0 || !has(S, id, n)) { g.bus.emit('toast', used(S) >= STAND_CAP ? `🧺 L’étal est plein (${STAND_CAP} objets au plus).` : 'Rien à mettre en vente.'); return false; }
   add(g, id, -n);
-  st.lots.push({ id, n, mult, price: unitPrice(id, mult) * n, t0: g.now(), wait: saleDelay(mult, g.rnd()), nights: nightsFor(mult) });
+  st.lots.push({ id, n, mult, price: unitPrice(id, mult) * n, t0: g.now(), wait: saleDelay(mult, g.rnd()), nights: nightsFor(mult, g.rnd()) });
   g.bus.emit('sfx', 'ui'); g.bus.emit('inv');
   return true;
 }

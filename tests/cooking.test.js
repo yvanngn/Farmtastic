@@ -8,11 +8,11 @@ import { consume } from '../src/systems/player.js';
 import { BUSHES, COOK_MS, HAND_RECIPES } from '../src/data/recipes.js';
 import { isSolid } from '../src/world/map.js';
 
-test('au début, on ne connaît qu’une recette : le feu (5 bois + 2 cailloux)', () => {
+test('20/11 : au début, on ne connaît aucune recette (plus de feu de camp) ; le feu reste fabricable pour les anciennes parties', () => {
   const S = defaultState();
-  assert.deepEqual(S.recipes, ['campfire']);
+  assert.deepEqual(S.recipes, []);
   assert.deepEqual(HAND_RECIPES.campfire.in, { wood: 5, stone: 2 });
-  const { g, S: S2 } = makeGame({ state: { inv: { wood: 5, stone: 1 } } });
+  const { g, S: S2 } = makeGame({ state: { inv: { wood: 5, stone: 1 }, recipes: ['campfire'] } });
   assert.equal(craftHand(g, 'campfire'), false, 'il manque un caillou');
   S2.inv.stone = 2;
   assert.equal(craftHand(g, 'campfire'), true);

@@ -63,12 +63,12 @@ Menu → 🎽 Équipement : tête, corps, pieds, accessoire. Le manteau d'hiver 
 - **Grange** : à rafistoler (100 bois + 60 pierres) ; on y trouve la pelle.
 - **Champ** : le lendemain du jour où l'on trouve la pelle, un **courrier** arrive (boîte aux lettres) avec **20 graines de blé**. À la pelle, on bêche des **carrés** sur l'herbe libre de la ferme ; on choisit les graines dans le sac et on **glisse** sur les carrés pour tout semer. Le **blé pousse en 1 jour** ; le lendemain, à la **faucille**, toucher un épi mûr récolte **tout le champ d'un coup**, sans bouger. Chaque carré donne 2 blés et 3 **pailles** (1 $ pièce).
 - **Coffre** : rangement (80 bois + 20 pierres), plan acheté chez Harry (60 $).
-- **Vendre** : à l'**étal**, au centre-ville, à côté de la fontaine (façon Hay Day). 10 objets en vente au plus au début. On choisit le prix, de la moitié au double du prix de base : à × 0,5, un habitant achète en 2 à 3 minutes ; un peu moins cher que le prix de base, dans la journée ; au prix de base ou plus, pendant la nuit ; au double, au bout de 2 jours. Les habitants y vendent aussi quelques objets chaque jour, assez cher.
+- **Vendre** : à l'**étal**, sur la place du panneau (façon Hay Day). 10 objets en vente au plus au début. On règle soi-même le prix à l'unité (de la moitié au double du prix de base) : moins c'est cher, plus ça part vite ; plus c'est cher, plus il faut être patient (le délai exact n'est pas affiché et varie un peu au hasard). Les habitants y vendent aussi quelques objets chaque jour, assez cher.
 - **Animaux** : poule, lapin, cochon, mouton, chien et chat (marchand d'animaux du centre-ville).
 
 ## 8. Fabriquer et cuisiner
-- **Feu de camp** (5 bois + 2 pierres) : grillades.
-- **Chaudron** (20 pierres + 10 bois, patron et louche chez Igor) : soupes, confitures.
+- Plus de feu de camp (20/11) : on cuisine au chaudron.
+- **Chaudron** (20 pierres + 10 bois) : Remy, le cuistot, en offre le plan une fois son four réparé. On le pose sur la ferme, on y met jusqu'à 5 ingrédients, on fait cuire (quelques secondes) et on découvre le plat — façon Breath of the Wild. Baies ou mûres → confiture. Chaque plat découvert s'ajoute au menu → 📜 Recettes.
 - **Établi** de la cabane : objets.
 - Les recettes se débloquent **selon le niveau**.
 - **Métiers** (10 niveaux chacun) : Forgeron, Alchimiste, Couturier, Joaillier, Cuisinier, Charpentier ; on gagne de l'XP de métier en fabriquant.
@@ -88,7 +88,7 @@ Menu → 🎽 Équipement : tête, corps, pieds, accessoire. Le manteau d'hiver 
 - Habitants : **Myst**, **Luna**, **Franck**, **Hailey** (clinique), **Manu** (le Maire, ranch), **Igor** (forgeron), **Ed** (saloon), **Suzie**, **Jade**, **Remy Gusto** (restaurant), **Harry Fordson** (charpentier), le **cocher**, l'**esprit** de la vieille femme (la nuit, sur la ferme) ; **Rouky** et **Rox** (cabane du pêcheur).
 
 ## 12. Quêtes
-- **Principales** : « Premiers pas » (tente, nuit, pioche, hache, feu, cabane, four de Remy, grange et pelle), « Ghostbuster » (l'esprit de la ferme) ; « Le premier champ » (courrier des graines → bêcher → semer → récolter) ; « La canne de Rouky » (elle apparaît quand on va le voir : os pour Rox → canne à pêche).
+- **Principales** : « Premiers pas » (tente, nuit, pioche, hache, cabane, four de Remy, grange et pelle), « Ghostbuster » (l'esprit de la ferme) ; « Le premier champ » (courrier des graines → bêcher → semer → récolter) ; « La canne de Rouky » (elle apparaît quand on va le voir : os pour Rox → canne à pêche). « Le premier étal » (Suzie, à l'étal de la place, apprend à vendre et donne un bois pour essayer) ; « La cuisine du chef » (le plan du chaudron de Remy, le fabriquer, le poser, y cuire des baies ou des mûres).
 - **Secondaires** : elles apparaissent quand la cabane est retapée. Les premières : **Agrandir la cabane**, **Un vrai lit**, **Un coffre pour ranger** (plans chez Harry), **Aider Franck à sortir**.
 - **Du jour** : au panneau d'affichage du centre-ville.
 - **Demandes de fabrication** : une par habitant et par semaine (« 🛠️ Une demande ? »), et une au panneau.

@@ -77,6 +77,8 @@ import { createGamesPanel } from './ui/gamesPanel.js';
 import { createInventoryGrid } from './ui/inventoryGrid.js';
 import { createSellPanel } from './ui/sellPanel.js';
 import { createCalendarPanel } from './ui/calendarPanel.js';
+import { createPotPanel } from './ui/potPanel.js';
+import { etalTick } from './systems/etal.js';
 import { createStandPanel } from './ui/standPanel.js';
 import { standTick } from './systems/stand.js';
 import { yvanGift } from './systems/equip.js';
@@ -97,7 +99,8 @@ const wheel = createWheel(g, audio);
 const invGrid = createInventoryGrid(g, audio);
 const sellPanel = createSellPanel(g, audio);
 const standPanel = createStandPanel(g, audio);   // 19/11 : l'étal (sur la place du panneau)
-const calendarPanel = createCalendarPanel(g, audio);   // 19/11 : le grand panneau (calendrier, météo)
+const calendarPanel = createCalendarPanel(g, audio);
+const potPanel = createPotPanel(g, audio);   // 20/11 : cuisine au chaudron   // 19/11 : le grand panneau (calendrier, météo)
 const chestPanel = createChestPanel(g, audio);
 createFishPanel(g, audio);
 createParcPanel(g, audio);
@@ -117,7 +120,7 @@ function wireBus() {
   g.bus.on('openChest', c => chestPanel.open(c));
   g.bus.on('showMap', () => { mapView.open(); toast('🗺️ Le plan est toujours là : bouton 🗺️ en haut à droite (ou touche M).'); });
   g.bus.on('clinic', e => { const h = NPCS.hailey, lines = e && e.off === 'repos' ? h.clinicRepos : e && e.off === 'nuit' ? h.clinicNuit : h.clinic; setTimeout(() => g.bus.emit('say', { name: h.name, color: h.color, voice: h.voice, lines }), 600); });
-  g.bus.on('open', what => what === 'settings' ? settingsPanel.open() : what === 'journal' ? menu.openJournal() : what === 'board' ? board.open() : what === 'sell' ? sellPanel.open() : what === 'stand' ? standPanel.open() : what === 'calendar' ? calendarPanel.open() : what === 'quests' ? menu.open('quests', true) : menu.open(what, true));
+  g.bus.on('open', what => what === 'pot' ? potPanel.open() : what === 'settings' ? settingsPanel.open() : what === 'journal' ? menu.openJournal() : what === 'board' ? board.open() : what === 'sell' ? sellPanel.open() : what === 'stand' ? standPanel.open() : what === 'calendar' ? calendarPanel.open() : what === 'quests' ? menu.open('quests', true) : menu.open(what, true));
 }
 wireBus();
 
@@ -216,7 +219,7 @@ function doAction() {
   }
   const it = ITEMS[S.sel];
   const fireNear = (S.fires || []).some(f => Math.hypot(f.x + .5 - S.x, f.y + .5 - S.y) < 2.2);
-  if (fireNear && COOK[S.sel]) { const f = fireAt(S, ft.tx, ft.ty) ? { x: ft.tx, y: ft.ty } : S.fires.find(f => Math.hypot(f.x + .5 - S.x, f.y + .5 - S.y) < 2.2); act(g, f.x, f.y); return; }   // 19/11 : près du feu, les baies se grillent (au lieu d'être mangées)
+  // 20/11 : plus de baies jetées sur le feu (la cuisine se fait au chaudron)
   if (it && it.eat && !it.seed) { if (consume(g, S.sel)) audio.play('feed'); return; }
   if (S.sel === 'axe' || S.sel === 'pick') {   // 20/11 : on vise la cible la plus proche ; sinon, coup dans le vide
     const aim = aimTile(S, S.sel, ft);
@@ -242,7 +245,8 @@ addEventListener('keydown', e => {
 });
 
 $('#bSave').onclick = () => doSave(true);
-g.bus.on('saveNow', () => doSave(true));   // 20/11 : bouton 💾 dans les réglages
+g.bus.on('saveNow', () => doSave(true));
+g.bus.on('refreshView', () => renderer.invalidate());   // 20/11   // 20/11 : bouton 💾 dans les réglages
 // Intro : ⏩ maintenir pour accélérer, ⏭ passer jusqu'à la ferme
 { const f = $('#bIntroFast'), on = v => { g.introFast = v; f.classList.toggle('on', v); };
   f.addEventListener('pointerdown', e => { e.preventDefault(); on(true); }); for (const ev of ['pointerup', 'pointerleave', 'pointercancel']) f.addEventListener(ev, () => on(false));
@@ -344,7 +348,7 @@ function loop(now) {
     renderer.updateParticles(dt);
     renderer.render(now);
     // 20/11 : le cadre en haut à gauche reste affiché tout le temps (la caméra suit le héros jusqu'aux bords)
-    if ((hudT += dt) > 0.25) { hudT = 0; if (started && !introActive(g.S)) { questXpTick(g, QUESTS); letterTick(g); standTick(g); yvanGift(g); } hud.update(); { const v = $('#vitals'); if (v) v.style.visibility = introActive(g.S) ? 'hidden' : ''; } repairPanel.update(started && !dialog.isOpen && !document.querySelector('.overlay.on')); }
+    if ((hudT += dt) > 0.25) { hudT = 0; if (started && !introActive(g.S)) { questXpTick(g, QUESTS); letterTick(g); standTick(g); if (!dialog.isOpen) etalTick(g); yvanGift(g); } hud.update(); { const v = $('#vitals'); if (v) v.style.visibility = introActive(g.S) ? 'hidden' : ''; } repairPanel.update(started && !dialog.isOpen && !document.querySelector('.overlay.on')); }
   }
   if (custom.isOpen()) custom.draw(now);
   if (title.isOpen()) title.draw(now);

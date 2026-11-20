@@ -10,7 +10,7 @@ export function defaultState() {
     day: 1, season: 0, year: 1, minute: CFG.DAY_START, weather: 'sun',
     inv: { tent: 1 },   // 17/11 : seulement la tente au départ (plus de graines, de foin ni de sac à dos)
     sel: 'hand', invOrder: [], saleLog: [], chests: [], fishLog: {}, parc: {},   // poissons pêchés : { id: { n, best, first, last } }   // coffres posés { x, y, items }   // ordre des cases choisi par le joueur
-    tent: null, bed: false, recipes: ['campfire'], fires: [], bushes: {}, tips: {}, pots: [],   // recettes connues, feux posés, buissons cueillis (jour)          // tente posée {x,y} ; lit de la maison à construire
+    tent: null, bed: false, recipes: [], fires: [], bushes: {}, tips: {}, pots: [],   // recettes connues, feux posés, buissons cueillis (jour)          // tente posée {x,y} ; lit de la maison à construire
     x: 4.5, y: 7.6, dir: 3,          // Farmwest : on descend de la locomotive, sur le quai de la gare (scène « gare »)
     plots: {}, objs: null,
     animals: [],

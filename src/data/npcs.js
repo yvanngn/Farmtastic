@@ -310,6 +310,14 @@ export const SUZIE = {
   home: 'ed', stay: true, inside: { x: 2.5, y: 3.6 },
   traits: ['Femme d’Ed', 'Maman de Jade'], taste: {},
   chat: ["Bonjour ! Vous connaissez mon mari, Ed ? Il passe ses journées au saloon.", "Jade joue en haut. Elle a toujours mille idées."],
+  // 20/11 : quête « Le premier étal » — elle tient l'étal voisin et apprend à vendre
+  etal: [
+    "Oh, bonjour ! Tu dois être la nouvelle tête de la ferme. Moi, c'est Suzie, la femme d'Ed, du saloon.",
+    "Je viens vendre quelques bricoles ici. Regarde : je pose mes confitures sur l'étal et je choisis mon prix.",
+    "Le secret ? Moins c'est cher, plus ça part vite. Plus c'est cher, plus il faut être patient… mais ça rapporte davantage.",
+    "Tiens, prends ce morceau de bois et essaie : touche l'étal, choisis-le, règle le prix et mets-le en vente."
+  ],
+  etalFin: ["Et voilà, ta première vente ! Tu vois, ce n'est pas sorcier. À bientôt sur la place !"],
   questions: []
 };
 export const JADE = {
@@ -398,6 +406,13 @@ export const CUISTOT = {
     "Comme promis, voici mon couteau. Pour les fleurs et les champignons, rien de mieux : une coupe nette, ça repousse mieux."
   ],
   chat: ["Le four ronronne comme au premier jour.", "Un jour, je ferai une carte avec les légumes de ta ferme."],
+  // 20/11 : quête « La cuisine du chef » — il offre le plan du chaudron et explique la cuisine
+  chaudron: [
+    "Dis donc, tu manges quoi, là-haut, à ta ferme ? Des baies crues ? Il te faut un chaudron !",
+    "Tiens, voici le plan. Fabrique-le (📜 Recettes : 20 pierres et 10 bois), puis pose-le sur ta ferme.",
+    "Ensuite, c'est simple : tu mets des ingrédients dedans, tu fais cuire, et tu vois ce que ça donne.",
+    "Avec des baies ou des mûres, par exemple… tu verras bien ! Chaque plat découvert s'ajoute à tes recettes."
+  ],
   questions: []
 };
 // Harry Fordson, le charpentier (décrit par l'utilisateur le 17/11) : charpentier de père en fils, très doué. Il a une maladie

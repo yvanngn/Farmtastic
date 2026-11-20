@@ -513,3 +513,6 @@ body.bande[data-nrj="vert"] #nrjVert { bottom: calc(var(--bande) + var(--pad) * 
 @media (max-height: 500px) and (orientation: landscape) { #vitals { top: calc(var(--sa-t) + var(--pad) * 2 + clamp(40px, 11vmin, 52px)); right: calc(var(--sa-r) + var(--pad)) } }
 @media (pointer: coarse) { #dlg.haut { top: calc(var(--sa-t) + 52px); bottom: auto } }   /* 20/11 : sur téléphone (même en paysage), les bulles du tuto restent en haut */
 #vitals #vEn { background: linear-gradient(90deg, #3e9a32, var(--energie), #a6e36e) } #vitals .bar i { display: block; height: 100% }
+.st-prix { display: flex; align-items: center; gap: 6px; margin: 6px 0 } .st-prix input[type=range] { flex: 1 }
+.pot-slots { display: flex; gap: 6px; justify-content: center; margin: 8px 0 } .pot-slot { width: 46px; height: 46px; padding: 0; border-radius: 50% }
+.st-form .st-prix button { width: auto; flex: none; min-width: 40px } .st-prix span { min-width: 70px }

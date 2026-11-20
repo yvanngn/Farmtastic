@@ -9,7 +9,7 @@ export const HAND_RECIPES = {
   tisane: { out: 'tisane', q: 1, in: { berry: 2, paquerette: 2 }, cat: 'potions', job: 'alchimiste', lvl: 2 },
   bonnet: { out: 'bonnet', q: 1, in: { wool: 2 }, cat: 'couture', job: 'couturier', lvl: 3 }
 };
-export const START_RECIPES = ['campfire'];
+export const START_RECIPES = [];   // 20/11 : plus de feu de camp (la cuisine se fait au chaudron)
 // Onglets des recettes, par type d'objet (les autres types viendront avec les nouvelles recettes).
 export const RECIPE_CATS = { feu: '🔥 Feu et cuisine', rangement: '📦 Rangement', outils: '🛠️ Outils', armes: '⚔️ Armes', bijoux: '💍 Bijoux', potions: '⚗️ Potions', couture: '🧵 Couture', deco: '🪴 Décoration' };
 // Cuisson au feu de camp : objet en main → objet cuit, en 5 secondes.

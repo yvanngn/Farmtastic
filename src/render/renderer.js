@@ -151,7 +151,8 @@ const ART_IM = {};
 const artImage = id => { if (ART_IM[id] !== undefined) return ART_IM[id]; const u = itemArt(id); if (!u) return (ART_IM[id] = null); const im = new Image(); im.src = u; return (ART_IM[id] = im); };
 import { quarryMouthOpen } from '../world/quarrymouth.js';
 import { QUARRY_MOUTHS, STAND_POS, SHOP_VENDOR, VENDOR_POS } from '../world/scenes.js';
-import { IGOR, HARRY } from '../data/npcs.js';
+import { IGOR, HARRY, SUZIE } from '../data/npcs.js';
+import { suzieAtStand, SUZIE_STAND } from '../systems/etal.js';
 import { PICKUPS, isBroken } from '../systems/grange.js';
 import { buildWild, drawMob, drawZRock, drawShroom, drawForestTree } from './wild.js';
 import { MUSHROOMS } from '../data/items.js';
@@ -203,7 +204,7 @@ import { SCENES } from '../world/scenes.js';
 import { ANIMALS } from '../data/animals.js';
 import { ITEMS } from '../data/items.js';
 import { darkness, timeTint, sunShadow } from '../systems/weather.js';
-import { SHADOW, harmonize, shade } from './pixel.js';
+import { SHADOW, harmonize, shade, clearAllCaches } from './pixel.js';
 import { SHEETS } from './sheets.js';
 import { TRAIN_IMG } from './trainimg.js';
 let GHOST_IMG; const ghostSheet = () => { if (GHOST_IMG === undefined && typeof Image !== 'undefined') { GHOST_IMG = null; const im = new Image(); im.onload = () => { GHOST_IMG = im; }; im.src = SHEETS.esprit.url; } return GHOST_IMG; };
@@ -446,7 +447,7 @@ let swing = null;
       for (const f of S.fires || []) list.push({ z: f.y + .7, d: () => drawFire(ctx, f.x, f.y, now) });
       if (ghostVisible(S)) list.push({ z: GHOST.y + .9, d: () => drawGhost(ctx, GHOST.x, GHOST.y, now) });
       for (const p of S.pots || []) list.push({ z: p.y + .7, d: () => { drawPot(ctx, p.x, p.y, now, !!p.cook);
-        if (p.cook) { const x = p.x * T, y = p.y * T - 8; ctx.fillStyle = 'rgba(0,0,0,.55)'; ctx.fillRect(x - 1, y - 1, 18, 5); ctx.fillStyle = p.cook.p >= 1 ? '#7ad04a' : '#f2a03a'; ctx.fillRect(x, y, Math.round(16 * p.cook.p), 3); } } });
+        if (p.cook) { const cp = p.cook.t0 != null ? Math.min(1, (g.now() - p.cook.t0) / 4000) : (p.cook.p || 0); const x = p.x * T, y = p.y * T - 8; ctx.fillStyle = 'rgba(0,0,0,.55)'; ctx.fillRect(x - 1, y - 1, 18, 5); ctx.fillStyle = cp >= 1 ? '#7ad04a' : '#f2a03a'; ctx.fillRect(x, y, Math.round(16 * cp), 3); } } });
       if (g.cooking) list.push({ z: 9997, d: () => { const p = cookProgress(g), x = g.cooking.x * T, y = g.cooking.y * T - 8;
         ctx.fillStyle = 'rgba(0,0,0,.55)'; ctx.fillRect(x - 1, y - 1, 18, 5); ctx.fillStyle = '#f2a03a'; ctx.fillRect(x, y, Math.round(16 * p), 3); } });
     }
@@ -569,6 +570,7 @@ let swing = null;
       } }); }
     }
     if (SC.shop && SHOP_VENDOR[SC.shop]) { const v = { igor: IGOR, harry: HARRY }[SHOP_VENDOR[SC.shop]]; if (v) list.push({ z: VENDOR_POS.y, d: () => { drawChar(ctx, Math.round(VENDOR_POS.x * T - 6), Math.round(VENDOR_POS.y * T - 19), v.look, 0, 0, now); label(v.name, VENDOR_POS.x * T, VENDOR_POS.y * T - 25); } }); }   // 20/11 : le vendeur derrière son comptoir
+    if (scene === 'place' && suzieAtStand(S)) list.push({ z: SUZIE_STAND.y, d: () => { drawChar(ctx, Math.round(SUZIE_STAND.x * T - 6), Math.round(SUZIE_STAND.y * T - 19), SUZIE.look, 2, 0, now); label(SUZIE.name, SUZIE_STAND.x * T, SUZIE_STAND.y * T - 25); } });   // 20/11 : Suzie à l'étal
     if (scene === 'place') list.push({ z: STAND_POS.y + .9, d: () => {   // 19/11 : l'étal de vente, sur la place du panneau
       const x = STAND_POS.x * T, y = STAND_POS.y * T, R2 = (a, b, w, h, k) => { ctx.fillStyle = k; ctx.fillRect(x + a, y + b, w, h); }, lots = (S.stand && S.stand.lots) || [];
       R2(0, 14, 32, 3, 'rgba(30,15,5,.3)');
@@ -719,7 +721,12 @@ let swing = null;
     };
   }
 
+  // 20/11 : tout redessiner (sols, intérieurs, sprites) — après un retour sur l'appli, ou depuis les réglages
+  function invalidate() { for (const k in interiors) delete interiors[k]; farm = null; farmSeason = -1; cache = null; cacheScene = ''; cacheSeason = -1; for (const k in EDGE_PAT) delete EDGE_PAT[k]; clearAllCaches(); resize(); }
+  document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') invalidate(); });
+  addEventListener('pageshow', e => { if (e.persisted) invalidate(); });
+  cv.addEventListener('contextrestored', invalidate);
   addEventListener('resize', resize); addEventListener('ferme-zoom', resize);
   resize();
-  return { render, resize, initWeather, updateParticles: update, screenToTile, farmGround };
+  return { render, resize, initWeather, updateParticles: update, screenToTile, farmGround, invalidate };
 }

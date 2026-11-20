@@ -4,7 +4,7 @@
 export const PATTERNS = {
   p_coffre: { n: 'Plan du coffre', recipe: 'chest', price: 60, shop: 'carpenter', job: 'charpentier' },   // 18/11 : chez Harry Fordson (💡 prix)
   p_lit: { n: 'Plan du lit', recipe: 'lit', price: 80, shop: 'carpenter', job: 'charpentier' },
-  p_chaudron: { n: 'Patron du chaudron', recipe: 'chaudron', price: 50, shop: 'forge', job: 'forgeron' },
+  p_chaudron: { n: 'Patron du chaudron', recipe: 'chaudron', price: 50, shop: 'forge', job: 'forgeron', soon: true },   // 20/11 : c'est Remy qui le donne (quête « La cuisine du chef »)
   p_bague: { n: 'Patron : bague de cuivre', recipe: 'bague_cuivre', price: 120, shop: 'forge', job: 'joaillier', soon: true },
   p_tisane: { n: 'Patron : tisane fleurie', recipe: 'tisane', price: 60, shop: 'stall', job: 'alchimiste', soon: true },
   p_bonnet: { n: 'Patron : bonnet de laine', recipe: 'bonnet', price: 80, shop: 'stall', job: 'couturier', soon: true },

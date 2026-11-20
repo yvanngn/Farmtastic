@@ -6,6 +6,6 @@ export const SHOPS = {
   fishmonger: { n: 'Poissonnerie', i: '🐟', sells: ['fish', 'shrimp', 'salmon'] },
   stall: { n: 'Magasin général',   // 💡 nom western (avant : Étal du marché)
     i: '🌱', sells: ['hay_seed', 'wheat_seed', 'carrot_seed', 'corn_seed', 'manteau'] },
-  forge: { n: 'Forge d’Igor', i: '⚒️', sells: ['louche'] },
+  forge: { n: 'Forge d’Igor', i: '⚒️', sells: [] },   // 20/11 : plus besoin de louche
   feed: { n: 'Marchand d\'animaux', i: '🐾', sells: ['hay'] }
 };

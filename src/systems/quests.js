@@ -20,7 +20,6 @@ export const QUESTS = {
       { id: 'nuit', t: 'Dès 18h il fait nuit : dormir sous la tente (pas couché à 1h → clinique et frais)', done: S => !!S.quests?.debut?.dormi || isRepaired(S, 'house') },
       { id: 'pioche', t: 'Trouver la pioche, posée contre la grange', done: S => !!S.tools?.pick },
       { id: 'hache', t: 'Trouver la hache, au pied du grand arbre de la ferme', done: S => !!S.tools?.axe },
-      { id: 'feu', t: 'Faire un feu de camp (📜 Recettes : 5 bois + 2 cailloux)', done: S => (S.fires || []).length > 0 || (S.inv?.campfire || 0) > 0 || isRepaired(S, 'house') },
       { id: 'cabane', t: 'Retaper la cabane : 40 bois et 15 pierres (marteau 🔨 ; les pierres sont à la carrière, au nord de la ferme)', done: S => isRepaired(S, 'house') },
       { id: 'four', t: 'Aider le cuistot du restaurant (centre-ville) : réparer son four au marteau (30 pierres + 15 bois) — il te donnera son couteau', done: S => !!S.resto?.knife || !!S.tools?.knife },
       { id: 'grange', t: 'Rafistoler la grange (100 bois et 60 pierres) et y trouver la pelle, pour bêcher et planter', done: S => !!S.tools?.shovel }
@@ -34,6 +33,25 @@ export const QUESTS = {
       { id: 'becher', t: 'Bêcher des carrés de terre à la pelle 🪏, sur l’herbe de la ferme', done: S => Object.keys(S.tilled || {}).length > 0 },
       { id: 'semer', t: 'Choisir les graines de blé dans le sac et glisser sur les carrés pour semer', done: S => Object.values(S.plots || {}).some(p => p.crop === 'wheat') || !!S.quests?.champ?.recolte },
       { id: 'recolter', t: 'Le lendemain, récolter tout le champ d’un coup à la faucille', done: S => !!S.quests?.champ?.recolte }
+    ]
+  },
+  // 20/11 : Suzie, à l'étal de la place, apprend à vendre
+  etal: {
+    n: 'Le premier étal', i: '🧺', main: true, unlock: S => !!S.quests?.etal?.met,
+    steps: [
+      { id: 'suzie', t: "Rencontrer Suzie à l'étal de la place du panneau", done: S => !!S.quests?.etal?.met },
+      { id: 'vendre', t: "Mettre un objet en vente à l'étal (moins c'est cher, plus ça part vite)", done: S => !!(S.stand && (S.stand.lots.length || S.stand.log.length)) },
+      { id: 'vendu', t: 'Attendre que quelqu’un l’achète', done: S => !!(S.stand && S.stand.log.length) }
+    ]
+  },
+  // 20/11 : Remy (une fois le four réparé) offre le plan du chaudron et apprend à cuisiner
+  cuisine: {
+    n: 'La cuisine du chef', i: '🍲', main: true, unlock: S => !!S.resto?.knife,
+    steps: [
+      { id: 'plan', t: 'Retourner voir Remy au restaurant', done: S => (S.recipes || []).includes('chaudron') },
+      { id: 'fabriquer', t: 'Fabriquer le chaudron (📜 Recettes : 20 pierres + 10 bois)', done: S => (S.inv?.chaudron || 0) > 0 || (S.pots || []).length > 0 },
+      { id: 'poser', t: 'Le poser sur la ferme (chaudron en main, toucher l’herbe)', done: S => (S.pots || []).length > 0 },
+      { id: 'cuire', t: 'Y faire cuire des baies ou des mûres', done: S => (S.recipes || []).some(r => r === 'confiture_baies' || r === 'confiture_mures') }
     ]
   },
   // Lot 13 : la lettre de Golgolas (dès le niveau 5) ouvre la zone cachée au sud de la gare

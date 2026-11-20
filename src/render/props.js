@@ -1,3 +1,4 @@
+import { ALL_CACHES } from './pixel.js';
 // 18/11 (soir) : décors animés au niveau des personnages « pixel moderne » : même moteur (formes vectorielles → pixels,
 // 4 tons par couleur, contour teinté). Diligence (caisse, roues qui tournent, chevaux au trot, cocher), locomotive et wagons,
 // fontaines. Chaque image n'est calculée qu'une fois (cache).
@@ -7,7 +8,7 @@ const P2 = f => { const p = new Path2D(); f(p); p.closePath(); return p; };
 const E = (cx, cy, rx, ry) => P2(p => p.ellipse(cx, cy, rx, ry, 0, 0, Math.PI * 2));
 const RR = (x, y, w, h, r) => { const p = new Path2D(); p.roundRect(x, y, w, h, r); return p; };
 const POLY = (...a) => P2(p => { p.moveTo(a[0], a[1]); for (let i = 2; i < a.length; i += 2) p.lineTo(a[i], a[i + 1]); });
-const CACHE = new Map();
+const CACHE = new Map(); ALL_CACHES.push(CACHE);   // 20/11
 const cached = (k, f) => { if (typeof document === 'undefined') return null; let v = CACHE.get(k); if (!v) { v = f(); CACHE.set(k, v); } return v; };
 const draw = (parts, mats, W, H, pattern = {}, feat = []) => renderPixel({ parts, feat, mats, pattern }, W, H, { s: 1, shade: 1, deep: true, selout: true, inner: true, noStrands: true });
 

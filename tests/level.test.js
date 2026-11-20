@@ -22,7 +22,7 @@ test('lot 8 : 1 XP par arbre ou caillou cassé, 5 par objet fabriqué, plusieurs
   S.objs = { '20,20': { t: 'tree', k: 'oak', g: 3, hp: 1 }, '21,20': { t: 'rock', hp: 1 } };
   S.x = 20.5; S.y = 21; hitObject(g, 20, 20); assert.equal(S.pxp, 1);
   S.sel = 'pick'; hitObject(g, 21, 20); assert.equal(S.pxp, 2);
-  S.inv = { wood: 5, stone: 2 }; S.pxp = 10; assert.equal(craftHand(g, 'campfire'), true); assert.equal(S.pxp, 15);
+  S.inv = { wood: 5, stone: 2 }; S.recipes = ['campfire']; S.pxp = 10; assert.equal(craftHand(g, 'campfire'), true); assert.equal(S.pxp, 15);
   const Q = { a: { n: 'A', steps: [{ done: () => true }] }, b: { n: 'B', main: true, steps: [{ done: () => true }, { done: s => !!s.fin }] } };
   S.pxp = 0; S.xpQuests = {};
   assert.equal(questXpTick(g, Q), XP.quest + XP.step, 'quête secondaire résolue + une étape de la principale');

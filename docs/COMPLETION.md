@@ -4,11 +4,14 @@ Tout ce qu'un joueur peut accomplir, à cocher. À jour au **18/11/2026 (v0.1.51
 Le détail de chaque point est dans `docs/MANUEL.md`.
 
 ## Quêtes principales
-- [ ] **Premiers pas** : tente · première nuit · pioche · hache · feu de camp · cabane retapée · four de Remy (couteau) · grange et pelle
+- [ ] **Premiers pas** : tente · première nuit · pioche · hache · cabane retapée · four de Remy (couteau) · grange et pelle
 - [ ] **Ghostbuster** : 3 nuits · approcher l'esprit · ⏳ lui parler (objet à venir)
 - [ ] **La canne de Rouky** : aller voir Rouky à la cabane du pêcheur · trouver un os en creusant un petit tas · donner l'os à Rox · recevoir la canne à pêche sommaire
 
 - [ ] **Le premier champ** : lire le courrier · bêcher des carrés · semer le blé · tout récolter à la faucille
+
+- [ ] **Le premier étal** : rencontrer Suzie · mettre un objet en vente · première vente
+- [ ] **La cuisine du chef** : plan du chaudron (Remy) · fabriquer · poser · cuire des baies ou des mûres
 
 ## Quêtes secondaires
 - [ ] **Agrandir la cabane** (80 bois + 30 pierres)

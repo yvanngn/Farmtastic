@@ -1,5 +1,5 @@
-// Patrons (achetés en magasin → recette apprise) et chaudron : on le pose sur la ferme, on choisit un plat,
-// puis on remue à la louche (rester appuyé) : la jauge monte, pleine = c'est prêt. Logique pure.
+// Patrons (achetés en magasin → recette apprise) et chaudron : on le pose sur la ferme, on y met des ingrédients,
+// ça cuit, on récupère le plat (20/11 : façon Breath of the Wild). Logique pure.
 import { PATTERNS, POT_RECIPES, POT_STIR, MAX_POTS } from '../data/patterns.js';
 import { isSolid, isPath, key } from '../world/map.js';
 import { add, has, canAdd } from './inventory.js';
@@ -29,40 +29,46 @@ export function placePot(g, x, y) {
   }
   add(g, 'chaudron', -1); pots.push({ x, y, cook: null });
   if (S.sel === 'chaudron' && !(S.inv.chaudron > 0)) S.sel = 'hand';
-  g.bus.emit('sfx', 'craft'); g.bus.emit('toast', '🍲 Chaudron posé ! Prends la louche 🥄 en main et touche-le pour cuisiner.');
+  g.bus.emit('sfx', 'craft'); g.bus.emit('toast', '🍲 Chaudron posé ! Touche-le pour y mettre des ingrédients.');
   return true;
 }
 export const canCookPot = (S, id) => Object.entries(POT_RECIPES[id].in).every(([k, n]) => has(S, k, n));
-export function startPot(g, pot, id) {
-  const S = g.S, r = POT_RECIPES[id];
-  if (!r || pot.cook || !knowsPot(S, id) || !canCookPot(S, id)) { g.bus.emit('sfx', 'denied'); return false; }
-  for (const [k, n] of Object.entries(r.in)) add(g, k, -n);
-  pot.cook = { r: id, p: 0 };
-  g.bus.emit('sfx', 'ui'); g.bus.emit('toast', '🥄 Remue ! Reste appuyé sur le chaudron jusqu’à ce que la jauge soit pleine.');
-  return true;
+// 20/11 (demande de l'utilisateur) : cuisine façon Breath of the Wild — on met des ingrédients dans le chaudron, ça cuit,
+// et on découvre le plat (la recette s'ajoute au menu 📜 Recettes). Plus de louche ni de choix du plat.
+export const COOK_MS = 4000;   // 💡 temps de cuisson
+export const POT_MAX = 5;      // ingrédients au plus dans le chaudron
+// Quel plat donnent ces ingrédients ? (le plus complet dont tous les ingrédients sont là ; null sinon)
+export function matchRecipe(S, picks) {
+  let best = null;
+  for (const [id, r] of Object.entries(POT_RECIPES)) {
+    if (!recipeOpen(S, r) || !Object.entries(r.in).every(([k, n]) => (picks[k] || 0) >= n)) continue;
+    const size = Object.values(r.in).reduce((a, b) => a + b, 0);
+    if (!best || size > best.size) best = { id, size };
+  }
+  return best && best.id;
 }
-// Un coup de louche. Renvoie 'need' (pas de louche), 'menu' (choix du plat), 'stir', 'done'.
+export function cookPot(g, pot, picks) {
+  const S = g.S;
+  for (const [k, n] of Object.entries(picks)) if (!has(S, k, n)) { g.bus.emit('sfx', 'denied'); return null; }
+  const id = matchRecipe(S, picks);
+  if (!id || pot.cook) { g.bus.emit('sfx', 'denied'); g.bus.emit('toast', '🍲 Hmm… ces ingrédients ne donnent rien. Essaie un autre mélange !'); return null; }
+  for (const [k, n] of Object.entries(POT_RECIPES[id].in)) add(g, k, -n);
+  pot.cook = { r: id, t0: g.now() };
+  g.bus.emit('sfx', 'craft'); g.bus.emit('toast', '🍲 Ça mijote…');
+  return id;
+}
+export const potReady = (g, pot) => !!pot.cook && (pot.cook.t0 == null || g.now() - pot.cook.t0 >= COOK_MS);   // (anciennes parties : prêt tout de suite)
+// Toucher le chaudron : 'menu' (choisir les ingrédients), 'cooking' (ça mijote), 'done' (plat récupéré), 'full'.
 export function usePot(g, pot) {
   const S = g.S;
-  if (S.sel !== 'louche') {
-    g.bus.emit('sfx', 'denied');
-    g.bus.emit('toast', (S.inv.louche > 0) ? '🥄 Prends la louche en main (sac → En main) pour cuisiner.' : '🥄 Il te faut une louche pour cuisiner (forge d’Igor).');
-    return 'need';
-  }
-  if (!pot.cook) {
-    const known = Object.keys(POT_RECIPES).filter(id => knowsPot(S, id)), ids = known.filter(id => canCookPot(S, id));
-    if (!ids.length) { g.bus.emit('toast', `🍲 Il manque des ingrédients. Ex. : ${known.map(id => POT_RECIPES[id]).map(r => Object.entries(r.in).map(([k, n]) => `${n} ${ITEMS[k].i}`).join(' + ') + ' → ' + ITEMS[r.out].i).join(', ')}`); return 'missing'; }
-    g.bus.emit('say', { name: 'Chaudron', color: '#ffdf8a', lines: ['Que préparer ?'], choices: [...ids.map(id => `${ITEMS[POT_RECIPES[id].out].i} ${ITEMS[POT_RECIPES[id].out].n}`), 'Rien.'],
-      onChoose: i => { if (ids[i]) startPot(g, pot, ids[i]); } });
-    return 'menu';
-  }
-  pot.cook.p = Math.min(1, Math.round((pot.cook.p + POT_STIR) * 1000) / 1000);
-  g.bus.emit('sfx', 'feed');
-  if (pot.cook.p < 1) return 'stir';
+  if (!pot.cook) { g.potOpen = pot; g.bus.emit('open', 'pot'); return 'menu'; }
+  if (!potReady(g, pot)) { g.bus.emit('toast', '🍲 Ça mijote encore un peu…'); return 'cooking'; }
   const r = POT_RECIPES[pot.cook.r];
   if (!canAdd(S, r.out, r.q)) { g.bus.emit('toast', 'Sac plein ! Le plat attend dans le chaudron.'); return 'full'; }
-  add(g, r.out, r.q); pot.cook = null;
-  g.bus.emit('sfx', 'collect'); g.bus.emit('pop', { t: `+${r.q} ${ITEMS[r.out].i}`, x: pot.x, y: pot.y });
+  const fresh = !(S.recipes || []).includes(pot.cook.r);
+  add(g, r.out, r.q); S.recipes = [...new Set([...(S.recipes || []), pot.cook.r])]; pot.cook = null;
+  g.bus.emit('sfx', fresh ? 'levelup' : 'collect'); g.bus.emit('pop', { t: `+${r.q} ${ITEMS[r.out].i}`, x: pot.x, y: pot.y });
+  if (fresh) g.bus.emit('toast', `📜 Nouvelle recette découverte : ${ITEMS[r.out].n} (menu → Recettes)`);
   gainJob(g, r.job); ((S.quests ||= {}).debut ||= {}).cuisine = true;
   gainPxp(g, XP.craft, 'craft');   // lot 8 : plat préparé = objet fabriqué
   return 'done';

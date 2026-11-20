@@ -40,8 +40,11 @@ export function outline(src, col = '#2b1b14') {
 }
 
 // Cache borné : les sprites coûteux ne sont dessinés qu'une fois.
+// 20/11 : toutes les images mises en cache, pour pouvoir tout redessiner (téléphone : le navigateur vide parfois les canvas en arrière-plan)
+export const ALL_CACHES = [];
+export const clearAllCaches = () => ALL_CACHES.forEach(m => m.clear());
 export function makeCache(max = 300) {
-  const m = new Map();
+  const m = new Map(); ALL_CACHES.push(m);
   return (key, build) => {
     let v = m.get(key);
     if (!v) { if (m.size >= max) m.clear(); v = build(); m.set(key, v); }

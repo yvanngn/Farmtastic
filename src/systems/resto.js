@@ -16,7 +16,11 @@ function giveKnife(g, n) {
 // Parler au cuistot : demande, rappel, ou remerciements + couteau. Renvoie true si la quête a parlé.
 export function cuistotTalk(g, n) {
   const S = g.S, q = restoQ(S), say = (lines, extra) => g.bus.emit('say', { name: n.name, color: n.color, voice: n.voice, lines, ...extra });
-  if (q.knife) return false;
+  if (q.knife) {   // 20/11 : quête « La cuisine du chef » : il offre le plan du chaudron
+    if ((S.recipes || []).includes('chaudron') || !n.chaudron) return false;
+    S.recipes = [...(S.recipes || []), 'chaudron']; (S.quests ||= {}).cuisine = { plan: true };
+    say(n.chaudron, { onEnd: () => { g.bus.emit('sfx', 'levelup'); g.bus.emit('toast', '📜 Nouvelle recette : le chaudron (20 🪨 + 10 🪵) — 📜 Recettes'); } }); return true;
+  }
   if (q.oven) { say(n.thanks, { onEnd: () => giveKnife(g, n) }); return true; }
   if (!q.asked) { q.asked = true; say(n.ask); return true; }
   say([n.reminder]); return true;
