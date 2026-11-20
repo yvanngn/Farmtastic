@@ -178,6 +178,25 @@ function sheetImage(name) {
   im.src = SHEETS[name].url;
   return null;
 }
+// 20/11 : toutes les planches sont chargées dès le démarrage (sinon, à sa première apparition, un personnage s'affichait
+// un instant avec le dessin de secours, le temps que sa planche se charge).
+export function preloadSheets() {
+  for (const name in SHEETS) { sheetImage(name); const S = SHEETS[name]; if (S.mask && typeof Image !== 'undefined' && !S._maskIm) S._maskIm = Object.assign(new Image(), { src: S.mask }); }
+}
+// 20/11 : profil droit = miroir du profil gauche, préparé une seule fois par planche (et par couleur de cheveux) au lieu
+// d'un retournement à chaque image et pour chaque personnage.
+const MIRRORED = new Map();
+function mirrored(key, img, sw, sh) {
+  let m = MIRRORED.get(key); if (m && m.src === img) return m.cv;
+  const w = img.width || img.naturalWidth, h = img.height || img.naturalHeight, cv = canvas(w, h), k = cv.getContext('2d');
+  for (let x = 0; x + sw <= w; x += sw) { k.save(); k.translate(x * 2 + sw, 0); k.scale(-1, 1); k.drawImage(img, x, 0, sw, h, x, 0, sw, h); k.restore(); }
+  MIRRORED.set(key, { src: img, cv }); return cv;
+}
+// Dessine l'image (col, row) d'une planche ; d === 3 → profil droit (miroir préparé).
+function drawCell(c, key, img, S, col, row, d, x, y) {
+  const src = d === 3 ? mirrored(key, img, S.sw, S.sh) : img;
+  c.drawImage(src, col * S.sw, row * S.sh, S.sw, S.sh, x, y, S.fw, S.fh);
+}
 // 19/11 : le héros et l'héroïne viennent des planches fournies par l'utilisateur (tools/hero-sheets.py), avec ou sans sac à dos.
 // Les cheveux se recolorent (masque des cheveux, teinte choisie modulée par la lumière d'origine). Une pose toutes les 150 ms.
 export const HERO_SHEET_MS = 150;
@@ -204,23 +223,20 @@ export const heroPickSheet = L => heroToolSheet(L, 'pick');
 export function drawHeroPick(c, ox, oy, L, d, p, tool = 'pick') {
   const name = heroToolSheet(L, tool), S = SHEETS[name], img = name && heroSheetImage(name, L.hairC && HERO_HAIR.includes(L.hairC) ? L.hairC : ''); if (!img) return false;
   const col = p < .3 ? 0 : p < .55 ? 1 : 2, row = d === 0 ? 0 : d === 1 ? 1 : 2, x = Math.round(ox + 6 - S.fw / 2), y = oy + 20 - S.fh;
-  if (d === 3) { c.save(); c.translate(x + S.fw, y); c.scale(-1, 1); c.drawImage(img, col * S.sw, row * S.sh, S.sw, S.sh, 0, 0, S.fw, S.fh); c.restore(); }
-  else c.drawImage(img, col * S.sw, row * S.sh, S.sw, S.sh, x, y, S.fw, S.fh);
+  drawCell(c, name + (L.hairC || ''), img, S, col, row, d, x, y);
   return true;
 }
 function drawHeroPlanche(c, ox, oy, L, d, f, t = 0) {
   const name = heroSheetName(L), S = SHEETS[name]; if (!S) return false;
   const img = heroSheetImage(name, L.hairC && HERO_HAIR.includes(L.hairC) ? L.hairC : ''); if (!img) return false;
   const col = f ? Math.floor(t / HERO_SHEET_MS) % 4 : 0, row = d === 0 ? 0 : d === 1 ? 1 : 2, x = Math.round(ox + 6 - S.fw / 2), y = oy + 20 - S.fh;
-  if (d === 3) { c.save(); c.translate(x + S.fw, y); c.scale(-1, 1); c.drawImage(img, col * S.sw, row * S.sh, S.sw, S.sh, 0, 0, S.fw, S.fh); c.restore(); }
-  else c.drawImage(img, col * S.sw, row * S.sh, S.sw, S.sh, x, y, S.fw, S.fh);
+  drawCell(c, name + (L.hairC || ''), img, S, col, row, d, x, y);
   return true;
 }
 function drawNpcPlanche(c, ox, oy, L, d, f, t = 0) {
   const S = SHEETS[L.planche], img = S && sheetImage(L.planche); if (!img) return false;
   const col = f ? Math.floor(t / HERO_SHEET_MS) % 4 : 0, row = d === 0 ? 0 : d === 1 ? 1 : 2, x = Math.round(ox + 6 - S.fw / 2), y = oy + 20 - S.fh;
-  if (d === 3) { c.save(); c.translate(x + S.fw, y); c.scale(-1, 1); c.drawImage(img, col * S.sw, row * S.sh, S.sw, S.sh, 0, 0, S.fw, S.fh); c.restore(); }
-  else c.drawImage(img, col * S.sw, row * S.sh, S.sw, S.sh, x, y, S.fw, S.fh);
+  drawCell(c, L.planche, img, S, col, row, d, x, y);
   return true;
 }
 function drawSheet(c, ox, oy, L, d, f) {

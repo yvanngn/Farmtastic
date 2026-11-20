@@ -10,6 +10,7 @@ import { journalHook } from './systems/journal.js';
 import { defaultState } from './core/state.js';
 import { genObjects } from './world/map.js';
 import { createRenderer } from './render/renderer.js';
+import { preloadSheets } from './render/sprites.js';
 import { autoLandscape } from './ui/screen.js';
 autoLandscape();   // 20/11 : paysage automatique sur téléphone
 import { createHud } from './ui/hud.js';
@@ -91,6 +92,7 @@ journalHook(g);   // 19/11 : le journal note chaque activité
 let started = false, net = { sb: null, uid: null }, mp = null, games = [], game = null, pending = null;
 const cv = $('#game');
 const renderer = createRenderer(cv, g);
+preloadSheets();   // planches des personnages chargées dès l'écran titre
 let store = null; try { store = localStorage; } catch { /* stockage bloqué */ }
 const audio = createAudio(g, store);
 const settingsPanel = createSettingsPanel(audio, g);
