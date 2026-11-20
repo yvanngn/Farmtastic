@@ -1,4 +1,5 @@
 import { bigRock, mergeRockHits } from '../systems/bigrock.js';
+import { battleState, noteBattle, onJoin, onAllyAct } from '../systems/battle.js';
 // Multijoueur via Supabase Realtime : Broadcast (positions) + Presence (nom, apparence).
 // Rien n'est écrit en base à haute fréquence.
 import { CFG } from '../config.js';
@@ -39,12 +40,15 @@ export const posMessage = (S, frame) => [S.x.toFixed(2), S.y.toFixed(2), S.dir, 
 
 // --- Connexion ---
 export function createMultiplayer({ sb, uid, g, world = CFG.WORLD }) {
-  let ch = null, last = 0, lastSent = '', lastRock = -1, lastRockT = 0;
+  let ch = null, last = 0, lastSent = '', lastRock = -1, lastRockT = 0, lastBt = 0, btTail = null;
   return {
     join() {
       if (!sb) return;
       ch = sb.channel('ferme:' + world, { config: { presence: { key: uid }, broadcast: { self: false } } });
       ch.on('broadcast', { event: 'pos' }, ({ payload }) => applyPos(g.others, payload, Date.now(), g.S.farmLot || 0));
+      ch.on('broadcast', { event: 'battle' }, ({ payload }) => payload && noteBattle(g, payload.id, payload.st));   // lot 30c : combats des autres joueurs
+      ch.on('broadcast', { event: 'battleJoin' }, ({ payload }) => payload && payload.host === uid && onJoin(g, payload));
+      ch.on('broadcast', { event: 'battleAct' }, ({ payload }) => payload && payload.host === uid && onAllyAct(g, payload));
       ch.on('broadcast', { event: 'rock' }, ({ payload }) => mergeRockHits(g.S, payload && payload.h));   // lot 29 : coups partagés sur l'énorme rocher
       ch.on('presence', { event: 'sync' }, () => { const st = ch.presenceState(); applyPresence(g.others, st, uid, Date.now()); for (const k in st) for (const p of st[k]) if (p && p.rock) mergeRockHits(g.S, p.rock); });
       ch.subscribe(s => { if (s === 'SUBSCRIBED') this.track(); });
@@ -59,8 +63,12 @@ export function createMultiplayer({ sb, uid, g, world = CFG.WORLD }) {
         ch.send({ type: 'broadcast', event: 'pos', payload: { id: uid, x: +S.x.toFixed(2), y: +S.y.toFixed(2), d: S.dir, f: g.player.walkFrame, s: sceneOut(S.scene, S.farmLot) } });
       }
       const h = bigRock(S).hits; if (h !== lastRock && now - lastRockT > 2000) { lastRock = h; lastRockT = now; ch.send({ type: 'broadcast', event: 'rock', payload: { id: uid, h } }); }   // ≤ 1 envoi / 2 s, seulement si ça change
+      const st = battleState(g);   // lot 30c : l'hôte d'un combat le diffuse (4 fois par seconde au plus), et encore 2 s après la fin
+      if (st) btTail = { st, until: now + 2000 }; else if (btTail && now > btTail.until) btTail = null;
+      if (btTail && now - lastBt > 250) { lastBt = now; ch.send({ type: 'broadcast', event: 'battle', payload: { id: uid, st: st || btTail.st } }); }
       pruneStale(g.others, Date.now());
     },
+    send(event, payload) { if (ch) ch.send({ type: 'broadcast', event, payload }); },   // lot 30c
     get online() { return !!ch; }
   };
 }

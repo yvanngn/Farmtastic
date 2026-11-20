@@ -66,6 +66,7 @@ Menu → 🎽 Équipement : tête, corps, pieds, accessoire. Le manteau d'hiver 
 - **Au tour par tour avec jauge** : chaque combattant agit quand sa jauge est pleine ; pendant que tu choisis, le temps s'arrête.
 - Actions : **⚔️ Attaquer** (l'épée frappe plus fort qu'à mains nues), **💥 Techniques** (Coup puissant 4 ⚡, Balayage 6 ⚡ sur tous), **🍞 Objets** (manger), **🛡️ Se défendre** (dégâts divisés par deux jusqu'à ton prochain tour), **💨 Fuir** (pas toujours possible).
 - Victoire : XP et butin. Défaite : réveil à la clinique (frais de Hailey).
+- **À plusieurs** : si un autre joueur se bat tout près, un bouton **⚔️ Rejoindre le combat** apparaît. Jusqu'à 4 héros par combat ; chacun reçoit son XP et son butin.
 
 ## 6. Petits tas à creuser
 - Partout sur la carte, **une vingtaine de petits tas par zone**, placés au hasard. On peut marcher dessus.

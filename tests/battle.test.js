@@ -33,3 +33,35 @@ test('lot 30a : victoire = XP et butin ; fuite manquée possible', () => {
   assert.equal(B.over, 'win'); assert.equal(S.pxp, xp0 + MOBS.slime_b.xp); assert.equal(S.inv.slime, 1);
   assert.equal(closeBattle(g), 'win'); assert.equal(g.battle, null);
 });
+
+// ---- lot 30c : combats en équipe (deux parties branchées l'une sur l'autre, sans réseau)
+import { battleState, onJoin, onAllyAct, noteBattle, joinable, joinBattle, closeBattle as close2 } from '../src/systems/battle.js';
+function duo() {
+  const A = makeGame({ rnd: seq(0.5), state: { name: 'Hôte', scene: 'wild', x: 5, y: 4, hp: 100, tools: { sword: 1 } } });
+  const Bp = makeGame({ rnd: seq(0.5), state: { name: 'Amie', scene: 'wild', x: 7, y: 4, hp: 80, tools: { sword: 1 }, inv: {} } });
+  A.g.uid = 'a'; Bp.g.uid = 'b';
+  const toHost = []; Bp.g.bus.on('net', m => toHost.push(m));
+  const e = { type: 'slime_b', x: 5, y: 4, hp: 100 }; A.g.enemies.push(e); startBattle(A.g, e);
+  const sync = () => { for (const m of toHost.splice(0)) (m.event === 'battleJoin' ? onJoin : onAllyAct)(A.g, m.payload); noteBattle(Bp.g, 'a', battleState(A.g)); };
+  return { A, Bp, sync };
+}
+test('lot 30c : un joueur proche voit le combat, le rejoint, attaque ; les monstres peuvent le viser', () => {
+  const { A, Bp, sync } = duo();
+  sync(); assert.equal(joinable(Bp.g).length, 1, 'combat visible à 2 cases');
+  assert.equal(joinBattle(Bp.g, 'a'), true); sync();
+  assert.ok(A.g.battle.allies.b); assert.equal(A.g.battle.allies.b.hp, 80);
+  A.g.battle.turn = true;                        // l'hôte réfléchit : les alliés continuent d'avancer
+  tickBattle(A.g, 3); sync(); assert.equal(Bp.g.battle.turn, true, 'la jauge de l’allié est pleine');
+  const hp0 = A.g.battle.foes[0].hp; heroAct(Bp.g, { act: 'attack' }); sync();
+  assert.ok(A.g.battle.foes[0].hp < hp0, 'l’attaque de l’allié touche'); assert.equal(Bp.g.battle.turn, false);
+  A.g.rnd = () => 0.9; A.g.battle.foes[0].atb = 0.999; A.g.battle.turn = false; A.g.battle.hero.atb = 0; tickBattle(A.g, 0.01); sync();
+  assert.ok(Bp.S.hp < 80, 'l’allié prend des coups (sa vie suit l’état de l’hôte)');
+});
+test('lot 30c : victoire partagée — chacun reçoit son XP et son butin', () => {
+  const { A, Bp, sync } = duo();
+  sync(); joinBattle(Bp.g, 'a'); sync();
+  const xpB = Bp.S.pxp; A.g.battle.foes[0].hp = 1; A.g.battle.turn = true; heroAct(A.g, { act: 'attack' }); sync();
+  assert.equal(A.g.battle.over, 'win'); assert.equal(Bp.g.battle.over, 'win');
+  assert.equal(Bp.S.pxp, xpB + MOBS.slime_b.xp); assert.equal(Bp.S.inv.slime, 1);
+  assert.equal(close2(Bp.g), 'win'); assert.equal(Bp.g.battle, null);
+});

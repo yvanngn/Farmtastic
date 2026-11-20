@@ -2,6 +2,7 @@
 
 Semver horodaté (heure de Paris). Patch automatique à chaque publication ; mineure et majeure sur décision de l'utilisateur.
 
+- **0.1.106** — 2026-11-21 00:40 — Lot 30c : combats en équipe
 - **0.1.105** — 2026-11-21 00:34 — Lot 30b : dédale profond, chênes, marmotte à grandes griffes
 - **0.1.104** — 2026-11-21 00:28 — Lot 30a : combat au tour par tour avec jauge
 - **0.1.103** — 2026-11-21 00:14 — 5 filons au plus à la carrière

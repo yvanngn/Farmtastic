@@ -305,7 +305,7 @@ Décrit par l'utilisateur : cabane à moitié prix ; journal dans la cabane (200
 - Découpage proposé :
   - [x] **30a** moteur de combat + écran de combat, en solo (v0.1.104) : jauges (pause pendant le choix), Attaquer, Techniques 💡 (Coup puissant 4 ⚡, Balayage 6 ⚡ sur tous), Objets (nourriture), Se défendre (dégâts ÷ 2), Fuir (6 chances sur 10 💡) ; XP et butin ; défaite = clinique. La Caverne sombre y passe : toucher un monstre lance le combat (ses voisins de salle à moins de 4 cases le rejoignent, 3 au plus) ;
   - [x] **30b** le dédale profond et la marmotte à grandes griffes (v0.1.105) ;
-  - [ ] **30c** combats en équipe (rejoindre un combat en cours) ;
+  - [x] **30c** combats en équipe (v0.1.106) : l'hôte calcule et diffuse le combat (4 fois par seconde au plus) ; un joueur à moins de 8 cases voit « ⚔️ Rejoindre le combat de … » ; jusqu'à 3 alliés ; les monstres visent un héros au hasard ; les alliés n'arrêtent pas le temps ; chacun tire son XP et son butin. ⚠️ Dans la Caverne sombre, chaque joueur voit ses propres monstres de salle ;
   - [ ] plus tard : boss, magie.
 
 ## Lot 31 — Routes plus larges sur toute la carte (à faire)

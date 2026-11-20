@@ -1,5 +1,5 @@
 // Lot 30a : écran de combat au tour par tour (fond de la zone, héros à gauche, monstres à droite, menu en bas).
-import { heroAct, closeBattle, TECHS, foodIds } from '../systems/battle.js';
+import { heroAct, closeBattle, TECHS, foodIds, joinable, joinBattle } from '../systems/battle.js';
 import { ITEMS } from '../data/items.js';
 import { MOBS } from '../data/wild.js';
 import { drawChar } from '../render/sprites.js';
@@ -10,7 +10,7 @@ const BG = { wild: ['#2a2430', '#3a3240', '#4a4050'], carriere: ['#8a8070', '#b8
 export function createBattleUI(g, audio) {
   const ov = document.createElement('div'); ov.id = 'ovBattle'; ov.className = 'overlay';
   ov.innerHTML = `<div class="panel box battle"><canvas id="btCv" width="320" height="150"></canvas>
-    <div id="btFoes" class="bt-foes"></div><div id="btLog" class="bt-log"></div>
+    <div id="btFoes" class="bt-foes"></div><div id="btAllies" class="bt-allies"></div><div id="btLog" class="bt-log"></div>
     <div class="bt-hero"><b id="btName"></b><div class="bt-bar vie"><i id="btHp"></i><span id="btHpT"></span></div><div class="bt-bar nrj"><i id="btEn"></i><span id="btEnT"></span></div><div class="bt-bar atb"><i id="btAtb"></i></div></div>
     <div id="btMenu" class="bt-menu"></div></div>`;
   document.body.appendChild(ov);
@@ -21,7 +21,7 @@ export function createBattleUI(g, audio) {
     const B = g.battle, M = $('#btMenu');
     if (!B) return;
     if (B.over) { M.innerHTML = `<button class="primaire" data-k="close">${B.over === 'win' ? '🏆 Continuer' : B.over === 'fled' ? '💨 Continuer' : '🏥 Continuer'}</button>`; return; }
-    if (!B.turn) { M.innerHTML = '<p class="info">⏳ Ta jauge se remplit…</p>'; return; }
+    if (!B.turn) { M.innerHTML = `<p class="info">${B.joining ? '🤝 On te fait une place dans le combat…' : '⏳ Ta jauge se remplit…'}</p>`; return; }
     const alive = B.foes.filter(f => f.hp > 0);
     if (pend) { M.innerHTML = '<p class="info">Quel ennemi ?</p>' + alive.map((f, i) => `<button data-k="target" data-v="${i}">${f.n} (${f.hp})</button>`).join('') + '<button data-k="back">◀</button>'; return; }
     if (sub === 'tech') { M.innerHTML = Object.entries(TECHS).map(([id, T]) => `<button data-k="tech" data-v="${id}" ${g.S.energy < T.e ? 'disabled' : ''} title="${T.txt}">${T.i} ${T.n} <small>${T.e} ⚡</small></button>`).join('') + '<button data-k="back">◀</button>'; return; }
@@ -62,11 +62,17 @@ export function createBattleUI(g, audio) {
     $('#btAtb').style.width = (100 * B.hero.atb) + '%'; $('#btAtb').parentElement.classList.toggle('pleine', B.turn);
     $('#btFoes').innerHTML = B.foes.map(f => `<div class="bt-foe${f.hp <= 0 ? ' ko' : ''}"><span>${f.n}</span><div class="bt-bar vie"><i style="width:${100 * f.hp / f.max}%"></i></div><div class="bt-bar atb"><i style="width:${100 * Math.min(1, f.atb)}%"></i></div></div>`).join('');
     $('#btLog').innerHTML = B.log.map(t => `<div>${t}</div>`).join('');
+    const al = [...(B.remote && B.hostInfo ? [B.hostInfo] : []), ...Object.values(B.allies || {})];   // 30c : les autres héros du combat
+    $('#btAllies').innerHTML = al.map(a => `<div class="bt-foe${a.down ? ' ko' : ''}"><span>🤝 ${a.name}</span><div class="bt-bar vie"><i style="width:${100 * a.hp / a.maxHp}%"></i></div><div class="bt-bar atb"><i style="width:${100 * Math.min(1, a.atb)}%"></i></div></div>`).join('');
     raf = requestAnimationFrame(draw);
   }
   g.bus.on('battle', what => {
     if (what === 'start') { sub = pend = null; ov.classList.add('on'); menu(); cancelAnimationFrame(raf); raf = requestAnimationFrame(draw); }
-    else if (what === 'turn' || what === 'win' || what === 'lose' || what === 'fled') menu();
+    else if (what === 'turn' || what === 'win' || what === 'lose' || what === 'fled' || what === 'join') menu();
   });
+  // 30c : bouton « Rejoindre le combat » quand un autre joueur se bat tout près
+  const jb = document.createElement('button'); jb.id = 'bJoinFight'; jb.className = 'primaire'; jb.hidden = true; document.body.appendChild(jb);
+  jb.addEventListener('click', () => { const j = joinable(g)[0]; if (j) joinBattle(g, j.hostId); jb.hidden = true; });
+  setInterval(() => { const j = !g.battle && joinable(g)[0]; jb.hidden = !j; if (j) jb.textContent = `⚔️ Rejoindre le combat de ${(j.host && j.host.name) || 'ton voisin'}`; }, 250);
   return { isOpen: () => ov.classList.contains('on') };
 }

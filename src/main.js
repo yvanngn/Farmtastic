@@ -104,6 +104,7 @@ const wheel = createWheel(g, audio);
 const invGrid = createInventoryGrid(g, audio);
 const sellPanel = createSellPanel(g, audio);
 const battleUI = createBattleUI(g, audio);   // lot 30a : combat au tour par tour
+g.bus.on('net', m => mp && mp.send && mp.send(m.event, m.payload));   // lot 30c : messages des combats en équipe
 const standPanel = createStandPanel(g, audio);   // 19/11 : l'étal (sur la place du panneau)
 const calendarPanel = createCalendarPanel(g, audio);
 const potPanel = createPotPanel(g, audio);   // 20/11 : cuisine au chaudron   // 19/11 : le grand panneau (calendrier, météo)
@@ -282,7 +283,7 @@ async function begin() {
   }
   if (!g.S.xpQuests) seedQuestXp(g.S, QUESTS);   // lot 8 : ce qui est déjà fait ne rapporte pas d'XP d'un coup
   started = true; g.inGame = true; custom.close(); hud.show(); hotbar.show(); renderer.initWeather(); ensureOrders(g);
-  if (net.sb) { playerMarket = createPlayerMarket(net.sb, net.uid, g); await upsertProfile(net.sb, net.uid, g.S); if (game && game.mode === 'multi') { mp = createMultiplayer({ sb: net.sb, uid: net.uid, g, world: game.id }); mp.join(); } }
+  if (net.sb) { playerMarket = createPlayerMarket(net.sb, net.uid, g); await upsertProfile(net.sb, net.uid, g.S); if (game && game.mode === 'multi') { g.uid = net.uid; mp = createMultiplayer({ sb: net.sb, uid: net.uid, g, world: game.id }); mp.join(); } }
   doSave(false);
 }
 
