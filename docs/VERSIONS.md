@@ -2,6 +2,7 @@
 
 Semver horodaté (heure de Paris). Patch automatique à chaque publication ; mineure et majeure sur décision de l'utilisateur.
 
+- **0.1.104** — 2026-11-21 00:28 — Lot 30a : combat au tour par tour avec jauge
 - **0.1.103** — 2026-11-21 00:14 — 5 filons au plus à la carrière
 - **0.1.102** — 2026-11-21 00:10 — Simplet le mineur, ancienne carrière profonde retirée, filons plus rares
 - **0.1.101** — 2026-11-21 00:00 — Lot 29 : carrière en dédale, énorme rocher, mineur et sa lettre

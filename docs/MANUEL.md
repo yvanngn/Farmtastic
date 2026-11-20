@@ -57,6 +57,12 @@ Menu → 🎽 Équipement : tête, corps, pieds, accessoire. Le manteau d'hiver 
 - Au centre, l'**énorme rocher** : 10 000 coups de pioche (2 cailloux tous les 10 coups, parfois un minerai). À plusieurs, tout le monde tape le même. Une fois cassé, un trou s'ouvre.
 - Le **mineur** attend à l'entrée ; au niveau 5, il t'envoie une lettre.
 
+## 5 ter. Combat
+- On voit les monstres ; les **toucher** ouvre l'écran de combat (les monstres proches se joignent au combat, 3 au plus).
+- **Au tour par tour avec jauge** : chaque combattant agit quand sa jauge est pleine ; pendant que tu choisis, le temps s'arrête.
+- Actions : **⚔️ Attaquer** (l'épée frappe plus fort qu'à mains nues), **💥 Techniques** (Coup puissant 4 ⚡, Balayage 6 ⚡ sur tous), **🍞 Objets** (manger), **🛡️ Se défendre** (dégâts divisés par deux jusqu'à ton prochain tour), **💨 Fuir** (pas toujours possible).
+- Victoire : XP et butin. Défaite : réveil à la clinique (frais de Hailey).
+
 ## 6. Petits tas à creuser
 - Partout sur la carte, **une vingtaine de petits tas par zone**, placés au hasard. On peut marcher dessus.
 - Une fois **la pelle** obtenue, on les creuse. Ils **reviennent chaque jour, à de nouvelles places**. Toutes les zones extérieures en ont, sauf la gare et le centre-ville.

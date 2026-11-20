@@ -303,7 +303,7 @@ Décrit par l'utilisateur : cabane à moitié prix ; journal dans la cabane (200
   - Actions : **Attaquer**, **Techniques** (coûtent de l'énergie ⚡), **Objets** (manger, potion), **Se défendre**, **Fuir**. ⏳ **Magie** plus tard.
   - Multijoueur : on peut combattre **seul ou en équipe** ; un joueur proche peut **rejoindre un combat en cours**.
 - Découpage proposé :
-  - [ ] **30a** moteur de combat (jauges, tours, dégâts, techniques, objets, défense, fuite, butin) + écran de combat, en solo ;
+  - [x] **30a** moteur de combat + écran de combat, en solo (v0.1.104) : jauges (pause pendant le choix), Attaquer, Techniques 💡 (Coup puissant 4 ⚡, Balayage 6 ⚡ sur tous), Objets (nourriture), Se défendre (dégâts ÷ 2), Fuir (6 chances sur 10 💡) ; XP et butin ; défaite = clinique. La Caverne sombre y passe : toucher un monstre lance le combat (ses voisins de salle à moins de 4 cases le rejoignent, 3 au plus) ;
   - [ ] **30b** le dédale profond et la marmotte à grandes griffes (premier monstre du nouveau combat) ;
   - [ ] **30c** combats en équipe (rejoindre un combat en cours) ;
   - [ ] plus tard : boss, magie.

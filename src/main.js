@@ -59,7 +59,6 @@ import { isPath, isGate } from './world/map.js';
 import { createPlayerMarket } from './net/market.js';
 import { facingTile } from './systems/movement.js';
 import { aimTile } from './systems/reach.js';
-import { attack } from './systems/combat.js';
 import { consume } from './systems/player.js';
 import { ensureOrders } from './systems/market.js';
 import { ITEMS } from './data/items.js';
@@ -78,6 +77,8 @@ import { buryGame, unburyGame, readTomb, visibleGames, removeFromIndex, deleteOn
 import { createGamesPanel } from './ui/gamesPanel.js';
 import { createInventoryGrid } from './ui/inventoryGrid.js';
 import { createSellPanel } from './ui/sellPanel.js';
+import { createBattleUI } from './ui/battle.js';
+import { tickBattle } from './systems/battle.js';
 import { createCalendarPanel } from './ui/calendarPanel.js';
 import { createPotPanel } from './ui/potPanel.js';
 import { etalTick } from './systems/etal.js';
@@ -101,6 +102,7 @@ if (adminSaved()) { ADMIN.on = true; document.body.classList.add('admin'); }
 const wheel = createWheel(g, audio);
 const invGrid = createInventoryGrid(g, audio);
 const sellPanel = createSellPanel(g, audio);
+const battleUI = createBattleUI(g, audio);   // lot 30a : combat au tour par tour
 const standPanel = createStandPanel(g, audio);   // 19/11 : l'étal (sur la place du panneau)
 const calendarPanel = createCalendarPanel(g, audio);
 const potPanel = createPotPanel(g, audio);   // 20/11 : cuisine au chaudron   // 19/11 : le grand panneau (calendrier, météo)
@@ -210,16 +212,12 @@ const input = createInput(cv, g, renderer, { isActive: () => started && !custom.
 const ACT_COOLDOWN_MS = 300;   // 💡 au plus ~3 actions par seconde en restant appuyé
 let lastAct = -1e9;
 function doAction() {
-  if (!started || dialog.isOpen || introActive(g.S)) return;
+  if (!started || dialog.isOpen || introActive(g.S) || g.battle) return;
   const now = performance.now(); if (now - lastAct < ACT_COOLDOWN_MS) return; lastAct = now;   // petit délai caché : doigt / clic / espace maintenus ne s'emballent plus
   const S = g.S;
   const ft = facingTile(S);
   if (findNPCAt(g, ft.tx, ft.ty)) { act(g, ft.tx, ft.ty); return; } // parler / offrir avant de manger
   // plus de choix automatique : on prend soi-même le bon outil dans la roue 🛠️
-  if (S.sel === 'sword' && ['farm', 'wild'].includes(S.scene || 'farm')) {
-    const en = g.enemies.reduce((b, e) => { const d = Math.hypot(e.x - S.x, e.y - S.y); return d < 1.8 && (!b || d < b.d) ? { e, d } : b; }, null);
-    if (en) { attack(g, en.e); return; }
-  }
   const it = ITEMS[S.sel];
   const fireNear = (S.fires || []).some(f => Math.hypot(f.x + .5 - S.x, f.y + .5 - S.y) < 2.2);
   // 20/11 : plus de baies jetées sur le feu (la cuisine se fait au chaudron)
@@ -315,7 +313,7 @@ function loop(now) {
     // 20/11 : garde-fou — l'intro attend un dialogue qui n'est pas (ou plus) affiché : on relance l'étape au lieu de rester bloqué
     if (inIntro && g.introWait && !dialog.isOpen) { g.introStuck = (g.introStuck || 0) + dt; if (g.introStuck > 1.5) { g.introStuck = 0; g.introWait = false; } } else g.introStuck = 0;   // ⏩ maintenu : tout va 6 fois plus vite
     if (g.fishing || g.parcGame) { g.player.target = null; g.player.walkFrame = 0; }   // on ne bouge pas en pêchant
-    else if (g.talking || arrivee) { g.player.target = null; g.player.walkFrame = 0; }   // pendant un dialogue ou l'arrivée, on ne bouge pas
+    else if (g.talking || arrivee || g.battle) { g.player.target = null; g.player.walkFrame = 0; if (g.battle) tickBattle(g, dt); }   // lot 30a : pendant un combat, seules les jauges avancent   // pendant un dialogue ou l'arrivée, on ne bouge pas
     else updatePlayer(g, dt, input.keys, (tx, ty) => act(g, tx, ty));
     const wf = g.player.walkFrame; if (wf !== lastFrame && (wf === 1 || wf === 3)) audio.play('step'); lastFrame = wf;
     tickTime(g, dt * 1000);

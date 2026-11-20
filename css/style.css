@@ -516,3 +516,22 @@ body.bande[data-nrj="vert"] #nrjVert { bottom: calc(var(--bande) + var(--pad) * 
 .st-prix { display: flex; align-items: center; gap: 6px; margin: 6px 0 } .st-prix input[type=range] { flex: 1 }
 .pot-slots { display: flex; gap: 6px; justify-content: center; margin: 8px 0 } .pot-slot { width: 46px; height: 46px; padding: 0; border-radius: 50% }
 .st-form .st-prix button { width: auto; flex: none; min-width: 40px } .st-prix span { min-width: 70px }
+
+/* Lot 30a : écran de combat au tour par tour */
+.battle { width: min(560px, 96vw); padding: 10px; display: flex; flex-direction: column; gap: 8px }
+.battle canvas { width: 100%; aspect-ratio: 320 / 150; image-rendering: pixelated; border-radius: 8px; border: 2px solid var(--bord) }
+.bt-foes { display: flex; gap: 6px; flex-wrap: wrap }
+.bt-foe { flex: 1 1 120px; min-width: 0; font-size: 13px }
+.bt-foe.ko { opacity: .4 }
+.bt-log { min-height: 3.6em; font-size: 13px; color: var(--doux); line-height: 1.25 }
+.bt-log div:last-child { color: var(--texte) }
+.bt-hero { display: grid; grid-template-columns: auto 1fr; gap: 4px 8px; align-items: center; font-size: 13px }
+.bt-hero b { grid-row: span 3 }
+.bt-bar { position: relative; height: 12px; background: rgba(0, 0, 0, .45); border-radius: 6px; overflow: hidden }
+.bt-bar i { position: absolute; inset: 0 auto 0 0; background: var(--vie); transition: width .15s }
+.bt-bar.nrj i { background: var(--energie) }
+.bt-bar.atb { height: 6px } .bt-bar.atb i { background: var(--or); transition: none }
+.bt-bar.atb.pleine i { background: var(--or-vif); box-shadow: 0 0 6px var(--or-vif) }
+.bt-bar span { position: absolute; left: 6px; top: -1px; font-size: 10px; line-height: 14px; color: #fff; text-shadow: 0 1px 1px #000 }
+.bt-menu { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 6px }
+.bt-menu .info { grid-column: 1 / -1; margin: 0 }

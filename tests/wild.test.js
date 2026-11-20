@@ -44,27 +44,22 @@ test('chaque salle a ses monstres ; ils apparaissent en entrant dans la salle', 
   assert.ok(g.enemies.every(e => e.room === 1));
 });
 
-test('le cochon tire ; une balle blesse le joueur, puis il clignote (invincible un instant)', () => {
+test('lot 30a : toucher un monstre de la caverne lance le combat (avec ses voisins de salle)', () => {
   const { g, S } = makeGame({ rnd: rand(), state: { wildOpen: true, scene: 'wild', x: 25, y: 4.5, hp: 100 } });
-  g.wildRoom = 2; g.enemies.length = 0; g.shots = [];
-  g.enemies.push({ type: 'pig', x: 21, y: 4.5, hp: 90, cd: 0, hit: 0, room: 2, t: 0 });
+  g.wildRoom = 2; g.enemies.length = 0; g.player.iframe = 0;
+  g.enemies.push({ type: 'pig', x: 25.3, y: 4.5, hp: 90, cd: 0, hit: 0, room: 2, t: 0 }, { type: 'slime_v', x: 27, y: 4.5, hp: 60, cd: 0, hit: 0, room: 2, t: 0 });
   updateWild(g, 0.016);
-  assert.equal(g.shots.length, 1);
-  assert.ok(g.shots[0].vx > 0 && g.shots[0].vy === 0, 'tir en ligne droite');
-  for (let i = 0; i < 120 && S.hp === 100; i++) updateWild(g, 0.016);
-  assert.equal(S.hp, 88);
-  g.shots.push({ x: S.x, y: S.y - .3, vx: 0, vy: 0, life: 1, dmg: 12 }); updateWild(g, 0.016);
-  assert.equal(S.hp, 88, 'invincible juste après');
+  assert.ok(g.battle); assert.equal(g.battle.foes.length, 2); assert.equal(S.hp, 100, 'pas de dégâts hors combat');
 });
 
-test('épée : vaincre un slime bleu donne de la gelée, un cochon de l’argent', () => {
-  const { g, S } = makeGame({ rnd: seq(0.5), state: { scene: 'wild', x: 5, y: 4, money: 0, inv: {} } });
-  const slime = { type: 'slime_b', x: 5.5, y: 4, hp: 100, cd: 1, hit: 0, room: 0, t: 0 }, pig = { type: 'pig', x: 4.5, y: 4, hp: 30, cd: 1, hit: 0, room: 0, t: 0 };
-  g.enemies.push(slime, pig);
-  for (let i = 0; i < 3; i++) attack(g, slime);
-  assert.equal(S.inv.slime, 1);
-  attack(g, pig);
-  assert.equal(S.money, 10);
+test('lot 30a : vaincre un slime bleu donne de la gelée, un cochon de l’argent', async () => {
+  const { startBattle, heroAct } = await import('../src/systems/battle.js');
+  const { g, S } = makeGame({ rnd: seq(0.5), state: { scene: 'wild', x: 5, y: 4, money: 0, inv: {}, tools: { sword: 1 } } });
+  const slime = { type: 'slime_b', x: 5.5, y: 4, hp: 10, room: 0 }, pig = { type: 'pig', x: 4.5, y: 4, hp: 10, room: 0 };
+  g.enemies.push(slime, pig); startBattle(g, slime, [pig]);
+  g.battle.turn = true; heroAct(g, { act: 'attack', target: 0 });
+  g.battle.turn = true; heroAct(g, { act: 'attack', target: 0 });
+  assert.equal(g.battle.over, 'win'); assert.equal(S.inv.slime, 1); assert.equal(S.money, 10); assert.equal(g.enemies.length, 0);
 });
 
 test('cailloux : 3 types (le 2 rare, le 3 plus rare), renouvelés chaque jour', () => {
@@ -84,11 +79,13 @@ test('minerais : rubis ou émeraude, plus souvent sur les gros cailloux', () => 
   assert.equal((S.inv.ruby || 0) + (S.inv.emerald || 0), 1);
 });
 
-test('K.O. dans la zone : retour à la ferme', () => {
-  const { g, S } = makeGame({ state: { scene: 'wild', hp: 5 } });
-  g.player.iframe = 0; g.shots = [{ x: S.x, y: S.y - .3, vx: 0, vy: 0, life: 1, dmg: 12 }]; g.wildRoom = roomOf(S.x, S.y);
-  updateWild(g, 0.016);
-  assert.equal(S.scene, 'farm');
+test('lot 30a : perdre un combat dans la caverne → réveil à la clinique', async () => {
+  const { startBattle, tickBattle, closeBattle } = await import('../src/systems/battle.js');
+  const { g, S } = makeGame({ rnd: seq(0.5), state: { scene: 'wild', hp: 3, money: 1000 } });
+  const e = { type: 'slime_b', x: S.x, y: S.y, hp: 100, room: 0 }; g.enemies.push(e); startBattle(g, e);
+  g.battle.hero.atb = 0; g.battle.foes[0].atb = 0.99; tickBattle(g, 0.1);
+  assert.equal(g.battle.over, 'lose'); closeBattle(g);
+  assert.equal(S.scene, 'clinique'); assert.ok(S.hp > 0); assert.ok(S.money < 1000);
 });
 
 test('mode test : portail ouvert dès le début et épée posée devant', async () => {
@@ -105,16 +102,12 @@ test('mode test : portail ouvert dès le début et épée posée devant', async 
   } finally { CFG.ACCES_TEST = false; CFG.CAVE_OPEN = false; }
 });
 
-test('mort dans la mine : retour à la ferme, -10 %, et le clignotement s’arrête', async () => {
-  const { updateWild: up } = await import('../src/systems/wild.js');
-  const { g, S } = makeGame({ state: { scene: 'wild', x: 5, y: 4, hp: 5, money: 1000 } });
-  g.enemies.length = 0; g.wildRoom = 0;
-  g.enemies.push({ type: 'slime_v', x: 5, y: 4.3, hp: 60, cd: 0, hit: 0, t: 0 });
-  up(g, 0.016);
-  assert.equal(S.scene, 'farm'); assert.equal(S.money, 900); assert.ok(S.hp > 0);
-  g.player.iframe = 0.8;            // touché juste avant de tomber
-  for (let i = 0; i < 120; i++) up(g, 1 / 60);
-  assert.equal(g.player.iframe, 0, 'il ne clignote plus');
+test('lot 30a : après une fuite, un court répit (on ne retombe pas tout de suite en combat)', async () => {
+  const { startBattle, heroAct, closeBattle } = await import('../src/systems/battle.js');
+  const { g, S } = makeGame({ rnd: seq(0.1), state: { scene: 'wild', x: 5, y: 4 } });
+  g.wildRoom = 0; const e = { type: 'slime_v', x: 5.2, y: 4, hp: 60, cd: 0, hit: 0, room: 0, t: 0 }; g.enemies.push(e); startBattle(g, e);
+  g.battle.turn = true; heroAct(g, { act: 'flee' }); assert.equal(g.battle.over, 'fled'); closeBattle(g);
+  assert.ok(g.player.iframe > 0); updateWild(g, 0.016); assert.equal(g.battle, null);
 });
 
 test('caverne sombre : 15 salles, sortie dès l’arrivée, escalier vers l’étage 2 (bloqué)', async () => {

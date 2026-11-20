@@ -22,7 +22,7 @@ export function toClinic(g, why = 'fatigue') {
   if (g.enemies) g.enemies.length = 0;
   g.bus.emit('scene', 'clinique');
   g.bus.emit('sfx', 'sleep');
-  g.bus.emit('toast', (why === 'nuit' ? `🏥 Pas couché(e) à 1h : on t’a retrouvé(e) endormi(e) dehors… réveil à l’infirmerie.` : `🏥 Effondré(e) de fatigue… réveil à la clinique.`) + ` Frais de soins : ${fee} $ (${off ? '20 %, tarif doublé' : '10 %'})`);
+  g.bus.emit('toast', (why === 'nuit' ? `🏥 Pas couché(e) à 1h : on t’a retrouvé(e) endormi(e) dehors… réveil à l’infirmerie.` : why === 'combat' ? `🏥 Vaincu(e) au combat… Hailey t’a soigné(e) à la clinique.` : `🏥 Effondré(e) de fatigue… réveil à la clinique.`) + ` Frais de soins : ${fee} $ (${off ? '20 %, tarif doublé' : '10 %'})`);
   g.bus.emit('clinic', { fee, off });
   return fee;
 }

@@ -1,3 +1,4 @@
+import { startBattle, JOIN_R } from './battle.js';
 // Zone de combat (Caverne sombre, la « mine ») : salles façon Zelda Game Boy, monstres par salle,
 // cochons qui tirent, cailloux à minerais. Logique pure : pas de DOM ni de hasard direct.
 import { ADMIN } from './admin.js';
@@ -105,33 +106,19 @@ export function updateWild(g, dt) {
   ensureRocks(g);
   const room = roomOf(S.x, S.y);
   if (room !== g.wildRoom) { g.wildRoom = room; spawnRoom(g, room); }
-  const hurt = n => { if (P.iframe > 0) return; P.iframe = 0.8; damage(g, n); };
+  if (g.battle) return;   // lot 30a : pendant un combat, la zone est figée
   for (const e of [...g.enemies]) {
     const M = MOBS[e.type]; e.cd -= dt; e.hit -= dt; e.t += dt;
     const dx = S.x - e.x, dy = S.y - e.y, d = Math.hypot(dx, dy) || 1;
-    if (e.type === 'pig') {
-      // garde ses distances et tire en ligne droite vers le joueur
-      const want = d < 3 ? -1 : d > 5 ? 1 : 0;
-      if (want) tryMove(S, e, e.x + dx / d * dt * M.speed * want, e.y + dy / d * dt * M.speed * want);
-      if (e.cd <= 0 && d < 7) {
-        e.cd = M.reload;
-        const ax = Math.abs(dx) > Math.abs(dy), vx = ax ? Math.sign(dx) * 5 : 0, vy = ax ? 0 : Math.sign(dy) * 5;
-        g.shots.push({ x: e.x, y: e.y - .3, vx, vy, life: 2, dmg: M.shot });
-        g.bus.emit('sfx', 'oink');
-      }
-    } else {
-      // les slimes avancent par petits bonds
-      const hop = Math.sin(e.t * (e.type === 'slime_b' ? 9 : 6)) > 0;
-      if (hop && d > 0.4) tryMove(S, e, e.x + dx / d * dt * M.speed * 1.6, e.y + dy / d * dt * M.speed * 1.6);
+    // 21/11 (lot 30a) : les monstres viennent vers le joueur (les slimes par petits bonds) ; au contact, le combat commence
+    const hop = e.type === 'pig' || Math.sin(e.t * (e.type === 'slime_b' ? 9 : 6)) > 0;
+    if (hop && d > 0.4 && d < 7) tryMove(S, e, e.x + dx / d * dt * M.speed * 1.6, e.y + dy / d * dt * M.speed * 1.6);
+    if (d < 0.6 && !(P.iframe > 0)) {
+      startBattle(g, e, g.enemies.filter(o => o !== e && o.room === e.room && Math.hypot(o.x - S.x, o.y - S.y) < JOIN_R));
+      return;
     }
-    if (d < 0.6 && e.cd <= 0 && e.type !== 'pig') { e.cd = 1; hurt(M.dmg); }
-    if (d < 0.6 && e.type === 'pig') hurt(M.dmg);
   }
-  for (let i = (g.shots || []).length - 1; i >= 0; i--) {
-    const s = g.shots[i]; s.x += s.vx * dt; s.y += s.vy * dt; s.life -= dt;
-    if (Math.hypot(s.x - S.x, s.y - (S.y - .3)) < .45) { hurt(s.dmg); g.shots.splice(i, 1); continue; }
-    if (s.life <= 0 || isSolid(S, s.x | 0, s.y | 0)) g.shots.splice(i, 1);
-  }
+  if (g.shots) g.shots.length = 0;   // plus de tirs dans la zone : le cochon tire pendant le combat
 }
 
 // Récompense d'un monstre vaincu.
