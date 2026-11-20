@@ -292,7 +292,12 @@ Décrit par l'utilisateur : cabane à moitié prix ; journal dans la cabane (200
 
 ## Lot 30 — Le dédale profond (à faire)
 - [ ] Premier sous-sol, sous le trou de l'énorme rocher ; plus grand que la carrière.
-- [ ] Nouveaux arbres : bois normal et **bois de chêne** (plus robuste) ; cailloux, filons un peu moins rares, fleurs, ❓ monstre inédit.
+- [ ] Nouveaux arbres : bois normal et **bois de chêne** (plus robuste) ; cailloux, filons un peu moins rares, fleurs.
+- [ ] Monstre : la **marmotte à grandes griffes**. Butin : **griffes de marmotte** (composant rare, pour des fabrications ultérieures) et **viande de marmotte** (cuisine).
+
+## Lot 30 bis — Combat au tour par tour avec jauge (décision du 21/11)
+- Le combat en temps réel est jugé vite ennuyeux et sans profondeur : on passe à un **combat au tour par tour avec jauge** (façon « ATB » : chacun agit quand sa jauge est pleine). Permet des combats plus tactiques, parfois plus longs, et des **boss**.
+- ❓ Questions de forme à trancher avant de construire (voir conversation du 21/11).
 
 ## Lot 31 — Routes plus larges sur toute la carte (à faire)
 - [ ] Élargir toutes les routes et rendre les passages visibles.
