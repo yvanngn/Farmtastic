@@ -569,8 +569,8 @@ let swing = null;
         R2(-6, 20, 12, 3, '#5a3820'); R2(16, 32, 12, 3, '#5a3820');   // branches cassées
       } }); }
     }
-    if (SC.shop && SHOP_VENDOR[SC.shop]) { const v = { igor: IGOR, harry: HARRY }[SHOP_VENDOR[SC.shop]]; if (v) list.push({ z: VENDOR_POS.y, d: () => { drawChar(ctx, Math.round(VENDOR_POS.x * T - 6), Math.round(VENDOR_POS.y * T - 19), v.look, 0, 0, now); label(v.name, VENDOR_POS.x * T, VENDOR_POS.y * T - 25); } }); }   // 20/11 : le vendeur derrière son comptoir
-    if (scene === 'place' && suzieAtStand(S)) list.push({ z: SUZIE_STAND.y, d: () => { drawChar(ctx, Math.round(SUZIE_STAND.x * T - 6), Math.round(SUZIE_STAND.y * T - 19), SUZIE.look, 2, 0, now); label(SUZIE.name, SUZIE_STAND.x * T, SUZIE_STAND.y * T - 25); } });   // 20/11 : Suzie à l'étal
+    if (SC.shop && SHOP_VENDOR[SC.shop]) { const v = { igor: IGOR, harry: HARRY }[SHOP_VENDOR[SC.shop]]; if (v) list.push({ z: VENDOR_POS.y, d: () => { drawChar(ctx, Math.round(VENDOR_POS.x * T - 6), Math.round(VENDOR_POS.y * T - 19), v.look, 0, 0, now); } }); }   // 20/11 : le vendeur derrière son comptoir
+    if (scene === 'place' && suzieAtStand(S)) list.push({ z: SUZIE_STAND.y, d: () => { drawChar(ctx, Math.round(SUZIE_STAND.x * T - 6), Math.round(SUZIE_STAND.y * T - 19), SUZIE.look, 2, 0, now); } });   // 20/11 : Suzie à l'étal
     if (scene === 'place') list.push({ z: STAND_POS.y + .9, d: () => {   // 19/11 : l'étal de vente, sur la place du panneau
       const x = STAND_POS.x * T, y = STAND_POS.y * T, R2 = (a, b, w, h, k) => { ctx.fillStyle = k; ctx.fillRect(x + a, y + b, w, h); }, lots = (S.stand && S.stand.lots) || [];
       R2(0, 14, 32, 3, 'rgba(30,15,5,.3)');
