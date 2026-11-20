@@ -297,7 +297,16 @@ Décrit par l'utilisateur : cabane à moitié prix ; journal dans la cabane (200
 
 ## Lot 30 bis — Combat au tour par tour avec jauge (décision du 21/11)
 - Le combat en temps réel est jugé vite ennuyeux et sans profondeur : on passe à un **combat au tour par tour avec jauge** (façon « ATB » : chacun agit quand sa jauge est pleine). Permet des combats plus tactiques, parfois plus longs, et des **boss**.
-- ❓ Questions de forme à trancher avant de construire (voir conversation du 21/11).
+- Réponses de l'utilisateur (21/11) :
+  - **Monstres visibles** dans les zones ; les toucher lance le combat (on peut les éviter).
+  - **Écran de combat à part** : fond de la zone, héros d'un côté, monstres de l'autre, menu d'actions en bas.
+  - Actions : **Attaquer**, **Techniques** (coûtent de l'énergie ⚡), **Objets** (manger, potion), **Se défendre**, **Fuir**. ⏳ **Magie** plus tard.
+  - Multijoueur : on peut combattre **seul ou en équipe** ; un joueur proche peut **rejoindre un combat en cours**.
+- Découpage proposé :
+  - [ ] **30a** moteur de combat (jauges, tours, dégâts, techniques, objets, défense, fuite, butin) + écran de combat, en solo ;
+  - [ ] **30b** le dédale profond et la marmotte à grandes griffes (premier monstre du nouveau combat) ;
+  - [ ] **30c** combats en équipe (rejoindre un combat en cours) ;
+  - [ ] plus tard : boss, magie.
 
 ## Lot 31 — Routes plus larges sur toute la carte (à faire)
 - [ ] Élargir toutes les routes et rendre les passages visibles.
