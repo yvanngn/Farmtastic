@@ -16,7 +16,7 @@ Menu → 🎽 Équipement : tête, corps, pieds, accessoire. Le manteau d'hiver 
 ## 2. Commandes
 - **Se déplacer** : joystick (écran tactile) ou flèches / ZQSD / WASD. Dès qu'on se sert du joystick, toucher l'écran ne fait plus marcher le héros : on touche seulement ce qui est à portée.
 - **Agir** : bouton ✋ ou espace (couper, casser, ramasser, parler, réparer…). Avec la hache ou la pioche, le coup vise l'arbre ou le caillou le plus proche devant soi ; sans rien devant, on frappe dans le vide.
-- **Magasins** (centre-ville) : on entre, et on s'adresse au comptoir (Igor à la forge, Harry chez le charpentier). Un court délai caché sépare deux actions quand on reste appuyé.
+- **Magasins** (centre-ville) : on entre, et on s'adresse au comptoir (Igor à la forge, nouveau bâtiment du centre-ville ; Harry chez le charpentier). Un court délai caché sépare deux actions quand on reste appuyé.
 - **Outils** : barre d'outils sous la scène (touches 1-8, Tab pour la roue des outils).
 - **Menus** : 🗺️ carte (ferme et région), ☰ menu (nom, niveau et XP en tête ; sac, poissons, métiers, forge, liens), menu → ⚙ Réglages (💾 sauvegarder, zoom, son, 🔋 économie d'énergie si le téléphone chauffe). À côté du bouton d'action : ⭐ quêtes et 🛠️ recettes. Clavier : E menu, I sac, M carte, Échap ferme.
 - **Cadre du haut** (argent, date, météo, énergie) : toujours affiché. **Vie et énergie** aussi en haut à droite, et au-dessus de Cloud dès qu'elles passent à l'orange. Sur téléphone, le jeu passe tout seul en paysage au premier toucher. La caméra suit le héros jusqu'aux bords de chaque zone.

@@ -207,6 +207,7 @@ export const TOWN_B = {
   O: { x: 3, y: 20, w: 4, h: 3 }, V: { x: 13, y: 20, w: 4, h: 3 }, Z: { x: 26, y: 20, w: 4, h: 3 },
   R: { x: 9, y: 13, w: 4, h: 3 },   // 16/11 : le bar d'Ed (porte x11)
   E: { x: 3, y: 26, w: 4, h: 3 },   // Farmwest (7c) : bureau du shérif (décor)
+  G: { x: 23, y: 17, w: 4, h: 3 },   // 20/11 : la forge d'Igor
   Y: { x: 13, y: 26, w: 5, h: 3 }   // Farmwest (lot 5) : le restaurant (porte x15), à la place de l'ancienne villa
 };
 export const TOWN_LAMPS = [[10, 8], [23, 8], [8, 12], [23, 12], [10, 25], [24, 25]];
@@ -713,9 +714,9 @@ retarget('town', 'plage', 'route_plage', { x: 4.9, y: 1.8 });
 retarget('plage', 'town', 'route_plage', { x: 4.9, y: 42.2 });
 // 20/11 (demande de l'utilisateur) : on entre dans les magasins du centre-ville et on parle au vendeur, derrière son comptoir
 // (personne derrière tant que le personnage n'existe pas). Comptoir (K) : ouvre le magasin.
-export const SHOP_VENDOR = { upgrades: 'igor', carpenter: 'harry' };
-export const SHOP_OF = { M: 'market', U: 'upgrades', J: 'carpenter', A: 'animals', O: 'bakery', V: 'butcher', Z: 'fishmonger' };
-export const SHOP_NAMES = { market: 'La halle du marché', upgrades: 'La forge d’Igor', carpenter: 'L’atelier du charpentier', animals: 'Le marchand d’animaux', bakery: 'La boulangerie', butcher: 'La boucherie', fishmonger: 'La poissonnerie' };
+export const SHOP_VENDOR = { forge: 'igor', carpenter: 'harry' };
+export const SHOP_OF = { G: 'forge', M: 'market', U: 'upgrades', J: 'carpenter', A: 'animals', O: 'bakery', V: 'butcher', Z: 'fishmonger' };
+export const SHOP_NAMES = { market: 'La halle du marché', forge: 'La forge d’Igor', upgrades: 'Le magasin d’amélioration', carpenter: 'L’atelier du charpentier', animals: 'Le marchand d’animaux', bakery: 'La boulangerie', butcher: 'La boucherie', fishmonger: 'La poissonnerie' };
 for (const [ch, ui] of Object.entries(SHOP_OF)) {
   const B = TOWN_B[ch], sc = 'shop_' + ui;
   LAYOUTS[sc] = ['##########', '#WWWWWWWW#', '#C......C#', '#.KKKKKK.#', '#........#', '#P......P#', '####DD####'];

@@ -154,6 +154,11 @@ export function buildTown(season) {
     for (const [x, y] of [[uw - 6, 38], [uw - 1, 38], [uw - 4, 34]]) { disc(g, ux + x, uy + y, 3, '#7a4f2e'); disc(g, ux + x, uy + y, 2, '#c99560'); R(ux + x, uy + y, 1, 1, '#7a4f2e'); }
     R(ux + 20, uy + 22, 10, 3, '#c2c7cc'); for (let k = 0; k < 10; k += 2) R(ux + 20 + k, uy + 25, 1, 1, '#8a8f96'); R(ux + 30, uy + 21, 4, 5, '#7a4f2e');
   });
+  // 20/11 : la forge d'Igor (enclume, braises)
+  shop(TOWN_B.G.x, TOWN_B.G.y, 4, '#3a3a40', '#5a5a62', 'FORGE', (ux, uy, uw) => {
+    R(ux + 2, uy + 32, 14, 4, '#3a3a40'); R(ux + 5, uy + 28, 8, 4, '#5a5a62'); R(ux + 1, uy + 28, 4, 2, '#5a5a62');   // enclume
+    R(ux + uw - 16, uy + 30, 12, 8, '#4a3020'); R(ux + uw - 14, uy + 31, 8, 3, '#f2803a'); R(ux + uw - 12, uy + 31, 3, 2, '#ffd86a');   // braises
+  });
   // marchand d'animaux (x17-19, y11-13) : botte de foin, abreuvoir, fer à cheval
   shop(TOWN_B.A.x, TOWN_B.A.y, 3, '#2f5a3a', '#3b7048', 'ANIMAUX', (ux, uy, uw) => {
     R(ux - 3, uy + 32, 14, 10, '#e6c34a'); R(ux - 3, uy + 32, 14, 2, '#f5dd7a'); for (let k = 0; k < 14; k += 3) R(ux - 3 + k, uy + 35, 1, 6, '#c9a330');

@@ -7,7 +7,7 @@ import { FARM_LOTS } from '../data/buildings.js';
 
 export const TRAIN_MS = 3200;            // la locomotive entre en gare et s'arrête
 export const LOCO_LEAVE_S = 2.5;         // lot 8 : la locomotive repart une fois le héros dans la diligence
-export const COACH_SPEED = 3.2;          // cases par seconde
+export const COACH_SPEED = 7;   // 20/11 : plus rapide (avant 3,2)          // cases par seconde
 export const GARE_QUAI = { x: 4.5, y: 7.6 }, MYST_QUAI = { x: 4.5, y: 5.8 };
 export const TRAIN_DOOR = { x: 2.9, y: 4.6 };   // porte du wagon, une fois le train à quai (le héros est assis dedans)
 export const STEP_SPEED = 2.4;                    // cases par seconde quand il descend sur le quai
@@ -60,7 +60,7 @@ export function introTick(g, dt) {
     const r = g.ride, R = RIDE[r.scene];
     if (r.scene === 'town' && !r.said.legende && r.x > 1) { r.said.legende = true; myst(g, INTRO_MYST.legende); return 'legende'; }
     if (r.scene === 'town' && r.said.legende && !r.said.ville && r.x > 6) { r.said.ville = true; myst(g, INTRO_MYST.ville); return 'ville'; }   // 20/11 : une seule présentation du centre-ville
-    if (r.scene === 'route_ville' && !r.said.route && r.x > 3) { r.said.route = true; myst(g, INTRO_MYST.route); return 'histoire'; }
+    if (r.scene === 'route_ville' && !r.said.route && r.x > 3) { r.said.route = true; myst(g, INTRO_MYST.route, () => { r.x = RIDE.route_ville.to; g.bus.emit('fade'); }); return 'histoire'; }   // 20/11 : après l'histoire, fondu jusqu'au rond-point
     if (r.scene === 'place' && !r.said.place && r.x > 14) { r.said.place = true; myst(g, INTRO_MYST.place); return 'place'; }
     r.t += dt;
     if (r.scene === 'gare' && r.t < LOCO_LEAVE_S) return 'locomotive';   // la locomotive repart d'abord, sous les yeux du héros
@@ -107,6 +107,6 @@ export function finishIntro(g) {
   I.step = 'done'; I.arrived = true; I.myst = 'done';
   g.ride = null;
   S.scene = 'farm'; Object.assign(S, FARM_DROP); S.dir = 1;
-  g.bus.emit('scene', 'farm'); g.bus.emit('sfx', 'door'); g.bus.emit('showMap');
+  g.bus.emit('scene', 'farm'); g.bus.emit('sfx', 'door');   // 20/11 : la carte ne s'ouvre plus toute seule
   return true;
 }

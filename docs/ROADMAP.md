@@ -263,6 +263,11 @@ Décrit par l'utilisateur : cabane à moitié prix ; journal dans la cabane (200
 - [x] Étapes des quêtes : couleurs foncées lisibles sur le papier beige.
 - [ ] 💡 À valider : 24 coups pour un gros caillou de bordure, 3 jours de repousse, filons de la carrière profonde (étain 15 %, fer 50 %, or 35 %).
 
+## Lot 31 — Intro plus rapide, forge au centre-ville (demande du 20/11) ✅ v0.1.96
+- [x] Diligence plus rapide (7 cases/s) ; sur la route du centre-ville, après l'histoire de Myst, fondu jusqu'au rond-point (intro ≈ 30 s au lieu de 55).
+- [x] La carte de la région ne s'ouvre plus toute seule à la fin de l'intro.
+- [x] Forge d'Igor au centre-ville (bâtiment, comptoir, Igor) ; le magasin d'amélioration n'a plus de vendeur.
+
 ## Lot 30 — Suzie et l'étal, cuisine au chaudron, décor qui disparaît (demande du 20/11) ✅ v0.1.94
 - [x] Quête principale « Le premier étal » : Suzie à l'étal, se présente, explique en gros (moins c'est cher, plus ça part vite), donne un bois.
 - [x] Étal : prix libre à l'unité (− / + et curseur, façon Hay Day), plus de taux ni de durée affichés ; durée avec un coefficient de hasard 💡 (× 0,6 à × 1,6), parfois une nuit de plus au-dessus de × 1,3.
