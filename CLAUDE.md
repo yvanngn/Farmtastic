@@ -19,6 +19,7 @@
 
 ## Dialogues (règle de l'utilisateur)
 - Toutes les répliques des PNJ sont dans `src/data/npcs.js`. `node tools/export-dialogues.mjs` écrit `docs/DIALOGUES.md` avec 🆕 sur les répliques non validées et affiche leur nombre.
+- Le document reprend aussi (20/11) : toutes les autres répliques des PNJ (quêtes : étal de Suzie, chaudron de Remy…, repérées automatiquement), les titres et étapes des quêtes (`src/systems/quests.js`), le courrier (`mail.js`, `golgolas.js`), les conseils de tuto (`tip(g, 'id', '…')`) et les messages à l'écran à texte fixe (`emit('toast', '…')`). Écrire ces textes en chaîne simple (sans `${}`) pour qu'ils soient repris ; ne jamais mettre 🆕 dans le texte du jeu.
 - **Dès 100 répliques 🆕**, envoyer `docs/DIALOGUES.md` à l'utilisateur pour relecture. Ses corrections s'appliquent telles quelles, puis `node tools/export-dialogues.mjs --valider` et committer `tools/dialogues_valides.txt`.
 - Discussions comme dans Witch'rok : la réplique du jour reste en tête, puis le choix des sujets du PNJ (`topics`) et « Rien. ».
 - Mémoire du projet : `docs/CARNET.md` (le lire en début de séance, le compléter à la fin).

@@ -2,6 +2,7 @@
 
 Semver horodaté (heure de Paris). Patch automatique à chaque publication ; mineure et majeure sur décision de l'utilisateur.
 
+- **0.1.95** — 2026-11-20 14:07 — Dialogues : quêtes, courrier, tutos et messages à l'écran dans docs/DIALOGUES.md ; test de l'appli dans le navigateur (tools/audit.cjs)
 - **0.1.94** — 2026-11-20 13:57 — Quêtes « Le premier étal » (Suzie) et « La cuisine du chef » (Remy), prix libre à l'étal, chaudron façon Breath of the Wild, plus de feu de camp, décor redessiné au retour sur téléphone
 - **0.1.93** — 2026-11-20 13:41 — Trajets vérifiés par un test, chemins sans issue retirés, hache toujours accessible, visée des outils et coup dans le vide, magasins avec comptoir et vendeur, bottes ×3, bords en forêt, bulles en haut sur téléphone
 - **0.1.92** — 2026-11-20 12:00 — Intro par la route (histoire de la ville, place et étal), une seule présentation du centre-ville, test de partie jouable, garde-fou contre le blocage
