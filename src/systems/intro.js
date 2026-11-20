@@ -14,7 +14,9 @@ export const STEP_SPEED = 2.4;                    // cases par seconde quand il 
 export const RIDE = {
   gare: { y: 8.6, from: 5.2, to: 23.6 },   // lot 8 : le héros monte dans la diligence au bout du quai ; la locomotive repart
   town: { y: 10.6, from: -.5, to: 33.6 },
-  rondpoint: { y: 9, from: -.5, to: 8.5 }
+  route_ville: { y: 4.9, from: -.5, to: 39.6 },   // 20/11 : la route du centre-ville
+  rondpoint: { y: 9, from: -.5, to: 8.5 },
+  place: { y: 8.9, from: -.5, to: 24.6 }
 };
 export const FARM_DROP = { x: 16.5, y: 33.6 };   // devant l'entrée sud de la ferme
 
@@ -54,19 +56,20 @@ export function introTick(g, dt) {
     return 'myst';
   }
   if (I.step === 'diligence') {
-    if (!g.ride || g.ride.scene !== S.scene) startRide(g, S.scene === 'rondpoint' || S.scene === 'gare' ? S.scene : 'town');
+    if (!g.ride || g.ride.scene !== S.scene) startRide(g, RIDE[S.scene] ? S.scene : 'town');
     const r = g.ride, R = RIDE[r.scene];
     if (r.scene === 'town' && !r.said.legende && r.x > 1) { r.said.legende = true; myst(g, INTRO_MYST.legende); return 'legende'; }
-    if (r.scene === 'town') {
-      const stop = INTRO_MYST.arrets.find(a => !r.said[a.x] && r.x >= a.x);
-      if (stop) { r.said[stop.x] = true; myst(g, [stop.t]); return 'arret'; }   // la diligence attend la fin de l'explication
-    }
+    if (r.scene === 'town' && r.said.legende && !r.said.ville && r.x > 6) { r.said.ville = true; myst(g, INTRO_MYST.ville); return 'ville'; }   // 20/11 : une seule présentation du centre-ville
+    if (r.scene === 'route_ville' && !r.said.route && r.x > 3) { r.said.route = true; myst(g, INTRO_MYST.route); return 'histoire'; }
+    if (r.scene === 'place' && !r.said.place && r.x > 14) { r.said.place = true; myst(g, INTRO_MYST.place); return 'place'; }
     r.t += dt;
     if (r.scene === 'gare' && r.t < LOCO_LEAVE_S) return 'locomotive';   // la locomotive repart d'abord, sous les yeux du héros
     r.x = Math.min(R.to, r.x + COACH_SPEED * dt); S.x = r.x; S.y = r.y;
     if (r.x < R.to) return 'roule';
     if (r.scene === 'gare') { startRide(g, 'town'); return 'route'; }
-    if (r.scene === 'town') { startRide(g, 'rondpoint'); return 'pont'; }
+    if (r.scene === 'town') { startRide(g, 'route_ville'); return 'pont'; }
+    if (r.scene === 'route_ville') { startRide(g, 'rondpoint'); return 'route'; }
+    if (r.scene === 'rondpoint') { startRide(g, 'place'); return 'place'; }
     I.step = 'choix'; return 'arrivee';
   }
   if (I.step === 'choix' || I.step === 'choisit') { askFarm(g); return 'choix'; }   // (« choisit » : partie rechargée pendant le choix)

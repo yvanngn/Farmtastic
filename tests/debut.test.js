@@ -292,8 +292,9 @@ test('Farmwest lot 3 : train → Myst → diligence (arrêts le temps des explic
     const before = said.length, x = g.ride && g.ride.x; introTick(g, .1);
     if (said.length > before) { stops++; assert.equal(g.ride.x, x, 'la diligence attend pendant l’explication'); assert.equal(introTick(g, 1), null, 'toujours à l’arrêt'); end(); }
   }
-  assert.equal(stops, 1 + INTRO_MYST.arrets.length, 'la légende puis un arrêt par bâtiment');
-  assert.equal(g.S.scene, 'rondpoint');
+  assert.equal(stops, 4, '20/11 : la légende, le centre-ville (une seule fois), l’histoire sur la route, la place et l’étal');
+  assert.ok(said.some(d => d.lines === INTRO_MYST.route) && said.some(d => d.lines === INTRO_MYST.place));
+  assert.equal(g.S.scene, 'place');
   introTick(g, .1); assert.equal(said.at(-1).choices, undefined, '19/11 : plus de choix de ferme'); assert.equal(g.S.farmLot, 0); end();
   assert.equal(introActive(g.S), false); assert.equal(g.S.scene, 'farm'); assert.equal(g.S.intro.myst, 'done');
 });

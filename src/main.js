@@ -296,7 +296,9 @@ function loop(now) {
   if (started) {
     const arrivee = (g.S.intro && ['wait', 'sleep', 'talk'].includes(g.S.intro.myst)) || introActive(g.S);   // Farmwest : pendant le nouveau début aussi
     const inIntro = introActive(g.S); document.body.classList.toggle('intro', inIntro);   // pendant l'intro : seulement la bulle et ⏩ / ⏭
-    if (inIntro) { introTick(g, dt * (g.introFast ? 6 : 1)); if (g.introFast) dialog.fastTick(); }   // ⏩ maintenu : tout va 6 fois plus vite
+    if (inIntro) { introTick(g, dt * (g.introFast ? 6 : 1)); if (g.introFast) dialog.fastTick(); }
+    // 20/11 : garde-fou — l'intro attend un dialogue qui n'est pas (ou plus) affiché : on relance l'étape au lieu de rester bloqué
+    if (inIntro && g.introWait && !dialog.isOpen) { g.introStuck = (g.introStuck || 0) + dt; if (g.introStuck > 1.5) { g.introStuck = 0; g.introWait = false; } } else g.introStuck = 0;   // ⏩ maintenu : tout va 6 fois plus vite
     if (g.fishing || g.parcGame) { g.player.target = null; g.player.walkFrame = 0; }   // on ne bouge pas en pêchant
     else if (g.talking || arrivee) { g.player.target = null; g.player.walkFrame = 0; }   // pendant un dialogue ou l'arrivée, on ne bouge pas
     else updatePlayer(g, dt, input.keys, (tx, ty) => act(g, tx, ty));
@@ -334,7 +336,7 @@ function loop(now) {
     renderer.updateParticles(dt);
     renderer.render(now);
     // 20/11 : le cadre en haut à gauche reste affiché tout le temps (la caméra suit le héros jusqu'aux bords)
-    if ((hudT += dt) > 0.25) { hudT = 0; if (started && !introActive(g.S)) { questXpTick(g, QUESTS); letterTick(g); standTick(g); yvanGift(g); } hud.update(); repairPanel.update(started && !dialog.isOpen && !document.querySelector('.overlay.on')); }
+    if ((hudT += dt) > 0.25) { hudT = 0; if (started && !introActive(g.S)) { questXpTick(g, QUESTS); letterTick(g); standTick(g); yvanGift(g); } hud.update(); { const v = $('#vitals'); if (v) v.style.visibility = introActive(g.S) ? 'hidden' : ''; } repairPanel.update(started && !dialog.isOpen && !document.querySelector('.overlay.on')); }
   }
   if (custom.isOpen()) custom.draw(now);
   if (title.isOpen()) title.draw(now);

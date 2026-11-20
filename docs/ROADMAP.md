@@ -263,6 +263,12 @@ Décrit par l'utilisateur : cabane à moitié prix ; journal dans la cabane (200
 - [x] Étapes des quêtes : couleurs foncées lisibles sur le papier beige.
 - [ ] 💡 À valider : 24 coups pour un gros caillou de bordure, 3 jours de repousse, filons de la carrière profonde (étain 15 %, fer 50 %, or 35 %).
 
+## Lot 28 — Intro jouable et racontée (demande du 20/11) ✅ v0.1.92
+- [x] Test de bout en bout : nouvelle partie → intro complète → on marche et on agit (tests/jouable.test.js) ; garde-fou si l'intro attend un dialogue qui n'est pas affiché.
+- [x] La diligence passe par la route du centre-ville (Myst raconte l'histoire de la ville), puis le rond-point et la place (le panneau, l'étal pour gagner de l'argent).
+- [x] Plus d'arrêt devant chaque bâtiment : une seule présentation du centre-ville (dont le saloon).
+- [x] Barres de vie / énergie cachées pendant l'intro ; plus de 🆕 affiché dans les bulles (il n'apparaît que dans docs/DIALOGUES.md).
+
 ## Lot 27 — Routes du centre-ville, boutons, arbres (demande du 20/11) ✅ v0.1.91
 - [x] Route entre le centre-ville et le rond-point ; route du centre-ville (sud) jusqu'à la cabane du pêcheur, tout en bas (sous le ranch), port à l'est de la cabane.
 - [x] 💾 Sauvegarder dans les réglages ; ⚙ Réglages dans le menu (onglet).

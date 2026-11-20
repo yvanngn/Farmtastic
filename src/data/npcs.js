@@ -218,7 +218,7 @@ export const HAILEY = {
     "Je vous ai gardé(e) un moment ici. Il faut dormir la nuit, d'accord ? Votre corps n'est pas une machine.",
     "Pour les soins, il y a des frais, je suis désolée… ce n'est pas moi qui fixe les tarifs."
   ],
-  // 16/11 : appelée en dehors de ses heures, elle soigne quand même, mais le tarif est doublé (🆕)
+  // 16/11 : appelée en dehors de ses heures, elle soigne quand même, mais le tarif est doublé ()
   clinicRepos: [
     "Ah, vous vous réveillez… Vous savez qu'aujourd'hui, c'était mon jour de repos ?",
     "On m'a appelée en urgence. Je ne pouvais pas vous laisser comme ça.",
@@ -254,7 +254,7 @@ export const IGOR = {
   questions: []
 };
 
-// Lot 9 : demandes de fabrication des habitants (une par semaine). {objet} = « 2 × Confiture de baies ». 🆕 à valider (💡 Claude).
+// Lot 9 : demandes de fabrication des habitants (une par semaine). {objet} = « 2 × Confiture de baies ». à valider (💡 Claude).
 export const CRAFT_LINES = {
   ask: "Dis, tu saurais me préparer {objet} ? Je te le revaudrai.",
   wait: "Toujours partant pour {objet} ? Rien ne presse, la semaine n'est pas finie.",
@@ -262,7 +262,7 @@ export const CRAFT_LINES = {
   done: "Merci encore pour ce que tu m'as apporté. Repasse la semaine prochaine, j'aurai sûrement autre chose à te demander.",
   none: "Pour l'instant, je n'ai besoin de rien. Mais si tu apprends à fabriquer des choses, je saurai m'en souvenir !"
 };
-// Lot 8 : rêves et prémonitions du héros pendant la nuit (💡 écrits par Claude, 🆕 à valider). Restent vagues :
+// Lot 8 : rêves et prémonitions du héros pendant la nuit (💡 écrits par Claude, à valider). Restent vagues :
 // ils évoquent seulement ce que l'utilisateur a décrit (ferme hantée, caverne, grand arbre, forêt, cabane à rebâtir).
 export const DREAMS = [
   "Je rêve que la cabane est entièrement reconstruite… et qu'une lumière brille à chaque fenêtre.",
@@ -276,14 +276,14 @@ export const DREAMS = [
   "Des pas dans la poussière autour de la cabane. Au matin, je saurai peut-être à qui ils sont.",
   "Rien. Une nuit noire et paisible, sans aucun rêve. Ça fait du bien, parfois."
 ];
-// Arrivée en train (pensées du héros, 🆕) : après un licenciement, il cherche un sens à sa vie.
+// Arrivée en train (pensées du héros,) : après un licenciement, il cherche un sens à sa vie.
 export const INTRO_LINES = [
   "Après mon licenciement, j'ai voulu redonner un sens à ma vie.",
   "J'ai toujours rêvé de construire ma propre maison. Alors, quand j'ai vu l'annonce qui disait que cette cabane abandonnée était offerte à la personne qui voulait s'en occuper…",
   "Il paraît que peu de gens sont venus essayer, à cause de la fameuse rumeur comme quoi la ferme serait hantée !",
 ];
 // Ed, le barman (décrit par l'utilisateur le 16/11) : ancien chauffeur routier, devenu barman parce qu'il aime le contact
-// des gens. Rêve d'ouvrir un jour un magasin en ville (future quête). Marié à Suzie, papa de Jade. Répliques 🆕 à valider.
+// des gens. Rêve d'ouvrir un jour un magasin en ville (future quête). Marié à Suzie, papa de Jade. Répliques à valider.
 export const ED = {
   id: 'ed', name: 'Ed', de: 'de lui', color: '#e0a84a', voice: 'voiceChef',
   look: { folk: 'ed', body: 'h', bottom: 'pant', skin: '#e8b48c', hair: 0, hairC: '#5a3a22', hat: 'cap', beard: '#6a3a1e', shirt: '#9a9aa0', suspenders: '#6a4426', towel: true, pants: '#6a4a2a', shoes: '#5a3a22', stout: true, tall: true },   // 18/11 : poupée dessinée par le code (src/render/paperdoll.js), tenue d'après son sprite
@@ -291,7 +291,7 @@ export const ED = {
   traits: ['Barman du saloon', 'Ancien chauffeur routier', 'Aime le contact des gens', 'Rêve d’ouvrir un magasin en ville', 'Mari de Suzie, papa de Jade'],
   taste: { adore: [], aime: ['berry_cooked', 'confiture_baies'], naime: ['slime'], deteste: [] },   // 💡 en attendant les boissons
   story: [
-    { h: 0, t: "Bienvenue au saloon ! Moi c'est Ed. Installe-toi, c'est la maison.", away: "Salut ! Moi c'est Ed, je tiens le saloon du centre-ville. Passe me voir un de ces soirs !" },   // 19/11 : 🆕 hors du saloon
+    { h: 0, t: "Bienvenue au saloon ! Moi c'est Ed. Installe-toi, c'est la maison.", away: "Salut ! Moi c'est Ed, je tiens le saloon du centre-ville. Passe me voir un de ces soirs !" },   // 19/11 : hors du saloon
     { h: 1, t: "Avant, je conduisais des camions. Des milliers de kilomètres, tout seul dans la cabine." },
     { h: 2, t: "Ce qui me manquait, c'était les gens. Alors j'ai posé le camion et j'ai ouvert ce saloon." }
   ],
@@ -300,7 +300,7 @@ export const ED = {
     { t: 'Ta famille ?', lines: ["Suzie, ma femme, et notre petite Jade. On habite la grande maison au bout du quartier."] }
   ],
   chat: ["Qu'est-ce que je te sers ? …Ah, c'est vrai, la carte est encore vide.", "Un jour, j'aurai mon magasin en ville. Tu verras.", "Un bon saloon, c'est un endroit où on se sent attendu."],
-  chatAway: ["Ah, une journée sans comptoir, ça fait du bien.", "Un jour, j'aurai mon magasin en ville. Tu verras.", "Jade a encore dessiné sur les murs… Suzie n'est pas ravie."],   // 19/11 : 🆕 quand il n'est pas au saloon
+  chatAway: ["Ah, une journée sans comptoir, ça fait du bien.", "Un jour, j'aurai mon magasin en ville. Tu verras.", "Jade a encore dessiné sur les murs… Suzie n'est pas ravie."],   // 19/11 : quand il n'est pas au saloon
   questions: []
 };
 // Suzie (femme d'Ed) et Jade (leur enfant) : histoire à écrire plus tard (voir le carnet). Elles restent à la maison pour l'instant.
@@ -325,7 +325,7 @@ export const NPCS = { luna: LUNA, chef: CHEF, franck: FRANCK, myst: MYST, hailey
 // Luna est dehors de 8 h à 19 h, chez elle le reste du temps.
 export const OUT_FROM = 480, OUT_TO = 1140;
 
-// Quête « Ghostbuster » (décrite par l'utilisateur) : la ferme serait hantée. Pensées du héros, 🆕 à valider.
+// Quête « Ghostbuster » (décrite par l'utilisateur) : la ferme serait hantée. Pensées du héros, à valider.
 export const GHOST = { x: 22, y: 14, from: 1320, near: 2.2 };   // 💡 où et dès quelle heure (22h) l'esprit apparaît, la 3e nuit
 export const GHOST_LINES = {
   n1: ['… Hou-hou… Hou-hou…', "Un hululement, dans la nuit. Sûrement une chouette… sûrement."],
@@ -335,7 +335,7 @@ export const GHOST_LINES = {
   vanish: ["Elle a disparu dès que je me suis approché(e)…", "Il me faudrait un moyen de lui parler. Mais lequel ?"]
 };
 
-// Farmwest, lot 3 : nouveau début (répliques de Myst 🆕). Gare → diligence à travers le centre-ville → rond-point → choix de la ferme.
+// Farmwest, lot 3 : nouveau début (répliques de Myst). Gare → diligence à travers le centre-ville → rond-point → choix de la ferme.
 // Chaque arrêt de la diligence (x, en cases, dans le centre-ville) dure le temps que Myst parle.
 export const INTRO_MYST = {
   gare: [
@@ -346,29 +346,33 @@ export const INTRO_MYST = {
     "Tu sais pourquoi les fermes du Nord sont vides ? On raconte qu'un fantôme rôde là-haut, la nuit.",
     "Depuis, personne n'a osé s'y installer. Moi, je n'y crois pas trop."
   ],
-  arrets: [
-    { x: 5, t: "À droite, l'atelier du charpentier : c'est lui qui construit les bâtiments. En face, la halle du marché et le panneau d'affichage, où les habitants laissent leurs demandes." },
-    { x: 11, t: "Le saloon d'Ed. Un ancien routier : il connaît tout le monde, et toutes les nouvelles passent par son comptoir." },
-    { x: 17, t: "La place et sa fontaine. Manu, le Maire, y passe ses journées. Il te serrera la main… et te parlera des impôts." },
-    { x: 27, t: "Là-haut, le magasin d'outils ; en face, le marchand d'animaux. Plus au sud, la rue des commerces : boulangerie, boucherie, poissonnerie et magasin général." },
-    { x: 31, t: "Après le pont, c'est le rond-point. Les fermes sont juste au nord." }
+  ville: [   // 20/11 : plus d'arrêt devant chaque bâtiment
+    "Voilà le centre-ville. Tu y trouveras de tout : le magasin général, la forge, le charpentier… et le saloon d'Ed, pour boire un coup après une longue journée."
+  ],
+  arrets: [],
+  route: [   // 20/11 : sur la route du rond-point, un peu d'histoire
+    "Farmwest est née avec le chemin de fer. Les premiers colons ont planté du blé à perte de vue, et la ville a poussé autour de la gare.",
+    "Puis la mine de la carrière a fermé, les jeunes sont partis… Aujourd'hui, on compte sur les nouveaux venus comme toi pour faire revivre la vallée."
+  ],
+  place: [   // 20/11 : la place du panneau, juste au sud de ta ferme
+    "Ici, c'est la place du panneau. Le grand panneau donne la météo des prochains jours et les événements à venir.",
+    "Et là, c'est ton étal : mets-y tes récoltes, ton bois, tes minerais… Les habitants passent acheter. C'est comme ça que tu gagneras de l'argent."
   ],
   rond: [
-    "Nous y voilà. Au nord, la place du grand panneau : le calendrier, la météo et l'étal pour vendre tes produits. 🆕",
-    "Ta ferme est juste au-dessus. Les trois autres, à l'ouest, n'ont plus qu'un tas de planches à la place de la cabane. 🆕"
+    "Ta ferme est juste au-dessus. Les trois autres, à l'ouest, n'ont plus que des tas de planches."
   ],
   fin: [
-    "Le cocher va te déposer devant chez toi. 🆕",
+    "Le cocher va te déposer devant chez toi.",
     "Ta cabane ne tiendra pas la nuit. Ouvre ton sac 🎒, choisis la tente et appuie sur « Déployer », juste à côté de la cabane.",
     "Ta liste des tâches 📜, en haut à droite, te dira quoi faire. Et le plan est dans 🗺️.",
-    "Moi, j'habite au fond de la zone résidentielle, au sud de la fontaine. 🆕 … Et si tu entends des bruits la nuit, ce n'est sûrement rien. À plus tard."
+    "Moi, j'habite au fond de la zone résidentielle, au sud de la fontaine. … Et si tu entends des bruits la nuit, ce n'est sûrement rien. À plus tard."
   ]
 };
 
 // Remy Gusto, le cuistot du restaurant (décrit par l'utilisateur le 17/11). Fils abandonné d'un cuisinier renommé : partout,
 // on ne voyait en lui que « le fils de », il a perdu beaucoup de concours à cause de son nom. Il est venu à Farmwest, loin de tout,
 // pour vivre de sa passion. Il déteste son père ; quand celui-ci sera mort, il essaiera de percer à nouveau. Maison : zone résidentielle.
-// Son four est en panne : le réparer (marteau, 30 pierres + 15 bois) rapporte le couteau (quête principale). Répliques 🆕.
+// Son four est en panne : le réparer (marteau, 30 pierres + 15 bois) rapporte le couteau (quête principale). Répliques.
 export const CUISTOT = {
   id: 'cuistot', name: 'Remy Gusto', title: 'cuistot', de: 'de lui', color: '#f2a03a', voice: 'voiceFranck',
   look: { planche: 'remy_v2', folk: 'remy', body: 'h', bottom: 'pant', skin: '#e8b48c', hair: 0, hairC: '#3a2a20', hat: 'toque', shirt: '#f4f4f0', buttons: true, bandana: '#c0392b', beard: '#a8582a', checkPants: true, pants: '#4a4a56', shoes: '#2a2a2a', stout: true },   // 18/11 : poupée dessinée par le code (src/render/paperdoll.js), tenue d'après son sprite
@@ -398,7 +402,7 @@ export const CUISTOT = {
 };
 // Harry Fordson, le charpentier (décrit par l'utilisateur le 17/11) : charpentier de père en fils, très doué. Il a une maladie
 // dont on ne sait rien, sans symptôme visible. Il aimerait se marier un jour, mais il travaille beaucoup et a beaucoup de dettes
-// envers Manu, le Maire. C'est lui qui apprend à faire le coffre (quête principale). Répliques 🆕.
+// envers Manu, le Maire. C'est lui qui apprend à faire le coffre (quête principale). Répliques.
 export const HARRY = {
   id: 'harry', name: 'Harry Fordson', title: 'charpentier', de: 'de lui', color: '#c99560', voice: 'voiceChef',
   look: { planche: 'harry_v2', folk: 'harry', body: 'h', bottom: 'pant', skin: '#e8b48c', hair: 0, hairC: '#a86a32', hat: 'plat', shirt: '#c0392b', plaid: true, toolbelt: true, pants: '#3a5a8a', shoes: '#5a3a22', tall: true },   // 18/11 : poupée dessinée par le code (src/render/paperdoll.js), tenue d'après son sprite
@@ -422,7 +426,7 @@ export const HARRY = {
 };
 // Lot 12 (décrit par l'utilisateur le 18/11) : Rouky, vieux monsieur qui vit de la pêche avec son chien Rox, à la cabane du pêcheur
 // (ancienne station balnéaire). On ne sait pas grand-chose de lui : il semble être né ici et avoir travaillé dans les chemins de fer.
-// Peu de gens viennent le voir. Le jour, il dort à côté de sa cabane ; le soir, il est chez lui. Répliques 🆕 (💡 Claude).
+// Peu de gens viennent le voir. Le jour, il dort à côté de sa cabane ; le soir, il est chez lui. Répliques (💡 Claude).
 export const ROUKY = {
   id: 'rouky', name: 'Rouky', title: 'pêcheur', de: 'de lui', color: '#7aa6c8', voice: 'voiceChef',
   look: { folk: 'rouky', body: 'h', bottom: 'pant', skin: '#e2b08a', hair: 0, hairC: '#e8e4dc', beard: '#e8e4dc', hat: 'cap', shirt: '#5a7aa8', overalls: '#6a5a3a', pants: '#6a5a3a', shoes: '#4a3a2a', stout: true },
@@ -448,7 +452,7 @@ export const ROUKY = {
   questions: []
 };
 // Lot 13 (décrit par l'utilisateur le 18/11) : Golgolas, vieil elfe ermite, dans son centre caché au sud de la gare, écrasé par une
-// météorite. Il a entendu parler de nos talents de bâtisseur. Répliques 🆕 (💡 Claude).
+// météorite. Il a entendu parler de nos talents de bâtisseur. Répliques (💡 Claude).
 export const GOLGOLAS = {
   id: 'golgolas', name: 'Golgolas', title: 'elfe', de: 'de lui', color: '#a8c88a', voice: 'voiceFranck',
   look: { folk: 'golgolas', body: 'h' }, home: 'golgolas', stay: true, inside: { x: 21.5, y: 9.6 },
