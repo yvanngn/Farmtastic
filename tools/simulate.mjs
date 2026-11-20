@@ -17,6 +17,8 @@ import { NATURE, VEINS, VEIN_HP, VEIN_ORE } from '../src/data/nature.js';
 import { pickVein } from '../src/systems/nature.js';
 import { BORDER_HP, BORDER_STONES } from '../src/systems/quarry.js';
 import { STAND_CAP } from '../src/systems/stand.js';
+import { SELL_RATE, SHOP_BUYS } from '../src/data/shops.js';
+import { PATTERNS, POT_RECIPES } from '../src/data/patterns.js';
 import { CROPS } from '../src/data/crops.js';
 import { ITEMS } from '../src/data/items.js';
 import { HAND_RECIPES } from '../src/data/recipes.js';
@@ -44,11 +46,14 @@ const P = {
   standFast: 0,            // tours rapides par jour à × 0,5 (on attend 2 à 3 min à côté de l'étal)
   fieldMax: 120,           // carrés de champ au maximum (place libre sur la ferme)
   stockDays: 2,            // n'agrandit plus le champ si le stock invendu dépasse ce nombre de jours de ventes
+  cook: 2,                 // 20/11 : fournées de pain par jour au chaudron (2 farines → 2 pains ; la farine s'achète à la boulangerie), mangées quand l'énergie manque
+  cookS: 40,               // secondes par fournée (chaudron + manger)
+  surplus: true,           // 20/11 : le soir, le stock au-delà de « stockDays » part chez le marchand (75 %) si on passe en ville, sinon à la décharge (50 %)
   grind: true,             // une fois les objectifs atteints : couper / casser pour l'XP (le surplus va à l'étal)
 };
 // Profils de joueur (20/11) : on ne change que ce qui distingue leur façon de jouer.
 const PROFILS = {
-  tranquille: { bedtime: 20 * 60, walkTree: 4, walkRock: 3, tripQuarry: 55, tripPlace: 40, tripTown: 160, standDay: 0, grind: false },
+  tranquille: { bedtime: 20 * 60, cook: 1, walkTree: 4, walkRock: 3, tripQuarry: 55, tripPlace: 40, tripTown: 160, standDay: 0, grind: false },
   moyen: {},
   acharne: { bedtime: 23 * 60 + 30, walkTree: 2, walkRock: 1.5, tripQuarry: 30, tripPlace: 22, tripTown: 90, standDay: 2, standFast: 2 },
 };
@@ -90,7 +95,7 @@ const GOALS = [
 const goal = () => GOALS.find(x => !S.done[x.id]);
 
 function simulateDay() {
-  let t = S.day === 1 ? DAY_S - P.introS : DAY_S, e = 100, ended = 'temps', why = {}, didQuarry = false, toTown = false;
+  let cooked = 0, t = S.day === 1 ? DAY_S - P.introS : DAY_S, e = 100, ended = 'temps', why = {}, didQuarry = false, toTown = false;
   S.today = S.day === 1 ? P.introS : 0;
   const spend = (s, en = 0) => { if (s > t || en > e + 1e-9) return false; t -= s; e -= en; S.today += s; return true; };
   // --- le matin : ventes de la nuit, récolte, courrier, semis ---
@@ -153,16 +158,32 @@ function simulateDay() {
     S.regrow.push({ pool, day: S.day + STUMP_DAYS + TREE_GROW_DAYS });
     return true;
   }
+  function eat() {   // 20/11 : cuisiner et manger du pain (énergie + vie, XP d'artisan)
+    const pat = POT_RECIPES.pain, B = ITEMS.bread.eat, cost = pat.in.flour * ITEMS.flour.buy;
+    if (!S.done.four || cooked >= P.cook || S.money < cost + 100 || e > 100 - pat.q * B.e || !spend(P.cookS)) return false;
+    if (!S.done.cuisine) { S.money -= PATTERNS.p_pain.price; spent.plans += PATTERNS.p_pain.price; }
+    S.money -= cost; spent.cuisine = (spent.cuisine || 0) + cost; cooked++; toTown = true;
+    e = Math.min(100, e + pat.q * B.e); S.hpHealed = (S.hpHealed || 0) + pat.q * (B.h || 0); gain(XP.craft); ms('cuisine', 'Premier pain cuit et mangé'); return true;
+  }
   function grind() {   // temps libre : alterner carrière et arbres ; le surplus part à l'étal
     for (let k = 0; k < 500; k++) {
       const w0 = S.wood, s0 = S.stone;
-      const ok = (k % 2 === 0 ? mine(true) || chop() : chop() || mine(true));
+      const ok = (k % 2 === 0 ? mine(true) || chop() : chop() || mine(true)) || (eat() && true);
       if (!ok) return;
       stockAdd('wood', S.wood - w0); stockAdd('stone', S.stone - s0); S.wood = w0; S.stone = s0;
     }
   }
   // --- le soir : l'étal (× 1, vendu pendant la nuit) ---
   if (stockN() && spend(P.tripPlace + P.listS)) sell(1, true);
+  if (P.surplus) {   // 20/11 : se débarrasser du surplus (marchand 75 % en passant en ville, sinon décharge 50 %)
+    const keep = STAND_CAP * (1 + P.standDay + P.standFast) * P.stockDays, rate = toTown ? SELL_RATE.shop : SELL_RATE.dump;
+    let over = stockN() - keep;
+    for (const id of Object.keys(S.stock).sort((a, b) => ITEMS[a].p - ITEMS[b].p)) { if (over <= 0) break;
+      if (toTown && !Object.values(SHOP_BUYS).some(f => f(id, ITEMS[id]))) continue;
+      const n = Math.min(over, Math.floor(S.stock[id])); if (n <= 0) continue; S.stock[id] -= n; over -= n;
+      const v = Math.max(1, Math.round(ITEMS[id].p * rate)) * n; S.money += v; income[id] = (income[id] || 0) + v; S.resold = (S.resold || 0) + v; }
+    if (!toTown && S.resold && spend(P.tripPlace)) {}
+  }
   if (toTown) spend(P.tripTown / 2);
   if (e < 5) ended = 'énergie';
   S.today = Math.max(S.today, MIN_DAY_S); S.playS += S.today;
@@ -195,7 +216,7 @@ L.push('## Niveaux', '', '| Niveau | XP nécessaire | Atteint le jour | Minage a
   ...LEVELS.slice(1).map((x, i) => `| ${i + 1} | ${x} | ${S.done['niv' + (i + 1)] || '—'} | ${i + 1 === 1 ? 1 : S.done['mining' + (i + 1)] || '—'} | ${i + 1 === 1 ? 1 : S.done['wood' + (i + 1)] || '—'} |`), '');
 L.push('## Économie', '', '| Vendu | $ | Part |', '|---|---|---|', ...Object.entries(income).sort((a, b) => b[1] - a[1]).map(([id, v]) => `| ${ITEMS[id].n} | ${fmt(v)} | ${share([id])} % |`), '',
   `- Blé : un carré rend ${W.yield} blés (${ITEMS.wheat.p} $) + ${W.extra.straw} pailles (${ITEMS.straw.p} $) = ${W.yield + W.extra.straw} objets à vendre ; la graine coûte ${seedPrice} $. L'étal n'en prend que ${STAND_CAP} à la fois : c'est lui qui limite le champ (${S.field} carrés à la fin).`,
-  `- Dépensé : graines ${fmt(spent.graines)} $, plans ${fmt(spent.plans)} $. Fin : ${fmt(S.money)} $, stock invendu ${fmt(stockN())} objets, niveau ${levelOf(S.xp)} (${S.xp} XP), minage ${skill('mining')}, bûcheron ${skill('wood')}.`, '');
+  `- Dépensé : graines ${fmt(spent.graines)} $, plans ${fmt(spent.plans)} $. Cuisine : ${fmt(spent.cuisine || 0)} $ de farine, ${fmt(S.hpHealed || 0)} PV rendus. Revente du surplus (marchands / décharge) : ${fmt(S.resold || 0)} $. Fin : ${fmt(S.money)} $, stock invendu ${fmt(stockN())} objets, niveau ${levelOf(S.xp)} (${S.xp} XP), minage ${skill('mining')}, bûcheron ${skill('wood')}.`, '');
 L.push('## Goulets', '', `- Journées finies par manque d'**énergie** : ${cnt('énergie')} ; par manque de **temps** : ${cnt('temps')}.`,
   `- Journées où il a manqué : de l'argent ${lim('argent')}, des cailloux ${lim('cailloux')}, des arbres ${lim('arbres')}.`, '');
 L.push('## Constats automatiques', '',

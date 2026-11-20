@@ -288,6 +288,13 @@ Décrit par l'utilisateur : cabane à moitié prix ; journal dans la cabane (200
 - [x] Plus d'arrêt devant chaque bâtiment : une seule présentation du centre-ville (dont le saloon).
 - [x] Barres de vie / énergie cachées pendant l'intro ; plus de 🆕 affiché dans les bulles (il n'apparaît que dans docs/DIALOGUES.md).
 
+## Lot 28 — Niveaux hauts adoucis, décharge, revente aux marchands, nourriture (demande du 20/11) ✅ v0.1.99
+- [x] Courbe des niveaux : ×1,75 jusqu'au niveau 6, puis ×1,3 / 1,2 / 1,15 / 1,1 ; niveau 10 à 2079 XP (avant 5108), atteint vers le jour 51 en simulation (profil moyen).
+- [x] Décharge sur la place du panneau (coin d'herbe au sud-est, à côté de la ferme) : reprend tout à 50 % du prix de l'étal. ⏳ Balthazar la tiendra plus tard.
+- [x] Chaque marchand rachète ce qui correspond à son commerce à 75 % (bouton « 💰 Vendre ici » dans sa boutique) 💡 listes de rachat.
+- [x] La nourriture rend énergie et vie (un tiers de l'effet principal sur l'autre jauge) 💡.
+- [x] Simulation : cuisine (pain au chaudron), revente du surplus aux marchands ou à la décharge.
+
 ## Lot 27 — Routes du centre-ville, boutons, arbres (demande du 20/11) ✅ v0.1.91
 - [x] Route entre le centre-ville et le rond-point ; route du centre-ville (sud) jusqu'à la cabane du pêcheur, tout en bas (sous le ranch), port à l'est de la cabane.
 - [x] 💾 Sauvegarder dans les réglages ; ⚙ Réglages dans le menu (onglet).

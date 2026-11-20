@@ -4,8 +4,11 @@
 // Niveaux : le niveau 1 vient vite, puis la courbe est exponentielle ; niveau 10 maximum pour l'instant.
 export const MAX_LEVEL = 10;
 export const XP = { small: 1, craft: 5, quest: 40, questMain: 100, step: 10, daily: 30 };   // 💡 quêtes : 40 / 100, étape d'une quête principale 10, quête du jour 30
-// XP totale pour atteindre chaque niveau : LEVELS[n] (LEVELS[0] = 0). 10 pour le niveau 1, puis × 1,75 à chaque niveau (💡).
-export const LEVELS = (() => { const L = [0, 10]; let need = 25; for (let n = 2; n <= MAX_LEVEL; n++) { L.push(L[n - 1] + Math.round(need)); need *= 1.75; } return L; })();
+// XP totale pour atteindre chaque niveau : LEVELS[n] (LEVELS[0] = 0). 10 pour le niveau 1, puis l'écart grandit de × 1,75
+// jusqu'au niveau 6 ; 20/11 (demande de l'utilisateur) : la hausse ralentit ensuite (× 1,3, 1,2, 1,15, 1,1) pour que les
+// niveaux hauts restent atteignables (niveau 10 vers le 100e jour pour un joueur moyen, d'après tools/equilibrage.mjs).
+export const LEVEL_GROWTH = [1.75, 1.75, 1.75, 1.75, 1.3, 1.2, 1.15, 1.1];   // croissance de l'écart, du niveau 2→3 au 9→10
+export const LEVELS = (() => { const L = [0, 10]; let need = 25; for (let n = 2; n <= MAX_LEVEL; n++) { L.push(L[n - 1] + Math.round(need)); need *= LEVEL_GROWTH[n - 2] ?? 1.1; } return L; })();
 export function levelOf(xp) { let n = 0; while (n < MAX_LEVEL && (xp || 0) >= LEVELS[n + 1]) n++; return n; }
 export const level = S => levelOf(S.pxp || 0);
 // Barre d'XP : progression vers le niveau suivant (0 → 1), pleine au niveau maximum.

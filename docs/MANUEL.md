@@ -25,6 +25,8 @@ Menu → 🎽 Équipement : tête, corps, pieds, accessoire. Le manteau d'hiver 
 - Une journée dure **environ 15 minutes** (6 h → 1 h du matin). La nuit tombe à 18 h.
 - Un mois (une saison) dure **30 jours** ; la semaine va du **lundi au dimanche**. Le week-end, les habitants ne travaillent pas : ils se promènent en ville ou à la plage.
 - **Énergie** : chaque coup d'outil en coûte (un peu aussi chaque coup de marteau quand on répare). Manger prend un petit moment : on ne peut pas enchaîner les bouchées. On la regagne en dormant (tente ou cabane) et en mangeant (baies, mûres, plats).
+- **Manger** rend de l'énergie **et** un peu de vie (un tiers de l'effet principal sur l'autre jauge) 💡.
+- **Se débarrasser d'objets** : la **décharge** (place du panneau, coin sud-est) reprend tout à **50 %** du prix ; chaque **marchand** rachète ce qui correspond à son commerce à **75 %** (« 💰 Vendre ici »). L'étal de Suzie reste le meilleur prix.
 - **Pas couché à 1 h** : on se réveille à la clinique, et Hailey se fait payer.
 - **La nuit** : rêve ou prémonition, énergie qui remonte, sauvegarde automatique.
 
@@ -80,7 +82,7 @@ Menu → 🎽 Équipement : tête, corps, pieds, accessoire. Le manteau d'hiver 
 
 ## 10. Niveaux et expérience
 - **XP** : 1 par arbre, caillou, fleur ou champignon (2 par gros rocher) ; 5 par objet fabriqué ou plat ; 30 par quête du jour 💡 ; 40 par quête secondaire ; 100 par quête principale (+10 par étape) 💡.
-- **Niveaux 1 à 10** (niveau 10 vers 5100 XP). La forêt est barrée par un **énorme arbre tombé** (il faut le niveau 3 de bûcheron), la caverne s'ouvre au **niveau 5** (⏳ quête qui l'ouvre).
+- **Niveaux 1 à 10** (niveau 10 à 2079 XP ; les derniers niveaux grimpent moins vite). La forêt est barrée par un **énorme arbre tombé** (il faut le niveau 3 de bûcheron), la caverne s'ouvre au **niveau 5** (⏳ quête qui l'ouvre).
 
 ## 11. Habitants et amitié
 - On gagne de l'amitié en **parlant** (une seule discussion par jour et par habitant, sauf quête spéciale) et en **offrant** des objets (une fois par jour). 10 cœurs maximum ; chaque palier dévoile un peu de leur vie.

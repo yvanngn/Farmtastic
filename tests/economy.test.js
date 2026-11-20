@@ -177,3 +177,20 @@ test('bac de vente : on choisit quoi vendre et combien ; les ventes sont notées
   const opened = []; g.bus.on('open', w => opened.push(w));
   S.scene = 'place'; assert.equal(act(g, 17, 5), 'stand'); assert.equal(act(g, 12, 4), 'calendar'); assert.deepEqual(opened, ['stand', 'calendar'], '19/11 : l’étal et le grand panneau, sur la place');
 });
+
+// 20/11 : la décharge (tout, 50 %) et la revente aux marchands (ce qu'ils vendent, 75 %)
+import { sellItems, sellPlace } from '../src/systems/economy.js';
+import { tileAt, DUMP_POS, UI_TILES } from '../src/world/scenes.js';
+test('décharge à 50 % et marchands à 75 % selon leur commerce', () => {
+  const { g } = makeGame({ state: { money: 0, inv: { bread: 4, stone: 4 } } });
+  sellItems(g, { bread: 2, stone: 2 }, 'dump');
+  assert.equal(g.S.money, Math.round(ITEMS.bread.p * .5) * 2 + Math.max(1, Math.round(ITEMS.stone.p * .5)) * 2);
+  const m0 = g.S.money;
+  sellItems(g, { bread: 2, stone: 2 }, 'shop:bakery');   // la boulangerie ne prend pas la pierre
+  assert.equal(g.S.money - m0, Math.round(ITEMS.bread.p * .75) * 2);
+  assert.equal(g.S.inv.stone, 2);
+  assert.ok(sellPlace('shop:forge').accepts('stone') && !sellPlace('shop:forge').accepts('bread'));
+  assert.ok(sellPlace('shop:fishmonger').accepts('fish') && sellPlace('shop:stall').accepts('carrot'));
+  assert.equal(tileAt('place', DUMP_POS.x, DUMP_POS.y), '&'); assert.equal(UI_TILES['&'], 'dump');
+  assert.ok(isSolid('place', DUMP_POS.x, DUMP_POS.y) !== undefined);
+});

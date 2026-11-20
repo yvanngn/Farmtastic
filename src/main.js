@@ -122,7 +122,7 @@ function wireBus() {
   g.bus.on('openChest', c => chestPanel.open(c));
   g.bus.on('showMap', () => { mapView.open(); toast('🗺️ Le plan est toujours là : bouton 🗺️ en haut à droite (ou touche M).'); });
   g.bus.on('clinic', e => { const h = NPCS.hailey, lines = e && e.off === 'repos' ? h.clinicRepos : e && e.off === 'nuit' ? h.clinicNuit : h.clinic; setTimeout(() => g.bus.emit('say', { name: h.name, color: h.color, voice: h.voice, lines }), 600); });
-  g.bus.on('open', what => what === 'pot' ? potPanel.open() : what === 'settings' ? settingsPanel.open() : what === 'journal' ? menu.openJournal() : what === 'board' ? board.open() : what === 'sell' ? sellPanel.open() : what === 'stand' ? standPanel.open() : what === 'calendar' ? calendarPanel.open() : what === 'quests' ? menu.open('quests', true) : menu.open(what, true));
+  g.bus.on('open', what => what === 'pot' ? potPanel.open() : what === 'settings' ? settingsPanel.open() : what === 'journal' ? menu.openJournal() : what === 'board' ? board.open() : what === 'sell' ? sellPanel.open() : what === 'dump' ? sellPanel.open('dump') : String(what).startsWith('sellTo:') ? sellPanel.open('shop:' + what.slice(7)) : what === 'stand' ? standPanel.open() : what === 'calendar' ? calendarPanel.open() : what === 'quests' ? menu.open('quests', true) : menu.open(what, true));
 }
 wireBus();
 

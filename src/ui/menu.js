@@ -10,7 +10,7 @@ import { RECIPES } from '../data/recipes.js';
 import { TOOLS } from '../data/items.js';
 import { TIER_NAMES, UPGRADABLE, MAX_TIER } from '../data/tools.js';
 import { BUILDINGS } from '../data/buildings.js';
-import { SHOPS } from '../data/shops.js';
+import { SHOPS, SELL_RATE } from '../data/shops.js';
 import { QUESTS, questProgress, questVisible } from '../systems/quests.js';
 import { journal, setJournalTab, storySoFar } from '../systems/journal.js';
 import { xpBar } from '../systems/level.js';
@@ -53,11 +53,12 @@ export function createMenu(g, opts) {
   const patternGrid = (S, shop) => { const ps = Object.entries(PATTERNS).filter(([, p]) => p.shop === shop && p.recipe !== 'chaudron');   // 20/11 : le chaudron vient de Remy if (!ps.length) return '';
     return '<h3>📜 Patrons</h3><div class="grid">' + ps.map(([id, p]) => { const r = p.pot ? POT_RECIPES[p.recipe] : HAND_RECIPES[p.recipe], o = it(r.out), own = hasPattern(S, id);
       return card(`<div class="t">📜 <b>${p.n}</b></div><div>${o.i} ${o.n} : ${Object.entries(r.in).map(([k, n]) => `${iconHTML(k)}${n}`).join(' ')}</div><div>${p.price} $ · ${JOBS[p.job].i} ${JOBS[p.job].n}${p.pot ? ' · chaudron 🍲' : ''}</div>${own ? '<small>✅ Déjà appris</small>' : p.soon ? '<button disabled>⏳ Bientôt</button>' : `<button data-pattern="${id}" ${S.money >= p.price ? '' : 'disabled'}>Acheter le patron</button>`}`); }).join('') + '</div>'; };
+  const sellBtn = shop => `<p class="row" style="margin:4px 0"><button data-sellto="${shop}">💰 Vendre ici (${SELL_RATE.shop * 100} % du prix)</button></p>`;   // 20/11
   const views = {
-    igorShop: S => `<p class="info">Patrons et outils du forgeron.</p>${patternGrid(S, 'forge')}${shopGrid(S, 'forge')}`,
-    bakery: S => `<p class="info">Farine et patrons : le pain se prépare au chaudron.</p>${patternGrid(S, 'bakery')}${shopGrid(S, 'bakery')}`,
-    butcher: S => `<p class="info">De la bonne viande pour vos futurs plats.</p>${patternGrid(S, 'butcher')}${shopGrid(S, 'butcher')}`,
-    fishmonger: S => `<p class="info">Arrivage du jour.</p>${patternGrid(S, 'fishmonger')}${shopGrid(S, 'fishmonger')}`,
+    igorShop: S => `<p class="info">Patrons et outils du forgeron.</p>${sellBtn('forge')}${patternGrid(S, 'forge')}${shopGrid(S, 'forge')}`,
+    bakery: S => `<p class="info">Farine et patrons : le pain se prépare au chaudron.</p>${sellBtn('bakery')}${patternGrid(S, 'bakery')}${shopGrid(S, 'bakery')}`,
+    butcher: S => `<p class="info">De la bonne viande pour vos futurs plats.</p>${sellBtn('butcher')}${patternGrid(S, 'butcher')}${shopGrid(S, 'butcher')}`,
+    fishmonger: S => `<p class="info">Arrivage du jour.</p>${sellBtn('fishmonger')}${patternGrid(S, 'fishmonger')}${shopGrid(S, 'fishmonger')}`,
     poissons(S) {
       const L = S.fishLog || {}, got = FISH.filter(f => L[f.id]).length, SAI = ['Printemps', 'Été', 'Automne', 'Hiver'], hh = m => `${Math.floor(m / 60) % 24}h`;
       const when = w => `${SAI[w.season]} j${w.day}, an ${w.year || 1}, ${hh(w.minute)} · ${ZONE_NAMES[w.zone] || w.zone}`;
@@ -95,7 +96,7 @@ export function createMenu(g, opts) {
     },
     carpenter(S) {
       const why = { money: "Pas assez d'argent", wood: 'Pas assez de bois', stone: 'Pas assez de pierre' };
-      return patternGrid(S, 'carpenter') + '<p class="info">Les bâtiments se construisent au nord de l\'enclos, sur leur emplacement balisé.</p><div class="grid">' + Object.entries(BUILDINGS).map(([id, b]) => {
+      return sellBtn('carpenter') + patternGrid(S, 'carpenter') + '<p class="info">Les bâtiments se construisent au nord de l\'enclos, sur leur emplacement balisé.</p><div class="grid">' + Object.entries(BUILDINGS).map(([id, b]) => {
         const r = canBuild(S, id), c = b.cost;
         return card(`<div class="t">${b.i} <b>${b.n}</b></div><div>Pour les ${b.for} · ${b.cap} places</div>`
           + (S.built && S.built[id] ? '<div>Construit ✔</div>'
@@ -107,7 +108,7 @@ export function createMenu(g, opts) {
       })() + '</div>';
     },
     animals(S) {
-      return shopGrid(S, 'feed') + '<h3>🐾 Animaux</h3><div class="grid">' + Object.entries(ANIMALS).filter(([id]) => isUnlocked(S, id)).map(([id, a]) => {
+      return sellBtn('feed') + shopGrid(S, 'feed') + '<h3>🐾 Animaux</h3><div class="grid">' + Object.entries(ANIMALS).filter(([id]) => isUnlocked(S, id)).map(([id, a]) => {
         const r = canBuyAnimal(S, id), home = a.home && BUILDINGS[a.home];
         const why = { home: `Il faut d'abord ${home ? home.un : ''} (charpentier)`, full: home ? home.plein : '', money: "Pas assez d'argent" };
         return card(`<div class="t">${a.i} <b>${a.n}</b></div><div>${a.buy} $${a.prod ? ` · ${iconHTML(a.prod)} tous les ${a.every} j` : ' · compagnon'}</div>`
@@ -129,7 +130,7 @@ export function createMenu(g, opts) {
     },
     market(S) {
       const players = opts.market ? '<div id="pm"><p class="info">Chargement…</p></div>' : '<p class="info">Hors ligne : le marché entre joueurs a besoin de la connexion.</p>';
-      return `<h3>${SHOPS.stall.i} ${SHOPS.stall.n}</h3>${patternGrid(S, 'stall')}${shopGrid(S, 'stall')}<h3>👥 Entre joueurs</h3><p class="info">Vendez vos produits aux autres joueurs, ou achetez les leurs. Les demandes du village sont sur le panneau d'affichage, à côté.</p>${players}`;
+      return `<h3>${SHOPS.stall.i} ${SHOPS.stall.n}</h3>${sellBtn('stall')}${patternGrid(S, 'stall')}${shopGrid(S, 'stall')}<h3>👥 Entre joueurs</h3><p class="info">Vendez vos produits aux autres joueurs, ou achetez les leurs. Les demandes du village sont sur le panneau d'affichage, à côté.</p>${players}`;
     },
     metiers(S) {
       return '<p class="info">Tout le monde peut pratiquer tous les métiers. On gagne de l’expérience en fabriquant (patrons achetés dans les magasins) et en cuisinant au chaudron.</p><div class="grid">' + Object.entries(JOBS).map(([id, j]) => {
@@ -210,7 +211,7 @@ export function createMenu(g, opts) {
 
   const handlers = {
     use: id => consume(g, id), deploy: () => { if (deployTent(g)) $('#ovBag').classList.remove('on'); }, craft: i => craft(g, +i), hcraft: id => craftHand(g, id), rcat: c => { recCat = c; }, buy: id => buy(g, id), pattern: id => buyPattern(g, id), buy5: id => buy(g, id, 5), animal: id => buyAnimal(g, id),
-    equip: id => equip(g, id), unequip: k => unequip(g, k),
+    sellto: s => { document.getElementById('ovBag').classList.remove('on'); g.bus.emit('open', 'sellTo:' + s); }, equip: id => equip(g, id), unequip: k => unequip(g, k),
     bag: () => buyBag(g), bench: () => repairBench(g), build: id => build(g, id), stack: () => buyStack(g), up: id => upgradeTool(g, id)
   };
   function render() {

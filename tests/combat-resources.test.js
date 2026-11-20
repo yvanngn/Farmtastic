@@ -56,6 +56,16 @@ test('manger restaure, sans dépasser le maximum', () => {
   assert.equal(S.hp, 55);
 });
 
+test('20/11 : toute nourriture rend de l’énergie et de la vie (la potion ne change pas)', async () => {
+  const { ITEMS } = await import('../src/data/items.js');
+  for (const [id, it] of Object.entries(ITEMS)) if (it.eat && !it.keep) assert.ok(it.eat.e > 0 && it.eat.h > 0, id + ' : énergie et vie');
+  assert.equal(ITEMS.carrot.eat.h, 5, 'carotte : 15 d’énergie → 5 de vie');
+  assert.equal(ITEMS.egg.eat.h, 5, 'les valeurs déjà prévues restent');
+  assert.equal(ITEMS.potion.eat.e, undefined, 'la potion reste un remède');
+  const { g, S } = makeGame({ state: { energy: 50, hp: 50, inv: { bread: 1 } } });
+  assert.equal(consume(g, 'bread'), true); assert.equal(S.energy, 75); assert.equal(S.hp, 58);
+});
+
 // ---- Lot 3 : bois de l'est ----
 import { regrow, forestCount, treeKind } from '../src/systems/resources.js';
 import { FOREST, TREE_GROW_DAYS, ROCK_DAYS } from '../src/data/forest.js';

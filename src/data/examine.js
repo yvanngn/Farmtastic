@@ -24,6 +24,7 @@ export const EXAMINE = {
     rails: 'La voie ferrée. Elle file vers le sud.'
   },
   tiles: {
+    dump: 'La décharge. Tout ce qu’on y jette est recyclé… mais ne rapporte que la moitié du prix de l’étal.',
     villa: 'Très belle villa.',
     sheriff: 'Le bureau du shérif. Une étoile dorée, des barreaux à la fenêtre… et personne derrière.',
     K: 'Le plan de travail. Il ne manque plus qu\'un bon repas.',

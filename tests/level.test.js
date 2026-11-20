@@ -12,7 +12,11 @@ import { migrate, defaultState } from '../src/core/state.js';
 test('lot 8 : niveau 1 vite, puis courbe exponentielle, niveau 10 maximum', () => {
   assert.equal(LEVELS[1], 10, 'le niveau 1 en 10 XP');
   assert.equal(LEVELS.length, MAX_LEVEL + 1);
-  for (let n = 2; n < MAX_LEVEL; n++) assert.ok(LEVELS[n + 1] - LEVELS[n] > (LEVELS[n] - LEVELS[n - 1]) * 1.5, 'chaque niveau demande bien plus que le précédent');
+  for (let n = 2; n < MAX_LEVEL; n++) assert.ok(LEVELS[n + 1] - LEVELS[n] > LEVELS[n] - LEVELS[n - 1], 'chaque niveau demande plus que le précédent');
+  // 20/11 : forte hausse jusqu'au niveau 6, puis plus douce, pour que les niveaux hauts restent atteignables
+  for (let n = 2; n < 6; n++) assert.ok(LEVELS[n + 1] - LEVELS[n] > (LEVELS[n] - LEVELS[n - 1]) * 1.5, 'début : × 1,75');
+  for (let n = 6; n < MAX_LEVEL; n++) assert.ok(LEVELS[n + 1] - LEVELS[n] <= (LEVELS[n] - LEVELS[n - 1]) * 1.31, 'niveaux hauts : hausse ralentie');
+  assert.ok(LEVELS[MAX_LEVEL] < 2500, 'niveau 10 atteignable (moins de 2 500 XP)');
   assert.equal(levelOf(0), 0); assert.equal(levelOf(9), 0); assert.equal(levelOf(10), 1); assert.equal(levelOf(1e9), 10);
   assert.deepEqual(xpBar({ pxp: 1e9 }).p, 1);
 });

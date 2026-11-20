@@ -1,5 +1,6 @@
 // Argent : vente, boutique, fabrication.
 import { ITEMS } from '../data/items.js';
+import { SELL_RATE, SHOP_BUYS, SHOP_NAMES } from '../data/shops.js';
 import { ANIMALS } from '../data/animals.js';
 import { RECIPES } from '../data/recipes.js';
 import { BUILDINGS, WORKBENCH } from '../data/buildings.js';
@@ -32,13 +33,20 @@ export { STACKS };
 
 // Bac de vente : on choisit quoi vendre et combien. Les ventes sont notées (les 30 dernières) pour savoir ce qu'on a vendu.
 export const sellable = id => !!ITEMS[id] && !ITEMS[id].keep;
-export function sellItems(g, picks) {
-  const S = g.S, sold = [];
+// 20/11 : où l'on vend. dump = décharge (tout, 50 %) ; shop:<id> = un marchand (ce qu'il rachète, 75 %) ; sans lieu = prix plein.
+export function sellPlace(where) {
+  if (where === 'dump') return { rate: SELL_RATE.dump, accepts: sellable, name: 'la décharge' };
+  if (where && where.startsWith('shop:')) { const s = where.slice(5), f = SHOP_BUYS[s]; return { rate: SELL_RATE.shop, accepts: id => sellable(id) && !!f && f(id, ITEMS[id]), name: SHOP_NAMES[s] || s }; }
+  return { rate: 1, accepts: sellable, name: '' };
+}
+export const unitPrice = (id, rate = 1) => Math.max(1, Math.round(ITEMS[id].p * rate));
+export function sellItems(g, picks, where) {
+  const S = g.S, sold = [], P = sellPlace(where);
   let gain = 0;
   for (const [id, want] of Object.entries(picks)) {
     const n = Math.min(Math.floor(want) || 0, S.inv[id] || 0);
-    if (n <= 0 || !sellable(id)) continue;
-    const v = ITEMS[id].p * n; gain += v;
+    if (n <= 0 || !P.accepts(id)) continue;
+    const v = unitPrice(id, P.rate) * n; gain += v;
     S.inv[id] -= n; if (S.inv[id] <= 0) { delete S.inv[id]; if (S.sel === id) S.sel = 'hand'; }
     sold.push({ id, n, v });
   }
@@ -46,7 +54,7 @@ export function sellItems(g, picks) {
   S.money += gain;
   S.saleLog = [...sold.map(x => ({ ...x, day: S.day, season: S.season, year: S.year })), ...(S.saleLog || [])].slice(0, 30);
   g.bus.emit('inv'); g.bus.emit('sfx', 'coin');
-  g.bus.emit('toast', `Vendu : ${sold.map(x => `${x.n} ${ITEMS[x.id].n}`).join(', ')} → ${gain} 💰`);
+  g.bus.emit('toast', `Vendu${P.name ? ' à ' + P.name : ''} : ${sold.map(x => `${x.n} ${ITEMS[x.id].n}`).join(', ')} → ${gain} 💰`);
   return gain;
 }
 

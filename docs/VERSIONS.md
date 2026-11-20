@@ -2,6 +2,7 @@
 
 Semver horodaté (heure de Paris). Patch automatique à chaque publication ; mineure et majeure sur décision de l'utilisateur.
 
+- **0.1.99** — 2026-11-20 16:49 — Niveaux hauts adoucis, décharge 50 %, revente aux marchands 75 %, nourriture énergie + vie
 - **0.1.98** — 2026-11-20 16:23 — planches préchargées, profils en miroir préparé, anciennes planches retirées
 - **0.1.97** — 2026-11-20 14:22 — Ed, Igor, Jade et Suzie d'après leurs nouvelles planches
 - **0.1.96** — 2026-11-20 14:18 — Intro plus rapide (fondu sur la route), plus de carte à la fin de l'intro, forge d'Igor au centre-ville

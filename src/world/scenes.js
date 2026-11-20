@@ -543,12 +543,14 @@ for (let lot = 0; lot < 4; lot++) {
 }
 export const NEIGHBOR = { W: 30, H: 22 };
 export const PLACE_BOARD = { x: 11, y: 4, w: 4, h: 2 }, STAND_POS = { x: 17, y: 5, w: 2 };
+export const DUMP_POS = { x: 22, y: 13, w: 2 };   // 20/11 : coin d'herbe vide au sud-est de la place, à deux pas de la ferme
 LAYOUTS.place = (() => {
   const W = 26, H = 18, m = grid(W, H, 'g');
   for (let y = 0; y < H; y++) { m[y][12] = '.'; m[y][13] = '.'; } for (let x = 0; x < 14; x++) { m[8][x] = '.'; m[9][x] = '.'; }
   for (let y = 6; y <= 11; y++) for (let x = 8; x <= 17; x++) m[y][x] = '.';   // petite place en terre battue
   for (let y = PLACE_BOARD.y; y < PLACE_BOARD.y + PLACE_BOARD.h; y++) for (let x = PLACE_BOARD.x; x < PLACE_BOARD.x + PLACE_BOARD.w; x++) m[y][x] = '!';   // grand panneau (calendrier)
   m[STAND_POS.y][STAND_POS.x] = '$'; m[STAND_POS.y][STAND_POS.x + 1] = '$';   // l'étal
+  for (let x = DUMP_POS.x; x < DUMP_POS.x + DUMP_POS.w; x++) m[DUMP_POS.y][x] = '&';   // 20/11 : la décharge (💡 Balthazar plus tard)
   for (const [x, y] of [[3, 3], [21, 3], [4, 13], [20, 14], [8, 15], [23, 10]]) m[y][x] = 'T';
   border(m, [[12, 0], [13, 0], [0, 8], [0, 9], [12, H - 1], [13, H - 1]]);
   return m.map(r => r.join(''));
@@ -569,9 +571,9 @@ LAYOUTS.port = (() => {
   return m.map(r => r.join(''));
 })();
 
-export const SOLID_TILES = '!#WDBKTPCHNYXMQUJAOVZFLfprEmncwGRIxyzqjuhe^k$';   // $ étal de vente (19/11)   // k boîte aux lettres (lot 8)   // ^ falaise (7b)   // e escalier (maison d'Ed)   // h haie de bordure   // + attractions du parc (R I x y z q j u)   // w eau (mer, lac), G grotte   // m n lits de la clinique, c bureau  // A = fauteuil (Franck) / marchand d'animaux (village)
+export const SOLID_TILES = '!#WDBKTPCHNYXMQUJAOVZFLfprEmncwGRIxyzqjuhe^k$&';   // & décharge (20/11)   // $ étal de vente (19/11)   // k boîte aux lettres (lot 8)   // ^ falaise (7b)   // e escalier (maison d'Ed)   // h haie de bordure   // + attractions du parc (R I x y z q j u)   // w eau (mer, lac), G grotte   // m n lits de la clinique, c bureau  // A = fauteuil (Franck) / marchand d'animaux (village)
 // Tuiles qui ouvrent une interface.
-export const UI_TILES = { $: 'stand', M: 'market', Q: 'board', U: 'upgrades', J: 'carpenter', A: 'animals', O: 'bakery', V: 'butcher', Z: 'fishmonger' };
+export const UI_TILES = { $: 'stand', '&': 'dump', M: 'market', Q: 'board', U: 'upgrades', J: 'carpenter', A: 'animals', O: 'bakery', V: 'butcher', Z: 'fishmonger' };
 
 export const SCENES = {
   farm: { W: CFG.W, H: CFG.H, doors: [

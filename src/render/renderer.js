@@ -150,7 +150,7 @@ import { itemArt } from './itemart.js';
 const ART_IM = {};
 const artImage = id => { if (ART_IM[id] !== undefined) return ART_IM[id]; const u = itemArt(id); if (!u) return (ART_IM[id] = null); const im = new Image(); im.src = u; return (ART_IM[id] = im); };
 import { quarryMouthOpen } from '../world/quarrymouth.js';
-import { QUARRY_MOUTHS, STAND_POS, SHOP_VENDOR, VENDOR_POS } from '../world/scenes.js';
+import { QUARRY_MOUTHS, STAND_POS, DUMP_POS, SHOP_VENDOR, VENDOR_POS } from '../world/scenes.js';
 import { IGOR, HARRY, SUZIE } from '../data/npcs.js';
 import { suzieAtStand, SUZIE_STAND } from '../systems/etal.js';
 import { PICKUPS, isBroken } from '../systems/grange.js';
@@ -581,6 +581,14 @@ let swing = null;
       const cols = ['#e8c26a', '#c84a4a', '#8ac06a', '#c99560', '#9aa4b0'];
       for (let k = 0; k < Math.min(5, Math.max(lots.length, 2)); k++) { const cx = 3 + k * 6; R2(cx, -3, 5, 5, '#a8774a'); R2(cx + 1, -4, 3, 2, lots[k] ? cols[k % 5] : '#7a5a3a'); }   // cageots
       R2(10, 9, 12, 4, '#f4ead2'); R2(12, 10, 2, 2, '#3a2410'); R2(15, 10, 2, 2, '#3a2410'); R2(18, 10, 2, 2, '#3a2410');   // ardoise
+    } });
+    if (scene === 'place') list.push({ z: DUMP_POS.y + .9, d: () => {   // 20/11 : la décharge (benne et tas de ferraille)
+      const x = DUMP_POS.x * T, y = DUMP_POS.y * T, R2 = (a, b, w, h, k) => { ctx.fillStyle = k; ctx.fillRect(x + a, y + b, w, h); };
+      R2(0, 13, 32, 3, 'rgba(30,15,5,.3)');
+      R2(1, 0, 22, 14, '#5d6b4a'); R2(1, 0, 22, 2, '#7d8c62'); R2(3, 4, 18, 1, '#46523a'); R2(3, 8, 18, 1, '#46523a');   // benne
+      R2(-1, -1, 26, 3, '#3e4632'); R2(4, -4, 4, 3, '#a0805a'); R2(9, -5, 5, 4, '#8a8f96'); R2(15, -3, 6, 2, '#b8463a');   // ce qui dépasse
+      R2(24, 6, 7, 8, '#7a5a3a'); R2(25, 7, 5, 6, '#9a7246'); R2(26, 3, 3, 3, '#6d737a');   // tonneau et vieux seau
+      R2(5, 6, 14, 5, '#f4ead2'); R2(7, 8, 2, 1, '#3e8a3a'); R2(11, 7, 2, 3, '#3e8a3a'); R2(15, 8, 2, 1, '#3e8a3a');   // pancarte ♻
     } });
     if (scene === 'carriere') for (const m of QUARRY_MOUTHS) if (quarryMouthOpen(S, m.x, m.y)) list.push({ z: m.y + .1, d: () => {   // 19/11 : la bouche de tunnel ouverte aujourd'hui
       const x = m.x * T, y = m.y * T; ctx.fillStyle = '#4a2a1a'; ctx.fillRect(x - 3, y - 2, 22, 18); ctx.fillStyle = '#120a08'; ctx.fillRect(x - 1, y + 2, 18, 14); ctx.fillRect(x + 1, y, 14, 2);

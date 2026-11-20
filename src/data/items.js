@@ -102,3 +102,11 @@ Object.assign(ITEMS, {
 
 import { FISH } from './fish.js';
 for (const f of FISH) ITEMS[f.id] = { n: f.n, p: f.p, i: f.i, eat: { e: Math.round(f.p / 8) }, fishItem: true };
+
+// 20/11 (demande de l'utilisateur) : toute nourriture rend un peu d'énergie ET un peu de vie. Un aliment qui ne rendait
+// que de l'énergie rend désormais aussi le tiers en vie (au moins 1). Les remèdes (potion : `keep`) ne changent pas.
+export const FOOD_HP_SHARE = 1 / 3;
+for (const it of Object.values(ITEMS)) if (it.eat && !it.keep) {
+  if (!it.eat.h && it.eat.e) it.eat.h = Math.max(1, Math.round(it.eat.e * FOOD_HP_SHARE));
+  if (!it.eat.e && it.eat.h) it.eat.e = Math.max(1, Math.round(it.eat.h * FOOD_HP_SHARE));
+}
