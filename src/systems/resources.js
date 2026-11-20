@@ -4,10 +4,10 @@ import { AXE_GROVE } from '../data/repairs.js';
 import { CFG } from '../config.js';
 import { freeForObj, key, isForest, newTree, newRock, genObjects, isSolid } from '../world/map.js';
 import { TREE_KINDS, TREE_KIND_IDS, TREE_GROW_DAYS, ROCK_DAYS, STONE_YIELD, FOREST, STUMP_DAYS, STUMP_HP, STUMP_WOOD } from '../data/forest.js';
-import { MIN_PICK, MINING_GAIN, TIER_NAMES, energyCost, hitReady } from '../data/tools.js';
+import { MIN_PICK, MINING_GAIN, TIER_NAMES, energyCost, hitReady, NEED, WOOD_GAIN } from '../data/tools.js';
 import { add, scatter } from './inventory.js';
 import { useEnergy } from './player.js';
-import { gainXp, toolTier, hasTool } from './skills.js';
+import { gainXp, toolTier, hasTool, lacks } from './skills.js';
 import { gainPxp, XP } from './level.js';
 
 export const TOOL_FOR = { stump: 'axe', tree: 'axe', rock: 'pick', rock_big: 'pick', boulder: 'pick' };
@@ -31,20 +31,21 @@ export function hitObject(g, x, y) {
     const left = TREE_GROW_DAYS - (o.g || 0);
     g.bus.emit('sfx', 'denied'); g.bus.emit('toast', `Ce jeune ${TREE_KINDS[treeKind(o, x, y)].n.toLowerCase()} pousse encore (${left} j) 🌱`); return false;
   }
-  const tier = toolTier(S, tool), need = MIN_PICK[o.t] || 1;
-  if (tier < need) { g.bus.emit('sfx', 'denied'); g.bus.emit('toast', `${({ pick: 'Il faut une meilleure pioche', axe: 'Il faut une meilleure hache', sickle: 'Il faut une meilleure faucille' })[tool] || 'Il faut un meilleur outil'} (forge d’Igor).`); return false; }   // 19/11 : on ne nomme plus le palier
+  const tier = 1, weak = lacks(S, NEED[o.t]);
+  if (weak) { g.bus.emit('sfx', 'denied'); g.bus.emit('toast', weak); return false; }   // 20/11 : la compétence, plus le palier
   if (!hitReady(g)) return 'wait';   // le geste précédent n'est pas fini
   if (!useEnergy(g, energyCost(tier))) return false;
   o.hp -= tier; o.shake = 0.25;
   g.bus.emit('swing', tool);
   g.bus.emit('objHit', { x, y, t: o.t, k: o.k, broken: o.hp <= 0 });
   g.bus.emit('sfx', o.hp <= 0 ? 'break' : o.t === 'tree' ? 'chop' : 'pick');
-  if (isStone(o.t)) gainXp(g, 'mining', MINING_GAIN.hit);
+  if (isStone(o.t)) gainXp(g, 'mining', MINING_GAIN.hit); else gainXp(g, 'wood', WOOD_GAIN.hit);   // 20/11 : XP de bûcheron
   if (o.hp <= 0) {
     delete S.objs[k];
     if (o.t === 'stump') { const n = STUMP_WOOD[0] + (g.rnd() * (STUMP_WOOD[1] - STUMP_WOOD[0] + 1) | 0); scatter(g, 'wood', n, x, y); g.bus.emit('pop', { t: '+' + n + '🪵', x, y }); return true; }   // 19/11 : la souche
     if (o.t === 'tree') S.objs[k] = { t: 'stump', k: treeKind(o, x, y), d: 0, hp: STUMP_HP };   // 19/11 : l'arbre laisse sa souche
-    gainPxp(g, o.t === 'boulder' ? 2 * XP.small : XP.small, o.t);   // lot 8 : 1 XP par petit objet cassé (💡 2 pour un gros rocher)
+    gainPxp(g, o.t === 'boulder' ? 2 * XP.small : XP.small, o.t);
+    if (!isStone(o.t)) gainXp(g, 'wood', o.t === 'stump' ? WOOD_GAIN.stump : WOOD_GAIN.tree);   // 20/11 : bûcheron   // lot 8 : 1 XP par petit objet cassé (💡 2 pour un gros rocher)
     if (o.t === 'tree') {
       const [a, b] = TREE_KINDS[treeKind(o, x, y)].wood, n = a + (g.rnd() * (b - a + 1) | 0); scatter(g, 'wood', n, x, y);
       g.bus.emit('pop', { t: '+' + n + '🪵', x, y });

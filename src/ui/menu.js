@@ -33,7 +33,9 @@ import { folkPortrait } from '../render/folk.js';
 import { hearts, POINTS_PER_HEART, DEGREES, DEGREE_NAMES, tasteOf } from '../systems/social.js';
 import { ITEMS as ALL_ITEMS } from '../data/items.js';
 import { slots, usedSlots, stackSize } from '../systems/inventory.js';
-import { canUpgrade, upgradeTool, miningLevel, nextXp, toolTier, hasTool } from '../systems/skills.js';
+import { canUpgrade, upgradeTool, miningLevel, nextXp, toolTier, hasTool, skillLevel } from '../systems/skills.js';
+import { NEED, SKILL_NAMES, SKILL_MAX } from '../data/tools.js';
+import { VEINS } from '../data/nature.js';
 
 const JTABS = { journal: '📝 Activités', quests: '⭐ Quêtes en cours', social: '💞 Liens', histoire: '📖 Histoire' };   // 19/11 : onglets du journal
 const TABS = { sac: 'Sac', equip: '🎽 Équipement', poissons: '🐟 Poissons', metiers: '🧑‍🔧 Métiers', forge: 'Forge', social: 'Liens' };   // 19/11 : recettes et quêtes ont leur bouton près de l'action
@@ -81,15 +83,13 @@ export function createMenu(g, opts) {
     craft(S) {
       return '<div class="grid">' + RECIPES.map((r, i) => card(`<div class="t">${iconHTML(r.out)} <b>${it(r.out).n}</b> ×${r.q}</div><div>${Object.entries(r.in).map(([k, n]) => `${iconHTML(k)}${n} <small>(${S.inv[k] || 0})</small>`).join(' ')}</div><button data-craft="${i}" ${canCraft(S, r) ? '' : 'disabled'}>Fabriquer</button>`)).join('') + '</div>';
     },
-    forge(S) {
-      const lvl = miningLevel(S), xp = S.skills.mining.xp, nx = nextXp(xp), pct = nx ? Math.round(xp / nx * 100) : 100;
-      const why = { plans: 'Plans de forge : caravane 🐪', level: 'Niveau de minage insuffisant', money: "Pas assez d'argent", stone: 'Pas assez de pierre', max: 'Palier maximum' };
-      return `<div class="xp"><b>⛏️ Minage niveau ${lvl}</b><span>${xp}${nx ? ' / ' + nx : ''} XP</span><div class="bar"><i style="width:${pct}%;background:linear-gradient(90deg,#c99a3a,#ffdf8a)"></i></div><small>Cassez des pierres pour gagner de l'expérience. Les gros rochers demandent une meilleure pioche.</small></div>`
-        + '<div class="grid">' + UPGRADABLE.filter(id => hasTool(S, id)).map(id => {
-          const t = TOOLS.find(x => x.id === id), ic = iconHTML(id), tier = toolTier(S, id), r = canUpgrade(S, id), c = r.cost;
-          return card(`<div class="t">${ic} <b>${t.n}</b></div><div class="tierlbl t${tier}">${TIER_NAMES[tier]}</div>`
-            + (tier >= MAX_TIER ? '<div>Palier maximum ✨</div>' : `<div>→ ${TIER_NAMES[tier + 1]}</div><div>${c.money}$ · ${c.stone}🪨 · niv. ${c.minLvl}</div><button data-up="${id}" ${r.ok ? '' : 'disabled'}>Améliorer</button>${r.ok ? '' : `<small>${why[r.why]}</small>`}`));
-        }).join('') + '</div>';
+    forge(S) {   // 20/11 : plus d'amélioration d'outils : les compétences (minage, bûcheron) débloquent les passages et les gros obstacles
+      const bar = sk => { const xp = ((S.skills || {})[sk] || { xp: 0 }).xp, lv = skillLevel(S, sk), nx = nextXp(xp), pct = nx ? Math.round(xp / nx * 100) : 100;
+        return `<div class="xp"><b>${SKILL_NAMES[sk]} niveau ${lv}${lv >= SKILL_MAX ? ' (max)' : ''}</b><span>${xp}${nx ? ' / ' + nx : ''} XP</span><div class="bar"><i style="width:${pct}%;background:linear-gradient(90deg,#c99a3a,#ffdf8a)"></i></div></div>`; };
+      const row = (t, sk, n) => `<li>${skillLevel(S, sk) >= n ? '✅' : '🔒'} ${t} — ${sk === 'wood' ? 'bûcheron' : 'minage'} ${n}</li>`;
+      return bar('mining') + bar('wood') + '<p class="info">Plus d’amélioration d’outils : ce sont tes compétences qui comptent. Casse des cailloux et coupe des arbres pour progresser (niveau 10 au maximum).</p><ul class="reqs">'
+        + row('Arbre tombé qui barre la forêt', ...NEED.forestTree) + row('Gros cailloux de la carrière', ...NEED.boulder) + row('Rochers devant la carrière profonde', ...NEED.mouth)
+        + Object.entries(NEED.vein).filter(([v]) => v !== 'tin').map(([v, n]) => row(VEINS[v].n, 'mining', n)).join('') + '</ul>';
     },
     carpenter(S) {
       const why = { money: "Pas assez d'argent", wood: 'Pas assez de bois', stone: 'Pas assez de pierre' };

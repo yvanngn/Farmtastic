@@ -10,8 +10,10 @@ const tileOf = k => [PARC_B[k].x, PARC_B[k].y];
 test('Farmwest 2d : la fête foraine est au sud du ranch du Maire', () => {
   assert.ok(!SCENES.foret.doors.some(x => x.to === 'parc'), 'plus de trouée dans la forêt');
   const d = SCENES.ranch.doors.find(x => x.to === 'parc'); assert.ok(d);
-  const { g, S } = makeGame({ state: { scene: 'ranch' } });
-  assert.equal(act(g, d.x, d.y), 'door'); assert.equal(S.scene, 'parc');
+  const { g, S } = makeGame({ state: { scene: 'ranch', day: 29 } });
+  assert.equal(act(g, d.x, d.y), 'locked', '20/11 : fermée avant le dernier jour du premier mois');
+  S.day = 30; assert.equal(act(g, d.x, d.y), 'door'); assert.equal(S.scene, 'parc');
+  assert.equal(SCENES.parc.doors.length, 1, 'une seule entrée'); assert.equal(SCENES.parc.doors[0].y, 0, 'au nord');
 });
 
 test('manèges : on paie, l’énergie remonte, le temps passe', () => {

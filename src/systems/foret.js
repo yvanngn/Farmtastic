@@ -48,8 +48,8 @@ import { TREE_GROW_DAYS, STUMP_DAYS, STUMP_WOOD } from '../data/forest.js';
 import { TREE_HP } from '../world/map.js';
 import { scatter } from './inventory.js';
 import { useEnergy } from './player.js';
-import { toolTier, hasTool } from './skills.js';
-import { energyCost, hitReady } from '../data/tools.js';
+import { toolTier, hasTool, gainXp } from './skills.js';
+import { energyCost, hitReady, WOOD_GAIN } from '../data/tools.js';
 const dayN = S => (S.year - 1) * 120 + S.season * 30 + S.day;
 const W = () => LAYOUTS.foret[0].length, H = () => LAYOUTS.foret.length;
 export const isForestTree = (x, y) => x > 0 && y > 0 && x < W() - 1 && y < H() - 1 && LAYOUTS.foret[y][x] === 'T';
@@ -78,10 +78,11 @@ export function chopForest(g, x, y) {
   if (!useEnergy(g, energyCost(tier))) return false;
   S.foret ||= { day: null, shrooms: {} }; const hits = (S.foret.hits ||= {}), cut = (S.foret.cut ||= {});
   hits[k] = (hits[k] || 0) + tier;
-  g.bus.emit('swing', 'axe'); g.bus.emit('objHit', { x, y, t: 'tree', broken: hits[k] >= TREE_HP });
+  g.bus.emit('swing', 'axe'); gainXp(g, 'wood', WOOD_GAIN.hit); g.bus.emit('objHit', { x, y, t: 'tree', broken: hits[k] >= TREE_HP });
   if (hits[k] < TREE_HP) { g.bus.emit('sfx', 'chop'); return true; }
   delete hits[k]; cut[k] = dayN(S);
   gainPxp(g, XP.small, 'tree');   // lot 8
+  gainXp(g, 'wood', WOOD_GAIN.tree);   // 20/11
   g.bus.emit('sfx', 'break');
   const n = 3 + (g.rnd() * 3 | 0); scatter(g, 'wood', n, x, y);
   g.bus.emit('pop', { t: '+' + n + '🪵', x, y });

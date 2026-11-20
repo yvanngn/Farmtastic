@@ -1,6 +1,6 @@
 {
   "name": "moteur-ferme",
-  "version": "0.1.88",
+  "version": "0.1.89",
   "private": true,
   "type": "module",
   "scripts": {
@@ -8,6 +8,7 @@
     "test:one": "node --test",
     "check": "node --check src/main.js",
     "serve": "python3 -m http.server 8080",
-    "simulate": "node tools/simulate.mjs"
+    "simulate": "node tools/simulate.mjs",
+    "carte": "node tools/world-map.mjs && python3 tools/world-map.py"
   }
 }

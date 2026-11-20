@@ -13,7 +13,7 @@ export function createHotbar(g, audio) {
   function render() {
     const S = g.S, list = owned(), key = list.map(t => t.id + toolTier(S, t.id)).join() + '|' + S.sel;
     if (key === last) return; last = key;
-    bar.innerHTML = list.map((t, i) => `<button data-tool="${t.id}" class="${S.sel === t.id ? 'on' : ''}" title="${t.n}${t.id === 'hand' ? '' : ' · ' + TIER_NAMES[toolTier(S, t.id)]} (${i + 1})" aria-label="${t.n}">${iconHTML(t.id)}<small>${i + 1}</small></button>`).join('');
+    bar.innerHTML = list.map((t, i) => `<button data-tool="${t.id}" class="${S.sel === t.id ? 'on' : ''}" title="${t.n} (${i + 1})" aria-label="${t.n}">${iconHTML(t.id)}<small>${i + 1}</small></button>`).join('');
   }
   bar.addEventListener('pointerdown', e => {
     const b = e.target.closest('button[data-tool]'); if (!b) return;

@@ -34,6 +34,10 @@ import { roxAt, petRox } from './rouky.js';
 import { openMailbox } from './mail.js';
 import { forestOpen, chopForestBlocker } from './blockers.js';
 import { farmDoor } from './farms.js';
+import { dayIndex } from './time.js';
+import { CFG as CFG_P } from '../config.js';
+// 20/11 : la fête foraine n'ouvre que le dernier jour du premier mois
+export const parcOpen = S => dayIndex(S) >= CFG_P.MONTH_DAYS;
 import { quarryMouthOpen } from '../world/quarrymouth.js';
 import { readLetter, hitMeteor, zoneOpen as golgoOpen, MAILBOX } from './golgolas.js';
 import { METEOR } from '../world/scenes.js';
@@ -126,6 +130,7 @@ function act0(g, tx, ty) {
   { const fd = d && farmDoor(S, d); if (fd) { if (!fd.to) return 'none';   // 19/11 : sorties des fermes (FARM_LINKS)
     if (fd.lot == null) d = { ...d, to: fd.to, spawn: fd.spawn };
     else { const who = Object.values(g.others || {}).find(o => o.farmLot === fd.lot); enterScene(g, fd.to, fd.spawn); if (fd.to !== 'farm') g.bus.emit('toast', `🏡 ${fd.name} — ${who ? 'la ferme de ' + who.name : 'personne n’y habite pour l’instant'}`); return 'door'; } } }
+  if (d && d.to === 'parc' && !parcOpen(S) && !ADMIN.on) { g.bus.emit('sfx', 'denied'); g.bus.emit('toast', '🎡 La fête foraine est encore en montage : elle ouvre le dernier jour du premier mois.'); return 'locked'; }   // 20/11
   if (d && d.to === 'foret' && !forestOpen(S) && !ADMIN.on) { const r = chopForestBlocker(g, tx, ty); return r === 'open' ? (enterScene(g, d.to, d.spawn), 'door') : 'locked'; }   // 19/11 : un gros arbre barre la forêt (hache en cuivre)
   if (d && d.to !== 'foret' && ZONE_LEVEL[d.to] && !zoneOpen(S, d.to) && !ADMIN.on) { g.bus.emit('sfx', 'denied'); g.bus.emit('toast', d.to === 'foret' ? `🌲 Les arbres sont si serrés qu'on ne passe pas… (niveau ${ZONE_LEVEL.foret} requis)` : `🔒 La caverne attendra : niveau ${ZONE_LEVEL[d.to]} requis.`); return 'locked'; }   // lot 8 : zones débloquées par le niveau
   if (d && d.to === 'wild' && !isOpen(S)) { g.bus.emit('sfx', 'denied'); g.bus.emit('toast', 'La grille de la caverne est fermée à clé. Le Maire saura peut-être…'); return 'locked'; }

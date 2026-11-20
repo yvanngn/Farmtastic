@@ -32,14 +32,15 @@ test('les fleurs fanent chaque jour, les cailloux restent', () => {
   assert.ok(Object.values(N.rocks).filter(o => o.t === 'rock').length <= NATURE.foret.rocks);
 });
 
-test('filons : cuivre courant → or rare, et plus de coups de pioche que les cailloux', () => {
-  const c = { copper: 0, tin: 0, iron: 0, gold: 0 };
-  for (let i = 0; i < 1000; i++) c[pickVein(i / 1000)]++;
-  assert.ok(c.copper > c.tin && c.tin > c.iron && c.iron > c.gold && c.gold > 0);
+test('filons : cuivre courant → or rare ; 20/11 : niveau de minage par filon', () => {
+  const c = {}; for (let i = 0; i < 1000; i++) { const v = pickVein(i / 1000); c[v] = (c[v] || 0) + 1; }
+  assert.ok(c.copper > c.zinc && c.zinc > c.iron && c.iron > c.cobalt && c.cobalt > c.nickel && c.nickel > c.silver && c.silver >= c.gold && c.gold > 0 && !c.tin);
   assert.ok(VEIN_HP > ROCK_HP);
-  const { g, S } = game({ scene: 'foret', sel: 'pick', tools: { pick: 1 }, energy: 999, maxE: 999 });
+  const { g, S, toasts } = game({ scene: 'foret', sel: 'pick', energy: 999, maxE: 999 });
   S.nature = { foret: { day: S.year + '-' + S.season + '-' + S.day, flowers: {}, rocks: { '5,9': { t: 'vein', v: 'gold', hp: VEIN_HP } } } };
   assert.equal(isSolid(S, 5, 9), true);
+  S.skills.mining = { xp: 4500 }; act(g, 5, 9); assert.match(toasts().at(-1), /minage niveau 10/, 'or : niveau 10');
+  S.skills.mining = { xp: 6200 };
   let hits = 0; while (S.nature.foret.rocks['5,9']) { assert.equal(act(g, 5, 9), 'hit'); hits++; }
   assert.equal(hits, VEIN_HP); ramasse(g);
   assert.ok(S.inv.gold_ore >= 2);

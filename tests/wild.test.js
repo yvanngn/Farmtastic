@@ -78,7 +78,7 @@ test('cailloux : 3 types (le 2 rare, le 3 plus rare), renouvelés chaque jour', 
 test('minerais : rubis ou émeraude, plus souvent sur les gros cailloux', () => {
   assert.ok(ZROCKS.zrock1.ore < ZROCKS.zrock2.ore && ZROCKS.zrock2.ore < ZROCKS.zrock3.ore && ZROCKS.zrock1.ore <= 0.02);
   const { g, S } = makeGame({ rnd: seq(0.01, 0.9), state: { scene: 'wild', sel: 'pick', inv: {}, tools: { pick: 5 } } });
-  S.wild = { day: S.year + '-' + S.season + '-' + S.day, rocks: { '5,5': { t: 'zrock3', hp: 6 } } };
+  S.wild = { day: S.year + '-' + S.season + '-' + S.day, rocks: { '5,5': { t: 'zrock3', hp: 2 } } };
   hitZRock(g, 5, 5); hitZRock(g, 5, 5); ramasse(g);
   assert.equal(S.inv.stone, 3);
   assert.equal((S.inv.ruby || 0) + (S.inv.emerald || 0), 1);

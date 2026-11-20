@@ -67,37 +67,30 @@ test('casser des pierres donne de l’XP et fait monter de niveau', () => {
   assert.ok(sounds().includes('levelup'));
 });
 
-test('gros rocher : il faut une meilleure pioche (sans nommer le palier)', () => {
+test('gros rocher : 20/11 il faut le niveau 3 de minage', () => {
   const { g, S, toasts } = makeGame();
-  S.sel = 'pick'; S.objs['40,10'] = { t: 'boulder', hp: 6 };
+  S.sel = 'pick'; S.objs['40,10'] = { t: 'boulder', hp: 3 };
   assert.equal(hitObject(g, 40, 10), false);
-  assert.match(toasts()[0], /meilleure pioche/); assert.doesNotMatch(toasts()[0], /Cuivre/);
-  S.tools.pick = 2;
+  assert.match(toasts()[0], /minage niveau 3/);
+  S.skills.mining = { xp: 260 };
   hitObject(g, 40, 10); hitObject(g, 40, 10); hitObject(g, 40, 10);
   assert.equal(S.objs['40,10'], undefined); ramasse(g);
-  assert.ok(S.inv.stone >= 8);
+  assert.ok(S.inv.stone >= 2);
 });
 
-test('forge : niveau, argent et pierre requis', () => {
-  const { g, S } = makeGame({ state: { money: 2800, inv: { stone: 65 } } });
-  assert.equal(canUpgrade(S, 'pick').why, 'level');
-  S.skills.mining.xp = 100;
-  assert.equal(upgradeTool(g, 'pick'), true);
-  assert.equal(S.tools.pick, 2);
-  assert.equal(S.money, 2200, 'plus cher : 600 $');
-  assert.equal(S.inv.stone, 35, '30 pierres');
+test('20/11 : plus d’amélioration d’outils ; compétences limitées au niveau 10', async () => {
+  const { level } = await import('../src/systems/skills.js');
+  const { g, S } = makeGame({ state: { money: 1e6, inv: { stone: 999 } } });
+  assert.equal(canUpgrade(S, 'pick').ok, false); assert.equal(upgradeTool(g, 'pick'), false);
+  assert.equal(level(1e9), 10);
 });
 
-test('un outil amélioré coûte moins d’énergie et frappe plus fort', () => {
+test('20/11 : couper un arbre fait gagner de l’XP de bûcheron', () => {
   const { g, S } = makeGame({ rnd: seq(0) });
-  S.sel = 'axe'; S.tools.axe = 3; S.objs['30,20'] = { t: 'tree', hp: 3 };
+  S.sel = 'axe'; S.objs['30,20'] = { t: 'tree', hp: 1 };
   hitObject(g, 30, 20);
-  assert.equal(S.objs['30,20'].t, 'stump', 'abattu en un coup (reste la souche)');
-  assert.equal(Math.round(S.energy * 100) / 100, 99.6);
-  const e = { x: S.x + 1, y: S.y, hp: 100, cd: 0, hit: 0 };
-  g.enemies.push(e); S.tools.sword = 3;
-  attack(g, e);
-  assert.equal(e.hp, 32);
+  assert.equal(S.objs['30,20'].t, 'stump');
+  assert.ok(S.skills.wood.xp > 0);
 });
 
 // ---- Objets au sol et échange quand le sac est plein ----

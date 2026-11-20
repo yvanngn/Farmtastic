@@ -12,7 +12,7 @@ const ROT = (path, a, cx, cy) => { const p = new Path2D(); p.addPath(path, new D
 export const MUSH = { mousseron: ['#e8dcc0', '#f4efe2'], morille: ['#8a6a4a', '#efe6d0'], girolle: ['#f2b03a', '#f6d68a'], oronge: ['#e85a2a', '#f4f0e0'], cepe: ['#8a4a2a', '#ece0c0'], truffe_blanche: ['#e8e0cc', '#e8e0cc'], pied_mouton: ['#f0e2c8', '#f6eedc'], trompette: ['#3a3038', '#5a4a52'] };
 const FLOW = { paquerette: '#ffffff', violette: '#8a5ac8', muguet: '#f4f4ea', coquelicot: '#e0302a', bleuet: '#4a7ae0', lavande: '#a07ad8', bruyere: '#d070b0', souci: '#f0a020', colchique: '#c890e0', perce_neige: '#eef5f8', jonquille: '#f5d63a', tournesol: '#f5c020', rose: '#e04a6a', edelweiss: '#f4f4ec', camomille: '#ffffff', hellebore: '#f0c8d8' };
 const FISHC = { fish: '#8aa8c0', gardon: '#a8b8a0', carpe: '#c8a050', brochet: '#6a8a4a', anguille: '#5a5a3a', sardine: '#9ab8d0', maquereau: '#4a7a9a', dorade: '#e0b0a0', thon: '#3a5a8a', omble: '#c88a6a', saumon: '#e88a6a', salmon: '#e88a6a', poulpe: '#c86a8a', pieuvre: '#c86a8a', truite_givre: '#a8d0e8', lotte_bleue: '#3a6ab0' };
-const ORE = { copper_ore: '#d8783a', tin_ore: '#d8dce2', iron_ore: '#9aa4b0', gold_ore: '#f2c832' };
+const ORE = { copper_ore: '#d8783a', tin_ore: '#d8dce2', zinc_ore: '#a8b4bc', cobalt_ore: '#3a5ac8', nickel_ore: '#b8b090', silver_ore: '#e8eef4', iron_ore: '#9aa4b0', gold_ore: '#f2c832' };
 const SEED = { wheat_seed: '#e6c34a', corn_seed: '#f2d13b', carrot_seed: '#ef7b2a', hay_seed: '#c9b45a' };
 
 function model(id) {

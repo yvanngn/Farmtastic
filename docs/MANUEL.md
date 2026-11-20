@@ -38,12 +38,12 @@ Menu → 🎽 Équipement : tête, corps, pieds, accessoire. Le manteau d'hiver 
 | Faucille | grange | couper l'herbe |
 | Canne à pêche sommaire | **Rouky**, contre un os pour son chien Rox (§ 9) | pêcher |
 
-- **Paliers** de la pioche, de la hache, de la faucille et de l'épée : Base → Cuivre → Fer → Or → Iridium, à la forge d'Igor (argent + pierres, niveau de minage minimum). Un meilleur outil va plus vite et coûte moins d'énergie.
+- **Plus de paliers d'outils** (20/11) : ce sont les **compétences** (niveau 1 à 10, menu → ⚒️) qui comptent. **Minage** (casser cailloux et filons) et **Bûcheron** (couper arbres et souches). Elles débloquent les gros obstacles : gros cailloux de la carrière et rochers des bouches (minage 3), arbre tombé de la forêt (bûcheron 3), et les filons : cuivre 3, zinc 4, fer 5, cobalt 6, nickel 7, argent 8, or 10.
 - On n'a **jamais deux fois le même outil**, même à plusieurs.
 
 ## 5. Ressources
 - **Arbres** (hache) → bois. Un arbre abattu laisse sa **souche** : coupée, elle donne encore 1 à 2 bois (l'arbre ne revient qu'à la saison suivante) ; laissée, elle repousse au bout de 4 jours, petit à petit. Pareil dans la forêt. Plus de cailloux à la ferme : ils sont à la **carrière**, au nord de la ferme (chemin au bout de l'allée centrale). Elle est pleine au premier passage ; une fois vidée, 6 cailloux reviennent chaque jour. Elle est bordée de **gros cailloux** (plus longs à casser, 4 à 6 pierres, ils repoussent en 3 jours).
-- **Carrière profonde** : chaque jour, l'une des trois bouches de tunnel de la paroi nord est ouverte (casser le gros caillou devant, avec une pioche en cuivre). Derrière, un canyon de grès rouge riche en **filons de fer et d'or**.
+- **Carrière profonde** : chaque jour, l'une des trois bouches de tunnel de la paroi nord est ouverte (casser le gros caillou devant, minage niveau 3). Derrière, un canyon de grès rouge riche en filons de fer, cobalt, nickel, argent et or.
 - **Filons** → minerai ; les filons rares (fer, or) montrent un morceau de métal qui **scintille**.
 - **Fleurs et champignons** : couteau, en restant appuyé.
 - **Baies et mûres** : buissons et ronces, repoussent en 2 jours.
@@ -79,7 +79,7 @@ Menu → 🎽 Équipement : tête, corps, pieds, accessoire. Le manteau d'hiver 
 
 ## 10. Niveaux et expérience
 - **XP** : 1 par arbre, caillou, fleur ou champignon (2 par gros rocher) ; 5 par objet fabriqué ou plat ; 30 par quête du jour 💡 ; 40 par quête secondaire ; 100 par quête principale (+10 par étape) 💡.
-- **Niveaux 1 à 10** (niveau 10 vers 5100 XP). La forêt est barrée par un **énorme arbre tombé** (il faut une hache en cuivre), la caverne s'ouvre au **niveau 5** (⏳ quête qui l'ouvre).
+- **Niveaux 1 à 10** (niveau 10 vers 5100 XP). La forêt est barrée par un **énorme arbre tombé** (il faut le niveau 3 de bûcheron), la caverne s'ouvre au **niveau 5** (⏳ quête qui l'ouvre).
 
 ## 11. Habitants et amitié
 - On gagne de l'amitié en **parlant** (une seule discussion par jour et par habitant, sauf quête spéciale) et en **offrant** des objets (une fois par jour). 10 cœurs maximum ; chaque palier dévoile un peu de leur vie.
@@ -96,7 +96,7 @@ Menu → 🎽 Équipement : tête, corps, pieds, accessoire. Le manteau d'hiver 
 Du sud au nord sur l'axe central : **zone résidentielle** → **rond-point** (fontaine ; le ranch à l'est, le centre-ville à l'ouest) → **place du panneau** → **ferme principale** (où l'on s'installe toujours au début, plus de choix) → **carrière**. La forêt est à l'est de la ferme principale. La carte de la région (🗺️) montre tout cela.
 Trois autres fermes à l'ouest : la **ferme du Sud-Ouest** (à l'ouest de la place), la **ferme de l'Ouest** (à l'ouest de la ferme principale) et la **ferme du Nord-Ouest** (au-dessus, à l'ouest de la carrière). Elles n'ont pas de cabane mais un **tas de planches**, qui coûte le double à transformer en cabane (80 bois + 30 pierres).
 **Place du panneau** : le grand panneau (calendrier) donne la météo du jour et des 3 jours suivants et les événements à venir (début de saison, dernier jour de la fête, week-ends) ; l'**étal** de vente est juste à côté.
-Gare (ouest) · centre-ville (entouré par la rivière, ponts vers la gare, le rond-point et la plage) · les 4 fermes et la place du panneau (nord) · rond-point et fontaine (centre) · zone résidentielle (au sud de la fontaine) · ranch du Maire · fête foraine (sud) · **cabane du pêcheur** (à la place de la station balnéaire, au sud du centre-ville) · zone portuaire (sud-est ; reliée au ranch, à la plage par le quai et à la montagne par la route de l'est) · forêt (nord-est, labyrinthe qui change à chaque saison) · montagne (est ; par la zone résidentielle ou par la route de l'est depuis le port) · caverne sombre.
+Gare (ouest) · centre-ville (entouré par la rivière, ponts vers la gare, le rond-point et la plage) · les 4 fermes et la place du panneau (nord) · rond-point et fontaine (centre) · zone résidentielle (au sud de la fontaine) · ranch du Maire · fête foraine (au sud du ranch, une seule entrée ; ouverte à partir du dernier jour du premier mois) · **cabane du pêcheur** (à la place de la station balnéaire, au sud du centre-ville) · zone portuaire (sud-est ; reliée au ranch, à la plage par le quai et à la montagne par la route de l'est) · forêt (nord-est, labyrinthe qui change à chaque saison) · montagne (est ; par la zone résidentielle ou par la route de l'est depuis le port) · caverne sombre.
 - ⏳ **Diligence** : débloquée au niveau 10, un arrêt à chaque carrefour.
 
 ## Golgolas et le centre de l'elfe

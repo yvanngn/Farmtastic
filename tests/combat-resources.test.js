@@ -86,7 +86,7 @@ test('un arbre met 3 jours à pousser avant de donner du bois', () => {
 
 test('pierres : la petite donne 1 pierre, la plus grosse 2', () => {
   const { g, S } = makeGame({ state: { sel: 'pick', inv: {}, tools: { axe: 1, pick: 3, sickle: 1, sword: 1 } } });
-  S.objs['40,10'] = { t: 'rock', hp: 2 }; S.objs['41,10'] = { t: 'rock_big', hp: 3 };
+  S.objs['40,10'] = { t: 'rock', hp: 1 }; S.objs['41,10'] = { t: 'rock_big', hp: 1 };
   hitObject(g, 40, 10); ramasse(g);
   assert.equal(S.inv.stone, 1);
   hitObject(g, 41, 10); ramasse(g);
@@ -141,21 +141,16 @@ test('lot 8 : beaucoup plus d’arbres et de cailloux au départ, et autant remi
   assert.notEqual(keys(), before, '19/11 : à chaque saison, les arbres sont placés ailleurs');
 });
 
-test('coups de hache et de pioche plus lents (un geste à la fois) ; un meilleur outil va plus vite ; moins d’énergie par coup', async () => {
+test('coups de hache et de pioche plus lents (un geste à la fois) ; 20/11 : plus de paliers d’outils', async () => {
   const { CFG } = await import('../src/config.js');
   const { energyCost } = await import('../src/data/tools.js');
   const old = CFG.HIT_MS; CFG.HIT_MS = 650;
   try {
-    const timeToFell = tier => {
-      const { g, S, clock } = makeGame({ state: { sel: 'axe', energy: 100, tools: { axe: tier } } });
-      S.objs = { '20,20': { t: 'tree', k: 'oak', g: 3, hp: 8 } }; S.x = 20.5; S.y = 21; const t0 = clock.t;
-      while (S.objs['20,20'] && S.objs['20,20'].t === 'tree') { hitObject(g, 20, 20); clock.t += 50; }
-      return { ms: clock.t - t0, e: 100 - S.energy };
-    };
-    const base = timeToFell(1), fer = timeToFell(3);
-    assert.ok(base.ms >= 7 * 650, 'arbre à la hache de base : 8 coups, au moins 4,5 s');
-    assert.ok(fer.ms < base.ms / 2, 'la hache en fer fait gagner beaucoup de temps');
-    assert.ok(Math.abs(base.e - 8 * energyCost(1)) < 1e-9); assert.ok(base.e <= 5.5, 'un arbre coûte au plus 5,5 ⚡ avec la hache de base (19/11)');
+    const { g: g1, S: S1, clock: c1 } = makeGame({ state: { sel: 'axe', energy: 100, tools: { axe: 3 } } });
+    S1.objs = { '20,20': { t: 'tree', k: 'oak', g: 3, hp: 8 } }; S1.x = 20.5; S1.y = 21; const t0 = c1.t;
+    while (S1.objs['20,20'] && S1.objs['20,20'].t === 'tree') { hitObject(g1, 20, 20); c1.t += 50; }
+    assert.ok(c1.t - t0 >= 7 * 650, 'arbre : 8 coups, même avec une ancienne « hache en fer »');
+    assert.ok(Math.abs(100 - S1.energy - 8 * energyCost(1)) < 1e-9);
     const { g, S, clock } = makeGame({ state: { sel: 'pick', energy: 100 } }); S.objs = { '20,20': { t: 'rock', hp: 6 } }; S.x = 20.5; S.y = 21;
     hitObject(g, 20, 20); assert.equal(hitObject(g, 20, 20), 'wait', 'pas de second coup avant la fin du geste');
     clock.t += 650; assert.equal(hitObject(g, 20, 20), true);
@@ -170,10 +165,10 @@ test('19/11 : ferme sans cailloux ni gros rochers (tout est à la carrière)', a
 test('19/11 : souche — coupée elle donne un peu de bois ; laissée, elle repousse au bout de 4 jours', async () => {
   const { regrow } = await import('../src/systems/resources.js');
   const { g, S } = makeGame({ rnd: seq(0.5) });
-  S.sel = 'axe'; S.tools.axe = 3; S.objs['30,20'] = { t: 'tree', k: 'oak', hp: 3 }; S.objs['31,20'] = { t: 'tree', k: 'oak', hp: 3 };
+  S.sel = 'axe'; S.objs['30,20'] = { t: 'tree', k: 'oak', hp: 1 }; S.objs['31,20'] = { t: 'tree', k: 'oak', hp: 1 };
   hitObject(g, 30, 20); hitObject(g, 31, 20); assert.equal(S.objs['30,20'].t, 'stump');
   const w = S.drops.filter(d => d.id === 'wood').reduce((a, d) => a + (d.n || 1), 0);
-  hitObject(g, 30, 20); assert.equal(S.objs['30,20'], undefined, 'souche arrachée');
+  hitObject(g, 30, 20); hitObject(g, 30, 20); assert.equal(S.objs['30,20'], undefined, 'souche arrachée (2 coups)');
   assert.ok(S.drops.filter(d => d.id === 'wood').reduce((a, d) => a + (d.n || 1), 0) > w, 'un peu plus de bois');
   for (let d = 0; d < 4; d++) regrow(g);
   assert.equal(S.objs['31,20'].t, 'tree'); assert.equal(S.objs['31,20'].g, 0, 'repousse petit à petit');

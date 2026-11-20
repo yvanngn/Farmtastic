@@ -91,7 +91,11 @@ for (const season of FLOWERS) for (const f of season) ITEMS[f.id] = { n: f.n, p:
 // Minerais des filons (💡 prix) : du cuivre (courant) à l'or (rare).
 Object.assign(ITEMS, {
   copper_ore: { n: 'Minerai de cuivre', p: 15, i: '🟠' },
-  tin_ore: { n: "Minerai d'étain", p: 25, i: '⚪' },
+  tin_ore: { n: "Minerai d'étain", p: 25, i: '⚪' },   // (anciennes parties : plus de filon d'étain)
+  zinc_ore: { n: 'Minerai de zinc', p: 20, i: '⚪' },   // 20/11 💡 prix
+  cobalt_ore: { n: 'Minerai de cobalt', p: 55, i: '🔵' },
+  nickel_ore: { n: 'Minerai de nickel', p: 70, i: '⚪' },
+  silver_ore: { n: "Minerai d'argent", p: 90, i: '⚪' },
   iron_ore: { n: 'Minerai de fer', p: 40, i: '⚫' },
   gold_ore: { n: "Minerai d'or", p: 100, i: '🟡' }
 });

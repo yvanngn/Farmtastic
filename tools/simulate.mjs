@@ -1,19 +1,20 @@
 // 20/11 (demande de l'utilisateur) : moteur de simulation rapide de Farmwest.
-// Il « joue » des journées entières en accéléré avec un joueur-type (hypothèses en tête de fichier, modifiables),
-// en lisant les VRAIES valeurs du jeu (src/data, src/systems, src/config) : rien n'est recopié, donc chaque réglage
-// du jeu se voit directement dans le résumé. Sortie : docs/SIMULATION.md (lisible, à adapter).
-// Lancer : node tools/simulate.mjs [jours=120] [graine=12345]
-import { writeFileSync } from 'node:fs';
+// Il « joue » des journées entières en accéléré avec un joueur-type (hypothèses ci-dessous, modifiables), en lisant les
+// VRAIES valeurs du jeu (src/data, src/systems, src/config) : rien n'est recopié, chaque réglage se voit dans le résumé.
+// Sortie : docs/SIMULATION.md.   Lancer : npm run simulate   ou   node tools/simulate.mjs [jours=120] [graine=12345]
+import { writeFileSync, readFileSync } from 'node:fs';
 import { CFG } from '../src/config.js';
 import { LEVELS, XP, MAX_LEVEL } from '../src/systems/level.js';
-import { upgradeCost, energyCost, MINING_GAIN, MINING_XP, TIER_NAMES } from '../src/data/tools.js';
-import { level as miningLevelOf } from '../src/systems/skills.js';
+import { energyCost, MINING_GAIN, WOOD_GAIN, NEED, SKILL_MAX } from '../src/data/tools.js';
+import { level as skillOf } from '../src/systems/skills.js';
 import { REPAIRS, REPAIR_STEP } from '../src/data/repairs.js';
 import { REPAIR_ENERGY } from '../src/systems/repair.js';
-import { TREE_KINDS, STUMP_DAYS, STUMP_HP, STUMP_WOOD, TREE_GROW_DAYS, FOREST } from '../src/data/forest.js';
+import { TREE_KINDS, STUMP_DAYS, STUMP_HP, STUMP_WOOD, TREE_GROW_DAYS } from '../src/data/forest.js';
 import { TREE_HP, ROCK_HPS, genObjects } from '../src/world/map.js';
-import { NATURE } from '../src/data/nature.js';
+import { NATURE, VEINS, VEIN_HP, VEIN_ORE } from '../src/data/nature.js';
+import { pickVein } from '../src/systems/nature.js';
 import { BORDER_HP, BORDER_STONES } from '../src/systems/quarry.js';
+import { STAND_CAP } from '../src/systems/stand.js';
 import { CROPS } from '../src/data/crops.js';
 import { ITEMS } from '../src/data/items.js';
 import { HAND_RECIPES } from '../src/data/recipes.js';
@@ -25,167 +26,184 @@ const DAYS = +(process.argv[2] || 120), SEED = +(process.argv[3] || 12345);
 
 // ---------- Hypothèses sur le joueur-type (à adapter) ----------
 const P = {
-  bedtime: 22 * 60,        // se couche à 22 h (le jeu commence à 6 h)
+  bedtime: 22 * 60,        // se couche à 22 h (le jeu commence à 6 h ; on ne peut pas dormir avant 18 h)
+  introS: 240,             // s d'intro le premier jour (train, diligence, explications)
   walkTree: 3,             // s d'un arbre à l'autre
   walkRock: 2,             // s d'un caillou à l'autre (carrière)
   tripQuarry: 40,          // s aller-retour ferme ↔ carrière (une fois par jour où il y va)
-  tripTown: 90,            // s aller-retour en ville (vendre, acheter des graines, plans, forge)
-  sowPerSquare: 0.4,       // s pour semer un carré (on glisse le doigt)
+  tripPlace: 30,           // s aller-retour ferme ↔ place du panneau (l'étal)
+  tripTown: 120,           // s aller-retour en ville (graines au magasin général, plans chez Harry, four de Remy)
   tillPerSquare: 1.2,      // s pour bêcher un carré
+  sowPerSquare: 0.4,       // s pour semer un carré (on glisse le doigt)
+  harvestS: 4,             // s pour récolter tout le champ (un geste à la faucille, ramasser)
+  listS: 15,               // s pour mettre un lot en vente à l'étal
+  standDay: 1,             // passages à l'étal en journée (× 0,75 : vendu dans la journée), en plus du soir (× 1 : vendu la nuit)
+  standFast: 0,            // tours rapides par jour à × 0,5 (on attend 2 à 3 min à côté de l'étal)
   fieldMax: 120,           // carrés de champ au maximum (place libre sur la ferme)
-  introS: 240,             // s d'intro le premier jour (train, diligence, explications)
-  sellPrice: 1,            // × prix de base à l'étal (vendu pendant la nuit)
-  grind: true,             // une fois les objectifs atteints, il continue à couper / casser (bois et pierres vendus à l'étal)
+  stockDays: 2,            // n'agrandit plus le champ si le stock invendu dépasse ce nombre de jours de ventes
+  grind: true,             // une fois les objectifs atteints : couper / casser pour l'XP (le surplus va à l'étal)
 };
-const ARBRES_FORET = 60;   // 💡 arbres adultes de la forêt, une fois ouverte (estimation, à remplacer par la vraie forêt)
+const ARBRES_FORET = 60;   // 💡 arbres adultes de la forêt une fois ouverte (estimation)
 
 // ---------- Valeurs lues dans le jeu ----------
-const SEC_PER_MIN = CFG.MS_PER_MIN / 1000, HIT_S = CFG.HIT_MS / 1000;
-const DAY_S = (P.bedtime - CFG.DAY_START) * SEC_PER_MIN;
+const SEC_PER_MIN = CFG.MS_PER_MIN / 1000, HIT_S = CFG.HIT_MS / 1000, E1 = energyCost(1);
+const DAY_S = (P.bedtime - CFG.DAY_START) * SEC_PER_MIN, MIN_DAY_S = (CFG.SLEEP_FROM - CFG.DAY_START) * SEC_PER_MIN;
 const woodPerTree = (TREE_KINDS.oak.wood[0] + TREE_KINDS.oak.wood[1]) / 2, woodPerStump = (STUMP_WOOD[0] + STUMP_WOOD[1]) / 2;
-const Q = NATURE.carriere, boulders = 92;
+const Q = NATURE.carriere, BOULDERS = 92;
 const levelOf = xp => { let l = 0; for (let i = 1; i < LEVELS.length; i++) if (xp >= LEVELS[i]) l = i; return Math.min(l, MAX_LEVEL); };
-const seedPrice = ITEMS.wheat_seed.buy, W = CROPS.wheat, wheatValue = W.yield * ITEMS.wheat.p + W.extra.straw * ITEMS.straw.p;
+const seedPrice = ITEMS.wheat_seed.buy, W = CROPS.wheat;
+const farmTrees = Object.values(genObjects(SEED)).filter(o => o.t === 'tree').length;
+let rs = SEED; const rnd = () => (rs = (rs * 9301 + 49297) % 233280) / 233280;
 
 // ---------- État ----------
-const farmTrees = Object.values(genObjects(SEED)).filter(o => o.t === 'tree').length;
-const S = { day: 1, money: 500, wood: 0, stone: 0, xp: 0, mxp: 0, axe: 1, pick: 1, sickle: 1, tools: { pick: true, axe: true }, field: 0, planted: 0, seeds: 0,
-  trees: farmTrees, stumps: [], saplings: [], rocks: Q.rocks, boulders, forest: false, forestTrees: 0, done: {}, pending: 0, playS: 0, today: 0 };
-const log = [], days = [], income = { blé: 0, bois: 0, pierres: 0, autres: 0 }, spent = { graines: 0, plans: 0, forge: 0 };
+const S = { day: 1, money: 500, wood: 0, stone: 0, xp: 0, sk: { mining: 0, wood: 0 }, field: 0, planted: 0, seeds: 0, stock: {}, onNight: [],
+  trees: farmTrees, regrow: [], rocks: Q.rocks, veins: [], boulders: BOULDERS, forest: false, forestTrees: 0, done: {}, playS: 0, today: 0, shovelDay: 0 };
+const log = [], days = [], income = {}, spent = { graines: 0, plans: 0 };
 const ms = (id, t) => { if (!S.done[id]) { S.done[id] = S.day; log.push({ day: S.day, t: Math.round((S.playS + S.today) / 60), id: t, lvl: levelOf(S.xp), money: Math.round(S.money) }); } };
 const gain = n => { const b = levelOf(S.xp); S.xp += n; const a = levelOf(S.xp); if (a > b) ms('niv' + a, `Niveau ${a} (${S.xp} XP)`); };
-const mlvl = () => miningLevelOf(S.mxp);
+const skill = sk => skillOf(S.sk[sk]);
+const gainSk = (sk, n) => { const b = skill(sk); S.sk[sk] += n; const a = skill(sk); if (a > b) ms(sk + a, `${sk === 'wood' ? 'Bûcheron' : 'Minage'} niveau ${a}`); };
+const can = need => skill(need[0]) >= need[1];
+const stockAdd = (id, n) => { S.stock[id] = (S.stock[id] || 0) + n; };
+const stockN = () => Object.values(S.stock).reduce((a, n) => a + n, 0);
 
-// Objectifs dans l'ordre où un joueur les suit (quêtes principales, puis secondaires, puis forge ; l'or demande en plus les plans de la forge : pas simulé)
+// Objectifs dans l'ordre où un joueur les suit (quêtes principales, puis secondaires)
 const GOALS = [
-  { id: 'feu', n: 'Feu de camp', wood: HAND_RECIPES.campfire.in.wood, stone: HAND_RECIPES.campfire.in.stone, craft: true, xp: XP.craft + XP.step },
+  { id: 'feu', n: 'Feu de camp', wood: HAND_RECIPES.campfire.in.wood, stone: HAND_RECIPES.campfire.in.stone, xp: XP.craft + XP.step },
   { id: 'cabane', n: 'Cabane retapée', wood: REPAIRS.house.need.wood, stone: REPAIRS.house.need.stone, repair: true, xp: XP.step },
   { id: 'four', n: 'Four de Remy (couteau)', wood: OVEN_COST.wood, stone: OVEN_COST.stone, repair: true, town: true, xp: XP.step },
   { id: 'grange', n: 'Grange rafistolée (pelle) — fin de « Premiers pas »', wood: REPAIRS.grange.need.wood, stone: REPAIRS.grange.need.stone, repair: true, xp: XP.step + XP.questMain, then: () => { S.shovelDay = S.day; } },
   { id: 'cabane2', n: 'Cabane agrandie', wood: REPAIRS.house2.need.wood, stone: REPAIRS.house2.need.stone, repair: true, xp: XP.quest },
-  { id: 'lit', n: 'Lit (plan 80 $)', wood: HAND_RECIPES.lit.in.wood, stone: HAND_RECIPES.lit.in.stone, money: 80, craft: true, town: true, xp: XP.craft + XP.quest },
-  { id: 'coffre', n: 'Coffre (plan 60 $)', wood: HAND_RECIPES.chest.in.wood, stone: HAND_RECIPES.chest.in.stone, money: 60, craft: true, town: true, xp: XP.craft + XP.quest },
-  ...[['axe', 2], ['pick', 2], ['axe', 3], ['pick', 3], ['sickle', 2]].map(([t, tier]) => { const c = upgradeCost(tier - 1);
-    return { id: t + tier, n: `${t === 'axe' ? 'Hache' : t === 'pick' ? 'Pioche' : 'Faucille'} ${TIER_NAMES[tier]} (${c.money} $, ${c.stone} pierres, minage ${c.minLvl})`, stone: c.stone, wood: 0, money: c.money, minLvl: c.minLvl, town: true, forge: [t, tier] }; })
+  { id: 'lit', n: 'Lit (plan 80 $)', wood: HAND_RECIPES.lit.in.wood, stone: HAND_RECIPES.lit.in.stone, money: 80, town: true, xp: XP.craft + XP.quest },
+  { id: 'coffre', n: 'Coffre (plan 60 $)', wood: HAND_RECIPES.chest.in.wood, stone: HAND_RECIPES.chest.in.stone, money: 60, town: true, xp: XP.craft + XP.quest },
 ];
-const goal = () => GOALS.find(x => !S.done[x.id] && !(x.forge && S[x.forge[0]] >= x.forge[1]));
+const goal = () => GOALS.find(x => !S.done[x.id]);
 
 function simulateDay() {
-  let t = S.day === 1 ? DAY_S - P.introS : DAY_S, e = 100, ended = 'temps', why = {}, toTown = false, didQuarry = false;
-  const spend = (s, en) => { if (s > t || en > e) return false; t -= s; e -= en; S.today += s; return true; };
+  let t = S.day === 1 ? DAY_S - P.introS : DAY_S, e = 100, ended = 'temps', why = {}, didQuarry = false, toTown = false;
   S.today = S.day === 1 ? P.introS : 0;
-  // le matin : récolte (un geste à la faucille), ventes de la nuit déjà encaissées, graines, semis
-  if (S.planted) { const n = S.planted; S.planted = 0; spend(3, 0); S.pending += n * wheatValue * P.sellPrice; ms('recolte', 'Première récolte de blé'); }
+  const spend = (s, en = 0) => { if (s > t || en > e + 1e-9) return false; t -= s; e -= en; S.today += s; return true; };
+  // --- le matin : ventes de la nuit, récolte, courrier, semis ---
+  for (const l of S.onNight) { S.money += l.v; income[l.id] = (income[l.id] || 0) + l.v; } S.onNight = [];
+  if (S.planted) { spend(P.harvestS); stockAdd('wheat', S.planted * W.yield); stockAdd('straw', S.planted * W.extra.straw); S.planted = 0; ms('recolte', 'Première récolte de blé'); }
   if (S.shovelDay && S.day > S.shovelDay && !S.done.courrier) { S.seeds += SEED_GIFT; ms('courrier', `Courrier : ${SEED_GIFT} graines de blé`); gain(XP.step); }
-  // champ : agrandir puis semer (une fois la pelle trouvée)
   if (S.shovelDay) {
-    while (S.field < P.fieldMax && e > 30 && S.field < S.seeds + Math.floor(S.money / seedPrice) && spend(P.tillPerSquare, 1)) { S.field++; if (S.field === 1) { ms('becher', 'Premier carré bêché'); gain(XP.step); } }
+    const salesPerDay = STAND_CAP * (1 + P.standDay + P.standFast), perSquare = W.yield + W.extra.straw;
+    const room = stockN() < salesPerDay * P.stockDays;
+    while (room && S.field < P.fieldMax && e > 30 && S.field < S.seeds + Math.floor(S.money / seedPrice) && (S.field + 1) * perSquare <= salesPerDay * P.stockDays && spend(P.tillPerSquare, 1)) { S.field++; if (S.field === 1) { ms('becher', 'Premier carré bêché'); gain(XP.step); } }
     const need = Math.max(0, S.field - S.seeds), buy = Math.min(need, Math.floor(S.money / seedPrice));
     if (buy > 0) { S.money -= buy * seedPrice; spent.graines += buy * seedPrice; S.seeds += buy; toTown = true; }
-    const n = Math.min(S.field, S.seeds); if (n && spend(n * P.sowPerSquare, 0)) { S.seeds -= n; S.planted = n; if (!S.done.semer) { ms('semer', 'Premières graines semées'); gain(XP.step); } }
+    const n = Math.min(S.field, S.seeds); if (n && spend(n * P.sowPerSquare)) { S.seeds -= n; S.planted = n; if (!S.done.semer) { ms('semer', 'Premières graines semées'); gain(XP.step); } }
   }
-  // objectifs : matériaux, puis réparation / fabrication / forge
-  for (let guard = 0; guard < 50; guard++) {
-    const G = goal(); if (!G) { why.fini = 1; if (P.grind) grind(); break; }
-    const money = G.money || 0;
-    if (G.minLvl && mlvl() < G.minLvl) why.minage = 1;
-    if (S.money < money) why.argent = 1;
+  // --- l'étal en journée (× 0,75, puis tours rapides × 0,5) ---
+  const sell = (mult, night) => {   // met en vente jusqu'à STAND_CAP objets, les plus chers d'abord
+    let room = STAND_CAP; const ids = Object.keys(S.stock).filter(id => S.stock[id] > 0).sort((a, b) => ITEMS[b].p - ITEMS[a].p);
+    for (const id of ids) { const n = Math.min(room, S.stock[id]); if (!n) continue; S.stock[id] -= n; room -= n; const v = Math.max(1, Math.round(ITEMS[id].p * mult)) * n;
+      if (night) S.onNight.push({ id, v }); else { S.money += v; income[id] = (income[id] || 0) + v; } }
+    return STAND_CAP - room;
+  };
+  for (let k = 0; k < P.standDay; k++) if (stockN() && spend(P.tripPlace + P.listS)) sell(0.75);
+  for (let k = 0; k < P.standFast; k++) if (stockN() && spend(150 + P.listS)) sell(0.5);
+  // --- objectifs : matériaux, puis réparation / fabrication ---
+  for (let guard = 0; guard < 60; guard++) {
+    const G = goal();
+    if (!G) { why.fini = 1; if (P.grind) grind(); break; }
+    if (S.money < (G.money || 0)) { why.argent = 1; break; }
     const needW = Math.max(0, G.wood - S.wood), needS = Math.max(0, G.stone - S.stone);
-    if (!needW && !needS && S.money >= money && !(G.minLvl && mlvl() < G.minLvl)) {
+    if (!needW && !needS) {
       const hits = G.repair ? Math.ceil(Math.max(G.wood, G.stone) / REPAIR_STEP) : 1;
-      if (!spend(hits * HIT_S + (G.town ? P.tripTown / 2 : 0), G.repair ? hits * REPAIR_ENERGY : 0)) { ended = 'temps'; break; }
-      S.wood -= G.wood; S.stone -= G.stone; S.money -= money; if (G.forge) { S[G.forge[0]] = G.forge[1]; spent.forge += money; } else spent.plans += money;
-      if (G.town) toTown = true;
-      if (G.xp) gain(G.xp); if (G.then) G.then();
-      ms(G.id, G.n); if (G.id === 'axe2') { S.forest = true; S.forestTrees = ARBRES_FORET; ms('foret', 'Forêt ouverte (gros arbre abattu à la hache en cuivre)'); }
-      continue;
+      if (!spend(hits * HIT_S + (G.town ? P.tripTown / 2 : 0), G.repair ? hits * REPAIR_ENERGY : 0)) break;
+      S.wood -= G.wood; S.stone -= G.stone; S.money -= G.money || 0; spent.plans += G.money || 0; if (G.town) toTown = true;
+      gain(G.xp || 0); if (G.then) G.then(); ms(G.id, G.n); continue;
     }
-    // ramasser ce qui manque (le plus en retard d'abord), sinon des pierres pour le minage / la forge
-    const wantStone = needS > 0 && (needW === 0 || needS / Math.max(1, G.stone) >= needW / Math.max(1, G.wood)) || (!needW && !needS);
-    if (wantStone) {
-      if (!didQuarry) { if (!spend(P.tripQuarry, 0)) break; didQuarry = true; }
-      const big = S.rocks <= 0 && S.pick >= 2 && S.boulders > 0;
-      if (S.rocks <= 0 && !big) { why.cailloux = 1; if (needW > 0) { gatherWood(); continue; } break; }
-      const hp = big ? BORDER_HP : ROCK_HPS.rock, hits = Math.ceil(hp / S.pick), en = hits * energyCost(S.pick);
-      if (en > e) { ended = 'énergie'; break; }
-      if (!spend(hits * HIT_S + P.walkRock, en)) { ended = 'temps'; break; }
-      if (big) { S.boulders--; S.stone += (BORDER_STONES[0] + BORDER_STONES[1]) / 2; S.mxp += hits * MINING_GAIN.hit + MINING_GAIN.boulder; gain(XP.small * 2); }
-      else { S.rocks--; S.stone += 1; S.mxp += hits * MINING_GAIN.hit + MINING_GAIN.rock; gain(XP.small); }
-      income.pierres += 0;
-    } else if (!gatherWood()) break;
+    const wantStone = needS > 0 && (needW === 0 || needS / G.stone >= needW / Math.max(1, G.wood));
+    if (!(wantStone ? mine() : chop())) break;
   }
-  function grind() {   // temps libre : bois et pierres revendus à l'étal (ce qui rapporte de l'XP)
-    for (let k = 0; k < 400; k++) {
-      const s0 = S.stone, w0 = S.wood;
-      if (S.rocks > 0 || (S.pick >= 2 && S.boulders > 0)) {
-        if (!didQuarry) { if (!spend(P.tripQuarry, 0)) return; didQuarry = true; }
-        const big = S.rocks <= 0, hits = Math.ceil((big ? BORDER_HP : ROCK_HPS.rock) / S.pick), en = hits * energyCost(S.pick);
-        if (!spend(hits * HIT_S + P.walkRock, en)) { ended = e < en ? 'énergie' : 'temps'; return; }
-        if (big) { S.boulders--; S.stone += (BORDER_STONES[0] + BORDER_STONES[1]) / 2; S.mxp += hits * MINING_GAIN.hit + MINING_GAIN.boulder; gain(XP.small * 2); }
-        else { S.rocks--; S.stone += 1; S.mxp += hits * MINING_GAIN.hit + MINING_GAIN.rock; gain(XP.small); }
-      } else if (!gatherWood()) return;
-      const v = (S.stone - s0) * ITEMS.stone.p + (S.wood - w0) * ITEMS.wood.p; S.stone = s0; S.wood = w0; S.pending += v * P.sellPrice; income[v && S.stone !== s0 ? 'pierres' : 'bois'] += 0; S.grindIncome = (S.grindIncome || 0) + v;
-    }
-  }
-  function gatherWood() {
-    const pool = S.trees > 0 ? 'trees' : S.forest && S.forestTrees > 0 ? 'forestTrees' : null;
-    if (!pool) { why.arbres = 1; return false; }
-    const hits = Math.ceil(TREE_HP / S.axe) + Math.ceil(STUMP_HP / S.axe), en = hits * energyCost(S.axe);
-    if (en > e) { ended = 'énergie'; return false; }
-    if (!spend(hits * HIT_S + P.walkTree, en)) { ended = 'temps'; return false; }
-    S[pool]--; S.wood += woodPerTree + woodPerStump; gain(XP.small);
-    if (pool === 'trees') S.saplings.push(S.day + STUMP_DAYS + TREE_GROW_DAYS); else S.saplings.push(-(S.day + STUMP_DAYS + TREE_GROW_DAYS));
+  // --- la forêt : l'arbre tombé, dès que le niveau de bûcheron suffit ---
+  if (!S.forest && can(NEED.forestTree) && spend(Math.ceil(FOREST_TREE_HP) * HIT_S + 20, FOREST_TREE_HP * E1)) { S.forest = true; S.forestTrees = ARBRES_FORET; S.wood += 12; gainSk('wood', FOREST_TREE_HP * WOOD_GAIN.blocker); ms('foret', 'Forêt ouverte (arbre tombé abattu)'); }
+  function mine(free) {   // un caillou, un filon ou un gros caillou de la carrière
+    if (!didQuarry) { if (!spend(P.tripQuarry)) return false; didQuarry = true; }
+    const vi = S.veins.findIndex(v => can(['mining', NEED.vein[v]]));
+    let kind = vi >= 0 && (free || S.rocks <= 0) ? 'vein' : S.rocks > 0 ? 'rock' : can(NEED.boulder) && S.boulders > 0 ? 'boulder' : vi >= 0 ? 'vein' : null;
+    if (!kind) { why.cailloux = 1; return free ? false : chop(); }
+    const hp = kind === 'vein' ? VEIN_HP : kind === 'boulder' ? BORDER_HP : ROCK_HPS.rock;
+    if (!spend(hp * HIT_S + P.walkRock, hp * E1)) { ended = e < hp * E1 ? 'énergie' : 'temps'; return false; }
+    gainSk('mining', hp * MINING_GAIN.hit);
+    if (kind === 'vein') { const v = S.veins.splice(vi, 1)[0]; stockAdd(VEINS[v].ore, (VEIN_ORE[0] + VEIN_ORE[1]) / 2); S.stone += 1; gainSk('mining', 15); gain(XP.small); ms('ore_' + v, `Premier ${VEINS[v].n.toLowerCase()} cassé`); }
+    else if (kind === 'boulder') { S.boulders--; S.stone += (BORDER_STONES[0] + BORDER_STONES[1]) / 2; gainSk('mining', MINING_GAIN.boulder); gain(2 * XP.small); }
+    else { S.rocks--; S.stone += 1; gainSk('mining', MINING_GAIN.rock); gain(XP.small); }
     return true;
   }
-  if (toTown) spend(P.tripTown / 2, 0);
-  const used = DAY_S - t;
-  S.today = Math.max(S.today, (CFG.SLEEP_FROM - CFG.DAY_START) * SEC_PER_MIN); S.playS += S.today;   // on ne peut pas dormir avant 18 h if (e < 5) ended = 'énergie';
-  const row = { day: S.day,  money: Math.round(S.money), wood: Math.round(S.wood), stone: Math.round(S.stone), lvl: levelOf(S.xp), xp: S.xp, mlvl: mlvl(), field: S.field, energy: Math.round(100 - e), time: Math.round(S.today / 60 * 10) / 10, ended: why.fini && !P.grind ? 'tout fait' : ended, limits: Object.keys(why).join(', ') };
-  days.push(row);
-  // la nuit : ventes de l'étal, repousses, carrière, saison
-  S.money += S.pending; income.blé += S.pending; S.pending = 0;
-  S.saplings = S.saplings.filter(d => { if (Math.abs(d) <= S.day + 1) { if (d > 0) S.trees++; else S.forestTrees++; return false; } return true; });
+  function chop() {
+    const pool = S.trees > 0 ? 'trees' : S.forest && S.forestTrees > 0 ? 'forestTrees' : null;
+    if (!pool) { why.arbres = 1; return false; }
+    const hits = TREE_HP + STUMP_HP;
+    if (!spend(hits * HIT_S + P.walkTree, hits * E1)) { ended = e < hits * E1 ? 'énergie' : 'temps'; return false; }
+    S[pool]--; S.wood += woodPerTree + woodPerStump; gain(XP.small); gainSk('wood', hits * WOOD_GAIN.hit + WOOD_GAIN.tree + WOOD_GAIN.stump);
+    S.regrow.push({ pool, day: S.day + STUMP_DAYS + TREE_GROW_DAYS });
+    return true;
+  }
+  function grind() {   // temps libre : alterner carrière et arbres ; le surplus part à l'étal
+    for (let k = 0; k < 500; k++) {
+      const w0 = S.wood, s0 = S.stone;
+      const ok = (k % 2 === 0 ? mine(true) || chop() : chop() || mine(true));
+      if (!ok) return;
+      stockAdd('wood', S.wood - w0); stockAdd('stone', S.stone - s0); S.wood = w0; S.stone = s0;
+    }
+  }
+  // --- le soir : l'étal (× 1, vendu pendant la nuit) ---
+  if (stockN() && spend(P.tripPlace + P.listS)) sell(1, true);
+  if (toTown) spend(P.tripTown / 2);
+  if (e < 5) ended = 'énergie';
+  S.today = Math.max(S.today, MIN_DAY_S); S.playS += S.today;
+  days.push({ day: S.day, money: Math.round(S.money), wood: Math.round(S.wood), stone: Math.round(S.stone), lvl: levelOf(S.xp), xp: S.xp, mining: skill('mining'), wood_: skill('wood'), field: S.field, stock: Math.round(stockN()), energy: Math.round(100 - e), time: Math.round(S.today / 6) / 10, ended, limits: Object.keys(why).filter(k => k !== 'fini').join(', ') });
+  // --- la nuit : repousses, carrière, saison ---
+  S.regrow = S.regrow.filter(r => { if (r.day <= S.day + 1) { S[r.pool]++; return false; } return true; });
   S.rocks = Math.min(Q.rocks, S.rocks + Q.rocksDay);
-  if (S.day % CFG.MONTH_DAYS === 0) { S.trees = farmTrees; S.saplings = S.saplings.filter(d => d < 0); }   // nouvelle saison : arbres remis
+  if (S.veins.length < Q.veins && rnd() < Q.veinP) S.veins.push(pickVein(rnd()));
+  if (S.day % CFG.MONTH_DAYS === 0) { S.trees = farmTrees; S.regrow = S.regrow.filter(r => r.pool !== 'trees'); }
   S.day++;
 }
+for (let i = 0; i < Q.veins; i++) if (rnd() < Q.veinP) S.veins.push(pickVein(rnd()));
 for (let d = 0; d < DAYS; d++) simulateDay();
 
 // ---------- Résumé ----------
-const fmt = n => n.toLocaleString('fr-FR');
-const lines = [];
-lines.push(`# Simulation de Farmwest`, '', `Générée par \`node tools/simulate.mjs ${DAYS} ${SEED}\` le ${new Date().toLocaleDateString('fr-FR')} (version ${JSON.parse(await import('node:fs').then(f => f.readFileSync(new URL('../package.json', import.meta.url), 'utf8'))).version}).`,
-  `Un joueur-type joue ${DAYS} jours de jeu en accéléré. Les valeurs viennent du jeu lui-même : changer un réglage puis relancer la simulation suffit.`, '',
-  '## Hypothèses du joueur-type', '', ...Object.entries(P).map(([k, v]) => `- \`${k}\` = ${v}`), `- forêt : ${ARBRES_FORET} arbres adultes une fois ouverte (💡 estimation)`,
-  `- Une journée jouée = ${Math.round(DAY_S / 60 * 10) / 10} min réelles (6 h → ${P.bedtime / 60} h, ${CFG.MS_PER_MIN} ms par minute de jeu). Énergie : 100 par jour (le lit ou la tente rend tout).`,
-  `- Arbres de la ferme au départ : ${farmTrees}. Carrière : ${Q.rocks} cailloux, +${Q.rocksDay} par jour ; ${boulders} gros cailloux de bordure (pioche en cuivre).`, '',
-  '## Étapes', '', '| Jour | Temps de jeu cumulé | Étape | Niveau | Argent |', '|---|---|---|---|---|',
-  ...log.map(m => `| ${m.day} | ${m.t} min | ${m.id} | ${m.lvl} | ${fmt(m.money)} $ |`), '');
-const stuck = GOALS.filter(G => !S.done[G.id]); if (stuck.length) lines.push(`**Pas atteint en ${DAYS} jours :** ${stuck.map(G => G.n).join(' ; ')}.`, '');
-lines.push('## Niveaux', '', '| Niveau | XP nécessaire | Atteint le jour |', '|---|---|---|', ...LEVELS.slice(1).map((x, i) => `| ${i + 1} | ${x} | ${S.done['niv' + (i + 1)] || '—'} |`), '');
-lines.push('## Économie', '', `- Gagné : blé, paille et ventes de bois / pierres ${fmt(Math.round(income.blé))} $ (dont bois / pierres : ${fmt(Math.round(S.grindIncome || 0))} $) (${wheatValue} $ par carré récolté, graine ${seedPrice} $ → ${wheatValue - seedPrice} $ de bénéfice par carré et par jour).`,
-  `- Dépensé : graines ${fmt(spent.graines)} $, plans ${fmt(spent.plans)} $, forge ${fmt(spent.forge)} $.`, `- Fin de simulation : ${fmt(Math.round(S.money))} $, ${Math.round(S.wood)} bois, ${Math.round(S.stone)} pierres, champ de ${S.field} carrés, niveau ${levelOf(S.xp)} (${S.xp} XP), minage ${mlvl()}.`, '');
+const fmt = n => Math.round(n).toLocaleString('fr-FR');
+const version = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8')).version;
 const cnt = k => days.filter(d => d.ended === k).length, lim = k => days.filter(d => d.limits.includes(k)).length;
-lines.push('## Goulets', '', `- Journées finies par manque d'**énergie** : ${cnt('énergie')} ; par manque de **temps** : ${cnt('temps')} ; plus rien à faire : ${cnt('tout fait')}.`,
-  `- Journées bloquées par : l'argent ${lim('argent')}, le niveau de minage ${lim('minage')}, les cailloux épuisés ${lim('cailloux')}, les arbres épuisés ${lim('arbres')}.`, '');
-const first = k => log.find(m => m.id.startsWith(k)), wheatShare = income.blé ? 1 - (S.grindIncome || 0) / income.blé : 0;
-lines.push('## Constats automatiques', '',
-  `- Le blé fait ${Math.round(wheatShare * 100)} % des revenus : ${wheatValue - seedPrice} $ de bénéfice par carré et par jour, pour 1 énergie une seule fois (la terre reste bêchée). C'est le levier n° 1 de l'équilibrage (prix du blé, de la paille, de la graine, taille du champ).`,
-  `- « Premiers pas » se termine le jour ${S.done.grange || '—'} : le goulet est la pierre (${lim('cailloux')} journées où la carrière était vide ; ${Q.rocksDay} cailloux par jour).`,
-  `- La forêt s'ouvre le jour ${S.done.foret || '—'} (hache en cuivre : ${upgradeCost(1).money} $ et minage ${upgradeCost(1).minLvl}).`,
-  `- Niveau 10 : ${S.done.niv10 ? 'jour ' + S.done.niv10 : 'pas atteint en ' + DAYS + ' jours'} ; après les objectifs, l'XP ne vient plus que des arbres et des cailloux (1 XP chacun).`, '');
-lines.push('## Jour par jour', '', '| Jour | Argent | Bois | Pierres | Niveau (XP) | Minage | Champ | Énergie utilisée | Temps joué | Fin de journée | Freins |', '|---|---|---|---|---|---|---|---|---|---|---|',
-  ...days.filter(d => d.day <= 30 || d.day % 5 === 0).map(d => `| ${d.day} | ${fmt(d.money)} | ${d.wood} | ${d.stone} | ${d.lvl} (${d.xp}) | ${d.mlvl} | ${d.field} | ${d.energy} | ${d.time} min | ${d.ended} | ${d.limits} |`), '');
-lines.push('## Où régler', '', '| Réglage | Fichier |', '|---|---|',
+const totalIncome = Object.values(income).reduce((a, b) => a + b, 0), share = ids => Math.round(ids.reduce((a, id) => a + (income[id] || 0), 0) / Math.max(1, totalIncome) * 100);
+const L = [];
+L.push(`# Simulation de Farmwest`, '', `Générée par \`node tools/simulate.mjs ${DAYS} ${SEED}\` (version ${version}). Un joueur-type joue ${DAYS} jours de jeu en accéléré ;`,
+  `les valeurs viennent du jeu lui-même : changer un réglage puis relancer la simulation suffit.`, '',
+  '## Hypothèses du joueur-type', '', ...Object.entries(P).map(([k, v]) => `- \`${k}\` = ${v}`), `- forêt : ${ARBRES_FORET} arbres adultes une fois ouverte (💡 estimation)`,
+  `- Une journée jouée = ${Math.round(DAY_S / 6) / 10} min réelles au plus (6 h → ${P.bedtime / 60} h), ${Math.round(MIN_DAY_S / 6) / 10} min au moins (on ne dort pas avant 18 h). Énergie : 100 par jour.`,
+  `- Ferme : ${farmTrees} arbres. Carrière : ${Q.rocks} cailloux (+${Q.rocksDay}/jour), ${Q.veins} filons au plus, ${BOULDERS} gros cailloux de bordure. Étal : ${STAND_CAP} objets à la fois.`, '',
+  '## Étapes', '', '| Jour | Temps de jeu cumulé | Étape | Niveau | Argent |', '|---|---|---|---|---|',
+  ...log.map(m => `| ${m.day} | ${Math.floor(m.t / 60)} h ${String(m.t % 60).padStart(2, '0')} | ${m.id} | ${m.lvl} | ${fmt(m.money)} $ |`), '');
+const stuck = GOALS.filter(G => !S.done[G.id]); if (stuck.length) L.push(`**Pas atteint en ${DAYS} jours :** ${stuck.map(G => G.n).join(' ; ')}.`, '');
+L.push('## Niveaux', '', '| Niveau | XP nécessaire | Atteint le jour | Minage atteint le jour | Bûcheron atteint le jour |', '|---|---|---|---|---|',
+  ...LEVELS.slice(1).map((x, i) => `| ${i + 1} | ${x} | ${S.done['niv' + (i + 1)] || '—'} | ${i + 1 === 1 ? 1 : S.done['mining' + (i + 1)] || '—'} | ${i + 1 === 1 ? 1 : S.done['wood' + (i + 1)] || '—'} |`), '');
+L.push('## Économie', '', '| Vendu | $ | Part |', '|---|---|---|', ...Object.entries(income).sort((a, b) => b[1] - a[1]).map(([id, v]) => `| ${ITEMS[id].n} | ${fmt(v)} | ${share([id])} % |`), '',
+  `- Blé : un carré rend ${W.yield} blés (${ITEMS.wheat.p} $) + ${W.extra.straw} pailles (${ITEMS.straw.p} $) = ${W.yield + W.extra.straw} objets à vendre ; la graine coûte ${seedPrice} $. L'étal n'en prend que ${STAND_CAP} à la fois : c'est lui qui limite le champ (${S.field} carrés à la fin).`,
+  `- Dépensé : graines ${fmt(spent.graines)} $, plans ${fmt(spent.plans)} $. Fin : ${fmt(S.money)} $, stock invendu ${fmt(stockN())} objets, niveau ${levelOf(S.xp)} (${S.xp} XP), minage ${skill('mining')}, bûcheron ${skill('wood')}.`, '');
+L.push('## Goulets', '', `- Journées finies par manque d'**énergie** : ${cnt('énergie')} ; par manque de **temps** : ${cnt('temps')}.`,
+  `- Journées où il a manqué : de l'argent ${lim('argent')}, des cailloux ${lim('cailloux')}, des arbres ${lim('arbres')}.`, '');
+L.push('## Constats automatiques', '',
+  `- « Premiers pas » se termine le jour ${S.done.grange || '—'} ; la pierre est le frein (${Q.rocksDay} cailloux par jour à la carrière une fois vidée).`,
+  `- La forêt s'ouvre le jour ${S.done.foret || '—'} (bûcheron ${NEED.forestTree[1]}). Filons : ${Object.entries(NEED.vein).filter(([v]) => v !== 'tin').map(([v, n]) => `${VEINS[v].n.replace('Filon ', '')} niv. ${n} → jour ${S.done['ore_' + v] || '—'}`).join(', ')}.`,
+  `- Revenus : blé et paille ${share(['wheat', 'straw'])} %, bois et pierres ${share(['wood', 'stone'])} %, minerais ${100 - share(['wheat', 'straw']) - share(['wood', 'stone'])} %. L'étal (${STAND_CAP} objets, ${1 + P.standDay + P.standFast} passages par jour) plafonne les ventes.`,
+  `- Niveau ${MAX_LEVEL} : ${S.done['niv' + MAX_LEVEL] ? 'jour ' + S.done['niv' + MAX_LEVEL] : 'pas atteint en ' + DAYS + ' jours'} ; compétences au plus ${SKILL_MAX}.`, '');
+L.push('## Jour par jour', '', '| Jour | Argent | Bois | Pierres | Niveau (XP) | Minage | Bûcheron | Champ | Stock | Énergie | Temps joué | Fin | Manques |', '|---|---|---|---|---|---|---|---|---|---|---|---|---|',
+  ...days.filter(d => d.day <= 30 || d.day % 5 === 0).map(d => `| ${d.day} | ${fmt(d.money)} | ${d.wood} | ${d.stone} | ${d.lvl} (${d.xp}) | ${d.mining} | ${d.wood_} | ${d.field} | ${d.stock} | ${d.energy} | ${d.time} min | ${d.ended} | ${d.limits} |`), '');
+L.push('## Où régler', '', '| Réglage | Fichier |', '|---|---|',
   '| Durée d\'une journée (`MS_PER_MIN`), délai entre deux coups (`HIT_MS`) | src/config.js |',
   '| Courbe de niveaux (`LEVELS`), XP par action / quête (`XP`) | src/systems/level.js |',
-  '| Prix et énergie de la forge (`upgradeCost`, `energyCost`), XP de minage (`MINING_XP`, `MINING_GAIN`) | src/data/tools.js |',
-  '| Coups pour un arbre / un caillou (`TREE_HP`, `ROCK_HPS`) | src/world/map.js |',
+  '| Compétences : XP par niveau (`MINING_XP`), gains (`MINING_GAIN`, `WOOD_GAIN`), niveaux requis (`NEED`), énergie par coup (`energyCost`) | src/data/tools.js |',
+  '| Coups pour un arbre / un caillou (`TREE_HP`, `ROCK_HPS`), filons (`VEINS`, `VEIN_HP`, `VEIN_ORE`) | src/world/map.js, src/data/nature.js |',
   '| Bois par arbre, souches, repousse (`TREE_KINDS`, `STUMP_*`, `TREE_GROW_DAYS`) | src/data/forest.js |',
-  '| Cailloux de la carrière (`NATURE.carriere`), gros cailloux (`BORDER_*`) | src/data/nature.js, src/systems/quarry.js |',
-  '| Coût des réparations (`REPAIRS`, `REPAIR_STEP`), énergie au marteau (`REPAIR_ENERGY`) | src/data/repairs.js, src/systems/repair.js |',
-  '| Prix de vente / d\'achat (`ITEMS[id].p`, `.buy`), cultures (`CROPS`), graines offertes (`SEED_GIFT`) | src/data/items.js, src/data/crops.js, src/systems/mail.js |',
-  '| Recettes (`HAND_RECIPES`), four de Remy (`OVEN_COST`) | src/data/recipes.js, src/systems/resto.js |',
+  '| Carrière (`NATURE.carriere`), gros cailloux (`BORDER_*`) | src/data/nature.js, src/systems/quarry.js |',
+  '| Réparations (`REPAIRS`, `REPAIR_STEP`, `REPAIR_ENERGY`) | src/data/repairs.js, src/systems/repair.js |',
+  '| Prix (`ITEMS[id].p`, `.buy`), cultures (`CROPS`), graines offertes (`SEED_GIFT`), étal (`STAND_CAP`, `PRICE_STEPS`) | src/data/items.js, src/data/crops.js, src/systems/mail.js, src/systems/stand.js |',
   '| Hypothèses du joueur-type (`P`) | tools/simulate.mjs |', '');
-writeFileSync(new URL('../docs/SIMULATION.md', import.meta.url), lines.join('\n'));
+writeFileSync(new URL('../docs/SIMULATION.md', import.meta.url), L.join('\n'));
 console.log(`docs/SIMULATION.md : ${DAYS} jours, ${log.length} étapes, niveau ${levelOf(S.xp)}, ${Math.round(S.money)} $`);

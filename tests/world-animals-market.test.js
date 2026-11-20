@@ -184,10 +184,8 @@ test('caravane : sans déblocage, pas de lapin, pas de graines de maïs, pas de 
   const { g, S } = makeGame({ state: { ...freshState(), money: 1e6, inv: { stone: 999 }, tools: { axe: 3, pick: 3, sickle: 3, sword: 3 }, skills: { mining: { xp: 99999 } } } });
   assert.equal(canBuyAnimal(S, 'rabbit').why, 'locked');
   assert.equal(buyItem(g, 'corn_seed'), false);
-  assert.equal(canUpgrade(S, 'axe').why, 'plans');
   S.caravan.unlocked = UNLOCKS.map(u => u.id);
   assert.equal(canBuyAnimal(S, 'rabbit').ok, true);
-  assert.equal(canUpgrade(S, 'axe').ok, true);
 });
 
 test('demandes : jamais un objet qu’on ne peut pas encore produire', () => {

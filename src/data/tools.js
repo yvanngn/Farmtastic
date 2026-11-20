@@ -20,3 +20,14 @@ export function hitReady(g) {
   g.lastHit = t; return true;
 }
 export const MINING_GAIN = { hit: 2, rock: 5, rock_big: 8, boulder: 15 };
+// 20/11 (demande de l'utilisateur) : plus de paliers d'outils. Ce sont les compétences (niveau 1 à 10 : minage, bûcheron)
+// qui débloquent les passages et permettent de casser de plus grosses choses.
+export const SKILL_MAX = 10;
+export const SKILL_NAMES = { mining: '⛏️ Minage', wood: '🪓 Bûcheron' };
+export const WOOD_GAIN = { hit: 2, tree: 5, stump: 2, blocker: 3 };   // 💡 XP de bûcheron
+export const NEED = {
+  boulder: ['mining', 3],      // gros caillou (bordure de la carrière) 💡
+  mouth: ['mining', 3],        // rocher devant une bouche de la carrière profonde 💡
+  forestTree: ['wood', 3],     // l'arbre tombé qui barre la forêt 💡
+  vein: { tin: 4, copper: 3, zinc: 4, iron: 5, cobalt: 6, nickel: 7, silver: 8, gold: 10 }   // niveau de minage par filon
+};

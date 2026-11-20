@@ -263,6 +263,15 @@ Décrit par l'utilisateur : cabane à moitié prix ; journal dans la cabane (200
 - [x] Étapes des quêtes : couleurs foncées lisibles sur le papier beige.
 - [ ] 💡 À valider : 24 coups pour un gros caillou de bordure, 3 jours de repousse, filons de la carrière profonde (étain 15 %, fer 50 %, or 35 %).
 
+## Lot 25 — Compétences au lieu des paliers, nouveaux filons, fête foraine, simulation du blé, carte réelle (demande du 20/11) ✅ v0.1.89
+- [x] Plus de paliers d'outils ni d'amélioration à la forge : compétences **Minage** et **Bûcheron** (niveau 10 max) ; la forge affiche les niveaux et ce qu'ils débloquent.
+- [x] Filons : cuivre (minage 3), **zinc** (4), fer (5), **cobalt** (6), **nickel** (7), **argent** (8), or (10). Plus d'étain (les anciens minerais restent). 💡 fréquences et prix des nouveaux minerais.
+- [x] 💡 gros cailloux et rochers des bouches : minage 3 ; arbre de la forêt : bûcheron 3.
+- [x] Fête foraine : une seule entrée (au nord, depuis le ranch), ouverte à partir du dernier jour du premier mois.
+- [x] Simulation : le blé compte le temps (bêcher, semer, attendre, récolter, aller à l'étal) et l'étal (10 objets à la fois, journée × 0,75, nuit × 1).
+- [x] **Carte réelle** : `npm run carte` → docs/carte-reelle.png (chaque zone d'après sa grille, placée selon ses sorties).
+- [ ] La carrière : l'utilisateur y réfléchit. Niveaux de bois et cueillette : plus tard.
+
 ## Lot 24 — Train, Remy et Myst, chemin de Myst, caméra, simulation (demande du 20/11) ✅ v0.1.88
 - [x] Train d'après l'image fournie (vu de dessus, locomotive devant), fumée plus forte quand il roule.
 - [x] Remy et Myst d'après leurs nouvelles planches.

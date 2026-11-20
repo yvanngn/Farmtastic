@@ -7,8 +7,8 @@ import { FLOWERS } from '../data/items.js';
 import { NATURE, VEINS, VEIN_HP, VEIN_ORE, ROCK_HP, P_RARE_FLOWER, P_MID_FLOWER, RAINBOW } from '../data/nature.js';
 import { add, scatter } from './inventory.js';
 import { useEnergy } from './player.js';
-import { gainXp, toolTier, hasTool } from './skills.js';
-import { MINING_GAIN, energyCost, hitReady } from '../data/tools.js';
+import { gainXp, toolTier, hasTool, lacks } from './skills.js';
+import { MINING_GAIN, energyCost, hitReady, NEED } from '../data/tools.js';
 import { isWet } from './weather.js';
 import { gainPxp, XP } from './level.js';
 import { ensureBorder, dayNum, BORDER_STONES } from './quarry.js';
@@ -102,7 +102,8 @@ export function hitNature(g, x, y) {
   if (!o) return false;
   if (S.sel !== 'pick') { g.bus.emit('sfx', 'denied'); g.bus.emit('toast', hasTool(S, 'pick') ? 'Il faut la pioche ⛏️' : 'Il te faut une pioche.'); return false; }
   const tier = toolTier(S, 'pick');
-  if (o.border && y === 1 && QUARRY_MOUTHS.some(m => m.x === x) && tier < 2) { g.bus.emit('sfx', 'denied'); g.bus.emit('toast', '⛏️ Ma pioche n’est pas assez costaude pour ce rocher… Il me faudrait une pioche en cuivre (forge d’Igor).'); return false; }   // 19/11 : rocher devant le passage de la carrière
+  { const weak = o.border && y === 1 && QUARRY_MOUTHS.some(m => m.x === x) ? lacks(S, NEED.mouth) : o.border ? lacks(S, NEED.boulder) : o.t === 'vein' ? lacks(S, ['mining', NEED.vein[o.v] || 1]) : null;   // 20/11 : niveau de minage
+    if (weak) { g.bus.emit('sfx', 'denied'); g.bus.emit('toast', weak); return false; } }
   if (!hitReady(g)) return 'wait';   // le geste précédent n'est pas fini
   if (!useEnergy(g, energyCost(tier))) return false;
   o.hp -= tier; o.shake = 0.25;

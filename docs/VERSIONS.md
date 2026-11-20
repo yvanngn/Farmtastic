@@ -2,6 +2,7 @@
 
 Semver horodaté (heure de Paris). Patch automatique à chaque publication ; mineure et majeure sur décision de l'utilisateur.
 
+- **0.1.89** — 2026-11-20 10:31 — Compétences minage et bûcheron au lieu des paliers d'outils, filons zinc / cobalt / nickel / argent, fête foraine à une seule entrée ouverte le jour 30, simulation du blé avec l'étal, carte réelle
 - **0.1.88** — 2026-11-20 10:14 — Train fourni, Remy et Myst, chemin de Myst visible, caméra qui suit jusqu'aux bords, cadre toujours affiché, simulateur d'équilibrage (docs/SIMULATION.md)
 - **0.1.87** — 2026-11-19 23:46 — Carte de la région remplacée par celle de l'utilisateur ; Hailey et Harry d'après leurs nouvelles planches
 - **0.1.86** — 2026-11-19 23:17 — Nouvelle disposition des fermes (place du panneau : calendrier, météo J+3, étal), tas de planches ailleurs que sur la ferme principale, Luna et Manu d'après leurs nouvelles planches

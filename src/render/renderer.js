@@ -12,8 +12,8 @@ import { getZoom, zoomScale, getEco } from '../ui/settingsPanel.js';
 import { QUARTIER, PARC_B } from '../world/scenes.js';
 // Caverne : la lumière du jour entre par la sortie ; quelques cristaux luisent.
 const CAVE_LIGHTS = [{ x: 8, y: 72, r: 60 }, { x: 25 * 16, y: 12 * 16, r: 18 }, { x: 44 * 16, y: 20 * 16, r: 18 }];
-import { toolTier } from '../systems/skills.js';
-import { MIN_PICK } from '../data/tools.js';
+import { toolTier, lacks } from '../systems/skills.js';
+import { MIN_PICK, NEED } from '../data/tools.js';
 // Rendu : caméra, culling, tri en profondeur, eau animée, lumière dynamique,
 // étalonnage météo, particules, vignettage. Responsive (devicePixelRatio, échelle entière).
 import { CFG } from '../config.js';
@@ -365,7 +365,7 @@ let swing = null;
     if (outside) for (const k in S.plots) { const [x, y] = k.split(',').map(Number); if (x >= x0 && x <= x1 && y >= y0 && y <= y1) drawCrop(ctx, x, y, S.plots[k], wall); }
     for (const f of worldFx) if (f.k === 'dust') { ctx.fillStyle = `rgba(214,196,160,${f.life})`; ctx.fillRect(Math.round(f.x), Math.round(f.y), 2, 2); }
 
-    const list = [], pickTier = toolTier(S, 'pick');
+    const list = [], pickTier = lacks(S, NEED.boulder) ? 1 : 9;   // 20/11 : gros caillou « verrouillé » tant que le minage est trop bas
     if (outside) for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) {
       const o = S.objs[x + ',' + y];
       if (o) list.push({ z: y + .9, d: () => o.t === 'bigtree' ? drawBigTree(ctx, x, y, S.season, now) : o.t === 'stump' ? drawStump(ctx, x, y, o) : o.t === 'tree' ? drawTree(ctx, x, y, o, S.season, now) : drawRock(ctx, x, y, o, (MIN_PICK[o.t] || 1) > pickTier) });

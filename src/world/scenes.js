@@ -251,9 +251,9 @@ export const PARC_B = {
 LAYOUTS.parc = (() => {
   const W = 34, H = 24, m = Array.from({ length: H }, (_, y) => Array.from({ length: W }, (_, x) => (x === 0 || y === 0 || x === W - 1 || y === H - 1 ? 'T' : 'g')));
   const pave = (x0, y0, x1, y1) => { for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) m[y][x] = '.'; };
-  pave(1, 9, W - 2, 10); pave(1, 19, W - 2, 20); pave(16, 9, 17, H - 1); pave(11, 1, 11, 20); pave(22, 8, 22, 10);
+  pave(1, 9, W - 2, 10); pave(1, 19, W - 2, 20); pave(16, 9, 17, H - 2); pave(11, 0, 11, 20); pave(22, 8, 22, 10);
   for (const [k, b] of Object.entries(PARC_B)) { pave(b.x - 1, b.y + b.h, b.x + b.w, b.y + b.h); for (let y = b.y; y < b.y + b.h; y++) for (let x = b.x; x < b.x + b.w; x++) m[y][x] = k; }
-  m[H - 1][16] = 'D'; m[H - 1][17] = 'D';
+  m[0][11] = 'D';   // 20/11 : une seule entrée, au nord (la fête foraine est au sud du ranch)
   for (const [x, y] of [[2, 18], [8, 21], [26, 21], [31, 18], [31, 8], [20, 16]]) if (m[y][x] === 'g') m[y][x] = 'T';
   return m.map(r => r.join(''));
 })();
@@ -596,7 +596,7 @@ export const SCENES = {
   ranch: { W: 32, H: 22, outdoor: true, doors: [
     { x: 15, y: 0, to: 'rondpoint', spawn: { x: 23.4, y: 8.5 } }, { x: 16, y: 0, to: 'rondpoint', spawn: { x: 23.4, y: 8.5 } },
     { x: 31, y: 15, to: 'port', spawn: { x: 1.6, y: 7 } }, { x: 31, y: 16, to: 'port', spawn: { x: 1.6, y: 7 } },
-    { x: 15, y: 21, to: 'parc', spawn: { x: 16.5, y: 22.2 } }, { x: 16, y: 21, to: 'parc', spawn: { x: 16.5, y: 22.2 } },   // au sud : la fête foraine
+    { x: 15, y: 21, to: 'parc', spawn: { x: 11.5, y: 1.8 } }, { x: 16, y: 21, to: 'parc', spawn: { x: 11.5, y: 1.8 } },   // au sud : la fête foraine
     { x: 6, y: 5, to: 'ranch_maison', spawn: { x: 4.5, y: 5.4 } }, { x: 7, y: 5, to: 'ranch_maison', spawn: { x: 4.5, y: 5.4 } }] },
   remy: { W: 9, H: 7, doors: [{ x: 4, y: 6, to: 'quartier', spawn: { x: 20.5, y: 25.8 } }] },
   resto: { W: 14, H: 7, doors: [{ x: 6, y: 6, to: 'town', spawn: { x: 15.5, y: 29.8 } }] },
@@ -615,7 +615,7 @@ export const SCENES = {
   maison: { W: 16, H: 11, doors: [{ x: 7, y: 10, to: 'farm', spawn: { x: 5.5, y: 5.9 } }] },   // la cabane agrandie (même porte sur la ferme)
   coop: { W: 10, H: 7, doors: [{ x: 4, y: 6, to: 'farm', spawn: { x: 24.5, y: 8.9 } }] },
   // Forêt : à l'est du centre-ville ; au-delà (est), la zone de la Caverne sombre (fermée pour l'instant).
-  parc: { W: 34, H: 24, outdoor: true, doors: [{ x: 16, y: 23, to: 'ranch', spawn: { x: 16, y: 19.8 } }, { x: 17, y: 23, to: 'ranch', spawn: { x: 16, y: 19.8 } }] },
+  parc: { W: 34, H: 24, outdoor: true, doors: [{ x: 11, y: 0, to: 'ranch', spawn: { x: 16, y: 19.8 } }] },
   foret: { W: 30, H: 18, outdoor: true, doors: [{ x: 0, y: 9, to: 'lot', lot: 0, dir: 'W' }, { x: 29, y: 9, to: 'wild', spawn: { x: 1.6, y: 4.5 } }] },
   wild: { W: 50, H: 24, dark: true, cave: true, rooms: { w: 10, h: 8 }, doors: [{ x: 0, y: 4, to: 'foret', spawn: { x: 28.2, y: 9.6 } }] },
   grange: { W: 22, H: 11, dark: true, doors: [{ x: 5, y: 6, to: 'farm', spawn: { x: 12.5, y: 5.6 } }] },
