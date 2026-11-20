@@ -1,3 +1,4 @@
+import { drawDecor } from './decors.js';
 // Sprites pixel art procéduraux, ombrés et contourés, mis en cache.
 import { CFG } from '../config.js';
 import { CROPS } from '../data/crops.js';
@@ -488,6 +489,7 @@ export function pebbleSprite(v) {
   });
 }
 export const KIND_SPRITE = { oak: treeSprite, pine: pineSprite, birch: birchSprite };
+const TREE_DECOR = { pine: 'sapin', cypres: 'cypres', fleurs: 'arbre_fleurs' }, TREE_W = { sapin: 26, cypres: 14, arbre_fleurs: 34 };
 const KIND_IDS = ['oak', 'pine', 'birch'];
 // Jeune arbre : pousse (jour 0), arbuste (jour 1), petit arbre (jour 2), puis adulte.
 function saplingSprite(kind, stage, season) {
@@ -521,7 +523,8 @@ export function drawTree(c, x, y, o, season, t = 0) {
     return;
   }
   groundShadow(c, px + 8, py + 14, 9, 3, .3);
-  c.drawImage(KIND_SPRITE[kind](season, (x * 7 + y * 3) % 4), px - 9 + sh, py - (kind === 'oak' ? 28 : 30));
+  { const n = TREE_DECOR[kind]; if (n && drawDecor(c, n, px + 8 + sh, py + 15, TREE_W[n])) return; }   // lot 32 : sapin, cyprès, arbre en fleurs (planche fournie)
+  c.drawImage((KIND_SPRITE[kind] || KIND_SPRITE.oak)(season, (x * 7 + y * 3) % 4), px - 9 + sh, py - (kind === 'oak' ? 28 : 30));
 }
 
 /* ---------------- Rochers ---------------- */
@@ -566,8 +569,14 @@ function darkOf(spr) {
   if (!d) { d = canvas(spr.width, spr.height); const x = d.getContext('2d'); x.drawImage(spr, 0, 0); x.globalCompositeOperation = 'source-atop'; x.fillStyle = 'rgba(28,20,40,.62)'; x.fillRect(0, 0, d.width, d.height); x.fillStyle = 'rgba(150,120,220,.5)'; for (let i = 3; i < d.width - 3; i += 5) x.fillRect(i, 3 + (i % 3), 1, 1); DARK.set(spr, d); }
   return d;
 }
+const ROCK_DECOR = ['caillou', 'cailloux', 'rocher_bas', 'roche_plate', 'cailloux', 'caillou'], ROCK_W = { caillou: 13, cailloux: 17, rocher_bas: 20, roche_plate: 19 };
 export function drawRock(c, x, y, o, hard = false) {
   const px = x * T + (o.shake > 0 ? Math.round(Math.sin(o.shake * 40)) : 0), py = y * T, sk = s => hard ? darkOf(s) : s;
+  if (!hard) {   // lot 32 : cailloux de formes et de tailles variées (planche fournie)
+    const n = o.t === 'boulder' ? 'rocher_grand' : o.t === 'rock_big' ? 'roche_pilier' : ROCK_DECOR[(x * 7 + y * 13) % ROCK_DECOR.length], w = o.t === 'boulder' ? 28 : o.t === 'rock_big' ? 26 : ROCK_W[n];
+    groundShadow(c, px + 8, py + 14, w / 2 - 1, 2, .25);
+    if (drawDecor(c, n, px + 8, py + 15, w)) return;
+  }
   if (o.t === 'boulder') { groundShadow(c, px + 8, py + 14, 10, 3, .3); c.drawImage(sk(boulderSprite()), px - 4, py - 5); return; }
   if (o.t === 'rock_big') { groundShadow(c, px + 8, py + 14, 8, 2, .28); c.drawImage(sk(bigRockSprite((x + y) % 2)), px - 3, py - 2); return; }
   groundShadow(c, px + 8, py + 13, 7, 2, .25);

@@ -12,6 +12,7 @@ import { defaultState } from './core/state.js';
 import { genObjects } from './world/map.js';
 import { createRenderer } from './render/renderer.js';
 import { preloadSheets } from './render/sprites.js';
+import { preloadDecors } from './render/decors.js';
 import { autoLandscape } from './ui/screen.js';
 autoLandscape();   // 20/11 : paysage automatique sur téléphone
 import { createHud } from './ui/hud.js';
@@ -96,6 +97,7 @@ let started = false, net = { sb: null, uid: null }, mp = null, games = [], game 
 const cv = $('#game');
 const renderer = createRenderer(cv, g);
 preloadSheets();   // planches des personnages chargées dès l'écran titre
+preloadDecors().then(() => g.bus.emit('decors'));   // lot 32 : décors d'après les planches fournies (cactus, cailloux, filons, arbres, saloon, fontaine, diligence)
 let store = null; try { store = localStorage; } catch { /* stockage bloqué */ }
 const audio = createAudio(g, store);
 const settingsPanel = createSettingsPanel(audio, g);

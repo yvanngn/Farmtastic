@@ -1,3 +1,4 @@
+import { decor } from './decors.js';
 import { fountainSprite, facadeSprite, houseSprite , blit } from './props.js';
 import { paintGrass, paintOchre, paintRoad, paintPlanks, softEdge, OCHRE, paintRiver, paintBridge, paintCliff, autotile, ROAD, canopy, dress, roofFor, softPatches, barrel } from './terrain.js';
 // Centre du village pré-rendu : place pavée, halle du marché, panneau d'affichage,
@@ -98,6 +99,7 @@ export function buildTown(season) {
   // Farmwest (7c) : bâtiment western — fausse façade en planches verticales, corniche, auvent sur poteaux, contours sombres
   const OUT = '#2a1a10';
   function western(x0, y0, w, trim, trim2, sign, deco, opt = {}) {
+    if (sign === 'SALOON' && decor('saloon')) return;   // lot 32 : le saloon de la planche fournie est dessiné par-dessus, en direct
     const ux = x0 * T, uy = y0 * T, uw = w * T, top = uy - 28 - (opt.tall || 0);
     const wall = opt.wall || '#9a6a3c', wallD = shade(wall, 0.82), wallL = shade(wall, 1.12), OUT = shade(wall, 0.42);   // lot 11e : contour coloré (teinte du mur), plus de noir
     // ombre portée au sol
@@ -213,7 +215,7 @@ export function buildTown(season) {
   }, { wall: '#8a6a4a' });
   // fontaine (x11-13, y8-10)
   const fx = TOWN_B.F.x * T + 24, fy = TOWN_B.F.y * T + 24;
-  { const im = fountainSprite(23); if (im) g.drawImage(im, Math.round(fx - im.width / 2), Math.round(fy + 23 * .62 + 6 - im.height)); }   // 18/11 (soir) : fontaine « pixel moderne »
+  if (!decor('fontaine')) { const im = fountainSprite(23); if (im) g.drawImage(im, Math.round(fx - im.width / 2), Math.round(fy + 23 * .62 + 6 - im.height)); }   // 18/11 (soir) : fontaine « pixel moderne »
 
   for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
     const ch = L[y][x], px = x * T, py = y * T;

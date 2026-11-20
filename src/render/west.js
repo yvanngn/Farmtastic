@@ -1,3 +1,4 @@
+import { decor, drawDecor } from './decors.js';
 // Farmwest (lot 2) : décors pré-rendus des nouvelles zones — rond-point, ranch du Maire, zone portuaire.
 // Style de docs/carte-region-farmwest.jpg : terre ocre, chemins de sable, planches, eau bleue. Dessiné une fois par saison.
 import { fountainSprite, houseSprite , blit } from './props.js';
@@ -59,7 +60,7 @@ export function buildWest(name, season) {
   // lot 11a : bords propres herbe ↔ terre ocre ↔ chemins (coins arrondis)
   autotile(g, W, H, (x, y) => { const ch = (L[y] || '')[x]; return ch == null ? null : ch === '.' || ch === 'D' || ch === 'F' ? 'chemin' : ch === 's' || ch === 'T' ? 'ocre' : ch === 'g' ? 'herbe' : null; }, { chemin: 1, ocre: 2, herbe: 3 }, { ocre: SAND, herbe: GR });
   // 2. fontaine du rond-point (disque de pierre, eau, jet)
-  if (name === 'rondpoint') {
+  if (name === 'rondpoint' && !decor('fontaine')) {
     const cx = 12.5 * T + 8, cy = 8.5 * T + 8, im = fountainSprite(34);   // 18/11 (soir) : fontaine « pixel moderne » (src/render/props.js)
     if (im) g.drawImage(im, Math.round(cx - im.width / 2), Math.round(cy + 34 * .62 + 4 - im.height + 4));
     else { disc(g, cx, cy, 34, '#a89a88'); disc(g, cx, cy, 27, '#3f86c4'); }
@@ -129,12 +130,15 @@ export function buildWest(name, season) {
   }
   // 5 bis (7d) : petites pierres ocre éparses sur les sols de terre (décor, sans collision)
   if (DESERT.includes(name)) for (let y = 1; y < H - 1; y++) for (let x = 1; x < W - 1; x++) if (at(x, y) === 'g' && r() < .035) g.drawImage(pebbleSprite((x + y) % 2), x * T + (r() * 6 | 0), y * T + 4 + (r() * 4 | 0));
+  // 5 ter (lot 32) : cactus et broussailles un peu partout sur la terre ocre et l'herbe (décor, sans collision)
+  { const spots = []; for (let y = 2; y < H - 2; y++) for (let x = 2; x < W - 2; x++) { const ch = at(x, y); if ((ch === 's' || ch === 'g') && at(x, y - 1) !== '.' && at(x, y + 1) !== '.' && at(x - 1, y) !== '.' && at(x + 1, y) !== '.' && ((x * 31 + y * 17) % (DESERT.includes(name) ? 19 : 41)) === 0) spots.push([x, y]); }
+    for (const [x, y] of spots) { const k = (x * 7 + y) % 5, n = k < 2 ? 'broussaille' : k < 4 ? 'cactus_petit' : 'cactus_grand'; drawDecor(g, n, x * T + 8, y * T + 15, n === 'broussaille' ? 13 : n === 'cactus_petit' ? 9 : 12); } }
   // 6. arbres (bords et bosquets), triés de haut en bas
   canopy(g, W, H, (x, y) => (L[y] || '')[x] === 'T' && [[1, 0], [-1, 0], [0, 1], [0, -1]].filter(([a, b]) => (L[y + b] || '')[x + a] === 'T').length >= 2, season);   // lot 11b : canopée continue
   for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) if (at(x, y) === 'T') {
     const v = (x * 7 + y * 3) % 4;
     // 7d : côté désert (gare, rond-point, ranch), des cactus se mêlent aux arbres de bordure
-    if (DESERT.includes(name) && (x * 5 + y * 3) % 4 === 0) { g.drawImage(cactusSprite(season, v), x * T - 3, y * T - 18); continue; }
+    if (DESERT.includes(name) && (x * 5 + y * 3) % 4 === 0) { if (drawDecor(g, (x + y) % 3 ? 'cactus_grand' : 'cactus_petit', x * T + 8, y * T + 15, (x + y) % 3 ? 13 : 9)) continue; g.drawImage(cactusSprite(season, v), x * T - 3, y * T - 18); continue; }
     const im = (x + y) % 2 ? pineSprite(season, v) : treeSprite(season, v);
     g.drawImage(im, x * T - 9, y * T - 26);
   }

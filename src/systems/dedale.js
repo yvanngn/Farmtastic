@@ -32,7 +32,7 @@ export function ensureTrees(g) {
   for (let t = 0; t < 2000 && add > 0; t++) {
     const x = 2 + (g.rnd() * (W - 4) | 0), y = 2 + (g.rnd() * (H - 4) | 0);
     if (!freeDedale(S, x, y)) continue;
-    const oak = g.rnd() < OAK_P; st.trees[key(x, y)] = { t: oak ? 'oak' : 'tree', k: oak ? 'oak' : (g.rnd() < .5 ? 'pine' : 'birch'), hp: TREE_HITS[oak ? 'oak' : 'tree'] }; add--;
+    const oak = g.rnd() < OAK_P; st.trees[key(x, y)] = { t: oak ? 'oak' : 'tree', k: oak ? 'oak' : ['pine', 'cypres', 'fleurs', 'birch'][g.rnd() * 4 | 0], hp: TREE_HITS[oak ? 'oak' : 'tree'] }; add--;
   }
   return st;
 }

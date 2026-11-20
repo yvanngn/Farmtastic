@@ -1,3 +1,4 @@
+import { drawDecor, decor, VEIN_DECOR } from './decors.js';
 import { folkSprite, CAST } from './folk.js';
 import { coachBody, coachWheel, horse, locoSprite, wagonSprite, fountainSprite, houseSprite } from './props.js';
 import { MAILBOX, METEOR_HITS } from '../systems/golgolas.js';
@@ -111,6 +112,7 @@ function drawFlower(c, x, y, col, now) {   // 19/11 : fleurs plus grosses (5 pé
 const RARE_VEIN = { iron: ['#9aa4b0', '#e8eef4'], gold: ['#f2c832', '#fff4b0'] };
 function drawVein(c, x, y, o, col, now = 0) {
   const px = x * T - 2 + (o.shake > 0 ? Math.round(Math.sin(o.shake * 40)) : 0), py = y * T - 4, P = (a, b, w, h, k) => { c.fillStyle = k; c.fillRect(px + a, py + b, w, h); };
+  if (VEIN_DECOR[o.v]) { c.fillStyle = 'rgba(0,0,0,.3)'; c.beginPath(); c.ellipse(px + 10, py + 18, 10, 3, 0, 0, 7); c.fill(); if (drawDecor(c, VEIN_DECOR[o.v], px + 10, py + 20, 22)) return; }   // lot 32 : filons de la planche fournie
   c.fillStyle = 'rgba(0,0,0,.3)'; c.beginPath(); c.ellipse(px + 10, py + 18, 10, 3, 0, 0, 7); c.fill();
   P(3, 4, 14, 14, '#4a4650'); P(1, 7, 18, 10, '#4a4650'); P(5, 2, 10, 3, '#5a5662');
   P(4, 3, 9, 3, '#6a6674'); P(2, 7, 3, 6, '#5e5a68'); P(1, 15, 18, 2, '#302d36'); P(16, 7, 3, 9, '#38353e');
@@ -151,6 +153,7 @@ const ART_IM = {};
 const artImage = id => { if (ART_IM[id] !== undefined) return ART_IM[id]; const u = itemArt(id); if (!u) return (ART_IM[id] = null); const im = new Image(); im.src = u; return (ART_IM[id] = im); };
 import { BIG_ROCK } from '../world/scenes.js';
 import { ROCK_HITS } from '../systems/bigrock.js';
+import { TOWN_B as TOWN_B2 } from '../world/scenes.js';
 import { STAND_POS, DUMP_POS, SHOP_VENDOR, VENDOR_POS } from '../world/scenes.js';
 import { IGOR, HARRY, SUZIE } from '../data/npcs.js';
 import { suzieAtStand, SUZIE_STAND } from '../systems/etal.js';
@@ -194,6 +197,7 @@ let TRAIN_EL; const trainImage = () => { if (TRAIN_EL === undefined && typeof Im
 function drawCoach(c, wx, wy, now) {   // 18/11 (soir) : diligence « pixel moderne » (src/render/props.js) : caisse, cocher, chevaux au trot, roues qui tournent
   const X = Math.round(wx * 16), Y = Math.round(wy * 16), fr = (now / 110 | 0) % 4, st = (now / 70 | 0) % 8;
   c.fillStyle = 'rgba(30,15,5,.3)'; c.beginPath(); c.ellipse(X + 12, Y + 9, 52, 5, 0, 0, 7); c.fill();
+  if (drawDecor(c, 'diligence_droite', X + 18, Y + 11 + ((now / 160 | 0) % 2), 126)) return;   // lot 32 : diligence de la planche fournie (petit cahot)
   const h1 = horse('#5a3a22', fr), h2 = horse('#8a5a32', (fr + 2) % 4), body = coachBody(), wb = coachWheel(10, st), wf = coachWheel(8, st);
   if (h1) c.drawImage(h1, X + 40, Y - 21);
   if (body) c.drawImage(body, X - 40, Y - 64);
@@ -229,6 +233,7 @@ let swing = null;
   const SEASON_LEAF = ['#4a8f36', '#3b7f31', '#e08a2a', '#eef5f7'];
   // Animation de l'outil (coup) et effets d'impact : copeaux, éclats, chute d'arbre.
   g.bus.on('swing', tool => { swing = { tool, p: 0 }; });
+  g.bus.on('decors', () => invalidate());   // lot 32 : les décors fournis sont chargés → on redessine les fonds
   g.bus.on('scene', () => { trans = performance.now(); });   // transition d'entrée dans une zone
   g.bus.on('objHit', ({ x, y, t, broken, k }) => {
     const cx = x * T + 8, cy = y * T + (t === 'tree' ? 6 : 9), stone = t !== 'tree';
@@ -601,6 +606,9 @@ let swing = null;
       const n = Math.floor(10 * hits / ROCK_HITS);   // fissures qui s'étendent (une tous les 1 000 coups)
       for (let k = 0; k < n; k++) { const cx = 10 + (k * 23) % (w - 20), cy = -12 - (k * 37) % (Hh - 30); for (let s = 0; s < 6; s++) R2(cx + (s % 2) * 2, cy - s * 3, 1, 3, '#2a2620'); }
     } }); }
+    if (scene === 'rondpoint' && decor('fontaine')) list.push({ z: 10.6, d: () => drawDecor(ctx, 'fontaine', 12.5 * T + 8, 8.5 * T + 8 + 34 * .62 + 8, 88) });   // lot 32 : fontaine au cheval cabré
+    if (scene === 'town' && decor('fontaine')) list.push({ z: TOWN_B2.F.y + 2.6, d: () => drawDecor(ctx, 'fontaine', TOWN_B2.F.x * T + 24, TOWN_B2.F.y * T + 24 + 23 * .62 + 8, 60) });
+    if (scene === 'town' && decor('saloon')) list.push({ z: TOWN_B2.R.y + TOWN_B2.R.h - .05, d: () => drawDecor(ctx, 'saloon', (TOWN_B2.R.x + TOWN_B2.R.w / 2) * T, (TOWN_B2.R.y + TOWN_B2.R.h) * T + 7, 112) });   // lot 32 : le saloon
     if (scene === 'place') list.push({ z: DUMP_POS.y + .9, d: () => {   // 20/11 : la décharge (benne et tas de ferraille)
       const x = DUMP_POS.x * T, y = DUMP_POS.y * T, R2 = (a, b, w, h, k) => { ctx.fillStyle = k; ctx.fillRect(x + a, y + b, w, h); };
       R2(0, 13, 32, 3, 'rgba(30,15,5,.3)');

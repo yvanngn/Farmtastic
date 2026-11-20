@@ -158,3 +158,4 @@ Fait : sol de la ferme (v0.1.5) ; **7a** palette Far West et sols (centre-ville 
 - 21/11 : lot 30b (v0.1.105) — dédale profond sous le trou du rocher (échelle au centre), chênes (bois de chêne), marmottes à grandes griffes (griffes rares, viande). ⏳ Recettes avec griffes / viande / bois de chêne à définir ; 30c combats en équipe.
 - 21/11 : lot 30c (v0.1.106) — combats en équipe (hôte qui diffuse, bouton Rejoindre, 3 alliés au plus).
 - 21/11 : lot 31 (v0.1.107) — routes 2 → 4 cases partout, passages élargis. Lot 32 : 4 planches d'images fournies (cactus, cailloux, filons, arbres ; saloon ; fontaine ; diligence).
+- 21/11 : lot 32 (v0.1.108) — décors des 4 planches fournies (cactus, broussailles, cailloux, filons, arbres, saloon, fontaine, diligence). ❓ Nom « Red Eye Saloon ».
