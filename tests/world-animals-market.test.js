@@ -199,8 +199,9 @@ test('lot 2e : centre-ville entouré par la rivière, route de l’est montagne 
   for (let y = 2; y < H - 1; y++) assert.ok('w='.includes(T[y][1]), `rivière à l’ouest (y${y})`);
   assert.equal(T[10][1], '=', 'pont vers la gare'); assert.equal(T[10][T[0].length - 2], '=', 'pont vers le rond-point');
   const link = (a, b) => SCENES[a].doors.filter(d => d.to === b);
-  for (const [a, b] of [['montagne', 'port'], ['port', 'montagne'], ['plage', 'port'], ['port', 'plage']]) {
-    const ds = link(a, b); assert.ok(ds.length >= 2, `${a} → ${b}`);
+  assert.ok(!link('montagne', 'port').length && !link('port', 'montagne').length, '20/11 : le port ne s’atteint que par la cabane du pêcheur');
+  for (const [a, b] of [['plage', 'port'], ['port', 'plage'], ['place', 'route'], ['route', 'montagne'], ['montagne', 'route'], ['quartier', 'ranch'], ['ranch', 'parc']]) {
+    const ds = link(a, b); assert.ok(ds.length >= 1, `${a} → ${b}`);
     for (const d of ds) { assert.equal(LAYOUTS[a][d.y][d.x], 'D'); const t = LAYOUTS[b][Math.floor(d.spawn.y)][Math.floor(d.spawn.x)]; assert.ok(!SOLID_TILES.includes(t), `arrivée praticable dans ${b} (${t})`); }
   }
 });

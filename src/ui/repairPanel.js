@@ -11,7 +11,7 @@ export function createRepairPanel(g) {
   g.bus.on('repaired', id => { shownId = id; doneUntil = performance.now() + 2500; render(id, true); });
   function render(id, done) {
     const R = REPAIRS[id], st = repairState(g.S, id);
-    el.innerHTML = `<b>${done ? '✅ ' : '🔨 '}${id === 'house' && isPlankPile(g.S) ? 'Le tas de planches (cabane)' : R.n} ${done ? 'est réparée !' : ''}</b>`
+    el.innerHTML = `<b>${done ? '✅ ' : '🔨 '}${(id === 'house' || id === 'grange') && isPlankPile(g.S) ? `Le tas de planches (${id === 'house' ? 'cabane' : 'grange'})` : R.n} ${done ? 'est réparée !' : ''}</b>`
       + Object.entries(needOf(g.S, id)).map(([k, need]) => {
         const v = Math.min(need, st[k] || 0), full = v >= need;
         return `<div class="rp-row"><span>${ICON[k]} ${NAME[k]}</span><div class="rp-bar"><i style="width:${v / need * 100}%"></i></div><span class="rp-n">${full ? '<em>✔</em>' : `${v}/${need}`}</span><span class="rp-sac" title="Dans ton sac">🎒 ${g.S.inv[k] || 0}</span></div>`;   // 19/11 : ce qu'il reste dans le sac, en même temps

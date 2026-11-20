@@ -263,6 +263,15 @@ Décrit par l'utilisateur : cabane à moitié prix ; journal dans la cabane (200
 - [x] Étapes des quêtes : couleurs foncées lisibles sur le papier beige.
 - [ ] 💡 À valider : 24 coups pour un gros caillou de bordure, 3 jours de repousse, filons de la carrière profonde (étain 15 %, fer 50 %, or 35 %).
 
+## Lot 26 — Disposition complète, compétences exponentielles, grange en planches, paysage, barres de vie (demande du 20/11) ✅ v0.1.90
+- [x] Minage / bûcheron exponentiels (niveau 2 : 40 XP, niveau 10 : 28 000 XP 💡).
+- [x] Fermes 1-3 : grange aussi en tas de planches.
+- [x] Carrière profonde = sous-sol (pas sur la carte réelle).
+- [x] Ferme principale : sorties est (forêt) et ouest (ferme 2) au milieu ; 2 → 3 au nord, 3 → carrière à l'est, 2 → 1 au sud, 1 → place à l'est.
+- [x] Place → (est) **longue route** → montagne (seul accès) ; rond-point : ouest centre-ville, sud zone résidentielle ; zone résidentielle → (sud) ranch → (est) fête foraine (fermée jusqu'au jour 30) ; cabane du pêcheur → (est) port (seul accès).
+- [x] Téléphone : paysage automatique au premier toucher (plein écran + orientation), sans message du jeu.
+- [x] Vie et énergie toujours en haut à droite ; au-dessus de Cloud dès l'orange (≤ 50 %), calé sur la hauteur de la planche.
+
 ## Lot 25 — Compétences au lieu des paliers, nouveaux filons, fête foraine, simulation du blé, carte réelle (demande du 20/11) ✅ v0.1.89
 - [x] Plus de paliers d'outils ni d'amélioration à la forge : compétences **Minage** et **Bûcheron** (niveau 10 max) ; la forge affiche les niveaux et ce qu'ils débloquent.
 - [x] Filons : cuivre (minage 3), **zinc** (4), fer (5), **cobalt** (6), **nickel** (7), **argent** (8), or (10). Plus d'étain (les anciens minerais restent). 💡 fréquences et prix des nouveaux minerais.

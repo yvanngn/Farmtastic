@@ -79,7 +79,8 @@ export function buildGround(season, built = {}, fixed = { house: true, grange: t
   drawGate(R);
   if (FARM_LOT !== 0 && !fixed.house) drawPlankPile(R, 2 * T, 1 * T, 5 * T, 4 * T);   // 19/11 : pas de cabane, un tas de planches (sauf ferme principale)
   else { drawHouse(g, R); if (!fixed.house) drawRuins(R, 2 * T + 4, 6 * T + 12, 10, 80, 'house'); }
-  drawGrange(R); if (!fixed.grange) drawRuins(R, 10 * T, 14 * T, 1 * T + 10 - 18, 5 * T, 'grange');
+  if (FARM_LOT !== 0 && !fixed.grange) drawPlankPile(R, 10 * T, 1 * T, 4 * T, 4 * T);   // 20/11 : la grange aussi n'est qu'un tas de planches (sauf ferme principale)
+  else { drawGrange(R); if (!fixed.grange) drawRuins(R, 10 * T, 14 * T, 1 * T + 10 - 18, 5 * T, 'grange'); }
   // haies le long des bords sans sortie (bas et droite) : on voit tout de suite où sont les chemins
   for (let y = 0; y < CFG.H; y++) for (let x = 0; x < CFG.W; x++) if (isHedge(x, y)) {
     const px = x * T, py = y * T;
@@ -90,9 +91,8 @@ export function buildGround(season, built = {}, fixed = { house: true, grange: t
   for (let x = 1; x < CFG.W - 1; x++) { const px = x * T; if (isFarmGap(x, 0)) continue; R(px, 6, T, 2, '#8a5a32'); R(px, 11, T, 2, '#8a5a32'); R(px, 6, T, 1, '#b07a48'); if (x % 2 === 0) { R(px + 6, 2, 3, 13, '#6a4426'); R(px + 6, 2, 3, 1, '#b07a48'); } }
   for (let y = 0; y < CFG.H; y++) { const py = y * T; if (isFarmGap(0, y)) continue; R(0, py, T, T, '#7a7480'); R(0, py, 3, T, '#5a5560'); R(T - 3, py, 3, T, '#a8a2ae'); R(4, py + 3 + (y % 3) * 3, 8, 4, '#8f8a96'); R(4, py + 3 + (y % 3) * 3, 8, 1, '#c4bfca'); R(2, py + T - 2, T - 2, 2, '#4a4650'); }
   for (let y = 0; y < CFG.H; y++) for (let x = 0; x < CFG.W; x++) if (isFarmGap(x, y)) { R(x * T, y * T, T, T, '#d8b878'); R(x * T + 2, y * T + 5, 3, 2, '#c49a5c'); R(x * T + 9, y * T + 10, 3, 2, '#c49a5c'); }   // 19/11 : passages vers les fermes voisines
-  for (const y of [0, 1, 2, 3, 7]) { const py = y * T; R(47 * T, py, T, T - 4, '#2f6a2a'); R(47 * T + 2, py + 2, 12, 8, '#3f8a34'); }
   // bordures de pierre le long des sorties élargies
-  for (const [x0, y0, x1, y1] of [[15, 33, 17, 35], [45, 4, 47, 6]]) { R(x0 * T - 2, y0 * T, 2, (y1 - y0 + 1) * T, '#8f887f'); R((x1 + 1) * T, y0 * T, 2, (y1 - y0 + 1) * T, '#8f887f'); if (y1 - y0 < 3) { R(x0 * T, y0 * T - 2, (x1 - x0 + 1) * T, 2, '#8f887f'); R(x0 * T, (y1 + 1) * T, (x1 - x0 + 1) * T, 2, '#8f887f'); } }
+  for (const [x0, y0, x1, y1] of [[15, 33, 17, 35], [45, 17, 47, 19]]) { R(x0 * T - 2, y0 * T, 2, (y1 - y0 + 1) * T, '#8f887f'); R((x1 + 1) * T, y0 * T, 2, (y1 - y0 + 1) * T, '#8f887f'); if (y1 - y0 < 3) { R(x0 * T, y0 * T - 2, (x1 - x0 + 1) * T, 2, '#8f887f'); R(x0 * T, (y1 + 1) * T, (x1 - x0 + 1) * T, 2, '#8f887f'); } }
   drawFieldStakes(R);
   if (built.coop) drawCoop(R); else drawLot(g, R, 'coop');
   if (built.pigsty) drawPigsty(R); else drawLot(g, R, 'pigsty');

@@ -8,7 +8,7 @@ import { FARM_LINKS } from '../src/data/buildings.js';
 import { CFG } from '../src/config.js';
 import { REPAIRS } from '../src/data/repairs.js';
 setFarmLot(0);
-const NAMES = { farm: 'Ferme principale (0)', 'farm:1': 'Ferme du Sud-Ouest (1)', 'farm:2': "Ferme de l'Ouest (2)", 'farm:3': 'Ferme du Nord-Ouest (3)', place: 'Place du panneau', rondpoint: 'Rond-point', quartier: 'Zone résidentielle', ranch: 'Ranch du Maire', parc: 'Fête foraine', port: 'Zone portuaire', town: 'Centre-ville', gare: 'Gare', golgolas: 'Clairière de Golgolas', plage: 'Cabane du pêcheur', montagne: 'Montagne', foret: 'Forêt', carriere: 'Carrière', carriere2: 'Carrière profonde' };
+const NAMES = { farm: 'Ferme principale (0)', 'farm:1': 'Ferme du Sud-Ouest (1)', 'farm:2': "Ferme de l'Ouest (2)", 'farm:3': 'Ferme du Nord-Ouest (3)', place: 'Place du panneau', rondpoint: 'Rond-point', quartier: 'Zone résidentielle', ranch: 'Ranch du Maire', parc: 'Fête foraine', port: 'Zone portuaire', town: 'Centre-ville', gare: 'Gare', golgolas: 'Clairière de Golgolas', plage: 'Cabane du pêcheur', montagne: 'Montagne', foret: 'Forêt', carriere: 'Carrière', route: 'Longue route' };   // (la carrière profonde est un sous-sol : pas sur la carte)
 const ZONES = Object.keys(NAMES);
 const grid = sc => {
   if (sc !== 'farm') return LAYOUTS[sc];

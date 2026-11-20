@@ -13,7 +13,7 @@ export const neighborLot = (lot, dir) => { const v = (FARM_LINKS[lot] || {})[dir
 export const sceneOfLot = (S, lot) => lot === (S.farmLot || 0) ? 'farm' : 'farm:' + lot;
 // Où l'on arrive dans une ferme, selon le sens du déplacement (dir).
 export function arrival(S, lot, dir) {
-  if (lot === (S.farmLot || 0)) return { E: { x: 1.6, y: 5.5 }, W: { x: 46.2, y: 5.5 }, S: { x: 16.5, y: 1.4 }, N: { x: 16.5, y: 33.8 } }[dir];
+  if (lot === (S.farmLot || 0)) return { E: { x: 1.6, y: 18.5 }, W: { x: 46.2, y: 18.5 }, S: { x: 16.5, y: 1.4 }, N: { x: 16.5, y: 33.8 } }[dir];
   return { E: { x: 1.6, y: 9.9 }, W: { x: 28.2, y: 9.9 }, S: { x: 15.9, y: 1.8 }, N: { x: 15.9, y: 20.2 } }[dir];
 }
 // Arrivée dans une zone voisine d'une ferme (sens du déplacement).

@@ -155,7 +155,7 @@ import { PICKUPS, isBroken } from '../systems/grange.js';
 import { buildWild, drawMob, drawZRock, drawShroom, drawForestTree } from './wild.js';
 import { MUSHROOMS } from '../data/items.js';
 import { LAYOUTS, FOREST_CHEST, syncForest, forestKey } from '../world/scenes.js';
-import { toolIcon, drawToolPix } from './sprites.js';
+import { toolIcon, drawToolPix, heroSheetName } from './sprites.js';
 // Farmwest : le grand arbre de la ferme (incassable) : tronc large, racines, feuillage en trois étages qui ondule un peu.
 const BIG_LEAF = [['#3f7a32', '#5a9a46', '#7ab85a'], ['#4a8a3a', '#6aaa4a', '#8ac862'], ['#c87a2a', '#e09a3a', '#f2c25a'], ['#8a8a7a', '#a8a898', '#d8dcd4']];
 function drawBigTree(c, x, y, season, now) {
@@ -323,7 +323,7 @@ let swing = null;
     if (cacheSeason !== S.season || cacheScene !== scene || (scene === 'foret' && cacheForest !== forestKey)) {   // lot 11 : nouveau labyrinthe
       cacheForest = forestKey;
       SIGN_SINK.list = [];
-      cache = outside ? farmGround() : scene === 'wild' ? (interiors['wild' + S.season] ||= buildWild(S.season)) : scene === 'foret' ? (interiors['foret' + forestKey + ':' + S.season] ||= buildWild(S.season, 'foret')) : scene === 'town' ? (interiors['town' + S.season] ||= buildTown(S.season)) : scene === 'quartier' ? (interiors['quartier' + S.season] ||= buildQuartier(S.season)) : (scene === 'montagne' || scene === 'plage') ? (interiors[scene] ||= buildBiome(scene, S.season)) : scene === 'parc' ? (interiors['parc' + S.season] ||= buildParc(S.season)) : (scene === 'carriere' || scene === 'carriere2') ? (interiors[scene + S.season] ||= buildQuarry(scene, S.season)) : (scene === 'rondpoint' || scene === 'place' || scene === 'ranch' || scene === 'port' || scene === 'gare' || scene === 'golgolas' || /^farm:\d$/.test(scene)) ? (interiors[scene + S.season] ||= buildWest(scene, S.season)) : (scene === 'resto' ? (interiors['resto' + !!(S.resto && S.resto.oven)] ||= buildInterior(scene, S)) : (scene === 'house' || scene === 'maison') ? (interiors[scene + !!S.workbench + (S.bed !== false)] ||= buildInterior(scene, S)) : (interiors[scene] ||= buildInterior(scene, S)));
+      cache = outside ? farmGround() : scene === 'wild' ? (interiors['wild' + S.season] ||= buildWild(S.season)) : scene === 'foret' ? (interiors['foret' + forestKey + ':' + S.season] ||= buildWild(S.season, 'foret')) : scene === 'town' ? (interiors['town' + S.season] ||= buildTown(S.season)) : scene === 'quartier' ? (interiors['quartier' + S.season] ||= buildQuartier(S.season)) : (scene === 'montagne' || scene === 'plage') ? (interiors[scene] ||= buildBiome(scene, S.season)) : scene === 'parc' ? (interiors['parc' + S.season] ||= buildParc(S.season)) : (scene === 'carriere' || scene === 'carriere2') ? (interiors[scene + S.season] ||= buildQuarry(scene, S.season)) : (scene === 'rondpoint' || scene === 'place' || scene === 'route' || scene === 'ranch' || scene === 'port' || scene === 'gare' || scene === 'golgolas' || /^farm:\d$/.test(scene)) ? (interiors[scene + S.season] ||= buildWest(scene, S.season)) : (scene === 'resto' ? (interiors['resto' + !!(S.resto && S.resto.oven)] ||= buildInterior(scene, S)) : (scene === 'house' || scene === 'maison') ? (interiors[scene + !!S.workbench + (S.bed !== false)] ||= buildInterior(scene, S)) : (interiors[scene] ||= buildInterior(scene, S)));
       if (!cache.__signs) cache.__signs = SIGN_SINK.list; SIGN_SINK.list = null;   // enseignes de ce décor
       if (cacheSeason !== S.season) initWeather();
       cacheSeason = S.season; cacheScene = scene;
@@ -434,7 +434,7 @@ let swing = null;
         ctx.fillStyle = 'rgba(0,0,0,.55)'; ctx.fillRect(x - 1, y - 1, 18, 5); ctx.fillStyle = '#f2a03a'; ctx.fillRect(x, y, Math.round(16 * p), 3); } });
     }
     if (sky) { // sorties : flèches animées et nom de la destination, au bord de l'écran
-      const NAMES = { farm: 'Ma ferme', place: 'Place du panneau', carriere: 'Carrière', quartier: 'Zone résidentielle', gare: 'Gare', resto: 'Restaurant', rondpoint: 'Rond-point', ranch: 'Ranch du Maire', port: 'Zone portuaire', town: 'Centre-ville', foret: 'Forêt', wild: 'Caverne sombre', plage: 'Cabane du pêcheur', montagne: 'Montagne', rouky: 'Chez Rouky' }, seen = new Set();
+      const NAMES = { farm: 'Ma ferme', place: 'Place du panneau', carriere: 'Carrière', route: 'Longue route', parc: 'Fête foraine', quartier: 'Zone résidentielle', gare: 'Gare', resto: 'Restaurant', rondpoint: 'Rond-point', ranch: 'Ranch du Maire', port: 'Zone portuaire', town: 'Centre-ville', foret: 'Forêt', wild: 'Caverne sombre', plage: 'Cabane du pêcheur', montagne: 'Montagne', rouky: 'Chez Rouky' }, seen = new Set();
       for (const d of SC.doors || []) {
         const W = SC.W, H = SC.H, edge = d.x === 0 ? 'g' : d.x === W - 1 ? 'd' : d.y === 0 ? 'h' : d.y === H - 1 ? 'b' : null;
         if (!edge || !NAMES[d.to] || seen.has(d.to + edge)) continue; seen.add(d.to + edge);
@@ -542,7 +542,7 @@ let swing = null;
     if (scene === 'gare' && !(S.golgo && S.golgo.read)) list.push({ z: 13, d: () => { const x = 10 * T, y = 12 * T + 8; ctx.fillStyle = '#6a4426'; ctx.fillRect(x - 2, y, 36, 4); ctx.fillRect(x - 2, y + 7, 36, 4); ctx.fillStyle = '#4a2e1a'; ctx.fillRect(x, y - 4, 3, 18); ctx.fillRect(x + 29, y - 4, 3, 18); } });   // planches qui barrent le chemin du sud
     if (!forestOpen(S) && (scene === 'farm' || scene === 'farm:0')) {   // 19/11 : énorme arbre tombé en travers du chemin de la forêt
       const lot = scene === 'farm' ? (S.farmLot || 0) : +scene.slice(5);
-      if (lot === 0) { const tx = scene === 'farm' ? 46 : 28, ty = scene === 'farm' ? 3 : 8; list.push({ z: ty + 3, d: () => {
+      if (lot === 0) { const tx = scene === 'farm' ? 46 : 28, ty = scene === 'farm' ? 16 : 8; list.push({ z: ty + 3, d: () => {
         const x = tx * T, y = ty * T, R2 = (a, b, w, h, k) => { ctx.fillStyle = k; ctx.fillRect(x + a, y + b, w, h); };
         R2(-2, 50, 30, 4, 'rgba(20,12,8,.3)');
         R2(4, 2, 14, 50, '#6e4426'); R2(4, 2, 4, 50, '#8a5a32'); R2(15, 2, 3, 50, '#4e2e18'); for (let k = 6; k < 50; k += 7) R2(6, k, 9, 1, '#5a3820');   // tronc couché
@@ -574,10 +574,15 @@ let swing = null;
       if (pickArt) { if (!(g.player.iframe > 0 && ((now / 80) | 0) % 2)) drawHeroPick(ctx, Math.round(S.x * T - 6), Math.round(S.y * T - 19), S.look, S.dir, swing.p, swing.tool); } else {
       if (swing && S.dir === 1) drawSwing(ctx, S, swing.tool, swing.p);
       if (!(g.player.iframe > 0 && ((now / 80) | 0) % 2)) drawChar(ctx, Math.round(S.x * T - 6), Math.round(S.y * T - 19), S.look, S.dir, g.player.walkFrame, now, !!swing); }
-      if (document.body.dataset.nrj === 'tete' || S.energy / S.maxE <= .3) { // alerte : jauge au-dessus du héros quand l'énergie devient basse
-        const r = Math.max(0, S.energy / S.maxE), bx = Math.round(S.x * T - 8), by = Math.round(S.y * T - (S.look.tall ? 29 : 26)), shake = r <= .3 ? Math.round(Math.sin(now / 40)) : 0;
-        ctx.fillStyle = 'rgba(20,14,30,.8)'; ctx.fillRect(bx - 1 + shake, by - 1, 18, 4);
-        ctx.fillStyle = r <= .2 ? '#ff2a2a' : r <= .5 ? '#f0a020' : '#6fd04a'; ctx.fillRect(bx + shake, by, Math.round(16 * r), 2);
+      { // 20/11 : énergie et vie au-dessus du héros dès qu'elles passent à l'orange (≤ 50 %), à hauteur de la tête (selon la planche)
+        const re = Math.max(0, S.energy / S.maxE), rh = Math.max(0, S.hp) / S.maxHp, showE = document.body.dataset.nrj === 'tete' || re <= .5, showH = rh <= .5;
+        if (showE || showH) {
+          const Hs = SHEETS[heroSheetName(S.look)], headTop = Math.round(S.y * T) + 1 - ((Hs && Hs.fh) || (S.look.tall ? 32 : 29)), bx = Math.round(S.x * T - 9);
+          const bars = [showH && ['hp', rh], showE && ['en', re]].filter(Boolean);
+          bars.forEach(([k, r], i) => { const by = headTop - 5 - (bars.length - 1 - i) * 4, shake = r <= .3 ? Math.round(Math.sin(now / 40)) : 0;
+            ctx.fillStyle = 'rgba(20,14,30,.85)'; ctx.fillRect(bx - 1 + shake, by - 1, 20, 4);
+            ctx.fillStyle = k === 'hp' ? (r <= .2 ? '#ff2a2a' : '#e8503a') : (r <= .2 ? '#ff2a2a' : r <= .5 ? '#f0a020' : '#6fd04a'); ctx.fillRect(bx + shake, by, Math.round(18 * r), 2); });
+        }
       }
       if (swing && S.dir !== 1 && !pickArt) drawSwing(ctx, S, swing.tool, swing.p);
       const ea = eating(g); if (ea) {   // 19/11 : petite animation quand on mange (l'objet monte à la bouche, miettes)

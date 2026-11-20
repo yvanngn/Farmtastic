@@ -5,7 +5,7 @@ export const MAX_TIER = 5;
 export const UPGRADABLE = ['axe', 'pick', 'sickle', 'sword'];
 // XP totale pour atteindre le niveau i+1 (niveau 1 à 10).
 // Progression ralentie (15/11, demande de l'utilisateur) : environ 3 fois plus d'expérience par niveau 💡
-export const MINING_XP = [0, 100, 260, 520, 900, 1450, 2200, 3200, 4500, 6200];
+export const MINING_XP = [0, 40, 160, 450, 1100, 2400, 4800, 9000, 16000, 28000];   // 20/11 : exponentiel (le niveau 2 vient vite, puis bien plus long) — même table pour le bûcheron 💡
 // Coût pour passer du palier `tier` au suivant.
 export const upgradeCost = tier => ({ money: 600 * tier * tier, stone: 30 * tier, minLvl: tier * 2 });   // améliorations de la pioche / hache plus chères 💡
 // Palier de pioche minimal par type de roche.

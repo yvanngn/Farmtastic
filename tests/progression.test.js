@@ -1,4 +1,5 @@
 import { test } from 'node:test';
+import { MINING_XP } from '../src/data/tools.js';
 import assert from 'node:assert/strict';
 import { makeGame, seq, ramasse } from './helpers.js';
 import { add, canAdd, usedSlots, cellsOf, stackSize } from '../src/systems/inventory.js';
@@ -52,9 +53,9 @@ test('agrandir le sac', () => {
 
 test('niveaux de minage', () => {
   assert.equal(level(0), 1);
-  assert.equal(level(30), 1, 'progression ralentie');
-  assert.equal(level(100), 2);
-  assert.equal(level(7000), 10);
+  assert.equal(level(30), 1); assert.equal(level(40), 2, '20/11 : le niveau 2 vient vite');
+  assert.equal(level(28000), 10);
+  for (let i = 2; i < MINING_XP.length; i++) assert.ok(MINING_XP[i] - MINING_XP[i - 1] > 1.5 * (MINING_XP[i - 1] - MINING_XP[i - 2]), 'exponentiel');
 });
 
 test('casser des pierres donne de l’XP et fait monter de niveau', () => {
@@ -72,7 +73,7 @@ test('gros rocher : 20/11 il faut le niveau 3 de minage', () => {
   S.sel = 'pick'; S.objs['40,10'] = { t: 'boulder', hp: 3 };
   assert.equal(hitObject(g, 40, 10), false);
   assert.match(toasts()[0], /minage niveau 3/);
-  S.skills.mining = { xp: 260 };
+  S.skills.mining = { xp: 160 };
   hitObject(g, 40, 10); hitObject(g, 40, 10); hitObject(g, 40, 10);
   assert.equal(S.objs['40,10'], undefined); ramasse(g);
   assert.ok(S.inv.stone >= 2);

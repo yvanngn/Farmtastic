@@ -25,15 +25,19 @@ function gauge(id, r) {
 export const NRJ_MODES = { haut: 'Cadre (en haut)', arc: 'Autour du bouton ✋', vert: 'Barre verticale', tete: 'Au-dessus du héros' };
 export function nrjMode() { try { const m = localStorage.getItem('ferme_nrj'); return NRJ_MODES[m] ? m : 'arc'; } catch { return 'arc'; } }   // choisi par l'utilisateur : l'arc autour du bouton ✋
 export function createHud(g, controls) {
+  // 20/11 : vie et énergie toujours affichées en haut à droite (à gauche des boutons)
+  const vit = document.createElement('div'); vit.id = 'vitals'; vit.className = 'box'; vit.style.display = 'none';
+  vit.innerHTML = '<div class="v-row"><span>❤️</span><div class="bar"><i id="vHp"></i></div></div><div class="v-row"><span>⚡</span><div class="bar"><i id="vEn"></i></div></div>';
+  document.body.appendChild(vit);
   return {
-    show() { ['#hud', '#topbtns', '#controls'].forEach(s => { $(s).style.display = ''; }); },
+    show() { ['#hud', '#topbtns', '#controls', '#vitals'].forEach(s => { $(s).style.display = ''; }); },
     update() {
       const S = g.S;
       $('#hName').textContent = S.name; $('#hMoney').textContent = S.money;
       const where = { house: ' · 🏠', coop: ' · 🐔', pigsty: ' · 🐷', barn: ' · 🐑', luna: ' · 🏡', franck: ' · 🏚️', grange: ' · 🕳️', wild: ' · 🕳️ Caverne (étage 1)', foret: ' · 🌲', town: ' · 🏙️', quartier: ' · 🏘️', montagne: ' · 🏔️', plage: ' · 🎣', parc: ' · 🎡' }[S.scene] || '';
       $('#hTime').textContent = `${weekdayName(S)} ${S.day} · ${SEASONS[S.season]}, an ${S.year || 1} · ${fmtTime(S.minute)} · ${WEATHER_LABELS[S.weather].split(' ')[0]}${where}`;
       { const b = xpBar(S); $('#hLvl').textContent = 'Niv. ' + b.level; $('#hXp').style.width = Math.round(b.p * 100) + '%'; $('#hXpRow').title = b.need ? `Expérience : ${b.cur} / ${b.need} vers le niveau ${b.level + 1}` : 'Niveau maximum'; }   // lot 8 : barre d'XP fine + niveau
-      gauge('hEn', S.energy / S.maxE);
+      gauge('hEn', S.energy / S.maxE); gauge('vEn', S.energy / S.maxE); gauge('vHp', Math.max(0, S.hp) / S.maxHp);   // 20/11 : en haut à droite
       { // autres affichages de l'énergie (au choix dans les réglages) : arc autour du bouton, barre verticale, au-dessus du héros
         const r = S.energy / S.maxE, lvl = gaugeLevel(r), mode = nrjMode();
         document.body.dataset.nrj = mode;

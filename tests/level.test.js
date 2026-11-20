@@ -37,8 +37,8 @@ test('lot 8 : passage de niveau annoncé ; 19/11 : forêt barrée par un gros ar
   const ups = []; g.bus.on('levelUp', e => ups.push(e));
   gainPxp(g, LEVELS[3], 'test'); assert.deepEqual(ups.map(u => u.level), [1, 2, 3]);
   S.scene = 'farm'; S.farmLot = 0; S.sel = 'axe';
-  assert.equal(act(g, 47, 5), 'locked'); assert.match(toasts().at(-1), /bûcheron niveau 3/); assert.equal(S.scene, 'farm');
-  S.skills.wood = { xp: 260 }; for (let i = 0; i < 20 && S.scene === 'farm'; i++) { act(g, 47, 5); clock.t += 1000; }
+  assert.equal(act(g, 47, 18), 'locked'); assert.match(toasts().at(-1), /bûcheron niveau 3/); assert.equal(S.scene, 'farm');
+  S.skills.wood = { xp: 160 }; for (let i = 0; i < 20 && S.scene === 'farm'; i++) { act(g, 47, 18); clock.t += 1000; }
   assert.equal(S.scene, 'foret', 'arbre abattu à la hache en cuivre : le chemin est ouvert');
   assert.equal(zoneOpen({ pxp: LEVELS[4] }, 'wild'), false); assert.equal(zoneOpen({ pxp: LEVELS[5] }, 'wild'), true);
   for (const id of ['campfire', 'chest', 'chaudron']) assert.equal(HAND_RECIPES[id].lvl, 1, 'recettes du début : niveau 1');

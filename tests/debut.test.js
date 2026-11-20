@@ -171,7 +171,7 @@ test('Myst attend sur le quai, vient parler après les pensées du héros (plan,
 test('lot 8 : plus de gare dans la ferme (falaise sur tout le bord ouest) ; plus de villa en ville (le Maire vit au ranch)', () => {
   for (let y = 0; y < 36; y++) assert.ok(!isStation(2, y) && !isPlatform(1, y));
   assert.equal(isSolid({ scene: 'farm' }, 0, 20), true, 'la falaise');
-  for (let y = 0; y < 36; y++) assert.equal(isCliff(0, y), y < 4 || y > 6, '19/11 : passage vers la ferme de l’Ouest');
+  for (let y = 0; y < 36; y++) assert.equal(isCliff(0, y), y < 17 || y > 19, '20/11 : passage vers la ferme de l’Ouest, au milieu');
   for (let x = 3; x <= 16; x++) assert.equal(ground(x, 20), 'path');
   assert.ok(!LAY.town.some(r => r.includes('W')), 'villa effacée');
 });
@@ -204,8 +204,8 @@ test('Farmwest : ferme → rond-point → zone résidentielle, où habitent Luna
 
 test('Farmwest 2d : la route de l’est mène à la forêt ; le centre-ville est à l’ouest du rond-point', () => {
   const { g, S } = start({ flags: { foretTree: true } });   // 19/11 : la forêt est à l'est de la ferme principale
-  for (let x = 2; x <= 46; x++) assert.equal(ground(x, 5), 'path');
-  assert.equal(act(g, 47, 5), 'door'); assert.equal(S.scene, 'foret');
+  for (let x = 2; x <= 46; x++) assert.equal(ground(x, 18), 'path', '20/11 : au milieu');
+  assert.equal(act(g, 47, 18), 'door'); assert.equal(S.scene, 'foret');
   assert.ok(SCENES.town.doors.some(d => d.x === 33 && d.to === 'rondpoint'), 'à l’est du centre-ville : le pont vers le rond-point');
   assert.ok(SCENES.rondpoint.doors.some(d => d.x === 0 && d.to === 'town'));
 });
@@ -250,12 +250,13 @@ test('Farmwest lot 2 : rond-point, ranch du Maire et port reliés', () => {
   act(g, 16, 35); act(g, 12, 17); assert.equal(S.scene, 'rondpoint');
   assert.ok(isSolid(S, 12, 8), 'la fontaine au centre');
   assert.equal(act(g, 0, 8), 'door'); assert.equal(S.scene, 'town');
-  S.scene = 'rondpoint'; assert.equal(act(g, 25, 8), 'door'); assert.equal(S.scene, 'ranch', '19/11 : le ranch à l’est');
+  S.scene = 'rondpoint'; assert.ok(!SCENES.rondpoint.doors.some(d => d.to === 'ranch'), '20/11 : plus de ranch à l’est du rond-point');
+  assert.equal(act(g, 12, 17), 'door'); assert.equal(S.scene, 'quartier');
+  assert.equal(act(g, 20, 30), 'door'); assert.equal(S.scene, 'ranch', '20/11 : le ranch au sud de la zone résidentielle');
   assert.ok(isSolid(S, 5, 12), 'la clôture de l’enclos');
-  assert.equal(act(g, 31, 15), 'door'); assert.equal(S.scene, 'port');
-  assert.ok(!isSolid(S, 18, 14), 'on marche sur le ponton'); assert.ok(isSolid(S, 15, 14), 'pas dans l’eau');
-  assert.equal(act(g, 0, 6), 'door'); assert.equal(S.scene, 'ranch');
-  assert.equal(act(g, 15, 0), 'door'); assert.equal(S.scene, 'rondpoint');
+  assert.ok(!SCENES.ranch.doors.some(d => d.to === 'port'), 'le port n’est plus relié au ranch');
+  S.scene = 'port'; assert.ok(!isSolid(S, 18, 14), 'on marche sur le ponton'); assert.ok(isSolid(S, 15, 14), 'pas dans l’eau');
+  S.scene = 'ranch'; assert.equal(act(g, 15, 0), 'door'); assert.equal(S.scene, 'quartier'); S.scene = 'rondpoint';
   assert.equal(act(g, 12, 0), 'door'); assert.equal(S.scene, 'place'); assert.equal(act(g, 12, 0), 'door'); assert.equal(S.scene, 'farm');
 });
 

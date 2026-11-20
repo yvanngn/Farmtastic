@@ -39,8 +39,8 @@ test('filons : cuivre courant → or rare ; 20/11 : niveau de minage par filon',
   const { g, S, toasts } = game({ scene: 'foret', sel: 'pick', energy: 999, maxE: 999 });
   S.nature = { foret: { day: S.year + '-' + S.season + '-' + S.day, flowers: {}, rocks: { '5,9': { t: 'vein', v: 'gold', hp: VEIN_HP } } } };
   assert.equal(isSolid(S, 5, 9), true);
-  S.skills.mining = { xp: 4500 }; act(g, 5, 9); assert.match(toasts().at(-1), /minage niveau 10/, 'or : niveau 10');
-  S.skills.mining = { xp: 6200 };
+  S.skills.mining = { xp: 16000 }; act(g, 5, 9); assert.match(toasts().at(-1), /minage niveau 10/, 'or : niveau 10');
+  S.skills.mining = { xp: 28000 };
   let hits = 0; while (S.nature.foret.rocks['5,9']) { assert.equal(act(g, 5, 9), 'hit'); hits++; }
   assert.equal(hits, VEIN_HP); ramasse(g);
   assert.ok(S.inv.gold_ore >= 2);

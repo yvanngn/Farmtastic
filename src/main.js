@@ -10,6 +10,8 @@ import { journalHook } from './systems/journal.js';
 import { defaultState } from './core/state.js';
 import { genObjects } from './world/map.js';
 import { createRenderer } from './render/renderer.js';
+import { autoLandscape } from './ui/screen.js';
+autoLandscape();   // 20/11 : paysage automatique sur téléphone
 import { createHud } from './ui/hud.js';
 import { createMenu } from './ui/menu.js';
 import { createCustomizer } from './ui/customize.js';
@@ -170,6 +172,7 @@ async function continueGame(gm) {
   if (!s) { toast('⚠️ Sauvegarde introuvable pour cette partie.'); return; }
   title.close(); custom.close();
   g.S = s; if (!g.S.objs) g.S.objs = genObjects(g.S.treeSeed || 12345);
+  for (const k in g.S.objs) { const [x, y] = k.split(',').map(Number); if (isPath(x, y) && g.S.objs[k].t !== 'bigtree') delete g.S.objs[k]; }   // 20/11 : nouvelles sorties au milieu de la ferme
   g.S.game = { id: gm.id, code: gm.code || null, mode: gm.mode || 'solo' }; if (gm.lot != null) g.S.farmLot = gm.lot;
   begin();
 }

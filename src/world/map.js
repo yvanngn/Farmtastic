@@ -28,7 +28,7 @@ export const isGate = (x, y) => x === 16 && y === 35; // portail vers le village
 export const isFence = (x, y, built) => inRect(x, y, 18, 6, 33, 13) && !isPen(x, y) && !(x === 18 && y === 9) && !buildingAt(built, x, y);
 export const isPond = (x, y) => ((x - 12) ** 2) / 25 + ((y - 24) ** 2) / 9 < 1;
 export const isPath = (x, y) => (y === 5 && x >= 2 && x <= 47) || (y === 20 && x >= 3 && x <= 15) || (x === 42 && y === 4) || (x === 16 && y >= 0 && y <= 35) || (y === 9 && x === 17)
-  || (y >= 33 && x >= 15 && x <= 17) || (x >= 45 && y >= 4 && y <= 6);   // sorties élargies (vers le quartier, vers la ville)
+  || (y >= 33 && x >= 15 && x <= 17) || (y === 18 && x >= 1 && x <= 46) || (x >= 45 && y >= 17 && y <= 19) || (x <= 2 && y >= 17 && y <= 19);   // 20/11 : sorties est (forêt) et ouest (ferme de l'Ouest) au milieu
 export const isForest = (x) => x >= 34;
 // Haies sur les bords de la ferme qui ne mènent nulle part (bas et droite), pour voir où sont les sorties.
 // 19/11 : les 4 fermes (2 × 2). La ferme du joueur s'ouvre vers ses voisines : à l'est (colonne de gauche) ou à l'ouest
@@ -39,9 +39,10 @@ export const farmLotNow = () => FARM_LOT;
 export const lotCR = l => ({ c: l % 2, r: l >> 1 });
 // 19/11 : sorties de chaque ferme (N, S, E, O) : n° de ferme voisine ou zone ; absent = fermé (haie, barrière, falaise)
 const linkOf = dir => (FARM_LINKS[FARM_LOT] || {})[dir] != null;
-export const isFarmGap = (x, y) => linkOf('W') && x === 0 && y >= 4 && y <= 6;
-const closedEdge = (x, y) => (!linkOf('S') && y === 35 && x >= 15 && x <= 17) || (!linkOf('E') && x === 47 && y >= 4 && y <= 6);
-export const isHedge0 = (x, y) => (y === 35 && (x < 15 || x > 17)) || (x === 47 && ((y >= 8 && y < 35) || y <= 3 || y === 7));
+export const FARM_MID = [17, 19];   // 20/11 : rangées des sorties est / ouest (au milieu)
+export const isFarmGap = (x, y) => linkOf('W') && x === 0 && y >= FARM_MID[0] && y <= FARM_MID[1];
+const closedEdge = (x, y) => (!linkOf('S') && y === 35 && x >= 15 && x <= 17) || (!linkOf('E') && x === 47 && y >= FARM_MID[0] && y <= FARM_MID[1]);
+export const isHedge0 = (x, y) => (y === 35 && (x < 15 || x > 17)) || (x === 47 && y < 35 && (y < 17 || y > 19));
 // Bord nord de la ferme : une barrière en bois ; bord ouest (au-dessus de la gare) : une falaise rocheuse.
 export const isHedge = (x, y) => (isHedge0(x, y) && !isFarmGap(x, y)) || closedEdge(x, y);
 export const isFarmFence = (x, y) => y === 0 && x > 0 && x < 47 && (x !== 16 || !linkOf('N'));   // 19/11 : passage vers la carrière

@@ -504,3 +504,10 @@ body.bande[data-nrj="vert"] #nrjVert { bottom: calc(var(--bande) + var(--pad) * 
 /* 19/11 : le grand panneau de la place */
 .cal-meteo { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 8px; }
 .cal-day { background: rgba(255,255,255,.08); border-radius: 8px; padding: 6px; text-align: center; display: flex; flex-direction: column; gap: 2px; }
+
+/* 20/11 : vie et énergie toujours visibles en haut à droite, à gauche de la colonne de boutons */
+#vitals { position: fixed; top: calc(var(--sa-t) + var(--pad)); right: calc(var(--sa-r) + var(--pad) * 2 + clamp(40px, 11vmin, 52px)); z-index: 20; padding: 6px 8px; display: flex; flex-direction: column; gap: 4px; min-width: 110px; pointer-events: none }
+#vitals .v-row { display: flex; align-items: center; gap: 5px; font-size: 12px }
+#vitals .bar { flex: 1; height: 7px; margin: 0 }
+#vitals #vHp { background: linear-gradient(90deg, #c83a3a, #f06a5a) }
+@media (max-height: 500px) and (orientation: landscape) { #vitals { top: calc(var(--sa-t) + var(--pad) * 2 + clamp(40px, 11vmin, 52px)); right: calc(var(--sa-r) + var(--pad)) } }

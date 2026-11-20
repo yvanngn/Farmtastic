@@ -45,8 +45,9 @@ test('combat : hors de la zone verte, la prise baisse jusqu’à l’échappée'
   assert.equal(r, 'lose');
 });
 
-test('montagne gelée (à l’est du quartier) : grotte fermée, et le froid fait baisser la vie sans manteau', () => {
-  assert.ok(SCENES.quartier.doors.some(d => d.to === 'montagne'));
+test('montagne gelée (au bout de la longue route, à l’est de la place) : grotte fermée, et le froid fait baisser la vie sans manteau', () => {
+  assert.ok(SCENES.route.doors.some(d => d.to === 'montagne') && SCENES.place.doors.some(d => d.to === 'route'));
+  assert.ok(!SCENES.quartier.doors.some(d => d.to === 'montagne'));
   assert.ok(SCENES.town.doors.some(d => d.to === 'plage'), 'la station balnéaire est au sud du centre-ville');
   const { g, S } = makeGame({ state: { scene: 'montagne', hp: 100, inv: {} } });
   let gy, gx; LAYOUTS.montagne.forEach((r, y) => { const x = r.indexOf('G'); if (x >= 0) { gx = x; gy = y; } });

@@ -532,7 +532,7 @@ for (let lot = 0; lot < 4; lot++) {
   const W = 30, H = 22, m = grid(W, H, 's'), L = FARM_LINKS[lot];
   for (let y = 0; y < H; y++) { m[y][15] = '.'; m[y][16] = '.'; } for (let x = 0; x < W; x++) { m[9][x] = '.'; m[10][x] = '.'; }
   for (let y = 2; y <= 5; y++) for (let x = 3; x <= 8; x++) m[y][x] = lot === 0 ? 'H' : 'K';   // 19/11 : ailleurs que sur la ferme principale, un tas de planches (dessiné par-dessus)
-  for (let y = 2; y <= 6; y++) for (let x = 20; x <= 25; x++) m[y][x] = 'B';
+  for (let y = 2; y <= 6; y++) for (let x = 20; x <= 25; x++) m[y][x] = lot === 0 ? 'B' : 'K';   // 20/11 : grange en tas de planches aussi
   for (let x = 4; x <= 13; x++) { m[12][x] = 'f'; m[19][x] = 'f'; } for (let y = 12; y <= 19; y++) { m[y][4] = 'f'; m[y][13] = 'f'; }
   for (let y = 13; y <= 18; y++) for (let x = 5; x <= 12; x++) m[y][x] = 'g'; m[12][8] = '.';
   for (const [x, y] of [[11, 3], [27, 13], [20, 16], [24, 19], [2, 8]]) m[y][x] = 'T';
@@ -581,8 +581,8 @@ export const SCENES = {
     { x: 12, y: 4, to: 'grange', spawn: { x: 5.5, y: 5.2 } },
     { x: 16, y: 0, to: 'edge:N' },   // 19/11 : au nord (carrière pour la ferme principale)
     { x: 16, y: 35, to: 'edge:S' }, { x: 15, y: 35, to: 'edge:S' }, { x: 17, y: 35, to: 'edge:S' },   // Farmwest : au sud des fermes, le rond-point
-    { x: 0, y: 4, to: 'edge:W' }, { x: 0, y: 5, to: 'edge:W' }, { x: 0, y: 6, to: 'edge:W' },   // 19/11 : sorties selon l'emplacement de la ferme (FARM_LINKS)
-    { x: 47, y: 5, to: 'edge:E' }, { x: 47, y: 4, to: 'edge:E' }, { x: 47, y: 6, to: 'edge:E' }   // Farmwest : à l'est des fermes, la forêt
+    { x: 0, y: 17, to: 'edge:W' }, { x: 0, y: 18, to: 'edge:W' }, { x: 0, y: 19, to: 'edge:W' },   // 19/11 : sorties selon l'emplacement de la ferme (FARM_LINKS)
+    { x: 47, y: 18, to: 'edge:E' }, { x: 47, y: 17, to: 'edge:E' }, { x: 47, y: 19, to: 'edge:E' }   // Farmwest : à l'est des fermes, la forêt
   ] },
   // Farmwest (lot 3) : la gare, à l'ouest du centre-ville
   golgolas: { W: 30, H: 20, outdoor: true, doors: [{ x: 14, y: 0, to: 'gare', spawn: { x: 11, y: 11.8 } }, { x: 15, y: 0, to: 'gare', spawn: { x: 11, y: 11.8 } }] },   // lot 13
@@ -648,3 +648,46 @@ export const SCENES = {
 export const isHome = sc => sc === 'house' || sc === 'maison';
 export const tileAt = (scene, x, y) => (LAYOUTS[scene] && LAYOUTS[scene][y] && LAYOUTS[scene][y][x]) || '#';
 export const doorAt = (scene, x, y) => SCENES[scene].doors.find(d => d.x === x && d.y === y) || null;
+
+// ---------------------------------------------------------------------------------------------------------------
+// 20/11 (demande de l'utilisateur) : nouvelle disposition des liaisons.
+//   Place du panneau → (est, longue route) → Montagne ; Rond-point : ouest centre-ville, sud zone résidentielle ;
+//   Zone résidentielle → (sud) Ranch → (est) Fête foraine ; Cabane du pêcheur → (est) Zone portuaire (seul accès).
+const setCell = (sc, x, y, ch) => { const L = LAYOUTS[sc]; L[y] = L[y].slice(0, x) + ch + L[y].slice(x + 1); };
+const edgeCh = (sc, x, y) => { const L = LAYOUTS[sc]; for (const [a, b] of [[x - 1, y], [x + 1, y], [x, y - 1], [x, y + 1]]) { const c = (L[b] || '')[a]; if (c && c !== 'D' && c !== '.' && (a === 0 || b === 0 || a === L[0].length - 1 || b === L.length - 1)) return c; } return 'T'; };
+function closeDoors(sc, pred) {   // ferme les sorties de `sc` qui vont vers une zone (pred(door))
+  for (const d of SCENES[sc].doors.filter(pred)) setCell(sc, d.x, d.y, edgeCh(sc, d.x, d.y));
+  SCENES[sc].doors = SCENES[sc].doors.filter(d => !pred(d));
+}
+function openDoors(sc, cells, to, spawn, path) {   // ouvre des sorties (cases D) et éventuellement un chemin jusqu'à elles
+  for (const [x, y] of cells) { setCell(sc, x, y, 'D'); SCENES[sc].doors.push({ x, y, to, spawn }); }
+  for (const [x, y] of path || []) if (LAYOUTS[sc][y][x] !== 'D') setCell(sc, x, y, '.');
+}
+const line = (x0, y0, x1, y1) => { const o = []; for (let y = Math.min(y0, y1); y <= Math.max(y0, y1); y++) for (let x = Math.min(x0, x1); x <= Math.max(x0, x1); x++) o.push([x, y]); return o; };
+closeDoors('rondpoint', d => d.to === 'ranch');
+closeDoors('quartier', d => d.to === 'montagne');
+closeDoors('montagne', d => d.to === 'quartier' || d.to === 'port');
+closeDoors('port', d => d.to === 'ranch' || d.to === 'montagne');
+closeDoors('ranch', d => d.to === 'rondpoint' || d.to === 'parc' || d.to === 'port');
+closeDoors('parc', d => d.to === 'ranch');
+// zone résidentielle (sud) ↔ ranch (nord)
+openDoors('quartier', [[20, 30]], 'ranch', { x: 15.9, y: 1.8 }, line(20, 25, 20, 29));
+openDoors('ranch', [[15, 0], [16, 0]], 'quartier', { x: 20.5, y: 28.8 });
+// ranch (est) ↔ fête foraine (ouest) — fermée jusqu'au dernier jour du premier mois (actions.js)
+openDoors('ranch', [[31, 15], [31, 16]], 'parc', { x: 1.6, y: 9.5 });
+openDoors('parc', [[0, 9], [0, 10]], 'ranch', { x: 29.4, y: 15.5 });
+// place du panneau (est) → longue route → montagne (ouest)
+LAYOUTS.route = (() => {
+  const W = 64, H = 11, m = grid(W, H, 's');
+  for (let x = 0; x < W; x++) { m[5][x] = '.'; m[6][x] = '.'; }
+  for (let x = 2; x < W - 2; x += 1) { const h = (x * 37) % 11; if (h === 3) m[2][x] = 'T'; if (h === 7) m[8][x] = 'T'; if (h === 5 && x % 3 === 0) m[3][x] = 'T'; }
+  border(m, [[0, 5], [0, 6], [W - 1, 5], [W - 1, 6]]);
+  return m.map(r => r.join(''));
+})();
+SCENES.route = { W: 64, H: 11, outdoor: true, doors: [] };
+openDoors('route', [[0, 5], [0, 6]], 'place', { x: 24.2, y: 8.9 });
+openDoors('route', [[63, 5], [63, 6]], 'montagne', { x: 1.6, y: 8.6 });
+openDoors('place', [[25, 8], [25, 9]], 'route', { x: 1.6, y: 5.9 }, line(13, 8, 24, 9));
+openDoors('montagne', [[0, 8], [0, 9]], 'route', { x: 62.2, y: 5.9 });
+// 20/11 : la carrière profonde est un sous-sol (pas sur la carte de la région)
+SCENES.carriere2.underground = true;
