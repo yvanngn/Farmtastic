@@ -282,6 +282,21 @@ Décrit par l'utilisateur : cabane à moitié prix ; journal dans la cabane (200
 - [x] Magasins du centre-ville : on entre, comptoir, vendeur derrière (Igor à la forge, Harry chez le charpentier ; personne ailleurs pour l'instant).
 - [x] Bottes de vent ×3 ; plus de barre de vie dans le cadre de gauche ; bulles en haut sur téléphone ; arbres (ou rochers) au-delà des bords au lieu du noir.
 
+## Lot 29 — La carrière en dédale, l'énorme rocher, le mineur (demande du 20/11) ✅ v0.1.101
+- [x] Carrière refaite en grand dédale (52 × 42) : allées de 3 cases, lignes droites et zigzags, boucles, grande avenue de l'entrée au centre.
+- [x] 4 zones riches (grandes salles) : 40 % des cailloux et 80 % des filons y sortent 💡. Repousse chaque jour (12 cailloux, 90 au plus 💡), jamais au milieu des allées (on passe toujours).
+- [x] Énorme rocher au centre : 10 000 coups, énergie d'un caillou ; tous les 10 coups 2 cailloux, un minerai une fois sur 7 environ 💡 ; fissures au fil des coups. Coups partagés à plusieurs.
+- [x] Cassé : un trou dans le sol (mène pour l'instant à l'ancienne carrière profonde, ⏳ lot 30).
+- [x] Le mineur, à l'entrée : se présente (il adore son métier, une lettre trouvée à l'entrée l'intrigue) 🆕. ❓ Son nom, sa tenue (💡 casque jaune).
+- [x] Niveau 5 : il envoie la lettre de l'inconnu par courrier (même si le rocher est déjà cassé) → quête secondaire « Le rocher du centre » 🆕.
+
+## Lot 30 — Le dédale profond (à faire)
+- [ ] Plus grand que la carrière, remplace l'ancienne carrière profonde (bouches de la paroi nord retirées).
+- [ ] Nouveaux arbres (bois normal et ❓ bois spécial), cailloux, filons moins rares, fleurs, ❓ monstre inédit.
+
+## Lot 31 — Routes plus larges sur toute la carte (à faire)
+- [ ] Élargir toutes les routes et rendre les passages visibles.
+
 ## Lot 28 — Intro jouable et racontée (demande du 20/11) ✅ v0.1.92
 - [x] Test de bout en bout : nouvelle partie → intro complète → on marche et on agit (tests/jouable.test.js) ; garde-fou si l'intro attend un dialogue qui n'est pas affiché.
 - [x] La diligence passe par la route du centre-ville (Myst raconte l'histoire de la ville), puis le rond-point et la place (le panneau, l'étal pour gagner de l'argent).

@@ -1,3 +1,4 @@
+import { bigRock, mergeRockHits } from '../systems/bigrock.js';
 // Multijoueur via Supabase Realtime : Broadcast (positions) + Presence (nom, apparence).
 // Rien n'est écrit en base à haute fréquence.
 import { CFG } from '../config.js';
@@ -38,16 +39,17 @@ export const posMessage = (S, frame) => [S.x.toFixed(2), S.y.toFixed(2), S.dir, 
 
 // --- Connexion ---
 export function createMultiplayer({ sb, uid, g, world = CFG.WORLD }) {
-  let ch = null, last = 0, lastSent = '';
+  let ch = null, last = 0, lastSent = '', lastRock = -1, lastRockT = 0;
   return {
     join() {
       if (!sb) return;
       ch = sb.channel('ferme:' + world, { config: { presence: { key: uid }, broadcast: { self: false } } });
       ch.on('broadcast', { event: 'pos' }, ({ payload }) => applyPos(g.others, payload, Date.now(), g.S.farmLot || 0));
-      ch.on('presence', { event: 'sync' }, () => applyPresence(g.others, ch.presenceState(), uid, Date.now()));
+      ch.on('broadcast', { event: 'rock' }, ({ payload }) => mergeRockHits(g.S, payload && payload.h));   // lot 29 : coups partagés sur l'énorme rocher
+      ch.on('presence', { event: 'sync' }, () => { const st = ch.presenceState(); applyPresence(g.others, st, uid, Date.now()); for (const k in st) for (const p of st[k]) if (p && p.rock) mergeRockHits(g.S, p.rock); });
       ch.subscribe(s => { if (s === 'SUBSCRIBED') this.track(); });
     },
-    track() { if (ch) ch.track({ name: g.S.name, look: g.S.look, farmLot: g.S.farmLot || 0 }); }, // chaque joueur annonce son emplacement de ferme
+    track() { if (ch) ch.track({ name: g.S.name, look: g.S.look, farmLot: g.S.farmLot || 0, rock: bigRock(g.S).hits }); }, // chaque joueur annonce son emplacement de ferme
     tick(now) {
       if (!ch || now - last < CFG.NET_MS) return;
       last = now;
@@ -56,6 +58,7 @@ export function createMultiplayer({ sb, uid, g, world = CFG.WORLD }) {
         lastSent = msg;
         ch.send({ type: 'broadcast', event: 'pos', payload: { id: uid, x: +S.x.toFixed(2), y: +S.y.toFixed(2), d: S.dir, f: g.player.walkFrame, s: sceneOut(S.scene, S.farmLot) } });
       }
+      const h = bigRock(S).hits; if (h !== lastRock && now - lastRockT > 2000) { lastRock = h; lastRockT = now; ch.send({ type: 'broadcast', event: 'rock', payload: { id: uid, h } }); }   // ≤ 1 envoi / 2 s, seulement si ça change
       pruneStale(g.others, Date.now());
     },
     get online() { return !!ch; }

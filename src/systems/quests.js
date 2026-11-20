@@ -63,6 +63,14 @@ export const QUESTS = {
       { id: 'materiaux', t: 'Apporter à Golgolas 500 bois, 500 pierres et 200 champignons', done: S => (S.golgo?.lvl || 0) >= 1 }
     ]
   },
+  // Lot 29 : la lettre de l'inconnu, envoyée par le mineur au niveau 5
+  grosrocher: {
+    n: 'Le rocher du centre', i: '🪨', unlock: S => !!S.bigRock?.read,
+    steps: [
+      { id: 'lettre', t: 'Lire la lettre envoyée par le mineur (boîte aux lettres de la ferme)', done: S => !!S.bigRock?.read },
+      { id: 'casser', t: "Casser l'énorme rocher au centre de la carrière (10 000 coups de pioche)", done: S => (S.bigRock?.hits || 0) >= 10000 }
+    ]
+  },
   // Lot 12 : se débloque en allant voir Rouky à la cabane du pêcheur
   rouky: {
     n: 'La canne de Rouky', i: '🎣', main: true, unlock: S => !!S.quests?.rouky?.met,

@@ -1,4 +1,5 @@
 import { cuistotTalk, harryTalk } from './resto.js';
+import { minerTalk } from './bigrock.js';
 import { roukyTalk } from './rouky.js';
 import { golgolasTalk } from './golgolas.js';
 import { craftRequest, craftReady, deliverCraft, craftLabel } from './craftquests.js';
@@ -46,6 +47,7 @@ export function talk(g, id) {
   const say = (lines, extra) => g.bus.emit('say', { name: n.name, title: n.title, color: n.color, voice: n.voice, lines, ...extra });
   if (id === 'harry' && harryTalk(g, n)) { if (!r.talked) { r.points += 20; r.talked = true; r.talks++; } return true; }   // le coffre (lot 6)
   if (id === 'golgolas' && golgolasTalk(g, n)) { if (!r.talked) { r.points += 20; r.talked = true; r.talks++; } return true; }   // lot 13
+  if (id === 'mineur' && minerTalk(g, n)) { if (!r.talked) { r.points += 20; r.talked = true; r.talks++; } return true; }   // lot 29
   if (id === 'rouky' && roukyTalk(g, n)) { if (!r.talked) { r.points += 20; r.talked = true; r.talks++; } return true; }   // lot 12 : la canne de Rouky
   if (id === 'cuistot' && cuistotTalk(g, n)) { if (!r.talked) { r.points += 20; r.talked = true; r.talks++; } return true; }   // quête du four (lot 5)
   if (r.talked) { g.bus.emit('toast', `💬 Tu as déjà parlé à ${n.name} aujourd’hui. Reviens demain !`); return 'already'; }   // 19/11 : une discussion par jour (hors quête spéciale)

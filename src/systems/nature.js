@@ -1,6 +1,6 @@
 // Nature : fleurs à cueillir, cailloux et filons à piocher (ferme, forêt, Caverne sombre ; jamais en ville),
 // et arc-en-ciel les jours de pluie avec un trésor à son pied. Logique pure.
-import { syncForest, FOREST_ROUTE, LAYOUTS, QUARRY_MOUTHS } from '../world/scenes.js';
+import { syncForest, FOREST_ROUTE, LAYOUTS, QUARRY_MOUTHS, QUARRY_ROUTE, QUARRY_RICH } from '../world/scenes.js';
 import { key, freeForObj, isSolid } from '../world/map.js';
 import { CFG } from '../config.js';
 import { FLOWERS } from '../data/items.js';
@@ -29,12 +29,16 @@ export function freeSpot(S, sc, x, y) {
   if (sc === 'foret') return x > 0 && x < 27 && !FOREST_ROUTE.has(key(x, y)) &&   // lot 8 : jamais de caillou sur le chemin du labyrinthe
     !(S.foret && S.foret.shrooms && S.foret.shrooms[k]);
   if (sc === 'wild') return !(S.wild && S.wild.rocks && S.wild.rocks[k]) && !(x < 4 && y < 7);
-  if (sc === 'carriere' || sc === 'carriere2') return Math.hypot(x - S.x, y - S.y) > 2 && !(sc === 'carriere' && y >= L.length - 3 && (x === 15 || x === 16));
+  if (sc === 'carriere') return Math.hypot(x - S.x, y - S.y) > 2 && !QUARRY_ROUTE.has(key(x, y));   // lot 29 : jamais sur le milieu des allées
+  if (sc === 'carriere2') return Math.hypot(x - S.x, y - S.y) > 2;
   return false;
 }
 
-function spot(g, sc, tries = 300) {
+// Lot 29 : à la carrière, une partie des cailloux (et la plupart des filons) sortent dans les zones riches.
+function spot(g, sc, tries = 300, rich = 0) {
   const [w, h] = size(sc);
+  if (sc === 'carriere' && rich && g.rnd() < rich) { const R = QUARRY_RICH[g.rnd() * QUARRY_RICH.length | 0];
+    for (let i = 0; i < 60; i++) { const x = R.x0 + (g.rnd() * (R.x1 - R.x0 + 1) | 0), y = R.y0 + (g.rnd() * (R.y1 - R.y0 + 1) | 0); if (freeSpot(g.S, sc, x, y)) return [x, y]; } }
   for (let i = 0; i < tries; i++) { const x = 1 + (g.rnd() * (w - 2) | 0), y = 1 + (g.rnd() * (h - 2) | 0); if (freeSpot(g.S, sc, x, y)) return [x, y]; }
   return null;
 }
@@ -61,9 +65,9 @@ export function ensureNature(g, sc) {
     const v = g.rnd(); N.flowers[key(...p)] = v < P_RARE_FLOWER ? fl[2].id : v < P_RARE_FLOWER + P_MID_FLOWER ? fl[1].id : fl[0].id;
   }
   const rocks = Object.values(N.rocks).filter(o => o.t === 'rock').length;
-  for (let i = 0; i < Math.min(first ? C.rocks : C.rocksDay, C.rocks - rocks); i++) { const p = spot(g, sc); if (p) N.rocks[key(...p)] = { t: 'rock', hp: ROCK_HP }; }
+  for (let i = 0; i < Math.min(first ? C.rocks : C.rocksDay, C.rocks - rocks); i++) { const p = spot(g, sc, 300, C.rich || 0); if (p) N.rocks[key(...p)] = { t: 'rock', hp: ROCK_HP }; }
   const veins = Object.values(N.rocks).filter(o => o.t === 'vein').length;
-  for (let i = 0, n = first ? C.veins : 1; i < n && veins + i < C.veins; i++) if (g.rnd() < C.veinP) { const p = spot(g, sc); if (p) N.rocks[key(...p)] = { t: 'vein', v: pickVein(g.rnd(), C.veinW), hp: VEIN_HP }; }
+  for (let i = 0, n = first ? C.veins : 1; i < n && veins + i < C.veins; i++) if (g.rnd() < C.veinP) { const p = spot(g, sc, 300, C.richVein || 0); if (p) N.rocks[key(...p)] = { t: 'vein', v: pickVein(g.rnd(), C.veinW), hp: VEIN_HP }; }
   if (sc === 'carriere') ensureBorder(S, N);   // 19/11 : gros cailloux de bordure
   return N;
 }

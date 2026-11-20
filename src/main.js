@@ -1,4 +1,5 @@
 import { letterTick } from './systems/golgolas.js';
+import { rockLetterTick } from './systems/bigrock.js';
 // Point d'entrée : assemble les modules et fait tourner la boucle.
 import { ensureMounds } from './systems/mounds.js';
 import { CFG } from './config.js';
@@ -350,7 +351,7 @@ function loop(now) {
     renderer.updateParticles(dt);
     renderer.render(now);
     // 20/11 : le cadre en haut à gauche reste affiché tout le temps (la caméra suit le héros jusqu'aux bords)
-    if ((hudT += dt) > 0.25) { hudT = 0; if (started && !introActive(g.S)) { questXpTick(g, QUESTS); letterTick(g); standTick(g); if (!dialog.isOpen) etalTick(g); yvanGift(g); } hud.update(); { const v = $('#vitals'); if (v) v.style.visibility = introActive(g.S) ? 'hidden' : ''; } repairPanel.update(started && !dialog.isOpen && !document.querySelector('.overlay.on')); }
+    if ((hudT += dt) > 0.25) { hudT = 0; if (started && !introActive(g.S)) { questXpTick(g, QUESTS); letterTick(g); rockLetterTick(g); standTick(g); if (!dialog.isOpen) etalTick(g); yvanGift(g); } hud.update(); { const v = $('#vitals'); if (v) v.style.visibility = introActive(g.S) ? 'hidden' : ''; } repairPanel.update(started && !dialog.isOpen && !document.querySelector('.overlay.on')); }
   }
   if (custom.isOpen()) custom.draw(now);
   if (title.isOpen()) title.draw(now);

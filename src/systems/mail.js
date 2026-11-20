@@ -3,6 +3,7 @@
 // La boîte sert aussi à la lettre de Golgolas (lot 13). Logique pure.
 import { add } from './inventory.js';
 import { readLetter, golgo } from './golgolas.js';
+import { bigRock, readRockLetter } from './bigrock.js';
 
 export const SEED_GIFT = 20;   // 💡 graines de blé jointes au courrier
 export const SEED_MAIL = [
@@ -19,7 +20,7 @@ export const TUTO = [
 ];
 const M = S => (S.mail ||= {});
 export const seedMail = S => S.mail || {};
-export const hasUnread = S => !!(seedMail(S).seeds && !seedMail(S).seedsRead) || !!(golgo(S).letter && !golgo(S).read);
+export const hasUnread = S => !!(seedMail(S).seeds && !seedMail(S).seedsRead) || !!(golgo(S).letter && !golgo(S).read) || !!(bigRock(S).letter && !bigRock(S).read);
 
 // Au lever du jour : si l'on avait la pelle la veille, le courrier arrive.
 export function mailNewDay(g) {
@@ -39,5 +40,8 @@ export function openMailbox(g) {
     g.bus.emit('sfx', 'levelup'); g.bus.emit('toast', '📜 Nouvelle quête principale : Le premier champ'); g.bus.emit('inv');
     return 'seeds';
   }
+  const G = golgo(S), B = bigRock(S);   // lot 29 : d'abord le courrier pas encore lu
+  if (B.letter && !B.read && !(G.letter && !G.read)) return readRockLetter(g);
+  if (!G.letter && B.letter) return readRockLetter(g);
   return readLetter(g);
 }

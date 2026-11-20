@@ -472,14 +472,52 @@ LAYOUTS.gare = (() => { const m = LAYOUTS.gare.map(r => r.split('')), H = m.leng
 
 // 19/11 : la carrière, au nord des fermes. Bordée de gros cailloux cassables (o). Trois bouches de tunnel (%) dans la paroi
 // nord : chaque jour, une seule est ouverte (au hasard du jour) et mène à la carrière profonde, d'une tout autre architecture.
-export const QUARRY_MOUTHS = [{ x: 6, y: 0 }, { x: 16, y: 0 }, { x: 26, y: 0 }];
+// 20/11 (lot 29, demande de l'utilisateur) : la carrière devient un grand dédale. Allées très larges (3 cases), tantôt droites,
+// tantôt en zigzag ; quelques zones plus riches en cailloux et en filons ; au centre, une grande place avec l'énorme rocher.
+// Dédale tiré une fois pour toutes (graine fixe) : la même carrière pour tous les joueurs. QUARRY_ROUTE = milieu des allées,
+// où rien ne repousse (on peut toujours passer).
+export const QUARRY_CELL = 5, QUARRY_COLS = 10, QUARRY_ROWS = 8;   // allée 3 cases + paroi 2 cases
+export const QUARRY_W = 2 + QUARRY_COLS * QUARRY_CELL, QUARRY_H = 2 + QUARRY_ROWS * QUARRY_CELL;   // 52 × 42
+const qx = i => 2 + i * QUARRY_CELL + 1, qy = j => 2 + j * QUARRY_CELL + 1;   // milieu de l'allée de la cellule (i, j)
+export const QUARRY_MOUTHS = [{ x: qx(1), y: 0 }, { x: qx(6), y: 0 }, { x: qx(8), y: 0 }];
+export const QUARRY_DOOR_S = qx(4), QUARRY_DOOR_W = qy(4);          // milieu de l'entrée sud (ferme) et ouest (ferme du Nord-Ouest)
+export const BIG_ROCK = { x: 24, y: 19, w: 4, h: 3 }; // l'énorme rocher, au centre de la place
+export const QUARRY_RICH = [[0, 0, 2, 2], [7, 0, 3, 2], [0, 6, 2, 2], [8, 6, 2, 2]].map(([i, j, w, h]) => ({ x0: 2 + i * QUARRY_CELL, y0: 2 + j * QUARRY_CELL, x1: 2 + (i + w) * QUARRY_CELL - 3, y1: 2 + (j + h) * QUARRY_CELL - 3 }));
+export const QUARRY_ROUTE = new Set();
 LAYOUTS.carriere = (() => {
-  const W = 32, H = 22, m = [];
-  for (let y = 0; y < H; y++) { const r = []; for (let x = 0; x < W; x++) r.push(y === 0 || x === 0 || x === W - 1 || y === H - 1 ? '^' : (y === 1 || y === H - 2 || x === 1 || x === W - 2) ? 'o' : '.'); m.push(r); }
-  for (const q of QUARRY_MOUTHS) m[q.y][q.x] = '%';
-  for (const [x, y] of [[9, 7], [10, 7], [22, 12], [22, 13], [21, 13], [12, 15]]) m[y][x] = '^';   // quelques éperons rocheux
-  m[H - 1][15] = 'D'; m[H - 1][16] = 'D'; m[H - 2][15] = '.'; m[H - 2][16] = '.';   // descente vers la ferme principale
-  m[9][0] = 'D'; m[10][0] = 'D'; m[9][1] = '.'; m[10][1] = '.';   // 19/11 : à l'ouest, la ferme du Nord-Ouest
+  const W = QUARRY_W, H = QUARRY_H, C = QUARRY_CELL, m = grid(W, H, '^');
+  let seed = 20111;   const rnd = () => (seed = (seed * 1103515245 + 12345) % 2147483648) / 2147483648;
+  const open = (x0, y0, x1, y1) => { for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) m[y][x] = '.'; };
+  const cell = (i, j) => open(qx(i) - 1, qy(j) - 1, qx(i) + 1, qy(j) + 1);
+  const route = (x0, y0, x1, y1) => { for (let y = Math.min(y0, y1); y <= Math.max(y0, y1); y++) for (let x = Math.min(x0, x1); x <= Math.max(x0, x1); x++) QUARRY_ROUTE.add(x + ',' + y); };
+  const link = (i, j, k, l) => { open(Math.min(qx(i), qx(k)) - 1, Math.min(qy(j), qy(l)) - 1, Math.max(qx(i), qx(k)) + 1, Math.max(qy(j), qy(l)) + 1); route(qx(i), qy(j), qx(k), qy(l)); };
+  const seen = new Set(), stack = [[4, 7]]; seen.add('4,7'); cell(4, 7);
+  const dirs = [[1, 0], [-1, 0], [0, 1], [0, -1]];
+  let last = null;
+  while (stack.length) {   // dédale « en profondeur » ; on garde souvent la même direction : des lignes droites et des zigzags
+    const [i, j] = stack[stack.length - 1];
+    const nb = dirs.map(d => [i + d[0], j + d[1], d]).filter(([a, b]) => a >= 0 && b >= 0 && a < QUARRY_COLS && b < QUARRY_ROWS && !seen.has(a + ',' + b));
+    if (!nb.length) { stack.pop(); last = null; continue; }
+    const same = last && nb.find(n => n[2] === last);
+    const [a, b, d] = same && rnd() < .55 ? same : nb[rnd() * nb.length | 0];
+    seen.add(a + ',' + b); cell(a, b); link(i, j, a, b); stack.push([a, b]); last = d;
+  }
+  for (let k = 0; k < 14; k++) {   // quelques raccourcis : le dédale a des boucles
+    const i = rnd() * (QUARRY_COLS - 1) | 0, j = rnd() * (QUARRY_ROWS - 1) | 0;
+    if (rnd() < .5) link(i, j, i + 1, j); else link(i, j, i, j + 1);
+  }
+  for (const R of QUARRY_RICH) open(R.x0, R.y0, R.x1, R.y1);   // zones riches : grandes salles
+  open(qx(3) - 1, qy(3) - 1, qx(6) + 1, qy(4) + 1);             // la place du centre, autour du rocher
+  for (let y = BIG_ROCK.y; y < BIG_ROCK.y + BIG_ROCK.h; y++) for (let x = BIG_ROCK.x; x < BIG_ROCK.x + BIG_ROCK.w; x++) m[y][x] = '@';
+  link(4, 7, 4, 4);                                               // l'avenue droite de l'entrée jusqu'à la place
+  for (const d of [-1, 0, 1]) { m[H - 1][QUARRY_DOOR_S + d] = 'D'; m[H - 2][QUARRY_DOOR_S + d] = '.'; m[QUARRY_DOOR_W + d][0] = 'D'; m[QUARRY_DOOR_W + d][1] = '.'; }
+  link(0, 4, 0, 4); route(0, QUARRY_DOOR_W, qx(0), QUARRY_DOOR_W); route(QUARRY_DOOR_S, qy(7), QUARRY_DOOR_S, H - 1);
+  for (const q of QUARRY_MOUTHS) { m[0][q.x] = '%'; m[1][q.x] = 'o'; }   // bouches vers la carrière profonde, gardées par un gros caillou
+  for (let j = 0; j < QUARRY_ROWS; j++) for (let i = 0; i < QUARRY_COLS; i++) {   // un gros caillou au bout des culs-de-sac
+    const x = qx(i), y = qy(j); if (m[y][x] !== '.' || (i === 4 && j === 7)) continue;
+    const ways = [[x + 2, y], [x - 2, y], [x, y + 2], [x, y - 2]].filter(([a, b]) => m[b] && m[b][a] === '.').length;
+    if (ways === 1 && !QUARRY_RICH.some(R => x >= R.x0 && x <= R.x1 && y >= R.y0 && y <= R.y1)) m[y][x] = 'o';
+  }
   return m.map(r => r.join(''));
 })();
 // Carrière profonde : canyon de grès rouge en terrasses, couloirs étroits, filons rares (fer, or) plus nombreux.
@@ -571,7 +609,7 @@ LAYOUTS.port = (() => {
   return m.map(r => r.join(''));
 })();
 
-export const SOLID_TILES = '!#WDBKTPCHNYXMQUJAOVZFLfprEmncwGRIxyzqjuhe^k$&';   // & décharge (20/11)   // $ étal de vente (19/11)   // k boîte aux lettres (lot 8)   // ^ falaise (7b)   // e escalier (maison d'Ed)   // h haie de bordure   // + attractions du parc (R I x y z q j u)   // w eau (mer, lac), G grotte   // m n lits de la clinique, c bureau  // A = fauteuil (Franck) / marchand d'animaux (village)
+export const SOLID_TILES = '!#WDBKTPCHNYXMQUJAOVZFLfprEmncwGRIxyzqjuhe^k$&@';   // @ énorme rocher (lot 29)   // & décharge (20/11)   // $ étal de vente (19/11)   // k boîte aux lettres (lot 8)   // ^ falaise (7b)   // e escalier (maison d'Ed)   // h haie de bordure   // + attractions du parc (R I x y z q j u)   // w eau (mer, lac), G grotte   // m n lits de la clinique, c bureau  // A = fauteuil (Franck) / marchand d'animaux (village)
 // Tuiles qui ouvrent une interface.
 export const UI_TILES = { $: 'stand', '&': 'dump', M: 'market', Q: 'board', U: 'upgrades', J: 'carpenter', A: 'animals', O: 'bakery', V: 'butcher', Z: 'fishmonger' };
 
@@ -625,8 +663,8 @@ export const SCENES = {
   franck: { W: 9, H: 7, doors: [{ x: 4, y: 6, to: 'quartier', spawn: { x: 10.5, y: 15.8 } }] },
   clinique: { W: 9, H: 7, doors: [{ x: 4, y: 6, to: 'quartier', spawn: { x: 28.5, y: 6.8 } }] },
   hailey: { W: 9, H: 7, doors: [{ x: 4, y: 6, to: 'quartier', spawn: { x: 26.5, y: 15.8 } }] },
-  carriere: { W: 32, H: 22, outdoor: true, doors: [{ x: 15, y: 21, to: 'lot', lot: 0, dir: 'S' }, { x: 16, y: 21, to: 'lot', lot: 0, dir: 'S' }, { x: 0, y: 9, to: 'lot', lot: 3, dir: 'W' }, { x: 0, y: 10, to: 'lot', lot: 3, dir: 'W' }, ...QUARRY_MOUTHS.map(q => ({ x: q.x, y: q.y, to: 'carriere2', spawn: { x: 12.9, y: 15.3 } }))] },
-  carriere2: { W: 26, H: 17, outdoor: true, doors: [{ x: 12, y: 16, to: 'carriere', spawn: { x: 16.5, y: 2.6 } }, { x: 13, y: 16, to: 'carriere', spawn: { x: 16.5, y: 2.6 } }] },
+  carriere: { W: QUARRY_W, H: QUARRY_H, outdoor: true, doors: [...[-1, 0, 1].map(d => ({ x: QUARRY_DOOR_S + d, y: QUARRY_H - 1, to: 'lot', lot: 0, dir: 'S' })), ...[-1, 0, 1].map(d => ({ x: 0, y: QUARRY_DOOR_W + d, to: 'lot', lot: 3, dir: 'W' })), ...QUARRY_MOUTHS.map(q => ({ x: q.x, y: q.y, to: 'carriere2', spawn: { x: 12.9, y: 15.3 } }))] },
+  carriere2: { W: 26, H: 17, outdoor: true, doors: [{ x: 12, y: 16, to: 'carriere', spawn: { x: QUARRY_MOUTHS[1].x + .5, y: 3.6 } }, { x: 13, y: 16, to: 'carriere', spawn: { x: QUARRY_MOUTHS[1].x + .5, y: 3.6 } }] },
   ...Object.fromEntries([0, 1, 2, 3].map(lot => { const D = [];
     for (const x of [15, 16]) { D.push({ x, y: 0, to: 'edge:N' }); D.push({ x, y: 21, to: 'edge:S' }); }
     for (const y of [9, 10]) { D.push({ x: 29, y, to: 'edge:E' }); D.push({ x: 0, y, to: 'edge:W' }); }

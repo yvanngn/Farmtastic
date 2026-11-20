@@ -150,6 +150,8 @@ import { itemArt } from './itemart.js';
 const ART_IM = {};
 const artImage = id => { if (ART_IM[id] !== undefined) return ART_IM[id]; const u = itemArt(id); if (!u) return (ART_IM[id] = null); const im = new Image(); im.src = u; return (ART_IM[id] = im); };
 import { quarryMouthOpen } from '../world/quarrymouth.js';
+import { BIG_ROCK } from '../world/scenes.js';
+import { ROCK_HITS } from '../systems/bigrock.js';
 import { QUARRY_MOUTHS, STAND_POS, DUMP_POS, SHOP_VENDOR, VENDOR_POS } from '../world/scenes.js';
 import { IGOR, HARRY, SUZIE } from '../data/npcs.js';
 import { suzieAtStand, SUZIE_STAND } from '../systems/etal.js';
@@ -582,6 +584,20 @@ let swing = null;
       for (let k = 0; k < Math.min(5, Math.max(lots.length, 2)); k++) { const cx = 3 + k * 6; R2(cx, -3, 5, 5, '#a8774a'); R2(cx + 1, -4, 3, 2, lots[k] ? cols[k % 5] : '#7a5a3a'); }   // cageots
       R2(10, 9, 12, 4, '#f4ead2'); R2(12, 10, 2, 2, '#3a2410'); R2(15, 10, 2, 2, '#3a2410'); R2(18, 10, 2, 2, '#3a2410');   // ardoise
     } });
+    if (scene === 'carriere') { const hits = (S.bigRock && S.bigRock.hits) || 0, B = BIG_ROCK; list.push({ z: B.y + B.h - .1, d: () => {   // lot 29 : l'énorme rocher (très haut), fissuré au fil des coups
+      const x = B.x * T, y = (B.y + B.h) * T, w = B.w * T, R2 = (a, b, ww, h, k) => { ctx.fillStyle = k; ctx.fillRect(x + a, y + b, ww, h); };
+      if (hits >= ROCK_HITS) {   // un trou dans le sol
+        R2(4, -T * 2.4, w - 8, T * 2, '#2a2018'); R2(8, -T * 2.2, w - 16, T * 1.6, '#120c08'); R2(2, -T * 2.6, w - 4, 4, '#8a7a62');
+        for (let k = 0; k < 6; k++) R2(6 + k * 9, -T * .5, 5, 3, '#9a8a72');   // éboulis
+        return; }
+      const Hh = T * 6.5, cols = ['#6e6a62', '#8a857a', '#a49e90', '#bdb6a6'];
+      R2(-4, -6, w + 8, 8, 'rgba(25,18,10,.35)');
+      for (let k = 0; k < 12; k++) { const t = k / 12, ww = w * (1 - t * .55), hh = Hh / 12 + 1; R2((w - ww) / 2, -t * Hh - hh, ww, hh, cols[(k + 1) % 2]); }
+      for (let k = 0; k < 12; k++) { const t = k / 12, ww = w * (1 - t * .55); R2((w - ww) / 2, -t * Hh - Hh / 12, ww * .28, Hh / 12, cols[0]); R2((w + ww) / 2 - ww * .2, -t * Hh - Hh / 12, ww * .2, Hh / 12, cols[3]); }   // ombre à gauche, lumière à droite… et strates
+      for (let k = 0; k < 5; k++) R2(6 + k * 11, -(18 + k * 13) % (Hh - 10) - 8, 7, 2, '#5a564e');
+      const n = Math.floor(10 * hits / ROCK_HITS);   // fissures qui s'étendent (une tous les 1 000 coups)
+      for (let k = 0; k < n; k++) { const cx = 10 + (k * 23) % (w - 20), cy = -12 - (k * 37) % (Hh - 30); for (let s = 0; s < 6; s++) R2(cx + (s % 2) * 2, cy - s * 3, 1, 3, '#2a2620'); }
+    } }); }
     if (scene === 'place') list.push({ z: DUMP_POS.y + .9, d: () => {   // 20/11 : la décharge (benne et tas de ferraille)
       const x = DUMP_POS.x * T, y = DUMP_POS.y * T, R2 = (a, b, w, h, k) => { ctx.fillStyle = k; ctx.fillRect(x + a, y + b, w, h); };
       R2(0, 13, 32, 3, 'rgba(30,15,5,.3)');

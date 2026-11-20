@@ -4,7 +4,8 @@ import { LEVELS } from '../systems/level.js';
 // État sauvegardé d'un joueur. Tout ce qui doit persister vit ici, rien d'autre.
 export function defaultState() {
   return {
-    v: CFG.VERSION, name: 'Cloud Jimny',   // nom par défaut (modifiable à la création)
+    v: CFG.VERSION, name: 'Cloud Jimny', bigRock: { hits: 0, letter: false, read: false, met: false },   // lot 29 : l'énorme rocher de la carrière
+      // nom par défaut (modifiable à la création)
     look: { doll: true, body: 'h', skin: '#f4c8a0', eye: '#3a6aa8', hair: 'messy', hairC: '#8a4f28', beard: '', hat: '', hatC: '#8a4a26', top: 'plaid', shirt: '#c0342e', extra: 'overalls', extraC: '#3f62a8', scarf: '', bottom: 'pant', pants: '#4a6aaa', shoes: '#6a3e22', backpack: 1 },   // héros en poupée de sprites (src/render/heroDoll.js)   // hero : dessiné depuis la planche de sprites, recolorée selon la personnalisation   // planche docs/personnages-reference.jpg : salopette bleue, chemise à carreaux, sac à dos
     money: 500, energy: 100, maxE: 100, hp: 100, maxHp: 100,
     day: 1, season: 0, year: 1, minute: CFG.DAY_START, weather: 'sun',

@@ -1,3 +1,4 @@
+import { QUARRY_DOOR_S, QUARRY_DOOR_W, QUARRY_H } from '../world/scenes.js';
 // 19/11 (demande de l'utilisateur) : les 4 fermes et leurs sorties. Disposition (voir FARM_LINKS dans world/map.js) :
 //   Ferme du Nord-Ouest (3) | Carrière
 //   Ferme de l'Ouest (2)    | Ferme principale (0) | Forêt
@@ -17,7 +18,7 @@ export function arrival(S, lot, dir) {
   return { E: { x: 1.6, y: 9.9 }, W: { x: 28.2, y: 9.9 }, S: { x: 15.9, y: 1.8 }, N: { x: 15.9, y: 20.2 } }[dir];
 }
 // Arrivée dans une zone voisine d'une ferme (sens du déplacement).
-const ZONE_IN = { carriere: { N: { x: 15.9, y: 19.4 }, E: { x: 1.6, y: 9.9 } }, place: { S: { x: 13, y: 1.8 }, E: { x: 1.6, y: 8.9 } }, foret: { E: { x: 1.6, y: 9.6 } } };
+const ZONE_IN = { carriere: { N: { x: QUARRY_DOOR_S + .5, y: QUARRY_H - 2.6 }, E: { x: 1.6, y: QUARRY_DOOR_W + .5 } }, place: { S: { x: 13, y: 1.8 }, E: { x: 1.6, y: 8.9 } }, foret: { E: { x: 1.6, y: 9.6 } } };
 // Porte d'une ferme (« edge:N ») ou porte « lot » d'une zone → { to, spawn, lot?, name? } ; null sinon.
 export function farmDoor(S, d) {
   if (d.to === 'lot') { const n = d.lot; return { to: sceneOfLot(S, n), spawn: arrival(S, n, d.dir), lot: n, name: FARM_LOTS[n].n }; }

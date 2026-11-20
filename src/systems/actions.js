@@ -41,6 +41,7 @@ import { CFG as CFG_P } from '../config.js';
 // 20/11 : la fête foraine n'ouvre que le dernier jour du premier mois
 export const parcOpen = S => dayIndex(S) >= CFG_P.MONTH_DAYS;
 import { quarryMouthOpen } from '../world/quarrymouth.js';
+import { isBigRock, hitBigRock } from './bigrock.js';
 import { readLetter, hitMeteor, zoneOpen as golgoOpen, MAILBOX } from './golgolas.js';
 import { METEOR } from '../world/scenes.js';
 
@@ -111,6 +112,7 @@ function act0(g, tx, ty) {
   }
   if (roxAt(g, tx, ty)) return petRox(g);   // lot 12 : Rox
   if (sc === 'farm' && tx === MAILBOX.x && ty === MAILBOX.y) return openMailbox(g);   // lot 13 + 18/11 (courrier des graines) : boîte aux lettres de la ferme
+  if (isBigRock(sc, tx, ty)) return hitBigRock(g, (to, sp) => enterScene(g, to, sp));   // lot 29 : l'énorme rocher
   if (sc === 'golgolas' && tx >= METEOR.x && tx < METEOR.x + METEOR.w && ty >= METEOR.y && ty < METEOR.y + METEOR.h) return hitMeteor(g);   // lot 13 : la météorite
   { ensureMounds(S, sc); const m = digMound(g, tx, ty); if (m) return m === 'noshovel' || m === 'tired' ? m : 'dig'; }   // lot 12 : petits tas
   if (pickTestSword(g, tx, ty)) return 'pick';

@@ -1,4 +1,5 @@
 import { test } from 'node:test';
+import { QUARRY_DOOR_S, QUARRY_H } from '../src/world/scenes.js';
 import assert from 'node:assert/strict';
 import { makeGame } from './helpers.js';
 import { act } from '../src/systems/actions.js';
@@ -12,7 +13,7 @@ test('19/11 : nouvelle disposition des fermes (principale au nord de la place, 3
   assert.equal(act(g, 0, 18), 'door'); assert.equal(S.scene, 'farm:2');
   assert.equal(act(g, 15, 0), 'door'); assert.equal(S.scene, 'farm:3');
   assert.equal(act(g, 29, 9), 'door'); assert.equal(S.scene, 'carriere', 'à l’est de la ferme du Nord-Ouest : la carrière');
-  assert.equal(act(g, 15, 21), 'door'); assert.equal(S.scene, 'farm', 'au sud de la carrière : ma ferme');
+  assert.equal(act(g, QUARRY_DOOR_S, QUARRY_H - 1), 'door'); assert.equal(S.scene, 'farm', 'au sud de la carrière : ma ferme');
   S.scene = 'farm:2'; assert.equal(act(g, 15, 21), 'door'); assert.equal(S.scene, 'farm:1');
   assert.equal(act(g, 29, 9), 'door'); assert.equal(S.scene, 'place');
   assert.equal(act(g, 0, 8), 'door'); assert.equal(S.scene, 'farm:1');

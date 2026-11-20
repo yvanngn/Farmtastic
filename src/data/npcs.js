@@ -480,4 +480,19 @@ export const GOLGOLAS = {
   thanks: ["Le centre tient de nouveau debout ! Tu as un vrai don.", "En remerciement, mes vieux sortilèges de rangement sont à toi : tes piles tiendront plus d'objets."],
   chat: ["Le vent du sud porte l'odeur des pins. C'est bon signe."], questions: []
 };
-NPCS.cuistot = CUISTOT; NPCS.harry = HARRY; NPCS.rouky = ROUKY; NPCS.golgolas = GOLGOLAS;
+// Lot 29 (décrit par l'utilisateur le 20/11) : un mineur qui étudie la carrière ; il adore son métier et cherche à percer
+// un mystère, à cause d'une lettre trouvée à l'entrée. ❓ Son nom. Il l'enverra au joueur au niveau 5. Répliques 💡.
+export const MINEUR = {
+  id: 'mineur', name: 'Le mineur', title: 'mineur', de: 'de lui', color: '#c8a878', voice: 'voiceChef',
+  look: { folk: 'mineur', body: 'h' }, home: 'carriere', stay: true, inside: { x: 25.5, y: 37.6 },
+  traits: ['Mineur', 'Étudie la carrière', 'Adore son métier', 'Cherche à percer un mystère'],
+  taste: { adore: [], aime: [], naime: ['slime'], deteste: [] },   // ⏳ à décrire
+  intro: [
+    "Ah, un visiteur ! Bienvenue dans la carrière. Je suis mineur, et j'étudie ces galeries.",
+    "J'adore ce métier : chaque coup de pioche raconte quelque chose de la roche.",
+    "Et puis il y a ce mystère… J'ai trouvé une lettre, à l'entrée. Je n'arrive pas à la comprendre. Je cherche encore."
+  ],
+  story: [{ h: 0, t: "Le dédale ne change pas, mais les cailloux repoussent chaque jour. La roche est vivante, ici." }],
+  chat: ["Les allées sont larges : on s'y perd quand même.", "Il y a des coins où les filons sont plus nombreux. Cherche les grandes salles."], questions: []
+};
+NPCS.cuistot = CUISTOT; NPCS.harry = HARRY; NPCS.rouky = ROUKY; NPCS.golgolas = GOLGOLAS; NPCS.mineur = MINEUR;

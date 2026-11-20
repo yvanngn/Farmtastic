@@ -52,6 +52,11 @@ Menu → 🎽 Équipement : tête, corps, pieds, accessoire. Le manteau d'hiver 
 - **Baies et mûres** : buissons et ronces, repoussent en 2 jours.
 - Arbres et cailloux sont **remis à chaque saison**, autant qu'au départ.
 
+## 5 bis. La carrière
+- Au nord de la ferme : un grand **dédale** aux allées larges. Les cailloux repoussent chaque jour ; les **grandes salles** en ont plus, et plus de filons.
+- Au centre, l'**énorme rocher** : 10 000 coups de pioche (2 cailloux tous les 10 coups, parfois un minerai). À plusieurs, tout le monde tape le même. Une fois cassé, un trou s'ouvre.
+- Le **mineur** attend à l'entrée ; au niveau 5, il t'envoie une lettre.
+
 ## 6. Petits tas à creuser
 - Partout sur la carte, **une vingtaine de petits tas par zone**, placés au hasard. On peut marcher dessus.
 - Une fois **la pelle** obtenue, on les creuse. Ils **reviennent chaque jour, à de nouvelles places**. Toutes les zones extérieures en ont, sauf la gare et le centre-ville.

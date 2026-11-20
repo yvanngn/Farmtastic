@@ -11,6 +11,7 @@ Le détail de chaque point est dans `docs/MANUEL.md`.
 - [ ] **Le premier champ** : lire le courrier · bêcher des carrés · semer le blé · tout récolter à la faucille
 
 - [ ] **Le premier étal** : rencontrer Suzie · mettre un objet en vente · première vente
+- [ ] **Le rocher du centre** : rencontrer le mineur · lire sa lettre · casser l'énorme rocher
 - [ ] **Recycler** : jeter un objet à la décharge · revendre à un marchand
 - [ ] **La cuisine du chef** : plan du chaudron (Remy) · fabriquer · poser · cuire des baies ou des mûres
 
