@@ -44,7 +44,7 @@ test('lot 29 : l’énorme rocher — 10 000 coups, 2 cailloux tous les 10, puis
   const stones = (S.inv.stone || 0) + (g.S.drops ? 0 : 0);
   assert.ok(stones >= 0);   // les cailloux tombent au sol (scatter)
   S.bigRock.hits = ROCK_HITS - 1; assert.equal(hitBigRock(g), 'hit'); assert.equal(S.bigRock.hits, ROCK_HITS);
-  let went = null; assert.equal(hitBigRock(g, to => { went = to; }), 'hole'); assert.ok(went);
+  assert.equal(hitBigRock(g), 'hole');
 });
 test('lot 29 : à plusieurs, on garde le plus grand nombre de coups', () => {
   const { S } = makeGame();
@@ -64,4 +64,10 @@ test('lot 29 : parler au mineur à l’entrée de la carrière', () => {
   registerNPC(g, MINEUR); Object.assign(g.npcs.mineur, { scene: 'carriere', x: 25.5, y: 37.6 });
   talk(g, 'mineur');
   assert.ok(S.bigRock.met, 'il s’est présenté'); assert.ok(said[0] && /mineur/i.test(said[0].lines.join(' ')));
+});
+test('21/11 : plus d’ancienne carrière profonde (une vieille partie qui y était revient dans la carrière)', async () => {
+  const { migrate } = await import('../src/core/state.js'); const { SCENES } = await import('../src/world/scenes.js');
+  assert.equal(SCENES.carriere2, undefined); assert.ok(!L.join('').includes('%'));
+  const s = migrate({ scene: 'carriere2', x: 3, y: 3, nature: { carriere2: { rocks: {} } } });
+  assert.equal(s.scene, 'carriere'); assert.equal(s.nature.carriere2, undefined);
 });

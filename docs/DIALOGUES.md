@@ -272,307 +272,309 @@
 230. *(need)* Pour remettre le centre debout, il me faut beaucoup de matériaux : 500 bois, 500 pierres et 200 champignons. 🆕
 231. *(merci)* Merci, c'est précieux. 🆕
 
-## Le mineur
+## Simplet
 
 232. *(histoire 0 ♥)* Le dédale ne change pas, mais les cailloux repoussent chaque jour. La roche est vivante, ici. 🆕
-233. *(conversation)* Les allées sont larges : on s'y perd quand même. 🆕
-234. *(conversation)* Il y a des coins où les filons sont plus nombreux. Cherche les grandes salles. 🆕
-235. *(intro)* Ah, un visiteur ! Bienvenue dans la carrière. Je suis mineur, et j'étudie ces galeries. 🆕
-236. *(intro)* J'adore ce métier : chaque coup de pioche raconte quelque chose de la roche. 🆕
-237. *(intro)* Et puis il y a ce mystère… J'ai trouvé une lettre, à l'entrée. Je n'arrive pas à la comprendre. Je cherche encore. 🆕
+233. *(histoire 1 ♥)* Mes amis m'ont toujours appelé Simplet. Je ne suis pas le plus malin… mais je sais où taper. 🆕
+234. *(histoire 5 ♥)* Je peux te dire un secret ? Simplet, c'est un surnom. Mon vrai nom, c'est Timide. 🆕
+235. *(conversation)* Les allées sont larges : on s'y perd quand même. 🆕
+236. *(conversation)* Il y a des coins où les filons sont plus nombreux. Cherche les grandes salles. 🆕
+237. *(intro)* Ah, un visiteur ! Bienvenue dans la carrière. Moi, c'est Simplet. Je suis mineur, et j'étudie ces galeries. 🆕
+238. *(intro)* J'adore ce métier : chaque coup de pioche raconte quelque chose de la roche. 🆕
+239. *(intro)* Et puis il y a ce mystère… J'ai trouvé une lettre, à l'entrée. Je n'arrive pas à la comprendre. Je cherche encore. 🆕
 
 ## Conseil (à 18h)
 
-238. *(nuit)* 🌙 Il est 18h : la nuit tombe. 🆕
-239. *(nuit)* Dors sous ta tente pour récupérer ton énergie (touche la tente → Dormir). 🆕
-240. *(nuit)* Si tu ne dors pas, tu ne récupères rien le lendemain. Et si tu n'es pas couché(e) à 1h, ou si ton énergie tombe à 0, tu t'effondres : réveil à la clinique, avec 10 % de frais ! 🆕
+240. *(nuit)* 🌙 Il est 18h : la nuit tombe. 🆕
+241. *(nuit)* Dors sous ta tente pour récupérer ton énergie (touche la tente → Dormir). 🆕
+242. *(nuit)* Si tu ne dors pas, tu ne récupères rien le lendemain. Et si tu n'es pas couché(e) à 1h, ou si ton énergie tombe à 0, tu t'effondres : réveil à la clinique, avec 10 % de frais ! 🆕
 
 ## Le héros (quête Ghostbuster)
 
-241. *(nuit)* … Hou-hou… Hou-hou… 🆕
-242. *(nuit)* Un hululement, dans la nuit. Sûrement une chouette… sûrement. 🆕
-243. *(nuit)* … Hoooooou… 🆕
-244. *(nuit)* Ça, ce n'était pas une chouette. 🆕
+243. *(nuit)* … Hou-hou… Hou-hou… 🆕
+244. *(nuit)* Un hululement, dans la nuit. Sûrement une chouette… sûrement. 🆕
 245. *(nuit)* … Hoooooou… 🆕
-246. *(nuit)* Encore ce bruit. Cette fois, je vais voir ce qui se passe sur la ferme. 🆕
-247. *(nuit)* On dirait… une vieille femme. Transparente. Elle pleure. 🆕
-248. *(nuit)* Elle a disparu dès que je me suis approché(e)… 🆕
-249. *(nuit)* Il me faudrait un moyen de lui parler. Mais lequel ? 🆕
+246. *(nuit)* Ça, ce n'était pas une chouette. 🆕
+247. *(nuit)* … Hoooooou… 🆕
+248. *(nuit)* Encore ce bruit. Cette fois, je vais voir ce qui se passe sur la ferme. 🆕
+249. *(nuit)* On dirait… une vieille femme. Transparente. Elle pleure. 🆕
+250. *(nuit)* Elle a disparu dès que je me suis approché(e)… 🆕
+251. *(nuit)* Il me faudrait un moyen de lui parler. Mais lequel ? 🆕
 
 ## Myst (nouveau début : gare)
 
-250. *(intro)* Bienvenue à Farmwest. Tu dois être la personne de l'annonce. Moi, c'est Myst. 🆕
-251. *(intro)* La diligence nous attend. Monte, je t'accompagne jusqu'aux fermes. 🆕
+252. *(intro)* Bienvenue à Farmwest. Tu dois être la personne de l'annonce. Moi, c'est Myst. 🆕
+253. *(intro)* La diligence nous attend. Monte, je t'accompagne jusqu'aux fermes. 🆕
 
 ## Myst (nouveau début : legende)
 
-252. *(intro)* Tu sais pourquoi les fermes du Nord sont vides ? On raconte qu'un fantôme rôde là-haut, la nuit. 🆕
-253. *(intro)* Depuis, personne n'a osé s'y installer. Moi, je n'y crois pas trop. 🆕
+254. *(intro)* Tu sais pourquoi les fermes du Nord sont vides ? On raconte qu'un fantôme rôde là-haut, la nuit. 🆕
+255. *(intro)* Depuis, personne n'a osé s'y installer. Moi, je n'y crois pas trop. 🆕
 
 ## Myst (nouveau début : ville)
 
-254. *(intro)* Voilà le centre-ville. Tu y trouveras de tout : le magasin général, la forge, le charpentier… et le saloon d'Ed, pour boire un coup après une longue journée. 🆕
+256. *(intro)* Voilà le centre-ville. Tu y trouveras de tout : le magasin général, la forge, le charpentier… et le saloon d'Ed, pour boire un coup après une longue journée. 🆕
 
 ## Myst (nouveau début : route)
 
-255. *(intro)* Farmwest est née avec le chemin de fer. Les premiers colons ont planté du blé à perte de vue, et la ville a poussé autour de la gare. 🆕
-256. *(intro)* Puis la mine de la carrière a fermé, les jeunes sont partis… Aujourd'hui, on compte sur les nouveaux venus comme toi pour faire revivre la vallée. 🆕
+257. *(intro)* Farmwest est née avec le chemin de fer. Les premiers colons ont planté du blé à perte de vue, et la ville a poussé autour de la gare. 🆕
+258. *(intro)* Puis la mine de la carrière a fermé, les jeunes sont partis… Aujourd'hui, on compte sur les nouveaux venus comme toi pour faire revivre la vallée. 🆕
 
 ## Myst (nouveau début : place)
 
-257. *(intro)* Ici, c'est la place du panneau. Le grand panneau donne la météo des prochains jours et les événements à venir. 🆕
-258. *(intro)* Et là, c'est ton étal : mets-y tes récoltes, ton bois, tes minerais… Les habitants passent acheter. C'est comme ça que tu gagneras de l'argent. 🆕
+259. *(intro)* Ici, c'est la place du panneau. Le grand panneau donne la météo des prochains jours et les événements à venir. 🆕
+260. *(intro)* Et là, c'est ton étal : mets-y tes récoltes, ton bois, tes minerais… Les habitants passent acheter. C'est comme ça que tu gagneras de l'argent. 🆕
 
 ## Myst (nouveau début : rond)
 
-259. *(intro)* Ta ferme est juste au-dessus. Les trois autres, à l'ouest, n'ont plus que des tas de planches. 🆕
+261. *(intro)* Ta ferme est juste au-dessus. Les trois autres, à l'ouest, n'ont plus que des tas de planches. 🆕
 
 ## Myst (nouveau début : fin)
 
-260. *(intro)* Le cocher va te déposer devant chez toi. 🆕
-261. *(intro)* Ta cabane ne tiendra pas la nuit. Ouvre ton sac 🎒, choisis la tente et appuie sur « Déployer », juste à côté de la cabane. 🆕
-262. *(intro)* Ta liste des tâches 📜, en haut à droite, te dira quoi faire. Et le plan est dans 🗺️. 🆕
-263. *(intro)* Moi, j'habite au fond de la zone résidentielle, au sud de la fontaine. … Et si tu entends des bruits la nuit, ce n'est sûrement rien. À plus tard. 🆕
+262. *(intro)* Le cocher va te déposer devant chez toi. 🆕
+263. *(intro)* Ta cabane ne tiendra pas la nuit. Ouvre ton sac 🎒, choisis la tente et appuie sur « Déployer », juste à côté de la cabane. 🆕
+264. *(intro)* Ta liste des tâches 📜, en haut à droite, te dira quoi faire. Et le plan est dans 🗺️. 🆕
+265. *(intro)* Moi, j'habite au fond de la zone résidentielle, au sud de la fontaine. … Et si tu entends des bruits la nuit, ce n'est sûrement rien. À plus tard. 🆕
 
 ## Tous les habitants (demandes de fabrication, lot 9)
 
-264. *(demande)* Dis, tu saurais me préparer {objet} ? Je te le revaudrai. 🆕
-265. *(demande)* Toujours partant pour {objet} ? Rien ne presse, la semaine n'est pas finie. 🆕
-266. *(demande)* Oh, tu l'as ! Merci, ça me rend bien service. 🆕
-267. *(demande)* Merci encore pour ce que tu m'as apporté. Repasse la semaine prochaine, j'aurai sûrement autre chose à te demander. 🆕
-268. *(demande)* Pour l'instant, je n'ai besoin de rien. Mais si tu apprends à fabriquer des choses, je saurai m'en souvenir ! 🆕
+266. *(demande)* Dis, tu saurais me préparer {objet} ? Je te le revaudrai. 🆕
+267. *(demande)* Toujours partant pour {objet} ? Rien ne presse, la semaine n'est pas finie. 🆕
+268. *(demande)* Oh, tu l'as ! Merci, ça me rend bien service. 🆕
+269. *(demande)* Merci encore pour ce que tu m'as apporté. Repasse la semaine prochaine, j'aurai sûrement autre chose à te demander. 🆕
+270. *(demande)* Pour l'instant, je n'ai besoin de rien. Mais si tu apprends à fabriquer des choses, je saurai m'en souvenir ! 🆕
 
 ## Le héros (rêves de la nuit, lot 8)
 
-269. *(nuit)* Je rêve que la cabane est entièrement reconstruite… et qu'une lumière brille à chaque fenêtre. 🆕
-270. *(nuit)* Une vieille femme pleure au bout du champ. Quand je m'approche, il n'y a plus que le vent. 🆕
-271. *(nuit)* Je marche dans la forêt. Les arbres se referment derrière moi… mais quelque chose brille tout au fond. 🆕
-272. *(nuit)* J'entends un grondement sous la terre, très loin, du côté de la caverne. Comme si elle m'attendait. 🆕
-273. *(nuit)* Le grand arbre de la ferme me parle. Je ne comprends pas les mots, mais sa voix est douce. 🆕
-274. *(nuit)* Je vois mes champs couverts d'épis dorés jusqu'à l'horizon. Je me réveille presque en souriant. 🆕
-275. *(nuit)* Un train siffle dans la nuit. Je suis sur le quai, mais cette fois, je ne monte pas. 🆕
-276. *(nuit)* Je rêve d'une lanterne qui s'allume toute seule dans la grange… Prémonition, ou simple fatigue ? 🆕
-277. *(nuit)* Des pas dans la poussière autour de la cabane. Au matin, je saurai peut-être à qui ils sont. 🆕
-278. *(nuit)* Rien. Une nuit noire et paisible, sans aucun rêve. Ça fait du bien, parfois. 🆕
+271. *(nuit)* Je rêve que la cabane est entièrement reconstruite… et qu'une lumière brille à chaque fenêtre. 🆕
+272. *(nuit)* Une vieille femme pleure au bout du champ. Quand je m'approche, il n'y a plus que le vent. 🆕
+273. *(nuit)* Je marche dans la forêt. Les arbres se referment derrière moi… mais quelque chose brille tout au fond. 🆕
+274. *(nuit)* J'entends un grondement sous la terre, très loin, du côté de la caverne. Comme si elle m'attendait. 🆕
+275. *(nuit)* Le grand arbre de la ferme me parle. Je ne comprends pas les mots, mais sa voix est douce. 🆕
+276. *(nuit)* Je vois mes champs couverts d'épis dorés jusqu'à l'horizon. Je me réveille presque en souriant. 🆕
+277. *(nuit)* Un train siffle dans la nuit. Je suis sur le quai, mais cette fois, je ne monte pas. 🆕
+278. *(nuit)* Je rêve d'une lanterne qui s'allume toute seule dans la grange… Prémonition, ou simple fatigue ? 🆕
+279. *(nuit)* Des pas dans la poussière autour de la cabane. Au matin, je saurai peut-être à qui ils sont. 🆕
+280. *(nuit)* Rien. Une nuit noire et paisible, sans aucun rêve. Ça fait du bien, parfois. 🆕
 
 ## Le héros (arrivée en train)
 
-279. *(intro)* Après mon licenciement, j'ai voulu redonner un sens à ma vie.
-280. *(intro)* J'ai toujours rêvé de construire ma propre maison. Alors, quand j'ai vu l'annonce qui disait que cette cabane abandonnée était offerte à la personne qui voulait s'en occuper…
-281. *(intro)* Il paraît que peu de gens sont venus essayer, à cause de la fameuse rumeur comme quoi la ferme serait hantée !
+281. *(intro)* Après mon licenciement, j'ai voulu redonner un sens à ma vie.
+282. *(intro)* J'ai toujours rêvé de construire ma propre maison. Alors, quand j'ai vu l'annonce qui disait que cette cabane abandonnée était offerte à la personne qui voulait s'en occuper…
+283. *(intro)* Il paraît que peu de gens sont venus essayer, à cause de la fameuse rumeur comme quoi la ferme serait hantée !
 
 ## Quêtes (journal)
 
-282. *(principale « Ghostbuster » : titre)* Ghostbuster 🆕
-283. *(« Ghostbuster » : étape)* Un hululement dans la nuit… 🆕
-284. *(« Ghostbuster » : étape)* Un « hoooou » la nuit suivante 🆕
-285. *(« Ghostbuster » : étape)* La 3e nuit, aller voir sur la ferme 🆕
-286. *(« Ghostbuster » : étape)* S'approcher de l'esprit de la vieille femme 🆕
-287. *(« Ghostbuster » : étape)* Trouver un moyen de lui parler (objet à venir) 🆕
-288. *(principale « Premiers pas » : titre)* Premiers pas 🆕
-289. *(« Premiers pas » : étape)* Ouvrir le sac 🎒, choisir la tente et « Déployer » à côté de la cabane 🆕
-290. *(« Premiers pas » : étape)* Dès 18h il fait nuit : dormir sous la tente (pas couché à 1h → clinique et frais) 🆕
-291. *(« Premiers pas » : étape)* Trouver la pioche, posée contre la grange 🆕
-292. *(« Premiers pas » : étape)* Trouver la hache, au pied du grand arbre de la ferme 🆕
-293. *(« Premiers pas » : étape)* Retaper la cabane : 40 bois et 15 pierres (marteau 🔨 ; les pierres sont à la carrière, au nord de la ferme) 🆕
-294. *(« Premiers pas » : étape)* Aider le cuistot du restaurant (centre-ville) : réparer son four au marteau (30 pierres + 15 bois) — il te donnera son couteau 🆕
-295. *(« Premiers pas » : étape)* Rafistoler la grange (100 bois et 60 pierres) et y trouver la pelle, pour bêcher et planter 🆕
-296. *(principale « Le premier champ » : titre)* Le premier champ 🆕
-297. *(« Le premier champ » : étape)* Lire le courrier dans la boîte aux lettres de la ferme (graines de blé en pièce jointe) 🆕
-298. *(« Le premier champ » : étape)* Bêcher des carrés de terre à la pelle 🪏, sur l’herbe de la ferme 🆕
-299. *(« Le premier champ » : étape)* Choisir les graines de blé dans le sac et glisser sur les carrés pour semer 🆕
-300. *(« Le premier champ » : étape)* Le lendemain, récolter tout le champ d’un coup à la faucille 🆕
-301. *(principale « Le premier étal » : titre)* Le premier étal 🆕
-302. *(« Le premier étal » : étape)* Rencontrer Suzie à l'étal de la place du panneau 🆕
-303. *(« Le premier étal » : étape)* Mettre un objet en vente à l'étal (moins c'est cher, plus ça part vite) 🆕
-304. *(« Le premier étal » : étape)* Attendre que quelqu’un l’achète 🆕
-305. *(principale « La cuisine du chef » : titre)* La cuisine du chef 🆕
-306. *(« La cuisine du chef » : étape)* Retourner voir Remy au restaurant 🆕
-307. *(« La cuisine du chef » : étape)* Fabriquer le chaudron (📜 Recettes : 20 pierres + 10 bois) 🆕
-308. *(« La cuisine du chef » : étape)* Le poser sur la ferme (chaudron en main, toucher l’herbe) 🆕
-309. *(« La cuisine du chef » : étape)* Y faire cuire des baies ou des mûres 🆕
-310. *(principale « Le centre de Golgolas » : titre)* Le centre de Golgolas 🆕
-311. *(« Le centre de Golgolas » : étape)* Lire la lettre de Golgolas (boîte aux lettres de la ferme) 🆕
-312. *(« Le centre de Golgolas » : étape)* Casser la météorite devant son centre, au sud de la gare (environ 5000 coups de pioche) 🆕
-313. *(« Le centre de Golgolas » : étape)* Apporter à Golgolas 500 bois, 500 pierres et 200 champignons 🆕
-314. *(secondaire « Le rocher du centre » : titre)* Le rocher du centre 🆕
-315. *(« Le rocher du centre » : étape)* Lire la lettre envoyée par le mineur (boîte aux lettres de la ferme) 🆕
-316. *(« Le rocher du centre » : étape)* Casser l'énorme rocher au centre de la carrière (10 000 coups de pioche) 🆕
-317. *(principale « La canne de Rouky » : titre)* La canne de Rouky 🆕
-318. *(« La canne de Rouky » : étape)* Aller voir Rouky, le vieux pêcheur, à la cabane du pêcheur (au sud du centre-ville) 🆕
-319. *(« La canne de Rouky » : étape)* Trouver un os pour Rox : creuser les petits tas de terre à la pelle 🪏 🆕
-320. *(« La canne de Rouky » : étape)* Donner l'os à Rox (ou à Rouky) : il te donnera sa canne à pêche 🆕
-321. *(secondaire « Agrandir la cabane » : titre)* Agrandir la cabane 🆕
-322. *(« Agrandir la cabane » : étape)* L'intérieur est tout petit et vide : agrandir la cabane, 80 bois et 30 pierres (marteau 🔨 devant la cabane) 🆕
-323. *(secondaire « Un vrai lit » : titre)* Un vrai lit 🆕
-324. *(« Un vrai lit » : étape)* Acheter le plan du lit chez Harry Fordson, le charpentier (centre-ville) 🆕
-325. *(« Un vrai lit » : étape)* Fabriquer le lit (📜 Recettes : 50 bois + 10 pierres) 🆕
-326. *(« Un vrai lit » : étape)* L'installer dans la cabane (toucher l'emplacement du lit) 🆕
-327. *(secondaire « Un coffre pour ranger » : titre)* Un coffre pour ranger 🆕
-328. *(« Un coffre pour ranger » : étape)* Acheter le plan du coffre chez Harry Fordson, le charpentier (centre-ville) 🆕
-329. *(« Un coffre pour ranger » : étape)* Fabriquer un coffre (📜 Recettes : 80 bois + 20 pierres) 🆕
-330. *(secondaire « Aider Franck à sortir » : titre)* Aider Franck à sortir 🆕
-331. *(« Aider Franck à sortir » : étape)* Frapper chez Franck, le voisin de Luna, et lui dire bonjour 🆕
-332. *(« Aider Franck à sortir » : étape)* Gagner sa confiance (2 cœurs) : il sortira un peu le soir 🆕
-333. *(« Aider Franck à sortir » : étape)* Qu'il ouvre ses volets (3 cœurs) 🆕
-334. *(« Aider Franck à sortir » : étape)* Qu'il se confie un peu (4 cœurs) 🆕
-335. *(« Aider Franck à sortir » : étape)* Lui fabriquer l'objet qui l'animera, à l'établi de la maison (objet à venir) 🆕
+284. *(principale « Ghostbuster » : titre)* Ghostbuster 🆕
+285. *(« Ghostbuster » : étape)* Un hululement dans la nuit… 🆕
+286. *(« Ghostbuster » : étape)* Un « hoooou » la nuit suivante 🆕
+287. *(« Ghostbuster » : étape)* La 3e nuit, aller voir sur la ferme 🆕
+288. *(« Ghostbuster » : étape)* S'approcher de l'esprit de la vieille femme 🆕
+289. *(« Ghostbuster » : étape)* Trouver un moyen de lui parler (objet à venir) 🆕
+290. *(principale « Premiers pas » : titre)* Premiers pas 🆕
+291. *(« Premiers pas » : étape)* Ouvrir le sac 🎒, choisir la tente et « Déployer » à côté de la cabane 🆕
+292. *(« Premiers pas » : étape)* Dès 18h il fait nuit : dormir sous la tente (pas couché à 1h → clinique et frais) 🆕
+293. *(« Premiers pas » : étape)* Trouver la pioche, posée contre la grange 🆕
+294. *(« Premiers pas » : étape)* Trouver la hache, au pied du grand arbre de la ferme 🆕
+295. *(« Premiers pas » : étape)* Retaper la cabane : 40 bois et 15 pierres (marteau 🔨 ; les pierres sont à la carrière, au nord de la ferme) 🆕
+296. *(« Premiers pas » : étape)* Aider le cuistot du restaurant (centre-ville) : réparer son four au marteau (30 pierres + 15 bois) — il te donnera son couteau 🆕
+297. *(« Premiers pas » : étape)* Rafistoler la grange (100 bois et 60 pierres) et y trouver la pelle, pour bêcher et planter 🆕
+298. *(principale « Le premier champ » : titre)* Le premier champ 🆕
+299. *(« Le premier champ » : étape)* Lire le courrier dans la boîte aux lettres de la ferme (graines de blé en pièce jointe) 🆕
+300. *(« Le premier champ » : étape)* Bêcher des carrés de terre à la pelle 🪏, sur l’herbe de la ferme 🆕
+301. *(« Le premier champ » : étape)* Choisir les graines de blé dans le sac et glisser sur les carrés pour semer 🆕
+302. *(« Le premier champ » : étape)* Le lendemain, récolter tout le champ d’un coup à la faucille 🆕
+303. *(principale « Le premier étal » : titre)* Le premier étal 🆕
+304. *(« Le premier étal » : étape)* Rencontrer Suzie à l'étal de la place du panneau 🆕
+305. *(« Le premier étal » : étape)* Mettre un objet en vente à l'étal (moins c'est cher, plus ça part vite) 🆕
+306. *(« Le premier étal » : étape)* Attendre que quelqu’un l’achète 🆕
+307. *(principale « La cuisine du chef » : titre)* La cuisine du chef 🆕
+308. *(« La cuisine du chef » : étape)* Retourner voir Remy au restaurant 🆕
+309. *(« La cuisine du chef » : étape)* Fabriquer le chaudron (📜 Recettes : 20 pierres + 10 bois) 🆕
+310. *(« La cuisine du chef » : étape)* Le poser sur la ferme (chaudron en main, toucher l’herbe) 🆕
+311. *(« La cuisine du chef » : étape)* Y faire cuire des baies ou des mûres 🆕
+312. *(principale « Le centre de Golgolas » : titre)* Le centre de Golgolas 🆕
+313. *(« Le centre de Golgolas » : étape)* Lire la lettre de Golgolas (boîte aux lettres de la ferme) 🆕
+314. *(« Le centre de Golgolas » : étape)* Casser la météorite devant son centre, au sud de la gare (environ 5000 coups de pioche) 🆕
+315. *(« Le centre de Golgolas » : étape)* Apporter à Golgolas 500 bois, 500 pierres et 200 champignons 🆕
+316. *(secondaire « Le rocher du centre » : titre)* Le rocher du centre 🆕
+317. *(« Le rocher du centre » : étape)* Lire la lettre envoyée par Simplet, le mineur (boîte aux lettres de la ferme) 🆕
+318. *(« Le rocher du centre » : étape)* Casser l'énorme rocher au centre de la carrière (10 000 coups de pioche) 🆕
+319. *(principale « La canne de Rouky » : titre)* La canne de Rouky 🆕
+320. *(« La canne de Rouky » : étape)* Aller voir Rouky, le vieux pêcheur, à la cabane du pêcheur (au sud du centre-ville) 🆕
+321. *(« La canne de Rouky » : étape)* Trouver un os pour Rox : creuser les petits tas de terre à la pelle 🪏 🆕
+322. *(« La canne de Rouky » : étape)* Donner l'os à Rox (ou à Rouky) : il te donnera sa canne à pêche 🆕
+323. *(secondaire « Agrandir la cabane » : titre)* Agrandir la cabane 🆕
+324. *(« Agrandir la cabane » : étape)* L'intérieur est tout petit et vide : agrandir la cabane, 80 bois et 30 pierres (marteau 🔨 devant la cabane) 🆕
+325. *(secondaire « Un vrai lit » : titre)* Un vrai lit 🆕
+326. *(« Un vrai lit » : étape)* Acheter le plan du lit chez Harry Fordson, le charpentier (centre-ville) 🆕
+327. *(« Un vrai lit » : étape)* Fabriquer le lit (📜 Recettes : 50 bois + 10 pierres) 🆕
+328. *(« Un vrai lit » : étape)* L'installer dans la cabane (toucher l'emplacement du lit) 🆕
+329. *(secondaire « Un coffre pour ranger » : titre)* Un coffre pour ranger 🆕
+330. *(« Un coffre pour ranger » : étape)* Acheter le plan du coffre chez Harry Fordson, le charpentier (centre-ville) 🆕
+331. *(« Un coffre pour ranger » : étape)* Fabriquer un coffre (📜 Recettes : 80 bois + 20 pierres) 🆕
+332. *(secondaire « Aider Franck à sortir » : titre)* Aider Franck à sortir 🆕
+333. *(« Aider Franck à sortir » : étape)* Frapper chez Franck, le voisin de Luna, et lui dire bonjour 🆕
+334. *(« Aider Franck à sortir » : étape)* Gagner sa confiance (2 cœurs) : il sortira un peu le soir 🆕
+335. *(« Aider Franck à sortir » : étape)* Qu'il ouvre ses volets (3 cœurs) 🆕
+336. *(« Aider Franck à sortir » : étape)* Qu'il se confie un peu (4 cœurs) 🆕
+337. *(« Aider Franck à sortir » : étape)* Lui fabriquer l'objet qui l'animera, à l'établi de la maison (objet à venir) 🆕
 
 ## Courrier (graines de blé et tuto du champ)
 
-336. *(courrier)* « Bonjour, et bienvenue sur ta ferme ! On m'a dit que tu avais retrouvé la vieille pelle de la grange. 🆕
-337. *(courrier)* Je t'envoie de quoi commencer : des graines de blé. Le blé pousse en un jour, c'est parfait pour débuter. 🆕
-338. *(courrier)* Bêche quelques carrés de terre, sème, et reviens le lendemain avec ta faucille. Bonne récolte ! — L'étal du marché » 🆕
-339. *(courrier)* 📖 Tuto — ton premier champ : 🆕
-340. *(courrier)* 1. Prends la pelle 🪏 et touche l'herbe de ta ferme : chaque toucher bêche un carré (1 ⚡). Glisse pour en faire plusieurs. 🆕
-341. *(courrier)* 2. Ouvre le sac 🎒 et choisis les graines de blé 🌱, puis glisse le doigt sur tes carrés : tout se plante d'un coup. 🆕
-342. *(courrier)* 3. Le blé pousse en 1 jour. Le lendemain, prends la faucille et touche un épi mûr : tout le champ est récolté, sans bouger. 🆕
-343. *(courrier)* 4. La paille 🟫 se vend 1 $ au bac de vente ; garde un peu de blé pour cuisiner. 🆕
+338. *(courrier)* « Bonjour, et bienvenue sur ta ferme ! On m'a dit que tu avais retrouvé la vieille pelle de la grange. 🆕
+339. *(courrier)* Je t'envoie de quoi commencer : des graines de blé. Le blé pousse en un jour, c'est parfait pour débuter. 🆕
+340. *(courrier)* Bêche quelques carrés de terre, sème, et reviens le lendemain avec ta faucille. Bonne récolte ! — L'étal du marché » 🆕
+341. *(courrier)* 📖 Tuto — ton premier champ : 🆕
+342. *(courrier)* 1. Prends la pelle 🪏 et touche l'herbe de ta ferme : chaque toucher bêche un carré (1 ⚡). Glisse pour en faire plusieurs. 🆕
+343. *(courrier)* 2. Ouvre le sac 🎒 et choisis les graines de blé 🌱, puis glisse le doigt sur tes carrés : tout se plante d'un coup. 🆕
+344. *(courrier)* 3. Le blé pousse en 1 jour. Le lendemain, prends la faucille et touche un épi mûr : tout le champ est récolté, sans bouger. 🆕
+345. *(courrier)* 4. La paille 🟫 se vend 1 $ au bac de vente ; garde un peu de blé pour cuisiner. 🆕
 
 ## Courrier (lettre de Golgolas)
 
-344. *(courrier)* « Bien le bonjour, jeune bâtisseur. On m'a parlé de toi : il paraît que tu sais retaper ce que d'autres laissent tomber. 🆕
-345. *(courrier)* Je m'appelle Golgolas. Je vis depuis longtemps dans un centre caché, au sud de la gare. Je me débrouillais bien… jusqu'à ce qu'une météorite l'écrase. 🆕
-346. *(courrier)* Seul, je n'y arriverai pas. J'ai retiré les planches qui barraient le chemin, au sud de la gare. Viens, je t'en prie. — Golgolas » 🆕
+346. *(courrier)* « Bien le bonjour, jeune bâtisseur. On m'a parlé de toi : il paraît que tu sais retaper ce que d'autres laissent tomber. 🆕
+347. *(courrier)* Je m'appelle Golgolas. Je vis depuis longtemps dans un centre caché, au sud de la gare. Je me débrouillais bien… jusqu'à ce qu'une météorite l'écrase. 🆕
+348. *(courrier)* Seul, je n'y arriverai pas. J'ai retiré les planches qui barraient le chemin, au sud de la gare. Viens, je t'en prie. — Golgolas » 🆕
 
 ## Tuto (conseils à l’écran)
 
-347. *(vente)* 💰 Tu peux vendre ce que tu ramasses à ton étal, sur la place du panneau, juste au sud de ta ferme. 🆕
-348. *(vente)* Choisis l’objet, la quantité et le prix : moins cher, les habitants l’achètent en quelques minutes ; au prix fort, il faut attendre la nuit. 🆕
-349. *(vente)* Garde quand même du bois et des pierres : il en faut pour réparer la cabane ! 🆕
-350. *(farming.js : till)* 🟫 Carré bêché ! Ouvre le sac 🎒, choisis les graines de blé, puis glisse le doigt sur tes carrés pour tout planter d’un coup. 🆕
-351. *(farming.js : plant)* 🌱 Planté ! Le blé pousse en 1 jour. Demain, prends la faucille et touche un épi : tout le champ se récolte d’un coup. 🆕
-352. *(farming.js : harvest)* 🌾 Récolte faite ! La paille se vend 1 $ au bac de vente ; le blé sert à cuisiner et à faire du foin. 🆕
+349. *(vente)* 💰 Tu peux vendre ce que tu ramasses à ton étal, sur la place du panneau, juste au sud de ta ferme. 🆕
+350. *(vente)* Choisis l’objet, la quantité et le prix : moins cher, les habitants l’achètent en quelques minutes ; au prix fort, il faut attendre la nuit. 🆕
+351. *(vente)* Garde quand même du bois et des pierres : il en faut pour réparer la cabane ! 🆕
+352. *(farming.js : till)* 🟫 Carré bêché ! Ouvre le sac 🎒, choisis les graines de blé, puis glisse le doigt sur tes carrés pour tout planter d’un coup. 🆕
+353. *(farming.js : plant)* 🌱 Planté ! Le blé pousse en 1 jour. Demain, prends la faucille et touche un épi : tout le champ se récolte d’un coup. 🆕
+354. *(farming.js : harvest)* 🌾 Récolte faite ! La paille se vend 1 $ au bac de vente ; le blé sert à cuisiner et à faire du foin. 🆕
 
 ## Messages à l’écran
 
-353. *(actions.js)* 🔨 Prends le marteau dans la roue des outils 🛠️ pour réparer. 🆕
-354. *(actions.js)* 🚧 Ce passage est fermé pour l’instant. 🆕
-355. *(actions.js)* 🎡 La fête foraine est encore en montage : elle ouvre le dernier jour du premier mois. 🆕
-356. *(actions.js)* La grille de la caverne est fermée à clé. Le Maire saura peut-être… 🆕
-357. *(actions.js)* 🪨 La paroi est pleine ici. Un passage s’ouvre ailleurs chaque jour… 🆕
-358. *(actions.js)* 🚧 Des planches barrent le chemin du sud. Quelqu’un les retirera peut-être un jour… 🆕
-359. *(actions.js)* 🚧 Le chemin de la plage est barré pour l’instant. 🆕
-360. *(actions.js)* 🧊 Une grotte gelée, bouchée par des éboulis et de la glace. Impossible d’entrer… pour l’instant. 🆕
-361. *(actions.js)* ⬇️ Un escalier s’enfonce vers l’étage 2… bloqué par des éboulis pour l’instant. 🆕
-362. *(actions.js)* Un vieil établi tout branlant… Le charpentier du village pourrait le réparer. 🆕
-363. *(actions.js)* Il n’y a pas encore de lit ici… En attendant, la tente fera l’affaire. 🆕
-364. *(bigrock.js)* ⛏️ Un rocher immense… Il faudrait une pioche en main, et beaucoup de patience. 🆕
-365. *(bigrock.js)* 💥 L’énorme rocher s’effondre ! Un trou s’ouvre dans le sol… 🆕
-366. *(bigrock.js)* 📬 Du courrier t’attend dans la boîte aux lettres de la ferme ! 🆕
-367. *(bigrock.js)* 📜 Nouvelle quête : Le rocher du centre 🆕
-368. *(blockers.js)* 🌳 Un énorme arbre est tombé en travers du chemin de la forêt. Il faudrait le couper… 🆕
-369. *(blockers.js)* 🌲 Le gros arbre est tombé : le chemin de la forêt est ouvert ! 🆕
-370. *(camp.js)* ⛺ Pose ta tente sur l’herbe, juste à côté de la cabane. 🆕
-371. *(camp.js)* ⛺ Tente montée ! Tu pourras y dormir à partir de 18h. 🆕
-372. *(camp.js)* ⛺ Tente repliée dans ton sac. 🆕
-373. *(camp.js)* Trop tôt pour dormir (après 18h) 🆕
-374. *(camp.js)* Nuit sous la tente… bien reposé(e) ! ⛺ 🆕
-375. *(camp.js)* ⛺ Va juste à côté de ta cabane (au nord du chemin) pour déployer la tente. 🆕
-376. *(chests.js)* 📦 Pose le coffre sur une case libre, tout près de toi. 🆕
-377. *(chests.js)* 📦 Coffre posé ! Touche-le pour y ranger tes affaires. 🆕
-378. *(chests.js)* Vide d’abord le coffre. 🆕
-379. *(cold.js)* 🥶 Brr… il fait glacial ! Sans manteau d’hiver, ta vie baisse doucement. 🆕
-380. *(cooking.js)* 🔥 Feu allumé ! Tiens des baies en main près du feu pour les griller. 🆕
-381. *(cooking.js)* 🔥 Un bon feu. Prends un aliment en main (des baies…) pour le cuire. 🆕
-382. *(cooking.js)* Ça grille… reste près du feu ⏳ 🆕
-383. *(cooking.js)* Plus de baies… elles repoussent en 2 jours 🌿 🆕
-384. *(economy.js)* Rien de choisi à vendre 🆕
-385. *(equip.js)* 👢 Pour Yvan : les bottes de vent ! Tu marches 4 fois plus vite (menu → 🎽 Équipement pour les retirer). 🆕
-386. *(etal.js)* 🪵 Suzie t’a donné un morceau de bois. Touche l’étal pour le mettre en vente. 🆕
-387. *(farming.js)* Impossible de bêcher ici : il faut de l’herbe libre sur la ferme. 🆕
-388. *(farming.js)* Il faut d'abord bêcher la terre avec la pelle 🪏 🆕
-389. *(fishing.js)* 🎣 Vise l’eau pour lancer ta ligne. 🆕
-390. *(fishing.js)* Raté ! Le poisson s’est décroché. Touche vite quand le « ! » apparaît. 🆕
-391. *(fishing.js)* Sac plein : tu relâches le poisson. 🆕
-392. *(foret.js)* Un gros champignon ! 🍄 🆕
-393. *(foret.js)* Il faut la hache 🪓 pour arracher la souche. 🆕
-394. *(foret.js)* 📦 Le coffre est vide. Il sera peut-être de nouveau rempli à la prochaine saison… 🆕
-395. *(golgolas.js)* 📭 La boîte aux lettres est vide. 🆕
-396. *(golgolas.js)* 📜 Nouvelle quête principale : Le centre de Golgolas 🆕
-397. *(golgolas.js)* ⛏️ Il faut une pioche en main pour attaquer la météorite. 🆕
-398. *(golgolas.js)* 💥 La météorite vole en éclats ! Va parler à Golgolas. 🆕
-399. *(intro.js)* Cette ferme est déjà prise. 🆕
-400. *(inventory.js)* Sac plein 🎒 : posé au sol 🆕
-401. *(mail.js)* 📜 Nouvelle quête principale : Le premier champ 🆕
-402. *(market.js)* Demande retirée du panneau 🆕
-403. *(mounds.js)* 🟫 Un petit tas de terre… Il faudrait une pelle pour creuser. 🆕
-404. *(mounds.js)* 🪏 Prends la pelle pour creuser ce petit tas. 🆕
-405. *(mounds.js)* 🦴 Un os ! Un chien serait ravi… 🆕
-406. *(player.js)* Trop fatigué… allez dormir 🛏️ 🆕
-407. *(pots.js)* 🍲 Chaudron posé ! Touche-le pour y mettre des ingrédients. 🆕
-408. *(pots.js)* 🍲 Hmm… ces ingrédients ne donnent rien. Essaie un autre mélange ! 🆕
-409. *(pots.js)* 🍲 Ça mijote encore un peu… 🆕
-410. *(pots.js)* Sac plein ! Le plat attend dans le chaudron. 🆕
-411. *(repair.js)* Il te manque du bois ou des pierres : va en chercher ! 🆕
-412. *(repair.js)* 📜 Nouvelles quêtes secondaires : agrandir la cabane, fabriquer un lit et un coffre (plans chez Harry Fordson, le charpentier). 🆕
-413. *(repair.js)* 🏠 Ta cabane est plus grande : il y a de la place pour s’installer ! 🆕
-414. *(repair.js)* 🛏️ Ton lit est installé : tu peux enfin dormir dans ta cabane ! 🆕
-415. *(resources.js)* Ce vieil arbre est bien trop grand pour être abattu. Il veille sur la ferme depuis toujours. 🆕
-416. *(resto.js)* 🔪 Tu as reçu le couteau ! Fleurs et champignons se cueillent maintenant (reste appuyé). 🆕
-417. *(resto.js)* 📜 Nouvelle recette : le chaudron (20 🪨 + 10 🪵) — 📜 Recettes 🆕
-418. *(resto.js)* 🔥 Le four chauffe. Le cuistot est ravi. 🆕
-419. *(resto.js)* Le four est fissuré… Il faudrait le marteau 🔨 pour le réparer. 🆕
-420. *(resto.js)* 🔥 Le four est réparé ! Va le dire au cuistot. 🆕
-421. *(resto.js)* 📦 Nouvelle recette : le coffre (80 bois + 20 pierres) — 📜 Recettes 🆕
-422. *(rouky.js)* 🎣 Tu as reçu une canne à pêche sommaire ! Vise l’eau pour lancer. 🆕
-423. *(rouky.js)* 📜 Nouvelle quête principale : La canne de Rouky 🆕
-424. *(time.js)* 🌙 18h : pense à aller dormir bientôt. Pas couché(e) à 1h → infirmerie (10 % de frais) ! 🆕
-425. *(wild.js)* 🗡️ Tu as trouvé une épée ! 🆕
-426. *(inventoryGrid.js)* 📍 Touche une case libre juste à côté de toi pour le poser. 🆕
+355. *(actions.js)* 🔨 Prends le marteau dans la roue des outils 🛠️ pour réparer. 🆕
+356. *(actions.js)* 🚧 Ce passage est fermé pour l’instant. 🆕
+357. *(actions.js)* 🎡 La fête foraine est encore en montage : elle ouvre le dernier jour du premier mois. 🆕
+358. *(actions.js)* La grille de la caverne est fermée à clé. Le Maire saura peut-être… 🆕
+359. *(actions.js)* 🚧 Des planches barrent le chemin du sud. Quelqu’un les retirera peut-être un jour… 🆕
+360. *(actions.js)* 🚧 Le chemin de la plage est barré pour l’instant. 🆕
+361. *(actions.js)* 🧊 Une grotte gelée, bouchée par des éboulis et de la glace. Impossible d’entrer… pour l’instant. 🆕
+362. *(actions.js)* ⬇️ Un escalier s’enfonce vers l’étage 2… bloqué par des éboulis pour l’instant. 🆕
+363. *(actions.js)* Un vieil établi tout branlant… Le charpentier du village pourrait le réparer. 🆕
+364. *(actions.js)* Il n’y a pas encore de lit ici… En attendant, la tente fera l’affaire. 🆕
+365. *(bigrock.js)* 🕳️ Un trou noir et profond… Il faudra une échelle, ou revenir plus tard. 🆕
+366. *(bigrock.js)* ⛏️ Un rocher immense… Il faudrait une pioche en main, et beaucoup de patience. 🆕
+367. *(bigrock.js)* 💥 L’énorme rocher s’effondre ! Un trou s’ouvre dans le sol… 🆕
+368. *(bigrock.js)* 📬 Du courrier t’attend dans la boîte aux lettres de la ferme ! 🆕
+369. *(bigrock.js)* 📜 Nouvelle quête : Le rocher du centre 🆕
+370. *(blockers.js)* 🌳 Un énorme arbre est tombé en travers du chemin de la forêt. Il faudrait le couper… 🆕
+371. *(blockers.js)* 🌲 Le gros arbre est tombé : le chemin de la forêt est ouvert ! 🆕
+372. *(camp.js)* ⛺ Pose ta tente sur l’herbe, juste à côté de la cabane. 🆕
+373. *(camp.js)* ⛺ Tente montée ! Tu pourras y dormir à partir de 18h. 🆕
+374. *(camp.js)* ⛺ Tente repliée dans ton sac. 🆕
+375. *(camp.js)* Trop tôt pour dormir (après 18h) 🆕
+376. *(camp.js)* Nuit sous la tente… bien reposé(e) ! ⛺ 🆕
+377. *(camp.js)* ⛺ Va juste à côté de ta cabane (au nord du chemin) pour déployer la tente. 🆕
+378. *(chests.js)* 📦 Pose le coffre sur une case libre, tout près de toi. 🆕
+379. *(chests.js)* 📦 Coffre posé ! Touche-le pour y ranger tes affaires. 🆕
+380. *(chests.js)* Vide d’abord le coffre. 🆕
+381. *(cold.js)* 🥶 Brr… il fait glacial ! Sans manteau d’hiver, ta vie baisse doucement. 🆕
+382. *(cooking.js)* 🔥 Feu allumé ! Tiens des baies en main près du feu pour les griller. 🆕
+383. *(cooking.js)* 🔥 Un bon feu. Prends un aliment en main (des baies…) pour le cuire. 🆕
+384. *(cooking.js)* Ça grille… reste près du feu ⏳ 🆕
+385. *(cooking.js)* Plus de baies… elles repoussent en 2 jours 🌿 🆕
+386. *(economy.js)* Rien de choisi à vendre 🆕
+387. *(equip.js)* 👢 Pour Yvan : les bottes de vent ! Tu marches 4 fois plus vite (menu → 🎽 Équipement pour les retirer). 🆕
+388. *(etal.js)* 🪵 Suzie t’a donné un morceau de bois. Touche l’étal pour le mettre en vente. 🆕
+389. *(farming.js)* Impossible de bêcher ici : il faut de l’herbe libre sur la ferme. 🆕
+390. *(farming.js)* Il faut d'abord bêcher la terre avec la pelle 🪏 🆕
+391. *(fishing.js)* 🎣 Vise l’eau pour lancer ta ligne. 🆕
+392. *(fishing.js)* Raté ! Le poisson s’est décroché. Touche vite quand le « ! » apparaît. 🆕
+393. *(fishing.js)* Sac plein : tu relâches le poisson. 🆕
+394. *(foret.js)* Un gros champignon ! 🍄 🆕
+395. *(foret.js)* Il faut la hache 🪓 pour arracher la souche. 🆕
+396. *(foret.js)* 📦 Le coffre est vide. Il sera peut-être de nouveau rempli à la prochaine saison… 🆕
+397. *(golgolas.js)* 📭 La boîte aux lettres est vide. 🆕
+398. *(golgolas.js)* 📜 Nouvelle quête principale : Le centre de Golgolas 🆕
+399. *(golgolas.js)* ⛏️ Il faut une pioche en main pour attaquer la météorite. 🆕
+400. *(golgolas.js)* 💥 La météorite vole en éclats ! Va parler à Golgolas. 🆕
+401. *(intro.js)* Cette ferme est déjà prise. 🆕
+402. *(inventory.js)* Sac plein 🎒 : posé au sol 🆕
+403. *(mail.js)* 📜 Nouvelle quête principale : Le premier champ 🆕
+404. *(market.js)* Demande retirée du panneau 🆕
+405. *(mounds.js)* 🟫 Un petit tas de terre… Il faudrait une pelle pour creuser. 🆕
+406. *(mounds.js)* 🪏 Prends la pelle pour creuser ce petit tas. 🆕
+407. *(mounds.js)* 🦴 Un os ! Un chien serait ravi… 🆕
+408. *(player.js)* Trop fatigué… allez dormir 🛏️ 🆕
+409. *(pots.js)* 🍲 Chaudron posé ! Touche-le pour y mettre des ingrédients. 🆕
+410. *(pots.js)* 🍲 Hmm… ces ingrédients ne donnent rien. Essaie un autre mélange ! 🆕
+411. *(pots.js)* 🍲 Ça mijote encore un peu… 🆕
+412. *(pots.js)* Sac plein ! Le plat attend dans le chaudron. 🆕
+413. *(repair.js)* Il te manque du bois ou des pierres : va en chercher ! 🆕
+414. *(repair.js)* 📜 Nouvelles quêtes secondaires : agrandir la cabane, fabriquer un lit et un coffre (plans chez Harry Fordson, le charpentier). 🆕
+415. *(repair.js)* 🏠 Ta cabane est plus grande : il y a de la place pour s’installer ! 🆕
+416. *(repair.js)* 🛏️ Ton lit est installé : tu peux enfin dormir dans ta cabane ! 🆕
+417. *(resources.js)* Ce vieil arbre est bien trop grand pour être abattu. Il veille sur la ferme depuis toujours. 🆕
+418. *(resto.js)* 🔪 Tu as reçu le couteau ! Fleurs et champignons se cueillent maintenant (reste appuyé). 🆕
+419. *(resto.js)* 📜 Nouvelle recette : le chaudron (20 🪨 + 10 🪵) — 📜 Recettes 🆕
+420. *(resto.js)* 🔥 Le four chauffe. Le cuistot est ravi. 🆕
+421. *(resto.js)* Le four est fissuré… Il faudrait le marteau 🔨 pour le réparer. 🆕
+422. *(resto.js)* 🔥 Le four est réparé ! Va le dire au cuistot. 🆕
+423. *(resto.js)* 📦 Nouvelle recette : le coffre (80 bois + 20 pierres) — 📜 Recettes 🆕
+424. *(rouky.js)* 🎣 Tu as reçu une canne à pêche sommaire ! Vise l’eau pour lancer. 🆕
+425. *(rouky.js)* 📜 Nouvelle quête principale : La canne de Rouky 🆕
+426. *(time.js)* 🌙 18h : pense à aller dormir bientôt. Pas couché(e) à 1h → infirmerie (10 % de frais) ! 🆕
+427. *(wild.js)* 🗡️ Tu as trouvé une épée ! 🆕
+428. *(inventoryGrid.js)* 📍 Touche une case libre juste à côté de toi pour le poser. 🆕
 
 ## Décor (le héros commente)
 
-427. *(house)* Un jour cette cabane sera plus belle.
-428. *(grange)* La vieille grange. On dirait qu'elle s'enfonce sous la colline…
-429. *(fence)* Une clôture en bois qui semble solide.
-430. *(water)* L'eau est claire. Je crois voir des têtards.
-431. *(luna)* Une belle maison. Il y a encore des cartons derrière la fenêtre.
-432. *(franck)* Les volets sont fermés.
-433. *(franckOpen)* L'intérieur semble cosy !
-434. *(gate)* J'entends des bruits visqueux.
-435. *(coop)* Le poulailler. On entend glousser là-dedans.
-436. *(pigsty)* La porcherie. Ça sent… la porcherie.
-437. *(barn)* La bergerie. Une bêle bergerie !
-438. *(houseRuin)* Ma future maison ... enfin cabane pour le moment… Avec du bois et des pierres, je peux la rafistoler.
-439. *(grangeRuin)* La grange tient à peine debout. Impossible d'entrer pour l'instant.
-440. *(hailey)* Une petite maison rose, avec des fleurs aux fenêtres. 🆕
-441. *(remy)* La maison de Remy. Ça sent les herbes fraîches et le bouillon. 🆕
-442. *(ed)* Une grande maison à étages. Un petit vélo rose attend devant la porte. 🆕
-443. *(clinic)* La clinique du quartier. On y soigne les bobos… et les gens épuisés.
-444. *(myst)* Une vieille maison sombre, un peu à l'écart. Les rideaux sont tirés.
-445. *(station)* La petite gare. Le train ne repassera pas avant un moment.
-446. *(rails)* La voie ferrée. Elle file vers le sud.
-447. *(dump)* La décharge. Tout ce qu’on y jette est recyclé… mais ne rapporte que la moitié du prix de l’étal. 🆕
-448. *(villa)* Très belle villa.
-449. *(sheriff)* Le bureau du shérif. Une étoile dorée, des barreaux à la fenêtre… et personne derrière. 🆕
-450. *(K)* Le plan de travail. Il ne manque plus qu'un bon repas.
-451. *(T)* Une table en bois, avec une tasse oubliée dessus.
-452. *(P)* Une plante verte. Elle a l'air de bien se porter.
-453. *(C)* Un coffre. Vide, pour l'instant.
-454. *(N)* Un nid douillet, plein de paille.
-455. *(Y)* Une botte de foin. Ça gratte rien qu'à la regarder.
-456. *(X)* Des cartons de déménagement. « Fragile », écrit à la main.
-457. *(A)* Un vieux fauteuil, creusé juste là où l'on s'assoit.
-458. *(B)* Un lit fait au carré.
-459. *(F)* La fontaine du village. L'eau chante doucement.
-460. *(L)* Un lampadaire en fer forgé.
-461. *(Lon)* Un lampadaire. Il brille de nouveau, grâce à moi !
-462. *(b)* Un simple banc.
-463. *(f)* Des fleurs bien entretenues. Quelqu'un en prend soin.
-464. *(treeTown)* Un grand arbre qui fait de l'ombre à la place.
-465. *(bar)* Le saloon d’Ed. Ça sent le bois ciré et la limonade. 🆕
-466. *(signWest)* Un panneau en bois. Les flèches indiquent les fermes, les résidences, le ranch et le centre-ville. 🆕
-467. *(fenceRanch)* Une solide clôture de ranch. Les chevaux ont de la place pour galoper. 🆕
-468. *(ranchHouse)* La maison du Maire. Une belle véranda… Manu ne se refuse rien. 🆕
-469. *(ranchBarn)* La grange du ranch. Ça sent le foin et le cheval. 🆕
-470. *(warehouse)* Un entrepôt du port. Des caisses partout, des noms de villes lointaines peints dessus. 🆕
-471. *(sea)* La mer. Des voiliers attendent la marée. 🆕
-472. *(O)* Le four du restaurant. 🆕
-473. *(cliff)* Une falaise de terre rouge. Le centre-ville est perché sur son plateau. 🆕
-474. *(river)* La rivière fait le tour du centre-ville. L’eau est fraîche et claire. 🆕
-475. *(treeForest)* Un grand arbre de la forêt. Avec la hache, je pourrais le couper… sauf ceux du bord. 🆕
-476. *(treeWild)* Des arbres serrés. Impossible de passer par là.
-477. *(rockWild)* Un rocher énorme. Ma pioche ne lui ferait rien.
-478. *(rockGrange)* De la roche dure.
-479. *(wallGrange)* Des planches couvertes de toiles d'araignée.
+429. *(house)* Un jour cette cabane sera plus belle.
+430. *(grange)* La vieille grange. On dirait qu'elle s'enfonce sous la colline…
+431. *(fence)* Une clôture en bois qui semble solide.
+432. *(water)* L'eau est claire. Je crois voir des têtards.
+433. *(luna)* Une belle maison. Il y a encore des cartons derrière la fenêtre.
+434. *(franck)* Les volets sont fermés.
+435. *(franckOpen)* L'intérieur semble cosy !
+436. *(gate)* J'entends des bruits visqueux.
+437. *(coop)* Le poulailler. On entend glousser là-dedans.
+438. *(pigsty)* La porcherie. Ça sent… la porcherie.
+439. *(barn)* La bergerie. Une bêle bergerie !
+440. *(houseRuin)* Ma future maison ... enfin cabane pour le moment… Avec du bois et des pierres, je peux la rafistoler.
+441. *(grangeRuin)* La grange tient à peine debout. Impossible d'entrer pour l'instant.
+442. *(hailey)* Une petite maison rose, avec des fleurs aux fenêtres. 🆕
+443. *(remy)* La maison de Remy. Ça sent les herbes fraîches et le bouillon. 🆕
+444. *(ed)* Une grande maison à étages. Un petit vélo rose attend devant la porte. 🆕
+445. *(clinic)* La clinique du quartier. On y soigne les bobos… et les gens épuisés.
+446. *(myst)* Une vieille maison sombre, un peu à l'écart. Les rideaux sont tirés.
+447. *(station)* La petite gare. Le train ne repassera pas avant un moment.
+448. *(rails)* La voie ferrée. Elle file vers le sud.
+449. *(dump)* La décharge. Tout ce qu’on y jette est recyclé… mais ne rapporte que la moitié du prix de l’étal. 🆕
+450. *(villa)* Très belle villa.
+451. *(sheriff)* Le bureau du shérif. Une étoile dorée, des barreaux à la fenêtre… et personne derrière. 🆕
+452. *(K)* Le plan de travail. Il ne manque plus qu'un bon repas.
+453. *(T)* Une table en bois, avec une tasse oubliée dessus.
+454. *(P)* Une plante verte. Elle a l'air de bien se porter.
+455. *(C)* Un coffre. Vide, pour l'instant.
+456. *(N)* Un nid douillet, plein de paille.
+457. *(Y)* Une botte de foin. Ça gratte rien qu'à la regarder.
+458. *(X)* Des cartons de déménagement. « Fragile », écrit à la main.
+459. *(A)* Un vieux fauteuil, creusé juste là où l'on s'assoit.
+460. *(B)* Un lit fait au carré.
+461. *(F)* La fontaine du village. L'eau chante doucement.
+462. *(L)* Un lampadaire en fer forgé.
+463. *(Lon)* Un lampadaire. Il brille de nouveau, grâce à moi !
+464. *(b)* Un simple banc.
+465. *(f)* Des fleurs bien entretenues. Quelqu'un en prend soin.
+466. *(treeTown)* Un grand arbre qui fait de l'ombre à la place.
+467. *(bar)* Le saloon d’Ed. Ça sent le bois ciré et la limonade. 🆕
+468. *(signWest)* Un panneau en bois. Les flèches indiquent les fermes, les résidences, le ranch et le centre-ville. 🆕
+469. *(fenceRanch)* Une solide clôture de ranch. Les chevaux ont de la place pour galoper. 🆕
+470. *(ranchHouse)* La maison du Maire. Une belle véranda… Manu ne se refuse rien. 🆕
+471. *(ranchBarn)* La grange du ranch. Ça sent le foin et le cheval. 🆕
+472. *(warehouse)* Un entrepôt du port. Des caisses partout, des noms de villes lointaines peints dessus. 🆕
+473. *(sea)* La mer. Des voiliers attendent la marée. 🆕
+474. *(O)* Le four du restaurant. 🆕
+475. *(cliff)* Une falaise de terre rouge. Le centre-ville est perché sur son plateau. 🆕
+476. *(river)* La rivière fait le tour du centre-ville. L’eau est fraîche et claire. 🆕
+477. *(treeForest)* Un grand arbre de la forêt. Avec la hache, je pourrais le couper… sauf ceux du bord. 🆕
+478. *(treeWild)* Des arbres serrés. Impossible de passer par là.
+479. *(rockWild)* Un rocher énorme. Ma pioche ne lui ferait rien.
+480. *(rockGrange)* De la roche dure.
+481. *(wallGrange)* Des planches couvertes de toiles d'araignée.

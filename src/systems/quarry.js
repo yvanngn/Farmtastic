@@ -2,16 +2,14 @@
 // repoussent chaque jour (3 par jour, comme avant). Elle est bordée de gros cailloux cassables, plus longs à casser, qui
 // repoussent 3 jours après. Chaque jour, une des trois bouches de la paroi nord est ouverte (au hasard du jour) :
 // derrière, la carrière profonde (autre architecture, filons rares). Logique pure, sans hasard du navigateur.
-import { LAYOUTS, QUARRY_MOUTHS } from '../world/scenes.js';
+import { LAYOUTS } from '../world/scenes.js';
 import { key } from '../world/map.js';
 
 export const BORDER_HP = 24;          // un caillou ordinaire en demande 6
 export const BORDER_DAYS = 3;         // un gros caillou de bordure repousse au bout de 3 jours
 export const BORDER_STONES = [4, 6];
-import { quarryDay, quarryMouthOpen } from '../world/quarrymouth.js';
+import { quarryDay } from '../world/quarrymouth.js';
 export const dayNum = quarryDay;
-export const mouthOpen = quarryMouthOpen;
-export const openMouth = S => QUARRY_MOUTHS.find(m => quarryMouthOpen(S, m.x, m.y));
 
 // Gros cailloux de bordure (cases « o ») : posés au premier passage, puis repoussent BORDER_DAYS jours après avoir été cassés.
 export function ensureBorder(S, N) {

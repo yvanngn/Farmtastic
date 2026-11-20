@@ -1,6 +1,6 @@
 // Nature : fleurs à cueillir, cailloux et filons à piocher (ferme, forêt, Caverne sombre ; jamais en ville),
 // et arc-en-ciel les jours de pluie avec un trésor à son pied. Logique pure.
-import { syncForest, FOREST_ROUTE, LAYOUTS, QUARRY_MOUTHS, QUARRY_ROUTE, QUARRY_RICH } from '../world/scenes.js';
+import { syncForest, FOREST_ROUTE, LAYOUTS, QUARRY_ROUTE, QUARRY_RICH } from '../world/scenes.js';
 import { key, freeForObj, isSolid } from '../world/map.js';
 import { CFG } from '../config.js';
 import { FLOWERS } from '../data/items.js';
@@ -30,7 +30,6 @@ export function freeSpot(S, sc, x, y) {
     !(S.foret && S.foret.shrooms && S.foret.shrooms[k]);
   if (sc === 'wild') return !(S.wild && S.wild.rocks && S.wild.rocks[k]) && !(x < 4 && y < 7);
   if (sc === 'carriere') return Math.hypot(x - S.x, y - S.y) > 2 && !QUARRY_ROUTE.has(key(x, y));   // lot 29 : jamais sur le milieu des allées
-  if (sc === 'carriere2') return Math.hypot(x - S.x, y - S.y) > 2;
   return false;
 }
 
@@ -106,7 +105,7 @@ export function hitNature(g, x, y) {
   if (!o) return false;
   if (S.sel !== 'pick') { g.bus.emit('sfx', 'denied'); g.bus.emit('toast', hasTool(S, 'pick') ? 'Il faut la pioche ⛏️' : 'Il te faut une pioche.'); return false; }
   const tier = toolTier(S, 'pick');
-  { const weak = o.border && y === 1 && QUARRY_MOUTHS.some(m => m.x === x) ? lacks(S, NEED.mouth) : o.border ? lacks(S, NEED.boulder) : o.t === 'vein' ? lacks(S, ['mining', NEED.vein[o.v] || 1]) : null;   // 20/11 : niveau de minage
+  { const weak = o.border ? lacks(S, NEED.boulder) : o.t === 'vein' ? lacks(S, ['mining', NEED.vein[o.v] || 1]) : null;   // 20/11 : niveau de minage
     if (weak) { g.bus.emit('sfx', 'denied'); g.bus.emit('toast', weak); return false; } }
   if (!hitReady(g)) return 'wait';   // le geste précédent n'est pas fini
   if (!useEnergy(g, energyCost(tier))) return false;

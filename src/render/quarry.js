@@ -7,7 +7,7 @@ import { T, paintCliff } from './terrain.js';
 import { shade } from './pixel.js';
 
 export function buildQuarry(name, season) {
-  const L0 = LAYOUTS[name], L = L0.map(r => r.replace(/%/g, '^')), H = L.length, W = L[0].length, deep = name === 'carriere2';
+  const L0 = LAYOUTS[name], L = L0.map(r => r.replace(/%/g, '^')), H = L.length, W = L[0].length, deep = name === 'dedale';   // 21/11 : le style « canyon » servira au dédale profond (lot 30)
   const c = document.createElement('canvas'); c.width = W * T; c.height = H * T;
   const g = c.getContext('2d'), r = rng(name.length * 53 + season);
   const R = (x, y, w, h, col) => { g.fillStyle = col; g.fillRect(x, y, w, h); };

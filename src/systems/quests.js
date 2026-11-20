@@ -67,7 +67,7 @@ export const QUESTS = {
   grosrocher: {
     n: 'Le rocher du centre', i: '🪨', unlock: S => !!S.bigRock?.read,
     steps: [
-      { id: 'lettre', t: 'Lire la lettre envoyée par le mineur (boîte aux lettres de la ferme)', done: S => !!S.bigRock?.read },
+      { id: 'lettre', t: 'Lire la lettre envoyée par Simplet, le mineur (boîte aux lettres de la ferme)', done: S => !!S.bigRock?.read },
       { id: 'casser', t: "Casser l'énorme rocher au centre de la carrière (10 000 coups de pioche)", done: S => (S.bigRock?.hits || 0) >= 10000 }
     ]
   },

@@ -91,7 +91,7 @@ export function createMenu(g, opts) {
         return `<div class="xp"><b>${SKILL_NAMES[sk]} niveau ${lv}${lv >= SKILL_MAX ? ' (max)' : ''}</b><span>${xp}${nx ? ' / ' + nx : ''} XP</span><div class="bar"><i style="width:${pct}%;background:linear-gradient(90deg,#c99a3a,#ffdf8a)"></i></div></div>`; };
       const row = (t, sk, n) => `<li>${skillLevel(S, sk) >= n ? '✅' : '🔒'} ${t} — ${sk === 'wood' ? 'bûcheron' : 'minage'} ${n}</li>`;
       return bar('mining') + bar('wood') + '<p class="info">Plus d’amélioration d’outils : ce sont tes compétences qui comptent. Casse des cailloux et coupe des arbres pour progresser (niveau 10 au maximum).</p><ul class="reqs">'
-        + row('Arbre tombé qui barre la forêt', ...NEED.forestTree) + row('Gros cailloux de la carrière', ...NEED.boulder) + row('Rochers devant la carrière profonde', ...NEED.mouth)
+        + row('Arbre tombé qui barre la forêt', ...NEED.forestTree) + row('Gros cailloux de la carrière', ...NEED.boulder)
         + Object.entries(NEED.vein).filter(([v]) => v !== 'tin').map(([v, n]) => row(VEINS[v].n, 'mining', n)).join('') + '</ul>';
     },
     carpenter(S) {

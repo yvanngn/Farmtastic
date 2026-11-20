@@ -479,7 +479,6 @@ LAYOUTS.gare = (() => { const m = LAYOUTS.gare.map(r => r.split('')), H = m.leng
 export const QUARRY_CELL = 5, QUARRY_COLS = 10, QUARRY_ROWS = 8;   // allée 3 cases + paroi 2 cases
 export const QUARRY_W = 2 + QUARRY_COLS * QUARRY_CELL, QUARRY_H = 2 + QUARRY_ROWS * QUARRY_CELL;   // 52 × 42
 const qx = i => 2 + i * QUARRY_CELL + 1, qy = j => 2 + j * QUARRY_CELL + 1;   // milieu de l'allée de la cellule (i, j)
-export const QUARRY_MOUTHS = [{ x: qx(1), y: 0 }, { x: qx(6), y: 0 }, { x: qx(8), y: 0 }];
 export const QUARRY_DOOR_S = qx(4), QUARRY_DOOR_W = qy(4);          // milieu de l'entrée sud (ferme) et ouest (ferme du Nord-Ouest)
 export const BIG_ROCK = { x: 24, y: 19, w: 4, h: 3 }; // l'énorme rocher, au centre de la place
 export const QUARRY_RICH = [[0, 0, 2, 2], [7, 0, 3, 2], [0, 6, 2, 2], [8, 6, 2, 2]].map(([i, j, w, h]) => ({ x0: 2 + i * QUARRY_CELL, y0: 2 + j * QUARRY_CELL, x1: 2 + (i + w) * QUARRY_CELL - 3, y1: 2 + (j + h) * QUARRY_CELL - 3 }));
@@ -512,7 +511,6 @@ LAYOUTS.carriere = (() => {
   link(4, 7, 4, 4);                                               // l'avenue droite de l'entrée jusqu'à la place
   for (const d of [-1, 0, 1]) { m[H - 1][QUARRY_DOOR_S + d] = 'D'; m[H - 2][QUARRY_DOOR_S + d] = '.'; m[QUARRY_DOOR_W + d][0] = 'D'; m[QUARRY_DOOR_W + d][1] = '.'; }
   link(0, 4, 0, 4); route(0, QUARRY_DOOR_W, qx(0), QUARRY_DOOR_W); route(QUARRY_DOOR_S, qy(7), QUARRY_DOOR_S, H - 1);
-  for (const q of QUARRY_MOUTHS) { m[0][q.x] = '%'; m[1][q.x] = 'o'; }   // bouches vers la carrière profonde, gardées par un gros caillou
   for (let j = 0; j < QUARRY_ROWS; j++) for (let i = 0; i < QUARRY_COLS; i++) {   // un gros caillou au bout des culs-de-sac
     const x = qx(i), y = qy(j); if (m[y][x] !== '.' || (i === 4 && j === 7)) continue;
     const ways = [[x + 2, y], [x - 2, y], [x, y + 2], [x, y - 2]].filter(([a, b]) => m[b] && m[b][a] === '.').length;
@@ -520,26 +518,6 @@ LAYOUTS.carriere = (() => {
   }
   return m.map(r => r.join(''));
 })();
-// Carrière profonde : canyon de grès rouge en terrasses, couloirs étroits, filons rares (fer, or) plus nombreux.
-LAYOUTS.carriere2 = [
-  '^^^^^^^^^^^^^^^^^^^^^^^^^^',
-  '^.....^^^.......^^^.....^^',
-  '^.....^^^.......^^^......^',
-  '^..^.....................^',
-  '^..^^^....^^^^.....^^^...^',
-  '^...^^....^^^^.....^^^...^',
-  '^.........^^.........^...^',
-  '^^^....................^^^',
-  '^^^...^^^.......^^.....^^^',
-  '^.....^^^.......^^.......^',
-  '^........................^',
-  '^...^^^.....^^......^^...^',
-  '^...^^^.....^^......^^...^',
-  '^........................^',
-  '^^^^........^^.......^^^^^',
-  '^^^^^.................^^^^',
-  '^^^^^^^^^^^^DD^^^^^^^^^^^^'
-];
 LAYOUTS.rondpoint = (() => {
   const W = 26, H = 18, m = grid(W, H, 's');
   for (let y = 0; y < H; y++) { m[y][12] = '.'; m[y][13] = '.'; } for (let x = 0; x < W; x++) { m[8][x] = '.'; m[9][x] = '.'; }
@@ -663,8 +641,7 @@ export const SCENES = {
   franck: { W: 9, H: 7, doors: [{ x: 4, y: 6, to: 'quartier', spawn: { x: 10.5, y: 15.8 } }] },
   clinique: { W: 9, H: 7, doors: [{ x: 4, y: 6, to: 'quartier', spawn: { x: 28.5, y: 6.8 } }] },
   hailey: { W: 9, H: 7, doors: [{ x: 4, y: 6, to: 'quartier', spawn: { x: 26.5, y: 15.8 } }] },
-  carriere: { W: QUARRY_W, H: QUARRY_H, outdoor: true, doors: [...[-1, 0, 1].map(d => ({ x: QUARRY_DOOR_S + d, y: QUARRY_H - 1, to: 'lot', lot: 0, dir: 'S' })), ...[-1, 0, 1].map(d => ({ x: 0, y: QUARRY_DOOR_W + d, to: 'lot', lot: 3, dir: 'W' })), ...QUARRY_MOUTHS.map(q => ({ x: q.x, y: q.y, to: 'carriere2', spawn: { x: 12.9, y: 15.3 } }))] },
-  carriere2: { W: 26, H: 17, outdoor: true, doors: [{ x: 12, y: 16, to: 'carriere', spawn: { x: QUARRY_MOUTHS[1].x + .5, y: 3.6 } }, { x: 13, y: 16, to: 'carriere', spawn: { x: QUARRY_MOUTHS[1].x + .5, y: 3.6 } }] },
+  carriere: { W: QUARRY_W, H: QUARRY_H, outdoor: true, doors: [...[-1, 0, 1].map(d => ({ x: QUARRY_DOOR_S + d, y: QUARRY_H - 1, to: 'lot', lot: 0, dir: 'S' })), ...[-1, 0, 1].map(d => ({ x: 0, y: QUARRY_DOOR_W + d, to: 'lot', lot: 3, dir: 'W' }))] },
   ...Object.fromEntries([0, 1, 2, 3].map(lot => { const D = [];
     for (const x of [15, 16]) { D.push({ x, y: 0, to: 'edge:N' }); D.push({ x, y: 21, to: 'edge:S' }); }
     for (const y of [9, 10]) { D.push({ x: 29, y, to: 'edge:E' }); D.push({ x: 0, y, to: 'edge:W' }); }
@@ -731,7 +708,6 @@ openDoors('route', [[63, 5], [63, 6]], 'montagne', { x: 1.6, y: 8.6 });
 openDoors('place', [[25, 8], [25, 9]], 'route', { x: 1.6, y: 5.9 }, line(13, 8, 24, 9));
 openDoors('montagne', [[0, 8], [0, 9]], 'route', { x: 62.2, y: 5.9 });
 // 20/11 : la carrière profonde est un sous-sol (pas sur la carte de la région)
-SCENES.carriere2.underground = true;
 // 20/11 : routes entre le centre-ville et le rond-point (est), et entre le centre-ville et la cabane du pêcheur (sud) :
 // la plage est tout en bas, sous le ranch.
 function roadLayout(W, H, horiz) {

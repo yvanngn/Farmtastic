@@ -1,7 +1,7 @@
 // Lot 29 (demande de l'utilisateur, 20/11) : l'énorme rocher au centre du dédale de la carrière.
 // - 10 000 coups de pioche, énergie d'un caillou ordinaire ; tous les 10 coups, 2 cailloux tombent, et plus rarement un minerai ;
 // - à plusieurs, les coups sont partagés (le plus grand compte reçu des autres joueurs l'emporte, cf. src/net/multiplayer.js) ;
-// - cassé, il laisse un trou vers le dédale profond (lot 30 ; en attendant, l'ancienne carrière profonde) ;
+// - cassé, il laisse un trou vers le dédale profond (lot 30) ;
 // - dès le niveau 5, le mineur envoie par courrier la lettre d'un inconnu trouvée à l'entrée : elle dit que le rocher se casse.
 //   Elle arrive même si le rocher est déjà cassé (aucun effet de plus). Logique pure.
 import { level, gainPxp, XP } from './level.js';
@@ -16,7 +16,7 @@ import { BIG_ROCK } from '../world/scenes.js';
 export const ROCK_HITS = 10000, ROCK_EVERY = 10, ROCK_STONES = 2;
 export const ROCK_ORE_P = 0.15;       // 💡 un minerai une fois sur 7 environ, à chaque volée de cailloux
 export const ROCK_LETTER_LEVEL = 5;
-export const ROCK_HOLE = { scene: 'carriere2', spawn: { x: 12.9, y: 15.3 } };   // ⏳ lot 30 : le dédale profond
+export const ROCK_HOLE = null;   // ⏳ lot 30 : le dédale profond (premier sous-sol)
 const R = S => (S.bigRock ||= { hits: 0, letter: false, read: false, met: false });
 export const bigRock = S => S.bigRock || { hits: 0, letter: false, read: false, met: false };
 export const rockDone = S => bigRock(S).hits >= ROCK_HITS;
@@ -26,7 +26,7 @@ export function mergeRockHits(S, n) { const st = R(S), v = Math.min(ROCK_HITS, M
 
 export function hitBigRock(g, enter) {
   const S = g.S, st = R(S);
-  if (rockDone(S)) { if (enter) enter(ROCK_HOLE.scene, ROCK_HOLE.spawn); return 'hole'; }
+  if (rockDone(S)) { if (ROCK_HOLE && enter) enter(ROCK_HOLE.scene, ROCK_HOLE.spawn); else g.bus.emit('toast', '🕳️ Un trou noir et profond… Il faudra une échelle, ou revenir plus tard.'); return 'hole'; }
   if (!hasTool(S, 'pick') || S.sel !== 'pick') { g.bus.emit('sfx', 'denied'); g.bus.emit('toast', '⛏️ Un rocher immense… Il faudrait une pioche en main, et beaucoup de patience.'); return 'nopick'; }
   if (!hitReady(g)) return 'wait';
   const tier = toolTier(S, 'pick');
@@ -54,13 +54,13 @@ export function rockLetterTick(g) {
   return true;
 }
 export const ROCK_LETTER = [
-  "Un mot du mineur de la carrière : « Je n'arrive pas à percer ce mystère. Toi, peut-être ? Voici la lettre que j'ai trouvée à l'entrée. »",
+  "Un mot de Simplet, le mineur de la carrière : « Je n'arrive pas à percer ce mystère. Toi, peut-être ? Voici la lettre que j'ai trouvée à l'entrée. »",
   "La lettre, d'une écriture inconnue : « Le grand rocher du centre n'est pas éternel. Celui qui le frappera assez longtemps verra ce qu'il cache. »"
 ];
 export function readRockLetter(g) {
   const S = g.S, st = R(S);
   if (!st.letter) return 'empty';
-  g.bus.emit('say', { name: 'Lettre du mineur', color: '#c8a878', lines: ROCK_LETTER });
+  g.bus.emit('say', { name: 'Lettre de Simplet', color: '#c8a878', lines: ROCK_LETTER });
   if (!st.read) { st.read = true; g.bus.emit('toast', '📜 Nouvelle quête : Le rocher du centre'); }
   return 'rockLetter';
 }

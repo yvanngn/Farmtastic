@@ -147,6 +147,12 @@ function buildFront(c, back, s) {
   else if (g.includes('hoodie')) { add(E(cx, shY + 1, 13, 5), 'top', 7); add(RR(cx - 10, hipY - 14, 20, 9, 3), 'topD', 7); feat.push({ t: 'px', x: cx - 3, y: shY + 4, w: 1, h: 4, col: '#f4f4f0' }, { t: 'px', x: cx + 2.5, y: shY + 4, w: 1, h: 4, col: '#f4f4f0' }); }
   if (g.includes('chef')) { add(POLY(cx - bw / 2 + 2, shY - 1, cx + 6, shY - 1, cx + 2, hipY + 2, cx - bwb / 2, hipY + 2), 'top', 5); for (let k = 0; k < 3; k++) feat.push({ t: 'btn', x: cx + 5, y: shY + 10 + k * 9, col: '#c8c4bc' }, { t: 'btn', x: cx - 4, y: shY + 10 + k * 9, col: '#c8c4bc' }); }
   if (g.includes('scarf')) add(POLY(cx - 9, shY - 2, cx + 9, shY - 2, cx + 2, shY + 9, cx - 2, shY + 9), 'scarf', 9);
+  if (g.includes('pickaxe')) {   // 21/11 : la pioche posée sur l'épaule (Simplet)
+    const sx = back ? -1 : 1;
+    add(POLY(cx + sx * 7, shY + 12, cx + sx * 9, shY + 10, cx + sx * 17, shY - 24, cx + sx * 15, shY - 25), 'handle', 14);
+    add(P2(p => { p.moveTo(cx + sx * 6, shY - 27); p.quadraticCurveTo(cx + sx * 16, shY - 33, cx + sx * 26, shY - 23); p.lineTo(cx + sx * 25, shY - 21); p.quadraticCurveTo(cx + sx * 16, shY - 29, cx + sx * 7, shY - 24); }), 'metal', 14.2);
+  }
+  if (g.includes('soot')) for (const [a, b, w] of [[-7, 7, 3], [4, 12, 2], [-2, 20, 3], [6, 24, 2], [-5, -6, 2], [5, -9, 2]]) feat.push({ t: 'px', x: cx + a, y: shY + b, w, h: 1, col: 'rgba(40,36,36,.7)' });   // suie
   if (g.includes('bolo')) feat.push({ t: 'px', x: cx, y: shY + 2, w: 1, h: 7, col: '#3a2418' }, { t: 'btn', x: cx, y: shY + 3, col: '#c8a8e8' });
   if (g.includes('stetho')) feat.push({ t: 'px', x: cx - 8, y: shY + 1, w: 1, h: 12, col: '#4a5a6a' }, { t: 'px', x: cx + 7, y: shY + 1, w: 1, h: 10, col: '#4a5a6a' }, { t: 'btn', x: cx + 8, y: shY + 21, col: '#b8c4d0' }, { t: 'px', x: cx - 8, y: shY + 13, w: 3, h: 1, col: '#4a5a6a' });
   if (g.includes('towel')) add(RR(cx + bw / 2 - 9, shY - 3, 10, 15, 3), 'towel', 9);
@@ -281,6 +287,11 @@ function buildSide(c, s) {
   if (g.includes('backpack')) { add(RR(cx - tw / 2 - 8, shY + 2, 10, 26, 4), 'pack', 2.5); add(POLY(cx - 2, shY - .5, cx + 2, shY - .5, cx + 1, shY + 24, cx - 2, shY + 24), 'pack', 7.5); }
   if (g.includes('belt') || g.includes('toolbelt')) add(RR(cx - tw / 2 - 1, hipY - 6, tw + 2 + belly, 4, 1), 'belt', 7);
   if (g.includes('toolbelt')) add(RR(cx + tw / 2 - 5 + belly, hipY - 4, 8, 9, 2), 'belt', 7.2);
+  if (g.includes('pickaxe')) {   // 21/11 : la pioche sur l'épaule, vue de côté (manche qui part vers l'arrière)
+    add(POLY(cx - 2, shY + 2, cx + 1, shY + 1, cx - 20, shY - 22, cx - 22, shY - 20), 'handle', 14);
+    add(P2(p => { p.moveTo(cx - 30, shY - 14); p.quadraticCurveTo(cx - 26, shY - 28, cx - 12, shY - 30); p.lineTo(cx - 12, shY - 27); p.quadraticCurveTo(cx - 24, shY - 25, cx - 27, shY - 13); }), 'metal', 14.2);
+  }
+  if (g.includes('soot')) for (const [a, b, w] of [[2, 8, 3], [-4, 16, 2], [4, 26, 2], [6, -10, 2]]) feat.push({ t: 'px', x: cx + a, y: shY + b, w, h: 1, col: 'rgba(40,36,36,.7)' });   // suie
   if (g.includes('hoodie')) add(E(cx - tw / 2 + 2, shY + 1, 7, 6), 'top', 7);
   if (g.includes('towel')) add(RR(cx - 4, shY - 3, 10, 7, 3), 'towel', 9);
   if (g.includes('scarf')) add(POLY(cx + 2, shY - 2, cx + tw / 2 + 2, shY - 2, cx + tw / 2 + 1, shY + 8), 'scarf', 9);
@@ -357,7 +368,7 @@ const CAST_LIST = [
   { id: 'harry', n: 'Harry Fordson', hair: 'short', hat: 'flat', eye: '#4a6a8a', serious: 1, garments: ['toolbelt'], mats: { skin, hair: '#b8642a', top: '#c0302e', pant: '#3a5a8a', shoe: '#5a3a22', belt: '#7a4a26', hat: '#7a7a80', hatBand: '#5a5a62' }, pattern: { top: { type: 'plaid' } } },
   { id: 'esprit', n: "L'esprit", f: 1, dress: 1, noFeet: 1, hair: 'long', sad: 1, eye: '#e8fcff', garments: [], ghost: 1, mats: { skin: '#bff0f4', hair: '#8adce8', top: '#a4e8f0', dress: '#a4e8f0' } },
   { id: 'rouky', n: 'Rouky', hair: 'short', hat: 'cap', beard: 'short', stout: 1, eye: '#4a6a8a', garments: ['overalls'], mats: { skin: '#e2b08a', hair: '#e8e4dc', beard: '#e8e4dc', top: '#5a7aa8', over: '#6a5a3a', overD: '#4a3e28', pant: '#6a5a3a', shoe: '#4a3a2a', hat: '#2a4a7a', hatBand: '#1e365a' } },   // lot 12 (pas sur la planche : d'après sa description)
-  { id: 'mineur', n: 'Le mineur', hair: 'short', hat: 'cap', beard: 'mustache', eye: '#4a3a2a', garments: ['overalls', 'toolbelt'], mats: { skin: '#d9a07a', hair: '#4a3020', beard: '#4a3020', top: '#a8603a', over: '#5a5a66', overD: '#3e3e48', pant: '#5a5a66', shoe: '#3a2a1e', belt: '#6a4226', hat: '#e0b040', hatBand: '#8a6a20' } },   // lot 29 💡 (casque jaune, salopette grise)
+  { id: 'mineur', n: 'Simplet', hair: 'bald', stout: 1, muscle: 1, bareArms: 1, eye: '#3a2a20', garments: ['overalls', 'toolbelt', 'pickaxe', 'soot'], sleeve: 'top', mats: { skin: '#c8987a', top: '#6a5e58', over: '#4e4a48', overD: '#363230', pant: '#4e4a48', shoe: '#2a2220', belt: '#5a3a22', handle: '#8a5a32', metal: '#9aa0a8' } },   // 21/11 : costaud, chauve, plein de suie, pioche sur l'épaule (décrit par l'utilisateur)
   { id: 'golgolas', n: 'Golgolas', hat: 'pointy', beard: 'big', dress: 1, serious: 1, eye: '#6a8a4a', garments: ['staff'], mats: { skin: '#e8c8a8', hair: '#f0ece4', beard: '#f0ece4', top: '#7a5a3a', dress: '#7a5a3a', shoe: '#4a3020', hat: '#5a4a6a', staff: '#6a4426' }, pattern: { dress: { type: 'flowers', col: '#9a7a52', col2: '#5a3e26' } } },   // lot 13 : vieil elfe ermite (robe rapiécée)
   { id: 'cocher', n: 'Le cocher', hat: 'bowler', beard: 'short', stout: 1, serious: 1, eye: '#3a2a20', garments: ['coat', 'fur', 'pipe'], mats: { skin: '#e2a888', top: '#5a3a2a', coat: '#7a5232', fur: '#d8c4a0', pant: '#3a3036', shoe: '#2a2020', hat: '#2a2428', hatBand: '#4a3a30', beard: '#8a8680' } }
 ];

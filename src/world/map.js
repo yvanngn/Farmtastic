@@ -59,7 +59,6 @@ export function ground(x, y) {
   return isPond(x, y) ? 'water' : isPlot(x, y) ? 'soil' : isPath(x, y) ? 'path' : 'grass';
 }
 
-import { quarryMouthOpen } from './quarrymouth.js';
 import { tileAt, SOLID_TILES, FOREST_CHEST, syncForest } from './scenes.js';
 import { AXE_GROVE, BIG_TREE } from '../data/repairs.js';
 import { BUSHES } from '../data/recipes.js';
@@ -77,7 +76,7 @@ export function isSolid(S, x, y) {
   if (S.scene === 'foret' && x === FOREST_CHEST.x && y === FOREST_CHEST.y) return true;   // lot 8 : le coffre du labyrinthe
   if (S.scene === 'foret' && S.foret && S.foret.shrooms && S.foret.shrooms[x + ',' + y]) return false;
   if (S.scene === 'foret' && S.foret && ((S.foret.cut && S.foret.cut[x + ',' + y] != null && (S.year - 1) * 120 + S.season * 30 + S.day - S.foret.cut[x + ',' + y] < 4) || (S.foret.gone && S.foret.gone[x + ',' + y] === (S.year - 1) * 4 + S.season))) return false;   // arbre coupé : souche 4 jours, ou souche arrachée jusqu'à la saison suivante (19/11)
-  if (S.scene && S.scene !== 'farm') { const t = tileAt(S.scene, x, y); if (t === '%') return !quarryMouthOpen(S, x, y);   // 19/11 : bouche de tunnel ouverte ce jour-là
+  if (S.scene && S.scene !== 'farm') { const t = tileAt(S.scene, x, y);
     if (S.scene === 'grange' && (t === 'p' || t === 'r') && S.grange && S.grange.broken.includes(x + ',' + y)) return false; return SOLID_TILES.includes(t); }
   if (x < 0 || y < 0 || x >= CFG.W || y >= CFG.H) return true;
   return isPond(x, y) || isHouse(x, y) || isGrange(x, y) || isCliff(x, y) || isMystHouse(x, y) || isFranckHouse(x, y) || isLunaHouse(x, y) || !!buildingAt(S.built, x, y) || isGate(x, y) || isFence(x, y, S.built) || isBin(x, y) || !!(S.objs && S.objs[key(x, y)]);

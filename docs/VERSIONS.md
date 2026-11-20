@@ -2,6 +2,7 @@
 
 Semver horodaté (heure de Paris). Patch automatique à chaque publication ; mineure et majeure sur décision de l'utilisateur.
 
+- **0.1.102** — 2026-11-21 00:10 — Simplet le mineur, ancienne carrière profonde retirée, filons plus rares
 - **0.1.101** — 2026-11-21 00:00 — Lot 29 : carrière en dédale, énorme rocher, mineur et sa lettre
 - **0.1.100** — 2026-11-20 21:59 — Plus de nom au-dessus de Suzie et des vendeurs
 - **0.1.99** — 2026-11-20 16:49 — Niveaux hauts adoucis, décharge 50 %, revente aux marchands 75 %, nourriture énergie + vie

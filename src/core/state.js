@@ -79,6 +79,8 @@ export function migrate(raw) {
   if (s.inv) delete s.inv.igor_bijou;   // 17/11 : quête du bijou d'Igor supprimée
   if (s.objs && !Object.values(s.objs).some(o => o && o.t === 'bigtree')) s.objs['6,30'] = { t: 'bigtree' };   // Farmwest : le grand arbre de la ferme
   for (const [o, n] of [['soupe_baies', 'confiture_baies'], ['soupe_mures', 'confiture_mures']]) if (s.inv && s.inv[o]) { s.inv[n] = (s.inv[n] || 0) + s.inv[o]; delete s.inv[o]; }   // 16/11 : soupes → confitures
+  if (s.scene === 'carriere2') { s.scene = 'carriere'; s.x = 23.5; s.y = 38.6; }   // 21/11 : l'ancienne carrière profonde n'existe plus
+  if (s.nature) delete s.nature.carriere2;
   s.v = CFG.VERSION;
   return s;
 }

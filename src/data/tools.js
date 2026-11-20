@@ -27,7 +27,6 @@ export const SKILL_NAMES = { mining: '⛏️ Minage', wood: '🪓 Bûcheron' };
 export const WOOD_GAIN = { hit: 2, tree: 5, stump: 2, blocker: 3 };   // 💡 XP de bûcheron
 export const NEED = {
   boulder: ['mining', 3],      // gros caillou (bordure de la carrière) 💡
-  mouth: ['mining', 3],        // rocher devant une bouche de la carrière profonde 💡
   forestTree: ['wood', 3],     // l'arbre tombé qui barre la forêt 💡
   vein: { tin: 4, copper: 3, zinc: 4, iron: 5, cobalt: 6, nickel: 7, silver: 8, gold: 10 }   // niveau de minage par filon
 };

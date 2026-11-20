@@ -149,10 +149,9 @@ import { eating, EAT_MS } from '../systems/player.js';
 import { itemArt } from './itemart.js';
 const ART_IM = {};
 const artImage = id => { if (ART_IM[id] !== undefined) return ART_IM[id]; const u = itemArt(id); if (!u) return (ART_IM[id] = null); const im = new Image(); im.src = u; return (ART_IM[id] = im); };
-import { quarryMouthOpen } from '../world/quarrymouth.js';
 import { BIG_ROCK } from '../world/scenes.js';
 import { ROCK_HITS } from '../systems/bigrock.js';
-import { QUARRY_MOUTHS, STAND_POS, DUMP_POS, SHOP_VENDOR, VENDOR_POS } from '../world/scenes.js';
+import { STAND_POS, DUMP_POS, SHOP_VENDOR, VENDOR_POS } from '../world/scenes.js';
 import { IGOR, HARRY, SUZIE } from '../data/npcs.js';
 import { suzieAtStand, SUZIE_STAND } from '../systems/etal.js';
 import { PICKUPS, isBroken } from '../systems/grange.js';
@@ -337,7 +336,7 @@ let swing = null;
     if (cacheSeason !== S.season || cacheScene !== scene || (scene === 'foret' && cacheForest !== forestKey)) {   // lot 11 : nouveau labyrinthe
       cacheForest = forestKey;
       SIGN_SINK.list = [];
-      cache = outside ? farmGround() : scene === 'wild' ? (interiors['wild' + S.season] ||= buildWild(S.season)) : scene === 'foret' ? (interiors['foret' + forestKey + ':' + S.season] ||= buildWild(S.season, 'foret')) : scene === 'town' ? (interiors['town' + S.season] ||= buildTown(S.season)) : scene === 'quartier' ? (interiors['quartier' + S.season] ||= buildQuartier(S.season)) : (scene === 'montagne' || scene === 'plage') ? (interiors[scene] ||= buildBiome(scene, S.season)) : scene === 'parc' ? (interiors['parc' + S.season] ||= buildParc(S.season)) : (scene === 'carriere' || scene === 'carriere2') ? (interiors[scene + S.season] ||= buildQuarry(scene, S.season)) : (scene === 'rondpoint' || scene === 'place' || scene === 'route' || scene === 'route_ville' || scene === 'route_plage' || scene === 'ranch' || scene === 'port' || scene === 'gare' || scene === 'golgolas' || /^farm:\d$/.test(scene)) ? (interiors[scene + S.season] ||= buildWest(scene, S.season)) : (scene === 'resto' ? (interiors['resto' + !!(S.resto && S.resto.oven)] ||= buildInterior(scene, S)) : (scene === 'house' || scene === 'maison') ? (interiors[scene + !!S.workbench + (S.bed !== false)] ||= buildInterior(scene, S)) : (interiors[scene] ||= buildInterior(scene, S)));
+      cache = outside ? farmGround() : scene === 'wild' ? (interiors['wild' + S.season] ||= buildWild(S.season)) : scene === 'foret' ? (interiors['foret' + forestKey + ':' + S.season] ||= buildWild(S.season, 'foret')) : scene === 'town' ? (interiors['town' + S.season] ||= buildTown(S.season)) : scene === 'quartier' ? (interiors['quartier' + S.season] ||= buildQuartier(S.season)) : (scene === 'montagne' || scene === 'plage') ? (interiors[scene] ||= buildBiome(scene, S.season)) : scene === 'parc' ? (interiors['parc' + S.season] ||= buildParc(S.season)) : scene === 'carriere' ? (interiors[scene + S.season] ||= buildQuarry(scene, S.season)) : (scene === 'rondpoint' || scene === 'place' || scene === 'route' || scene === 'route_ville' || scene === 'route_plage' || scene === 'ranch' || scene === 'port' || scene === 'gare' || scene === 'golgolas' || /^farm:\d$/.test(scene)) ? (interiors[scene + S.season] ||= buildWest(scene, S.season)) : (scene === 'resto' ? (interiors['resto' + !!(S.resto && S.resto.oven)] ||= buildInterior(scene, S)) : (scene === 'house' || scene === 'maison') ? (interiors[scene + !!S.workbench + (S.bed !== false)] ||= buildInterior(scene, S)) : (interiors[scene] ||= buildInterior(scene, S)));
       if (!cache.__signs) cache.__signs = SIGN_SINK.list; SIGN_SINK.list = null;   // enseignes de ce décor
       if (cacheSeason !== S.season) initWeather();
       cacheSeason = S.season; cacheScene = scene;
@@ -354,7 +353,7 @@ let swing = null;
     ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.fillStyle = '#16121f'; ctx.fillRect(0, 0, cv.width, cv.height);
     ctx.setTransform(scale, 0, 0, scale, -camX * scale, -camY * scale);
     if (sky && (camX < 0 || camY < 0 || camX + vw > MW || camY + vh > MH)) {   // 20/11 : au-delà du bord, des arbres (ou des rochers) plutôt que du noir
-      const pat = edgePattern(scene === 'carriere' || scene === 'carriere2' || scene === 'montagne' ? 'roche' : 'bois', S.season);
+      const pat = edgePattern(scene === 'carriere' || scene === 'montagne' ? 'roche' : 'bois', S.season);
       if (pat) { ctx.fillStyle = pat; const x0 = Math.floor(camX) - T, y0 = Math.floor(camY) - T, x1 = camX + vw + T, y1 = camY + vh + T;
         if (x0 < 0) ctx.fillRect(x0, y0, -x0, y1 - y0); if (x1 > MW) ctx.fillRect(MW, y0, x1 - MW, y1 - y0);
         if (y0 < 0) ctx.fillRect(0, y0, MW, -y0); if (y1 > MH) ctx.fillRect(0, MH, MW, y1 - MH); }
@@ -606,10 +605,6 @@ let swing = null;
       R2(24, 6, 7, 8, '#7a5a3a'); R2(25, 7, 5, 6, '#9a7246'); R2(26, 3, 3, 3, '#6d737a');   // tonneau et vieux seau
       R2(5, 6, 14, 5, '#f4ead2'); R2(7, 8, 2, 1, '#3e8a3a'); R2(11, 7, 2, 3, '#3e8a3a'); R2(15, 8, 2, 1, '#3e8a3a');   // pancarte ♻
     } });
-    if (scene === 'carriere') for (const m of QUARRY_MOUTHS) if (quarryMouthOpen(S, m.x, m.y)) list.push({ z: m.y + .1, d: () => {   // 19/11 : la bouche de tunnel ouverte aujourd'hui
-      const x = m.x * T, y = m.y * T; ctx.fillStyle = '#4a2a1a'; ctx.fillRect(x - 3, y - 2, 22, 18); ctx.fillStyle = '#120a08'; ctx.fillRect(x - 1, y + 2, 18, 14); ctx.fillRect(x + 1, y, 14, 2);
-      ctx.fillStyle = '#6a4a2a'; ctx.fillRect(x - 3, y - 2, 3, 18); ctx.fillRect(x + 16, y - 2, 3, 18); ctx.fillRect(x - 3, y - 3, 22, 3);   // étais en bois
-      const t = (now / 300) % 1; ctx.fillStyle = `rgba(255,220,120,${.25 + .2 * Math.sin(now / 200)})`; ctx.fillRect(x + 6, y + 8, 4, 4); } });
     { const p = roxPos(g.npcs.rouky); if (p && p.scene === scene) list.push({ z: p.y, d: () => drawAnimal(ctx, { type: 'dog', x: p.x, y: p.y, moving: false }, now, null) }); }   // lot 12 : Rox, le chien de Rouky
     { const M = S.mounds && S.mounds[scene]; if (M) for (const k in M.at) { const [x, y] = k.split(',').map(Number); if (x >= x0 - 1 && x <= x1 + 1 && y >= y0 - 1 && y <= y1 + 1) list.push({ z: y + .2, d: () => drawMound(ctx, x, y) }); } }   // lot 12 : petits tas à creuser
     for (const id in g.others) { const o = g.others[id]; if (!o.look || (o.scene || 'farm') !== scene) continue; list.push({ z: o.y, d: () => { drawChar(ctx, Math.round(o.x * T - 6), Math.round(o.y * T - 19), o.look, o.dir, o.f, now + 777); label(o.name, o.x * T, o.y * T - 25); } }); }
