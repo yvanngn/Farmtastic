@@ -263,6 +263,11 @@ Décrit par l'utilisateur : cabane à moitié prix ; journal dans la cabane (200
 - [x] Étapes des quêtes : couleurs foncées lisibles sur le papier beige.
 - [ ] 💡 À valider : 24 coups pour un gros caillou de bordure, 3 jours de repousse, filons de la carrière profonde (étain 15 %, fer 50 %, or 35 %).
 
+## Lot 27 — Routes du centre-ville, boutons, arbres (demande du 20/11) ✅ v0.1.91
+- [x] Route entre le centre-ville et le rond-point ; route du centre-ville (sud) jusqu'à la cabane du pêcheur, tout en bas (sous le ranch), port à l'est de la cabane.
+- [x] 💾 Sauvegarder dans les réglages ; ⚙ Réglages dans le menu (onglet).
+- [x] Bug : sur un arbre dehors, le héros parlait d'une « table en bois ».
+
 ## Lot 26 — Disposition complète, compétences exponentielles, grange en planches, paysage, barres de vie (demande du 20/11) ✅ v0.1.90
 - [x] Minage / bûcheron exponentiels (niveau 2 : 40 XP, niveau 10 : 28 000 XP 💡).
 - [x] Fermes 1-3 : grange aussi en tas de planches.

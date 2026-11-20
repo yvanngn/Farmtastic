@@ -691,3 +691,23 @@ openDoors('place', [[25, 8], [25, 9]], 'route', { x: 1.6, y: 5.9 }, line(13, 8, 
 openDoors('montagne', [[0, 8], [0, 9]], 'route', { x: 62.2, y: 5.9 });
 // 20/11 : la carrière profonde est un sous-sol (pas sur la carte de la région)
 SCENES.carriere2.underground = true;
+// 20/11 : routes entre le centre-ville et le rond-point (est), et entre le centre-ville et la cabane du pêcheur (sud) :
+// la plage est tout en bas, sous le ranch.
+function roadLayout(W, H, horiz) {
+  const m = grid(W, H, 's'), ex = [];
+  if (horiz) { for (let x = 0; x < W; x++) { m[4][x] = '.'; m[5][x] = '.'; } ex.push([0, 4], [0, 5], [W - 1, 4], [W - 1, 5]); }
+  else { for (let y = 0; y < H; y++) { m[y][4] = '.'; m[y][5] = '.'; } ex.push([4, 0], [5, 0], [4, H - 1], [5, H - 1]); }
+  for (let y = 1; y < H - 1; y++) for (let x = 1; x < W - 1; x++) if (m[y][x] === 's' && ((x * 37 + y * 17) % 23 === 0)) m[y][x] = 'T';
+  border(m, ex); return m.map(r => r.join(''));
+}
+const retarget = (sc, from, to, spawn) => { for (const d of SCENES[sc].doors) if (d.to === from) { d.to = to; d.spawn = spawn; } };
+LAYOUTS.route_ville = roadLayout(40, 10, true);
+SCENES.route_ville = { W: 40, H: 10, outdoor: true, doors: [{ x: 0, y: 4, to: 'town', spawn: { x: 32.2, y: 10.6 } }, { x: 0, y: 5, to: 'town', spawn: { x: 32.2, y: 10.6 } },
+  { x: 39, y: 4, to: 'rondpoint', spawn: { x: 1.6, y: 8.9 } }, { x: 39, y: 5, to: 'rondpoint', spawn: { x: 1.6, y: 8.9 } }] };
+retarget('town', 'rondpoint', 'route_ville', { x: 1.6, y: 4.9 });
+retarget('rondpoint', 'town', 'route_ville', { x: 38.2, y: 4.9 });
+LAYOUTS.route_plage = roadLayout(10, 44, false);
+SCENES.route_plage = { W: 10, H: 44, outdoor: true, doors: [{ x: 4, y: 0, to: 'town', spawn: { x: 20.5, y: 29.8 } }, { x: 5, y: 0, to: 'town', spawn: { x: 20.5, y: 29.8 } },
+  { x: 4, y: 43, to: 'plage', spawn: { x: 19.9, y: 1.8 } }, { x: 5, y: 43, to: 'plage', spawn: { x: 19.9, y: 1.8 } }] };
+retarget('town', 'plage', 'route_plage', { x: 4.9, y: 1.8 });
+retarget('plage', 'town', 'route_plage', { x: 4.9, y: 42.2 });

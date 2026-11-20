@@ -2,7 +2,7 @@
 import { EXAMINE } from '../data/examine.js';
 import { tileAt } from '../world/scenes.js';
 import { isRepaired } from './repair.js';
-import { QUARTIER, mailboxOwner } from '../world/scenes.js';
+import { QUARTIER, mailboxOwner, SCENES } from '../world/scenes.js';
 import { isMystHouse, isHouse, isGrange, isFence, isPond, isLunaHouse, isFranckHouse, buildingAt } from '../world/map.js';
 
 const MAILBOX = { luna: 'Une boîte aux lettres. Il est écrit dessus : « Luna ».', franck: 'Une boîte aux lettres. Il est écrit dessus : « Franck ».', hailey: 'Une boîte aux lettres. Il est écrit dessus : « Hailey ».', myst: 'Une boîte aux lettres. Il est écrit dessus : « Myst ».', ed: 'Une boîte aux lettres. Il est écrit dessus : « Famille Ed — Ed, Suzie et Jade ».', remy: 'Une boîte aux lettres. Il est écrit dessus : « Remy Gusto ».' };
@@ -38,5 +38,6 @@ export function examineText(S, tx, ty) {
   if (sc === 'wild') return t === 'T' ? K.treeWild : t === '#' ? K.rockWild : null;
   if (sc === 'grange') return t === '#' ? K.rockGrange : t === 'W' ? K.wallGrange : null;
   if ((sc === 'house' || sc === 'maison') && t === 'B') return null; // le lit sert à dormir
+  if (SCENES[sc] && SCENES[sc].outdoor) return t === 'T' ? K.treeTown : null;   // 20/11 : dehors, un « T » est un arbre (pas la table des intérieurs)
   return K[t] || null;
 }

@@ -40,7 +40,7 @@ export function createSettingsPanel(audio, g) {
         <input id="vol-${c.k}" type="range" min="0" max="100" value="${Math.round(s[c.k].vol * 100)}" data-vol="${c.k}">
         <span class="pct">${s[c.k].on ? Math.round(s[c.k].vol * 100) : 0} %</span>
       </div>`).join('') + `
-      ${g.inGame ? '<div class="row" style="justify-content:center"><button data-totitle="1" class="primaire">🏠 Revenir au menu principal</button></div>' : ''}
+      ${g.inGame ? '<div class="row" style="justify-content:center"><button data-save="1" class="primaire">💾 Sauvegarder</button><button data-totitle="1">🏠 Revenir au menu principal</button></div>' : ''}
       <p class="info" style="text-align:center;opacity:.7">Farmwest ${versionLabel()}</p>
       <div class="ecran"><b>📱 Écran</b>
         <div class="row">${Object.entries(ORIENTS).map(([k, v]) => `<button data-orient="${k}" class="${getOrient() === k ? 'on' : ''}">${v}</button>`).join('')}</div>
@@ -62,6 +62,7 @@ export function createSettingsPanel(audio, g) {
   body.addEventListener('click', async e => {
     const d = e.target.dataset;
     if (d.orient) { setOrient(d.orient); audio.play('ui'); if (document.fullscreenElement) toast(await goFullscreen(d.orient)); render(); return; }
+    if (d.save) { audio.play('ui'); g.bus.emit('saveNow'); return; }   // 20/11
     if (d.totitle) { $('#ovSet').classList.remove('on'); g.bus.emit('toTitle'); return; }
     if (d.zoom) { setZoom(+d.zoom); audio.play('ui'); render(); return; }
     if (d.eco != null) { setEco(d.eco === '1'); audio.play('ui'); render(); return; }

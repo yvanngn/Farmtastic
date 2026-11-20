@@ -116,7 +116,7 @@ function wireBus() {
   g.bus.on('openChest', c => chestPanel.open(c));
   g.bus.on('showMap', () => { mapView.open(); toast('🗺️ Le plan est toujours là : bouton 🗺️ en haut à droite (ou touche M).'); });
   g.bus.on('clinic', e => { const h = NPCS.hailey, lines = e && e.off === 'repos' ? h.clinicRepos : e && e.off === 'nuit' ? h.clinicNuit : h.clinic; setTimeout(() => g.bus.emit('say', { name: h.name, color: h.color, voice: h.voice, lines }), 600); });
-  g.bus.on('open', what => what === 'journal' ? menu.openJournal() : what === 'board' ? board.open() : what === 'sell' ? sellPanel.open() : what === 'stand' ? standPanel.open() : what === 'calendar' ? calendarPanel.open() : what === 'quests' ? menu.open('quests', true) : menu.open(what, true));
+  g.bus.on('open', what => what === 'settings' ? settingsPanel.open() : what === 'journal' ? menu.openJournal() : what === 'board' ? board.open() : what === 'sell' ? sellPanel.open() : what === 'stand' ? standPanel.open() : what === 'calendar' ? calendarPanel.open() : what === 'quests' ? menu.open('quests', true) : menu.open(what, true));
 }
 wireBus();
 
@@ -234,6 +234,7 @@ addEventListener('keydown', e => {
 });
 
 $('#bSave').onclick = () => doSave(true);
+g.bus.on('saveNow', () => doSave(true));   // 20/11 : bouton 💾 dans les réglages
 // Intro : ⏩ maintenir pour accélérer, ⏭ passer jusqu'à la ferme
 { const f = $('#bIntroFast'), on = v => { g.introFast = v; f.classList.toggle('on', v); };
   f.addEventListener('pointerdown', e => { e.preventDefault(); on(true); }); for (const ev of ['pointerup', 'pointerleave', 'pointercancel']) f.addEventListener(ev, () => on(false));

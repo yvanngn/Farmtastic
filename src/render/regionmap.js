@@ -16,7 +16,7 @@ const FARM_AT = { 0: { x: 44, y: 10, w: 7, h: 6 }, 1: { x: 30, y: 12, w: 6, h: 4
 export const FARM_RECT = l => FARM_AT[l.id] || FARM_AT[0];
 export const REGION_POS = {
   gare: [9, 18], golgolas: [8, 27], carriere: [55, 4], carriere2: [55, 4], place: [39, 16], town: [24, 22], resto: [24, 22], bar: [24, 22], rondpoint: [44, 19], quartier: [51, 23], ranch: [50, 29],
-  parc: [48, 38], plage: [27, 40], port: [74, 41], foret: [61, 14], wild: [79, 5], montagne: [79, 17], route: [62, 16]
+  parc: [48, 38], plage: [27, 40], port: [74, 41], foret: [61, 14], wild: [79, 5], montagne: [79, 17], route: [62, 16], route_ville: [34, 20], route_plage: [24, 32]
 };
 export function regionPos(S) {
   const p = REGION_POS[S.scene];

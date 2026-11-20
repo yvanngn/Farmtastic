@@ -38,7 +38,7 @@ import { NEED, SKILL_NAMES, SKILL_MAX } from '../data/tools.js';
 import { VEINS } from '../data/nature.js';
 
 const JTABS = { journal: '📝 Activités', quests: '⭐ Quêtes en cours', social: '💞 Liens', histoire: '📖 Histoire' };   // 19/11 : onglets du journal
-const TABS = { sac: 'Sac', equip: '🎽 Équipement', poissons: '🐟 Poissons', metiers: '🧑‍🔧 Métiers', forge: 'Forge', social: 'Liens' };   // 19/11 : recettes et quêtes ont leur bouton près de l'action
+const TABS = { sac: 'Sac', equip: '🎽 Équipement', poissons: '🐟 Poissons', metiers: '🧑‍🔧 Métiers', forge: 'Forge', social: 'Liens', reglages: '⚙ Réglages' };   // 20/11 : les réglages (et la sauvegarde) passent dans le menu   // 19/11 : recettes et quêtes ont leur bouton près de l'action
 const TITLES = { recettes: '🛠️ Recettes', quests: '⭐ Quêtes', poissons: '🐟 Carnet de pêche', market: '🏪 Marché', upgrades: '🧰 Magasin d\'amélioration', carpenter: '🪚 Charpentier', workshop: '🛠️ Établi', animals: '🐾 Marchand d\'animaux', bakery: '🥖 Boulangerie', igorShop: '⚒️ Boutique d’Igor', butcher: '🥩 Boucherie', fishmonger: '🐟 Poissonnerie' };
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 const it = id => ITEMS[id] || { n: id, i: '❔', p: 0 };
@@ -218,7 +218,7 @@ export function createMenu(g, opts) {
     $('#tabBody').innerHTML = prof + code + views[tab](g.S);
     if (tab === 'market') renderPlayers();
   }
-  $('#tabs').onclick = e => { const t = e.target.dataset.t; if (t) { tab = t; if (jmode) setJournalTab(g.S, t); audio.play('ui'); render(); } };   // 19/11 : l'onglet du journal est gardé dans la sauvegarde
+  $('#tabs').onclick = e => { const t = e.target.dataset.t; if (t === 'reglages') { $('#ovBag').classList.remove('on'); audio.play('ui'); g.bus.emit('open', 'settings'); return; } if (t) { tab = t; if (jmode) setJournalTab(g.S, t); audio.play('ui'); render(); } };   // 19/11 : l'onglet du journal est gardé dans la sauvegarde
   $('#tabBody').addEventListener('click', e => {
     for (const k in handlers) { const v = e.target.dataset[k]; if (v != null) { handlers[k](v); render(); return; } }
   });

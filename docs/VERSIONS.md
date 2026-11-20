@@ -2,6 +2,7 @@
 
 Semver horodaté (heure de Paris). Patch automatique à chaque publication ; mineure et majeure sur décision de l'utilisateur.
 
+- **0.1.91** — 2026-11-20 11:24 — Routes centre-ville ↔ rond-point et centre-ville ↔ cabane du pêcheur, sauvegarde dans les réglages et réglages dans le menu, plus de « table en bois » sur les arbres
 - **0.1.90** — 2026-11-20 11:12 — Disposition complète (longue route, ranch au sud du quartier, fête foraine à l'est du ranch, port par la cabane du pêcheur, sorties de la ferme au milieu), compétences exponentielles, grange en planches, paysage auto, barres de vie et d'énergie
 - **0.1.89** — 2026-11-20 10:31 — Compétences minage et bûcheron au lieu des paliers d'outils, filons zinc / cobalt / nickel / argent, fête foraine à une seule entrée ouverte le jour 30, simulation du blé avec l'étal, carte réelle
 - **0.1.88** — 2026-11-20 10:14 — Train fourni, Remy et Myst, chemin de Myst visible, caméra qui suit jusqu'aux bords, cadre toujours affiché, simulateur d'équilibrage (docs/SIMULATION.md)
