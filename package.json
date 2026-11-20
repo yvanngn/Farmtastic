@@ -9,6 +9,7 @@
     "check": "node --check src/main.js",
     "serve": "python3 -m http.server 8080",
     "simulate": "node tools/simulate.mjs",
-    "carte": "node tools/world-map.mjs && python3 tools/world-map.py"
+    "carte": "node tools/world-map.mjs && python3 tools/world-map.py",
+    "equilibrage": "node tools/equilibrage.mjs"
   }
 }

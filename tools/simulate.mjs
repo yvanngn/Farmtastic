@@ -2,6 +2,8 @@
 // Il « joue » des journées entières en accéléré avec un joueur-type (hypothèses ci-dessous, modifiables), en lisant les
 // VRAIES valeurs du jeu (src/data, src/systems, src/config) : rien n'est recopié, chaque réglage se voit dans le résumé.
 // Sortie : docs/SIMULATION.md.   Lancer : npm run simulate   ou   node tools/simulate.mjs [jours=120] [graine=12345]
+// Options (20/11, pour le compte rendu d'équilibrage) : --profil=tranquille|moyen|acharne (joueur-type), --out=fichier.md,
+// --json=fichier.json (toutes les données de la partie, lues par le skill « compte-rendu-equilibrage »).
 import { writeFileSync, readFileSync } from 'node:fs';
 import { CFG } from '../src/config.js';
 import { LEVELS, XP, MAX_LEVEL } from '../src/systems/level.js';
@@ -22,7 +24,8 @@ import { OVEN_COST } from '../src/systems/resto.js';
 import { SEED_GIFT } from '../src/systems/mail.js';
 import { FOREST_TREE_HP } from '../src/systems/blockers.js';
 
-const DAYS = +(process.argv[2] || 120), SEED = +(process.argv[3] || 12345);
+const ARGS = process.argv.slice(2), POS = ARGS.filter(a => !a.startsWith('--')), OPT = Object.fromEntries(ARGS.filter(a => a.startsWith('--')).map(a => { const [k, v = '1'] = a.slice(2).split('='); return [k, v]; }));
+const DAYS = +(POS[0] || 120), SEED = +(POS[1] || 12345), PROFIL = OPT.profil || 'moyen';
 
 // ---------- Hypothèses sur le joueur-type (à adapter) ----------
 const P = {
@@ -43,6 +46,14 @@ const P = {
   stockDays: 2,            // n'agrandit plus le champ si le stock invendu dépasse ce nombre de jours de ventes
   grind: true,             // une fois les objectifs atteints : couper / casser pour l'XP (le surplus va à l'étal)
 };
+// Profils de joueur (20/11) : on ne change que ce qui distingue leur façon de jouer.
+const PROFILS = {
+  tranquille: { bedtime: 20 * 60, walkTree: 4, walkRock: 3, tripQuarry: 55, tripPlace: 40, tripTown: 160, standDay: 0, grind: false },
+  moyen: {},
+  acharne: { bedtime: 23 * 60 + 30, walkTree: 2, walkRock: 1.5, tripQuarry: 30, tripPlace: 22, tripTown: 90, standDay: 2, standFast: 2 },
+};
+if (!PROFILS[PROFIL]) { console.error('Profil inconnu : ' + PROFIL + ' (tranquille, moyen, acharne)'); process.exit(1); }
+Object.assign(P, PROFILS[PROFIL]);
 const ARBRES_FORET = 60;   // 💡 arbres adultes de la forêt une fois ouverte (estimation)
 
 // ---------- Valeurs lues dans le jeu ----------
@@ -172,7 +183,7 @@ const version = JSON.parse(readFileSync(new URL('../package.json', import.meta.u
 const cnt = k => days.filter(d => d.ended === k).length, lim = k => days.filter(d => d.limits.includes(k)).length;
 const totalIncome = Object.values(income).reduce((a, b) => a + b, 0), share = ids => Math.round(ids.reduce((a, id) => a + (income[id] || 0), 0) / Math.max(1, totalIncome) * 100);
 const L = [];
-L.push(`# Simulation de Farmwest`, '', `Générée par \`node tools/simulate.mjs ${DAYS} ${SEED}\` (version ${version}). Un joueur-type joue ${DAYS} jours de jeu en accéléré ;`,
+L.push(`# Simulation de Farmwest`, '', `Générée par \`node tools/simulate.mjs ${DAYS} ${SEED} --profil=${PROFIL}\` (version ${version}). Un joueur-type joue ${DAYS} jours de jeu en accéléré ;`,
   `les valeurs viennent du jeu lui-même : changer un réglage puis relancer la simulation suffit.`, '',
   '## Hypothèses du joueur-type', '', ...Object.entries(P).map(([k, v]) => `- \`${k}\` = ${v}`), `- forêt : ${ARBRES_FORET} arbres adultes une fois ouverte (💡 estimation)`,
   `- Une journée jouée = ${Math.round(DAY_S / 6) / 10} min réelles au plus (6 h → ${P.bedtime / 60} h), ${Math.round(MIN_DAY_S / 6) / 10} min au moins (on ne dort pas avant 18 h). Énergie : 100 par jour.`,
@@ -204,5 +215,10 @@ L.push('## Où régler', '', '| Réglage | Fichier |', '|---|---|',
   '| Réparations (`REPAIRS`, `REPAIR_STEP`, `REPAIR_ENERGY`) | src/data/repairs.js, src/systems/repair.js |',
   '| Prix (`ITEMS[id].p`, `.buy`), cultures (`CROPS`), graines offertes (`SEED_GIFT`), étal (`STAND_CAP`, `PRICE_STEPS`) | src/data/items.js, src/data/crops.js, src/systems/mail.js, src/systems/stand.js |',
   '| Hypothèses du joueur-type (`P`) | tools/simulate.mjs |', '');
-writeFileSync(new URL('../docs/SIMULATION.md', import.meta.url), L.join('\n'));
-console.log(`docs/SIMULATION.md : ${DAYS} jours, ${log.length} étapes, niveau ${levelOf(S.xp)}, ${Math.round(S.money)} $`);
+writeFileSync(OPT.out || new URL('../docs/SIMULATION.md', import.meta.url), L.join('\n'));
+if (OPT.json) writeFileSync(OPT.json, JSON.stringify({ version, profil: PROFIL, seed: SEED, daysCount: DAYS, hypotheses: P,
+  world: { farmTrees, quarryRocks: Q.rocks, rocksPerDay: Q.rocksDay, veinsMax: Q.veins, boulders: BOULDERS, standCap: STAND_CAP, forestTrees: ARBRES_FORET, dayMinutes: Math.round(DAY_S / 6) / 10 },
+  levels: LEVELS, maxLevel: MAX_LEVEL, skillMax: SKILL_MAX, goals: GOALS.map(G => ({ id: G.id, n: G.n, day: S.done[G.id] || null })),
+  milestones: log, reached: S.done, days, income, spent,
+  final: { money: Math.round(S.money), level: levelOf(S.xp), xp: S.xp, mining: skill('mining'), wood: skill('wood'), field: S.field, stock: Math.round(stockN()), playMinutes: Math.round(S.playS / 60) } }, null, 1));
+console.log(`${OPT.out || 'docs/SIMULATION.md'} (${PROFIL}) : ${DAYS} jours, ${log.length} étapes, niveau ${levelOf(S.xp)}, ${Math.round(S.money)} $`);

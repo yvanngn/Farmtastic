@@ -18,6 +18,10 @@
 - Rendu : sol statique pré-rendu, culling des tuiles visibles, HUD ≤ 4×/s.
 - Toute fonctionnalité ou correction = un test dans le fichier du système concerné. Lancer uniquement ce fichier.
 
+## Équilibrage (règle de l'utilisateur, 20/11)
+- Compte rendu d'équilibrage **seulement quand l'utilisateur le demande** (skill « compte-rendu-equilibrage ») : `node tools/equilibrage.mjs [jours] [graines]` (ou `npm run equilibrage`) lance le moteur `tools/simulate.mjs` pour 3 profils (tranquille, moyen, acharné) × 3 parties, écrit les constats chiffrés dans `docs/EQUILIBRAGE.md` et l'historique dans `docs/equilibrage/<date>.json`. Claude complète la partie « Analyse et recommandations ». Ne jamais changer une valeur du jeu sans l'accord de l'utilisateur.
+- Quand un système du jeu change (prix, XP, énergie, nouvelle activité), mettre à jour `tools/simulate.mjs` s'il le concerne, pour que la simulation reste fidèle.
+
 ## Dialogues (règle de l'utilisateur)
 - Toutes les répliques des PNJ sont dans `src/data/npcs.js`. `node tools/export-dialogues.mjs` écrit `docs/DIALOGUES.md` avec 🆕 sur les répliques non validées et affiche leur nombre.
 - Le document reprend aussi (20/11) : toutes les autres répliques des PNJ (quêtes : étal de Suzie, chaudron de Remy…, repérées automatiquement), les titres et étapes des quêtes (`src/systems/quests.js`), le courrier (`mail.js`, `golgolas.js`), les conseils de tuto (`tip(g, 'id', '…')`) et les messages à l'écran à texte fixe (`emit('toast', '…')`). Écrire ces textes en chaîne simple (sans `${}`) pour qu'ils soient repris ; ne jamais mettre 🆕 dans le texte du jeu.
