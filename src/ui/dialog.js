@@ -16,7 +16,7 @@ export function createDialog(g, audio) {
     textEl.textContent = cur.line;
     choicesEl.innerHTML = cur.choices ? cur.choices.map((c, i) => `<button data-c="${i}">${c}</button>`).join('') : '';
     $('#dlgNext').style.display = cur.choices || !queue.length ? 'none' : '';   // ▸ seulement s'il y a une suite (comme Witch'rok)
-    box.classList.toggle('haut', introActive(g.S));   // au début (gare, diligence) : la bulle s'affiche en haut, la scène reste visible
+    box.classList.toggle('haut', introActive(g.S) || (typeof matchMedia !== 'undefined' && matchMedia('(pointer: coarse)').matches));   // 20/11 : sur téléphone, les bulles (tuto…) restent en haut, loin des commandes   // au début (gare, diligence) : la bulle s'affiche en haut, la scène reste visible
     box.classList.remove('on'); void box.offsetWidth; box.classList.add('on');
     if (cur.voice) audio.play(cur.voice);
   }

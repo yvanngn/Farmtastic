@@ -56,6 +56,7 @@ import { isLunaLot } from './world/map.js';
 import { isPath, isGate } from './world/map.js';
 import { createPlayerMarket } from './net/market.js';
 import { facingTile } from './systems/movement.js';
+import { aimTile } from './systems/reach.js';
 import { attack } from './systems/combat.js';
 import { consume } from './systems/player.js';
 import { ensureOrders } from './systems/market.js';
@@ -217,6 +218,13 @@ function doAction() {
   const fireNear = (S.fires || []).some(f => Math.hypot(f.x + .5 - S.x, f.y + .5 - S.y) < 2.2);
   if (fireNear && COOK[S.sel]) { const f = fireAt(S, ft.tx, ft.ty) ? { x: ft.tx, y: ft.ty } : S.fires.find(f => Math.hypot(f.x + .5 - S.x, f.y + .5 - S.y) < 2.2); act(g, f.x, f.y); return; }   // 19/11 : près du feu, les baies se grillent (au lieu d'être mangées)
   if (it && it.eat && !it.seed) { if (consume(g, S.sel)) audio.play('feed'); return; }
+  if (S.sel === 'axe' || S.sel === 'pick') {   // 20/11 : on vise la cible la plus proche ; sinon, coup dans le vide
+    const aim = aimTile(S, S.sel, ft);
+    if (aim) { act(g, aim.tx, aim.ty); return; }
+    const r = act(g, ft.tx, ft.ty);
+    if (!r || r === 'none' || r === 'look') { g.bus.emit('swing', S.sel); audio.play('swish'); }
+    return;
+  }
   act(g, ft.tx, ft.ty);
 }
 const controls = createControls(g, input, { onAct: doAction, onTools: () => wheel.open('tools'), onItems: () => invGrid.open() });

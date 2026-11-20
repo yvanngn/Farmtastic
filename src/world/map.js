@@ -27,7 +27,7 @@ export const isGrange = (x, y) => inRect(x, y, 10, 1, 13, 4);
 export const isGate = (x, y) => x === 16 && y === 35; // portail vers le village
 export const isFence = (x, y, built) => inRect(x, y, 18, 6, 33, 13) && !isPen(x, y) && !(x === 18 && y === 9) && !buildingAt(built, x, y);
 export const isPond = (x, y) => ((x - 12) ** 2) / 25 + ((y - 24) ** 2) / 9 < 1;
-export const isPath = (x, y) => (y === 5 && x >= 2 && x <= 47) || (y === 20 && x >= 3 && x <= 15) || (x === 42 && y === 4) || (x === 16 && y >= 0 && y <= 35) || (y === 9 && x === 17)
+export const isPath = (x, y) => (y === 5 && x >= 2 && x <= 42) || (y === 20 && x >= 3 && x <= 15) || (x === 42 && y === 4) || (x === 16 && y >= 0 && y <= 35) || (y === 9 && x === 17)
   || (y >= 33 && x >= 15 && x <= 17) || (y === 18 && x >= 1 && x <= 46) || (x >= 45 && y >= 17 && y <= 19) || (x <= 2 && y >= 17 && y <= 19);   // 20/11 : sorties est (forêt) et ouest (ferme de l'Ouest) au milieu
 export const isForest = (x) => x >= 34;
 // Haies sur les bords de la ferme qui ne mènent nulle part (bas et droite), pour voir où sont les sorties.
@@ -115,5 +115,23 @@ export function genObjects(seed = 12345) {
   for (const [x, y] of AXE_GROVE) o[key(x, y)] = newTree(KINDS[(x + y) % 3]);   // petit bois du sud
   for (const [dx, dy] of [[0, 0], [1, 0], [0, 1], [1, 1], [-1, 1], [-1, 0], [1, 2], [0, 2], [-1, 2]]) delete o[key(BIG_TREE.x + dx, BIG_TREE.y + dy)];
   o[key(BIG_TREE.x, BIG_TREE.y)] = { t: 'bigtree' };   // le grand arbre (incassable) ; la hache est posée à son pied
+  return clearAxeAccess(o);
+}
+// 20/11 (demande de l'utilisateur) : la hache doit toujours être accessible depuis l'entrée sud de la ferme : on retire les
+// arbres sur le chemin le moins boisé (le joueur n'a pas encore de hache pour les couper).
+export const AXE_GOALS = [[8, 31], [7, 32], [6, 31], [7, 30]];   // cases d'où l'on prend la hache (en 7,31)
+export function clearAxeAccess(o, from = [16, 33]) {
+  const S0 = { scene: 'farm', objs: {}, built: {} }, W = CFG.W, H = CFG.H, cost = new Map(), prev = new Map(), K = (x, y) => x + ',' + y;
+  const dq = [[from[0], from[1]]]; cost.set(K(...from), 0);
+  while (dq.length) {   // 0-1 BFS : une case avec un arbre coûte 1, sinon 0
+    const [x, y] = dq.shift(), c = cost.get(K(x, y));
+    for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) {
+      const nx = x + dx, ny = y + dy, k = K(nx, ny); if (nx < 0 || ny < 0 || nx >= W || ny >= H || isSolid(S0, nx, ny)) continue;
+      const ob = o[k], w = ob ? (ob.t === 'tree' || ob.t === 'stump' ? 1 : 1e6) : 0, nc = c + w;
+      if (nc < (cost.get(k) ?? Infinity)) { cost.set(k, nc); prev.set(k, K(x, y)); w ? dq.push([nx, ny]) : dq.unshift([nx, ny]); }
+    }
+  }
+  const goal = AXE_GOALS.map(([x, y]) => K(x, y)).filter(k => cost.has(k)).sort((a, b) => cost.get(a) - cost.get(b))[0];
+  for (let k = goal; k; k = prev.get(k)) if (o[k] && (o[k].t === 'tree' || o[k].t === 'stump')) delete o[k];
   return o;
 }

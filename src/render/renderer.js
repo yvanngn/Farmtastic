@@ -150,7 +150,8 @@ import { itemArt } from './itemart.js';
 const ART_IM = {};
 const artImage = id => { if (ART_IM[id] !== undefined) return ART_IM[id]; const u = itemArt(id); if (!u) return (ART_IM[id] = null); const im = new Image(); im.src = u; return (ART_IM[id] = im); };
 import { quarryMouthOpen } from '../world/quarrymouth.js';
-import { QUARRY_MOUTHS, STAND_POS } from '../world/scenes.js';
+import { QUARRY_MOUTHS, STAND_POS, SHOP_VENDOR, VENDOR_POS } from '../world/scenes.js';
+import { IGOR, HARRY } from '../data/npcs.js';
 import { PICKUPS, isBroken } from '../systems/grange.js';
 import { buildWild, drawMob, drawZRock, drawShroom, drawForestTree } from './wild.js';
 import { MUSHROOMS } from '../data/items.js';
@@ -166,6 +167,16 @@ function drawBigTree(c, x, y, season, now) {
   for (const [bx, by, r] of [[-16, -36, 13], [16, -36, 13], [0, -44, 16], [-9, -54, 11], [10, -54, 11], [0, -62, 10]]) blob(bx, by, r, L[0]);
   for (const [bx, by, r] of [[-14, -40, 9], [14, -40, 9], [-2, -48, 11], [-7, -58, 7], [7, -58, 7]]) blob(bx, by, r, L[1]);
   for (const [bx, by, r] of [[-17, -44, 4], [9, -46, 5], [-5, -60, 4], [3, -52, 3]]) blob(bx, by, r, L[2]);
+}
+// 20/11 : motif de bordure (forêt dense ou roche) pour l'extérieur des zones
+const EDGE_PAT = {};
+function edgePattern(kind, season) {
+  const k = kind + season; if (EDGE_PAT[k] !== undefined) return EDGE_PAT[k];
+  if (typeof document === 'undefined') return null;
+  const c = document.createElement('canvas'); c.width = c.height = 128; const g = c.getContext('2d');
+  if (kind === 'roche') { g.fillStyle = '#5a5058'; g.fillRect(0, 0, 128, 128); for (let i = 0; i < 40; i++) { const x = (i * 53) % 128, y = (i * 37) % 128, r = 6 + (i * 7) % 10; g.fillStyle = ['#6a6068', '#7a7078', '#4a4248'][i % 3]; g.beginPath(); g.ellipse(x, y, r, r * .7, 0, 0, 7); g.fill(); } }
+  else { g.fillStyle = '#2c5a2a'; g.fillRect(0, 0, 128, 128); for (let y = -24; y < 128; y += 14) for (let x = -16; x < 128; x += 16) { const im = treeSprite(season, ((x * 7 + y * 13) & 0xffff) % 4); if (im) g.drawImage(im, x + ((y / 14) % 2 ? 8 : 0) - 8, y - 20); } }
+  return (EDGE_PAT[k] = g.createPattern(c, 'repeat'));
 }
 // Farmwest : locomotive à vapeur qui entre en gare par le nord sur la voie (x1-2) et s'arrête le long du quai.
 function drawLoco(c, t, now, hero, leave = 0) {   // 18/11 (soir) : locomotive et wagons « pixel moderne » (src/render/props.js)
@@ -339,6 +350,12 @@ let swing = null;
     const camX = Math.round(cam.x * scale) / scale, camY = Math.round(cam.y * scale) / scale;
     ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.fillStyle = '#16121f'; ctx.fillRect(0, 0, cv.width, cv.height);
     ctx.setTransform(scale, 0, 0, scale, -camX * scale, -camY * scale);
+    if (sky && (camX < 0 || camY < 0 || camX + vw > MW || camY + vh > MH)) {   // 20/11 : au-delà du bord, des arbres (ou des rochers) plutôt que du noir
+      const pat = edgePattern(scene === 'carriere' || scene === 'carriere2' || scene === 'montagne' ? 'roche' : 'bois', S.season);
+      if (pat) { ctx.fillStyle = pat; const x0 = Math.floor(camX) - T, y0 = Math.floor(camY) - T, x1 = camX + vw + T, y1 = camY + vh + T;
+        if (x0 < 0) ctx.fillRect(x0, y0, -x0, y1 - y0); if (x1 > MW) ctx.fillRect(MW, y0, x1 - MW, y1 - y0);
+        if (y0 < 0) ctx.fillRect(0, y0, MW, -y0); if (y1 > MH) ctx.fillRect(0, MH, MW, y1 - MH); }
+    }
     ctx.imageSmoothingEnabled = false;
     if (!cache.__pal) { const col = scene !== 'wild' && scene !== 'grange'; harmonize(cache, col); for (const o of cache.__over || []) { const k = document.createElement('canvas'); k.width = o.w; k.height = o.h; k.getContext('2d').drawImage(o.im, 0, 0); o.im = harmonize(k, col) || k; } }   // 19/11 : bâtiments retenus, mêmes couleurs que le décor   // lot 11g : palette unique + contours colorés (une fois par décor)
     ctx.drawImage(cache, 0, 0);
@@ -551,6 +568,7 @@ let swing = null;
         R2(-6, 20, 12, 3, '#5a3820'); R2(16, 32, 12, 3, '#5a3820');   // branches cassées
       } }); }
     }
+    if (SC.shop && SHOP_VENDOR[SC.shop]) { const v = { igor: IGOR, harry: HARRY }[SHOP_VENDOR[SC.shop]]; if (v) list.push({ z: VENDOR_POS.y, d: () => { drawChar(ctx, Math.round(VENDOR_POS.x * T - 6), Math.round(VENDOR_POS.y * T - 19), v.look, 0, 0, now); label(v.name, VENDOR_POS.x * T, VENDOR_POS.y * T - 25); } }); }   // 20/11 : le vendeur derrière son comptoir
     if (scene === 'place') list.push({ z: STAND_POS.y + .9, d: () => {   // 19/11 : l'étal de vente, sur la place du panneau
       const x = STAND_POS.x * T, y = STAND_POS.y * T, R2 = (a, b, w, h, k) => { ctx.fillStyle = k; ctx.fillRect(x + a, y + b, w, h); }, lots = (S.stand && S.stand.lots) || [];
       R2(0, 14, 32, 3, 'rgba(30,15,5,.3)');

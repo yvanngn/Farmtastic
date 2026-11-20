@@ -46,7 +46,7 @@ export function createHud(g, controls) {
         for (const el of [arc, v]) { el.classList.toggle('orange', lvl === 'orange'); el.classList.toggle('rouge', lvl === 'rouge'); el.classList.toggle('tremble', r <= SHAKE_FROM); }
         v.querySelector('i').style.height = Math.max(0, r) * 100 + '%';
       }
-      const hpR = Math.max(0, S.hp) / S.maxHp; $('#hHpRow').hidden = hpR >= 1; if (hpR < 1) gauge('hHp', hpR);
+      $('#hHpRow').hidden = true;   // 20/11 : la vie est en haut à droite (plus dans le cadre de gauche)
       // vie : cœurs en haut, seulement en mode combat (Caverne sombre ou monstres proches)
       const fight = S.scene === 'wild' || g.enemies.length > 0, hb = $('#hearts');
       hb.hidden = !fight;

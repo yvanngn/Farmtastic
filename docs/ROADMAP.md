@@ -263,6 +263,14 @@ Décrit par l'utilisateur : cabane à moitié prix ; journal dans la cabane (200
 - [x] Étapes des quêtes : couleurs foncées lisibles sur le papier beige.
 - [ ] 💡 À valider : 24 coups pour un gros caillou de bordure, 3 jours de repousse, filons de la carrière profonde (étain 15 %, fer 50 %, or 35 %).
 
+## Lot 29 — Trajets vérifiés, magasins, visée des outils (demande du 20/11) ✅ v0.1.93
+- [x] Test des trajets (tests/acces.test.js) : chaque sortie dépose sur une case praticable, près de la porte de retour. Corrigés : carrière profonde (arrivée dans la roche), porcherie.
+- [x] Plus de chemins qui ne mènent à rien (élagués automatiquement jusqu'au premier croisement ; test). Passage fermé → message « Ce passage est fermé pour l'instant ».
+- [x] Hache toujours accessible depuis l'entrée de la ferme (arbres retirés du chemin, à la création et à chaque saison ; test sur 60 graines).
+- [x] Outils : on vise l'arbre / le caillou le plus proche devant soi (jusqu'à 1,9 case) ; sans cible, coup dans le vide.
+- [x] Magasins du centre-ville : on entre, comptoir, vendeur derrière (Igor à la forge, Harry chez le charpentier ; personne ailleurs pour l'instant).
+- [x] Bottes de vent ×3 ; plus de barre de vie dans le cadre de gauche ; bulles en haut sur téléphone ; arbres (ou rochers) au-delà des bords au lieu du noir.
+
 ## Lot 28 — Intro jouable et racontée (demande du 20/11) ✅ v0.1.92
 - [x] Test de bout en bout : nouvelle partie → intro complète → on marche et on agit (tests/jouable.test.js) ; garde-fou si l'intro attend un dialogue qui n'est pas affiché.
 - [x] La diligence passe par la route du centre-ville (Myst raconte l'histoire de la ville), puis le rond-point et la place (le panneau, l'étal pour gagner de l'argent).

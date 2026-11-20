@@ -210,8 +210,8 @@ test('Farmwest 2d : la route de l’est mène à la forêt ; le centre-ville est
   assert.ok(SCENES.rondpoint.doors.some(d => d.x === 0 && d.to === 'route_ville') && SCENES.route_ville.doors.some(d => d.to === 'town'));
 });
 
-test('la route de l’est va jusqu’au bord de la ferme (on voit qu’elle continue)', () => {
-  assert.equal(ground(47, 5), 'path');
+test('20/11 : la route de l’est (vers la forêt) va jusqu’au bord, au milieu ; plus de chemin qui ne mène à rien en haut', () => {
+  assert.equal(ground(47, 18), 'path'); assert.notEqual(ground(46, 5), 'path');
 });
 
 test('champignons : sans couteau, le héros préfère ne pas les cueillir à la main', async () => {

@@ -2,6 +2,7 @@
 
 Semver horodaté (heure de Paris). Patch automatique à chaque publication ; mineure et majeure sur décision de l'utilisateur.
 
+- **0.1.93** — 2026-11-20 13:41 — Trajets vérifiés par un test, chemins sans issue retirés, hache toujours accessible, visée des outils et coup dans le vide, magasins avec comptoir et vendeur, bottes ×3, bords en forêt, bulles en haut sur téléphone
 - **0.1.92** — 2026-11-20 12:00 — Intro par la route (histoire de la ville, place et étal), une seule présentation du centre-ville, test de partie jouable, garde-fou contre le blocage
 - **0.1.91** — 2026-11-20 11:24 — Routes centre-ville ↔ rond-point et centre-ville ↔ cabane du pêcheur, sauvegarde dans les réglages et réglages dans le menu, plus de « table en bois » sur les arbres
 - **0.1.90** — 2026-11-20 11:12 — Disposition complète (longue route, ranch au sud du quartier, fête foraine à l'est du ranch, port par la cabane du pêcheur, sorties de la ferme au milieu), compétences exponentielles, grange en planches, paysage auto, barres de vie et d'énergie

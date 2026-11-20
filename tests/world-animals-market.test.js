@@ -104,9 +104,11 @@ test('village : portail, halle du marché et panneau d’affichage', () => {
   const { g, S } = makeGame();
   const opened = []; g.bus.on('open', w => opened.push(w));
   S.scene = 'town'; S.x = 16.5; S.y = 10.5;
-  assert.equal(act(g, 5, 4), 'market');
   assert.equal(act(g, 13, 4), 'board');
-  assert.deepEqual(opened, ['market', 'board']);
+  assert.equal(act(g, 5, 4), 'door', '20/11 : on entre dans la halle'); assert.equal(S.scene, 'shop_market');
+  assert.equal(act(g, 4, 3), 'market', 'le comptoir ouvre le magasin');
+  assert.deepEqual(opened, ['board', 'market']);
+  assert.equal(act(g, 4, 6), 'door'); assert.equal(S.scene, 'town'); S.x = 16.5; S.y = 10.5;
   assert.ok(!isSolid(S, 12, 6), 'la place est praticable');
   assert.equal(act(g, 33, 10), 'door');
   assert.equal(S.scene, 'route_ville', '20/11 : une route mène au rond-point');

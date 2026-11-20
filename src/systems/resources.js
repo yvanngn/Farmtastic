@@ -2,7 +2,7 @@ import { AXE_GROVE } from '../data/repairs.js';
 // Bois et pierre. La puissance de l'outil (palier) retire autant de PV par coup
 // et réduit l'énergie dépensée. Casser des pierres donne de l'XP de minage.
 import { CFG } from '../config.js';
-import { freeForObj, key, isForest, newTree, newRock, genObjects, isSolid } from '../world/map.js';
+import { freeForObj, key, isForest, newTree, newRock, genObjects, isSolid , clearAxeAccess } from '../world/map.js';
 import { TREE_KINDS, TREE_KIND_IDS, TREE_GROW_DAYS, ROCK_DAYS, STONE_YIELD, FOREST, STUMP_DAYS, STUMP_HP, STUMP_WOOD } from '../data/forest.js';
 import { MIN_PICK, MINING_GAIN, TIER_NAMES, energyCost, hitReady, NEED, WOOD_GAIN } from '../data/tools.js';
 import { add, scatter } from './inventory.js';
@@ -109,5 +109,6 @@ export function seasonRestock(g) {   // 19/11 : à chaque saison, les arbres adu
     if (S.objs[k] || pots.has(k) || (x === px && y === py) || !freeForObj(x, y) || isSolid({ ...S, scene: 'farm' }, x, y)) continue;
     S.objs[k] = newTree(o.k); added++;
   }
+  if (!(S.tools && S.tools.axe)) clearAxeAccess(S.objs);   // 20/11 : la hache reste accessible
   return added;
 }

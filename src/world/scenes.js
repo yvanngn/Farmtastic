@@ -576,7 +576,7 @@ export const SCENES = {
   farm: { W: CFG.W, H: CFG.H, doors: [
     { x: 5, y: 4, to: 'house', spawn: { x: 5.5, y: 7.4 } },
     { x: 24, y: 7, to: 'coop', spawn: { x: 4.5, y: 5.4 } },
-    { x: 20, y: 7, to: 'pigsty', spawn: { x: 4.5, y: 5.4 } },
+    { x: 20, y: 7, to: 'pigsty', spawn: { x: 5.5, y: 5.4 } },
     { x: 28, y: 7, to: 'barn', spawn: { x: 5.5, y: 6.4 } },
     { x: 12, y: 4, to: 'grange', spawn: { x: 5.5, y: 5.2 } },
     { x: 16, y: 0, to: 'edge:N' },   // 19/11 : au nord (carrière pour la ferme principale)
@@ -622,7 +622,7 @@ export const SCENES = {
   franck: { W: 9, H: 7, doors: [{ x: 4, y: 6, to: 'quartier', spawn: { x: 10.5, y: 15.8 } }] },
   clinique: { W: 9, H: 7, doors: [{ x: 4, y: 6, to: 'quartier', spawn: { x: 28.5, y: 6.8 } }] },
   hailey: { W: 9, H: 7, doors: [{ x: 4, y: 6, to: 'quartier', spawn: { x: 26.5, y: 15.8 } }] },
-  carriere: { W: 32, H: 22, outdoor: true, doors: [{ x: 15, y: 21, to: 'lot', lot: 0, dir: 'S' }, { x: 16, y: 21, to: 'lot', lot: 0, dir: 'S' }, { x: 0, y: 9, to: 'lot', lot: 3, dir: 'W' }, { x: 0, y: 10, to: 'lot', lot: 3, dir: 'W' }, ...QUARRY_MOUTHS.map(q => ({ x: q.x, y: q.y, to: 'carriere2', spawn: { x: 12.9, y: 14.6 } }))] },
+  carriere: { W: 32, H: 22, outdoor: true, doors: [{ x: 15, y: 21, to: 'lot', lot: 0, dir: 'S' }, { x: 16, y: 21, to: 'lot', lot: 0, dir: 'S' }, { x: 0, y: 9, to: 'lot', lot: 3, dir: 'W' }, { x: 0, y: 10, to: 'lot', lot: 3, dir: 'W' }, ...QUARRY_MOUTHS.map(q => ({ x: q.x, y: q.y, to: 'carriere2', spawn: { x: 12.9, y: 15.3 } }))] },
   carriere2: { W: 26, H: 17, outdoor: true, doors: [{ x: 12, y: 16, to: 'carriere', spawn: { x: 16.5, y: 2.6 } }, { x: 13, y: 16, to: 'carriere', spawn: { x: 16.5, y: 2.6 } }] },
   ...Object.fromEntries([0, 1, 2, 3].map(lot => { const D = [];
     for (const x of [15, 16]) { D.push({ x, y: 0, to: 'edge:N' }); D.push({ x, y: 21, to: 'edge:S' }); }
@@ -711,3 +711,42 @@ SCENES.route_plage = { W: 10, H: 44, outdoor: true, doors: [{ x: 4, y: 0, to: 't
   { x: 4, y: 43, to: 'plage', spawn: { x: 19.9, y: 1.8 } }, { x: 5, y: 43, to: 'plage', spawn: { x: 19.9, y: 1.8 } }] };
 retarget('town', 'plage', 'route_plage', { x: 4.9, y: 1.8 });
 retarget('plage', 'town', 'route_plage', { x: 4.9, y: 42.2 });
+// 20/11 (demande de l'utilisateur) : on entre dans les magasins du centre-ville et on parle au vendeur, derrière son comptoir
+// (personne derrière tant que le personnage n'existe pas). Comptoir (K) : ouvre le magasin.
+export const SHOP_VENDOR = { upgrades: 'igor', carpenter: 'harry' };
+export const SHOP_OF = { M: 'market', U: 'upgrades', J: 'carpenter', A: 'animals', O: 'bakery', V: 'butcher', Z: 'fishmonger' };
+export const SHOP_NAMES = { market: 'La halle du marché', upgrades: 'La forge d’Igor', carpenter: 'L’atelier du charpentier', animals: 'Le marchand d’animaux', bakery: 'La boulangerie', butcher: 'La boucherie', fishmonger: 'La poissonnerie' };
+for (const [ch, ui] of Object.entries(SHOP_OF)) {
+  const B = TOWN_B[ch], sc = 'shop_' + ui;
+  LAYOUTS[sc] = ['##########', '#WWWWWWWW#', '#C......C#', '#.KKKKKK.#', '#........#', '#P......P#', '####DD####'];
+  SCENES[sc] = { W: 10, H: 7, shop: ui, doors: [4, 5].map(x => ({ x, y: 6, to: 'town', spawn: { x: B.x + B.w / 2, y: B.y + B.h + .8 } })) };
+}
+export const SHOP_SPAWN = { x: 5, y: 5.2 };
+export const VENDOR_POS = { x: 4.5, y: 2.8 };
+// 20/11 (demande de l'utilisateur) : plus de chemins qui ne mènent à rien. Un chemin qui touche un bord sans sortie est
+// retiré, jusqu'au premier croisement (les couloirs de 2 cases de large sont traités ensemble).
+const GROUND = c => c === '.' || c === 'F';
+function pruneDeadEnds(sc) {
+  const L = LAYOUTS[sc].map(r => r.split('')), H = L.length, W = L[0].length, doorSet = new Set(SCENES[sc].doors.filter(d => !(d.to.startsWith('edge:') && /^farm:\d$/.test(sc) && FARM_LINKS[+sc.slice(5)][d.to.slice(5)] == null)).map(d => d.x + ',' + d.y));
+  const fill = (x, y) => { const n = [[x - 1, y], [x + 1, y], [x, y - 1], [x, y + 1]].map(([a, b]) => (L[b] || [])[a]).filter(c => c && !GROUND(c) && c !== 'D' && c !== 'T' && c !== 'h'); return n[0] || 's'; };
+  const sides = [[0, 1, (k) => [k, 0]], [0, -1, (k) => [k, H - 1]], [1, 0, (k) => [0, k]], [-1, 0, (k) => [W - 1, k]]];   // [dx, dy vers l'intérieur, case du bord]
+  for (const [dx, dy, at] of sides) {
+    const n = dx ? H : W;
+    let front = [];
+    for (let k = 0; k < n; k++) { const [bx, by] = at(k); if (doorSet.has(bx + ',' + by) || L[by][bx] === 'D') continue; const x = bx + dx, y = by + dy; if (GROUND((L[y] || [])[x])) front.push([x, y]); }
+    for (let step = 0; step < Math.max(W, H) && front.length; step++) {
+      const F = new Set(front.map(([x, y]) => x + ',' + y)), next = [];
+      for (const [x, y] of front) {
+        const lat = dx ? [[x, y - 1], [x, y + 1]] : [[x - 1, y], [x + 1, y]];
+        if (lat.some(([a, b]) => GROUND((L[b] || [])[a]) && !F.has(a + ',' + b))) continue;   // croisement : on s'arrête
+        const nx = x + dx, ny = y + dy;
+        if ([[x - dx, y - dy], [nx, ny], ...lat].some(([a, b]) => (L[b] || [])[a] === 'D' && !(a === x - dx && b === y - dy && !doorSet.has(a + ',' + b)))) continue;
+        L[y][x] = fill(x, y);
+        if (GROUND((L[ny] || [])[nx])) next.push([nx, ny]);
+      }
+      front = next;
+    }
+  }
+  LAYOUTS[sc] = L.map(r => r.join(''));
+}
+for (const sc of Object.keys(SCENES)) if (SCENES[sc].outdoor && LAYOUTS[sc] && sc !== 'town' && sc !== 'foret') pruneDeadEnds(sc);

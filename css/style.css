@@ -511,3 +511,5 @@ body.bande[data-nrj="vert"] #nrjVert { bottom: calc(var(--bande) + var(--pad) * 
 #vitals .bar { flex: 1; height: 7px; margin: 0 }
 #vitals #vHp { background: linear-gradient(90deg, #c83a3a, #f06a5a) }
 @media (max-height: 500px) and (orientation: landscape) { #vitals { top: calc(var(--sa-t) + var(--pad) * 2 + clamp(40px, 11vmin, 52px)); right: calc(var(--sa-r) + var(--pad)) } }
+@media (pointer: coarse) { #dlg.haut { top: calc(var(--sa-t) + 52px); bottom: auto } }   /* 20/11 : sur téléphone (même en paysage), les bulles du tuto restent en haut */
+#vitals #vEn { background: linear-gradient(90deg, #3e9a32, var(--energie), #a6e36e) } #vitals .bar i { display: block; height: 100% }

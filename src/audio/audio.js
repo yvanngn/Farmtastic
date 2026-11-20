@@ -181,6 +181,7 @@ export function createAudio(g, storage) {
   const blip = (t, type, f, dur, peak, f2) => osc(type, f, t, dur, env(t, 0.003, peak, dur, sfxBus), f2);
   const SFX = {
     step: t => burst(t, 0.05, 'lowpass', 500 + Math.random() * 200, 0.08),
+    swish: t => { burst(t, 0.1, 'bandpass', 1800, 0.25, 1); },   // 20/11 : coup d'outil dans le vide
     chop: t => { burst(t, 0.12, 'bandpass', 900, 0.5, 2); blip(t, 'sine', 140, 0.12, 0.35, 60); },
     pick: t => { blip(t, 'square', 1400, 0.08, 0.12, 900); burst(t, 0.1, 'highpass', 2500, 0.25); },
     break: t => { burst(t, 0.35, 'lowpass', 700, 0.5); blip(t, 'sine', 110, 0.3, 0.3, 45); },

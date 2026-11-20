@@ -6,6 +6,7 @@ import { shade, disc } from './pixel.js';
 const T = CFG.T;
 
 const THEME = {
+  ...Object.fromEntries(['market', 'upgrades', 'carpenter', 'animals', 'bakery', 'butcher', 'fishmonger'].map(id => ['shop_' + id, { floor: '#b8946a', seam: '#9a7650', wall: id === 'upgrades' ? '#7a6a62' : id === 'bakery' ? '#f0dcc0' : '#d8c4a0', wallD: '#c0a880', trim: '#8a4a2a', beam: '#3a2a20' }])),   // 20/11 : magasins
   maison: { floor: '#b07a48', seam: '#8a5a32', wall: '#7fa36a', wallD: '#5f8450', trim: '#6b4226', beam: '#4a2c18' },   // la cabane agrandie
   house: { floor: '#b07a48', seam: '#8a5a32', wall: '#7fa36a', wallD: '#5f8450', trim: '#6b4226', beam: '#4a2c18' },
   coop: { floor: '#d9c27a', seam: '#b49a52', wall: '#b8452f', wallD: '#93321f', trim: '#f0e6d0', beam: '#5a3a2a' },

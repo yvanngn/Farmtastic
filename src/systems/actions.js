@@ -3,7 +3,9 @@ import { forestTreeAt, chopForest, chopStump, isForestChest, openForestChest } f
 // Aiguillage d'une action sur une tuile, selon la scène (ferme ou intérieur).
 import { isBin, key, isPlot } from '../world/map.js';
 import { seaOpen } from './admin.js';
-import { doorAt, tileAt, UI_TILES, isHome } from '../world/scenes.js';
+import { doorAt, tileAt, UI_TILES, isHome, SHOP_OF, SHOP_SPAWN, SHOP_VENDOR, SCENES } from '../world/scenes.js';
+import { IGOR, HARRY } from '../data/npcs.js';
+const NPCS_ALL = { igor: IGOR, harry: HARRY };
 import { sleep } from './time.js';
 import { sellAll } from './economy.js';
 import { hitObject } from './resources.js';
@@ -127,7 +129,7 @@ function act0(g, tx, ty) {
   { const f = pickFlower(g, tx, ty); if (f === false) return 'noknife'; if (f === 'progress') return 'progress'; if (f) return 'pick'; }
   { const N = natureAt(S, sc); if (N && N.rocks[key(tx, ty)]) return hitNature(g, tx, ty) ? 'hit' : 'none'; }
   let d = doorAt(sc, tx, ty);
-  { const fd = d && farmDoor(S, d); if (fd) { if (!fd.to) return 'none';   // 19/11 : sorties des fermes (FARM_LINKS)
+  { const fd = d && farmDoor(S, d); if (fd) { if (!fd.to) { g.bus.emit('sfx', 'denied'); g.bus.emit('toast', '🚧 Ce passage est fermé pour l’instant.'); return 'locked'; }   // 20/11 : zone bloquée → un message   // 19/11 : sorties des fermes (FARM_LINKS)
     if (fd.lot == null) d = { ...d, to: fd.to, spawn: fd.spawn };
     else { const who = Object.values(g.others || {}).find(o => o.farmLot === fd.lot); enterScene(g, fd.to, fd.spawn); if (fd.to !== 'farm') g.bus.emit('toast', `🏡 ${fd.name} — ${who ? 'la ferme de ' + who.name : 'personne n’y habite pour l’instant'}`); return 'door'; } } }
   if (d && d.to === 'parc' && !parcOpen(S) && !ADMIN.on) { g.bus.emit('sfx', 'denied'); g.bus.emit('toast', '🎡 La fête foraine est encore en montage : elle ouvre le dernier jour du premier mois.'); return 'locked'; }   // 20/11
@@ -151,7 +153,13 @@ function act0(g, tx, ty) {
   if (sc === 'wild' && tileAt(sc, tx, ty) === 'S') { g.bus.emit('sfx', 'denied'); g.bus.emit('toast', '⬇️ Un escalier s’enfonce vers l’étage 2… bloqué par des éboulis pour l’instant.'); return 'stairs'; }
   if (sc === 'wild') return S.wild && S.wild.rocks[key(tx, ty)] ? (hitZRock(g, tx, ty) ? 'hit' : 'none') : 'none';
   if (sc === 'place') { const t = tileAt(sc, tx, ty), ui = t === '$' ? 'stand' : t === '!' ? 'calendar' : null; if (ui) { g.bus.emit('sfx', 'ui'); g.bus.emit('open', ui); return ui; } }   // 19/11 : la place du panneau
-  if (sc === 'town') { const ui = UI_TILES[tileAt(sc, tx, ty)]; if (ui) { g.bus.emit('sfx', 'ui'); g.bus.emit('open', ui); return ui; } return 'none'; }
+  if (sc === 'town') { const t = tileAt(sc, tx, ty), shop = SHOP_OF[t];
+    if (shop) { enterScene(g, 'shop_' + shop, SHOP_SPAWN); g.bus.emit('sfx', 'door'); return 'door'; }   // 20/11 : on entre dans le magasin
+    const ui = UI_TILES[t]; if (ui) { g.bus.emit('sfx', 'ui'); g.bus.emit('open', ui); return ui; } return 'none'; }
+  if (SCENES[sc] && SCENES[sc].shop && (tileAt(sc, tx, ty) === 'K' || (ty === 2 && tx >= 3 && tx <= 6))) {   // le comptoir (ou le vendeur derrière)
+    const ui = SCENES[sc].shop, v = SHOP_VENDOR[ui] && NPCS_ALL[SHOP_VENDOR[ui]];
+    if (v) g.bus.emit('toast', `${v.name} : « Bonjour ! Qu'est-ce qu'il te faut ? »`);
+    g.bus.emit('sfx', 'ui'); g.bus.emit('open', ui); return ui; }
   if (isHome(sc)) {
     const t = tileAt(sc, tx, ty);
     if (t === 'B' && S.bed === false && installBed(g)) return 'bed';
