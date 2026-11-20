@@ -799,3 +799,31 @@ function pruneDeadEnds(sc) {
   LAYOUTS[sc] = L.map(r => r.join(''));
 }
 for (const sc of Object.keys(SCENES)) if (SCENES[sc].outdoor && LAYOUTS[sc] && sc !== 'town' && sc !== 'foret') pruneDeadEnds(sc);
+
+// 21/11 (lot 31, demande de l'utilisateur) : routes plus larges partout, pour bien voir les passages. Chaque route (« . »)
+// déborde d'une case de chaque côté sur l'herbe / le sable (2 cases → 4) ; les passages entre zones s'élargissent avec
+// (les cases de bord voisines d'une porte deviennent la même porte). Pas dans la carrière, le dédale ni le labyrinthe.
+export const WIDE_SKIP = new Set(['foret', 'carriere', 'dedale', 'parc']);
+export const WIDE_GROUND = 'gsn';
+export function widenRoads(sc) {
+  const L0 = LAYOUTS[sc], H = L0.length, W = L0[0].length, L = L0.map(r => r.split('')), D = SCENES[sc].doors || [];
+  const road = (x, y) => L0[y] && L0[y][x] === '.';
+  for (let y = 1; y < H - 1; y++) for (let x = 1; x < W - 1; x++) {
+    if (!WIDE_GROUND.includes(L0[y][x])) continue;
+    if (road(x - 1, y) || road(x + 1, y) || road(x, y - 1) || road(x, y + 1)) L[y][x] = '.';
+  }
+  const isDoor = (x, y) => D.find(d => d.x === x && d.y === y);
+  const added = [];
+  for (const d of D) {
+    const onH = d.y === 0 || d.y === H - 1, onV = d.x === 0 || d.x === W - 1; if (!onH && !onV) continue;
+    for (const s of [-1, 1]) {
+      const x = onH ? d.x + s : d.x, y = onH ? d.y : d.y + s, ix = onV ? (d.x === 0 ? 1 : W - 2) : x, iy = onH ? (d.y === 0 ? 1 : H - 2) : y;
+      if (x <= 0 || y <= 0 || x >= W - 1 || y >= H - 1 && onV || isDoor(x, y) || added.some(a => a.x === x && a.y === y)) continue;
+      if (L[iy][ix] !== '.' || L0[iy][ix] === '.') continue;   // seulement là où la route vient d'être élargie
+      L[y][x] = L0[d.y][d.x]; added.push({ ...d, x, y });
+    }
+  }
+  D.push(...added);
+  LAYOUTS[sc] = L.map(r => r.join(''));
+}
+for (const sc of Object.keys(SCENES)) if (SCENES[sc].outdoor && LAYOUTS[sc] && !WIDE_SKIP.has(sc)) widenRoads(sc);

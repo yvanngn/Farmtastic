@@ -27,8 +27,10 @@ export const isGrange = (x, y) => inRect(x, y, 10, 1, 13, 4);
 export const isGate = (x, y) => x === 16 && y === 35; // portail vers le village
 export const isFence = (x, y, built) => inRect(x, y, 18, 6, 33, 13) && !isPen(x, y) && !(x === 18 && y === 9) && !buildingAt(built, x, y);
 export const isPond = (x, y) => ((x - 12) ** 2) / 25 + ((y - 24) ** 2) / 9 < 1;
-export const isPath = (x, y) => (y === 5 && x >= 2 && x <= 42) || (y === 20 && x >= 3 && x <= 15) || (x === 42 && y === 4) || (x === 16 && y >= 0 && y <= 35) || (y === 9 && x === 17)
+const isPath1 = (x, y) => (y === 5 && x >= 2 && x <= 42) || (y === 20 && x >= 3 && x <= 15) || (x === 42 && y === 4) || (x === 16 && y >= 0 && y <= 35) || (y === 9 && x === 17)
   || (y >= 33 && x >= 15 && x <= 17) || (y === 18 && x >= 1 && x <= 46) || (x >= 45 && y >= 17 && y <= 19) || (x <= 2 && y >= 17 && y <= 19);   // 20/11 : sorties est (forêt) et ouest (ferme de l'Ouest) au milieu
+// 21/11 (lot 31) : chemins de la ferme élargis d'une case de chaque côté (on voit mieux les passages)
+export const isPath = (x, y) => isPath1(x, y) || isPath1(x - 1, y) || isPath1(x + 1, y) || isPath1(x, y - 1) || isPath1(x, y + 1);
 export const isForest = (x) => x >= 34;
 // Haies sur les bords de la ferme qui ne mènent nulle part (bas et droite), pour voir où sont les sorties.
 // 19/11 : les 4 fermes (2 × 2). La ferme du joueur s'ouvre vers ses voisines : à l'est (colonne de gauche) ou à l'ouest

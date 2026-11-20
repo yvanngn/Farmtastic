@@ -142,7 +142,7 @@ test('lot 8 : beaucoup plus d’arbres et de cailloux au départ, et autant remi
   const { seasonRestock } = await import('../src/systems/resources.js');
   const { newDay } = await import('../src/systems/time.js');
   const o = genObjects(), n = t => Object.values(o).filter(x => t.includes(x.t)).length;
-  assert.ok(n(['tree']) >= 150, `départ : ${n(['tree'])} arbres`); assert.equal(n(['rock', 'rock_big', 'boulder']), 0, '19/11 : plus de cailloux à la ferme');
+  assert.ok(n(['tree']) >= 135, `départ : ${n(['tree'])} arbres`);   // lot 31 : chemins plus larges, un peu moins de place pour les arbres assert.equal(n(['rock', 'rock_big', 'boulder']), 0, '19/11 : plus de cailloux à la ferme');
   const { g } = makeGame(); g.S.objs = {}; g.S.x = 5.5; g.S.y = 6.8; g.S.day = 30;
   newDay(g, true);
   const m = t => Object.values(g.S.objs).filter(x => t.includes(x.t)).length, keys = () => Object.keys(g.S.objs).filter(k => g.S.objs[k].t === 'tree').sort().join();

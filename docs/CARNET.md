@@ -157,3 +157,4 @@ Fait : sol de la ferme (v0.1.5) ; **7a** palette Far West et sols (centre-ville 
 - 21/11 : lot 30a (v0.1.104) — combat au tour par tour avec jauge (« ATB », pause pendant le choix), écran à part, 5 actions, défaite = clinique ; la Caverne sombre y passe (plus de combat en temps réel). Suivent 30b (dédale profond, marmotte à grandes griffes : griffes et viande) et 30c (combats en équipe). ⏳ Boss, magie.
 - 21/11 : lot 30b (v0.1.105) — dédale profond sous le trou du rocher (échelle au centre), chênes (bois de chêne), marmottes à grandes griffes (griffes rares, viande). ⏳ Recettes avec griffes / viande / bois de chêne à définir ; 30c combats en équipe.
 - 21/11 : lot 30c (v0.1.106) — combats en équipe (hôte qui diffuse, bouton Rejoindre, 3 alliés au plus).
+- 21/11 : lot 31 (v0.1.107) — routes 2 → 4 cases partout, passages élargis. Lot 32 : 4 planches d'images fournies (cactus, cailloux, filons, arbres ; saloon ; fontaine ; diligence).

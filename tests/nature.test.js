@@ -47,7 +47,7 @@ test('filons : cuivre courant → or rare ; 20/11 : niveau de minage par filon',
 });
 
 test('arc-en-ciel les jours de pluie, avec un trésor à son pied', () => {
-  const { g, S } = makeGame({ rnd: seq(0.1, 0.5), state: { scene: 'farm', weather: 'rain', inv: {} } });
+  const { g, S } = makeGame({ rnd: seq(0.2, 0.75, 0.4), state: { scene: 'farm', weather: 'rain', inv: {} } });   // lot 31 : hors des chemins élargis
   const R = rollRainbow(g);
   assert.ok(R && freeSpot(S, 'farm', R.x, R.y) !== undefined);
   S.minute = R.from - 1; assert.equal(rainbowVisible(S), false);

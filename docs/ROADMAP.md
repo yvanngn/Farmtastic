@@ -308,8 +308,14 @@ Décrit par l'utilisateur : cabane à moitié prix ; journal dans la cabane (200
   - [x] **30c** combats en équipe (v0.1.106) : l'hôte calcule et diffuse le combat (4 fois par seconde au plus) ; un joueur à moins de 8 cases voit « ⚔️ Rejoindre le combat de … » ; jusqu'à 3 alliés ; les monstres visent un héros au hasard ; les alliés n'arrêtent pas le temps ; chacun tire son XP et son butin. ⚠️ Dans la Caverne sombre, chaque joueur voit ses propres monstres de salle ;
   - [ ] plus tard : boss, magie.
 
-## Lot 31 — Routes plus larges sur toute la carte (à faire)
-- [ ] Élargir toutes les routes et rendre les passages visibles.
+## Lot 31 — Routes plus larges sur toute la carte ✅ v0.1.107
+- [x] Chaque route déborde d'une case de chaque côté (2 cases → 4) dans toutes les zones extérieures (sauf carrière, dédale, labyrinthe de la forêt, fête foraine) ; les passages entre zones s'élargissent avec. Chemins de la ferme élargis aussi (un peu moins d'arbres au départ : ≈ 140).
+
+## Lot 32 — Nouveaux décors d'après les images de l'utilisateur (21/11, à faire)
+- [ ] Planche 1 : cactus (grands et petits) un peu partout, broussaille, cailloux de formes et tailles variées, filons (cuivre, étain, argent, fer, or, cobalt, zinc…), sapin, cyprès, arbre en fleurs.
+- [ ] Planche 2 : le saloon (« Red Eye Saloon » sur l'image ; ❓ garder ce nom ?).
+- [ ] Planche 3 : la fontaine au cheval cabré.
+- [ ] Planche 4 : la diligence (profils gauche et droite, face, dos).
 
 ## Lot 28 — Intro jouable et racontée (demande du 20/11) ✅ v0.1.92
 - [x] Test de bout en bout : nouvelle partie → intro complète → on marche et on agit (tests/jouable.test.js) ; garde-fou si l'intro attend un dialogue qui n'est pas affiché.
