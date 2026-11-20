@@ -139,7 +139,7 @@ export const FRANCK = {
 // (trop antisocial) : il est content qu'on arrive bousculer un peu les choses.
 export const MYST = {
   id: 'myst', name: 'Myst', de: 'de lui', color: '#a99ad0', voice: 'voiceFranck',
-  look: { folk: 'myst', body: 'h', bottom: 'pant', skin: '#dcdcd6', hair: 2, hairC: '#1c1a20', shirt: '#1d1b22', pants: '#141218', shoes: '#2a2228', tall: true, coat: true },   // 18/11 : poupée dessinée par le code (src/render/paperdoll.js), tenue d'après son sprite
+  look: { planche: 'myst_v2', folk: 'myst', body: 'h', bottom: 'pant', skin: '#dcdcd6', hair: 2, hairC: '#1c1a20', shirt: '#1d1b22', pants: '#141218', shoes: '#2a2228', tall: true, coat: true },   // 18/11 : poupée dessinée par le code (src/render/paperdoll.js), tenue d'après son sprite
   home: null, mystic: true,
   // trajet du quartier jusqu'à la cabane : du portail sud de la ferme, on remonte le grand chemin
   route: [{ x: 16.5, y: 34.4 }, { x: 16.5, y: 20.6 }, { x: 3.6, y: 20.6 }],   // de la gare au quartier par le grand chemin
@@ -371,7 +371,7 @@ export const INTRO_MYST = {
 // Son four est en panne : le réparer (marteau, 30 pierres + 15 bois) rapporte le couteau (quête principale). Répliques 🆕.
 export const CUISTOT = {
   id: 'cuistot', name: 'Remy Gusto', title: 'cuistot', de: 'de lui', color: '#f2a03a', voice: 'voiceFranck',
-  look: { folk: 'remy', body: 'h', bottom: 'pant', skin: '#e8b48c', hair: 0, hairC: '#3a2a20', hat: 'toque', shirt: '#f4f4f0', buttons: true, bandana: '#c0392b', beard: '#a8582a', checkPants: true, pants: '#4a4a56', shoes: '#2a2a2a', stout: true },   // 18/11 : poupée dessinée par le code (src/render/paperdoll.js), tenue d'après son sprite
+  look: { planche: 'remy_v2', folk: 'remy', body: 'h', bottom: 'pant', skin: '#e8b48c', hair: 0, hairC: '#3a2a20', hat: 'toque', shirt: '#f4f4f0', buttons: true, bandana: '#c0392b', beard: '#a8582a', checkPants: true, pants: '#4a4a56', shoes: '#2a2a2a', stout: true },   // 18/11 : poupée dessinée par le code (src/render/paperdoll.js), tenue d'après son sprite
   home: 'remy', inside: { x: 3.5, y: 4.6 }, worker: { scene: 'resto', at: { x: 11.5, y: 4.6 }, from: 420, to: 1320 },   // 💡 en cuisine de 7 h à 22 h
   traits: ['Cuisinier du restaurant', 'Fils abandonné d’un cuisinier renommé', 'On ne voyait en lui que « le fils de »', 'Vit de sa passion, loin de tout', 'Déteste son père'],
   taste: { adore: [], aime: ['confiture_baies', 'confiture_mures'], naime: ['slime'], deteste: [] },   // 💡

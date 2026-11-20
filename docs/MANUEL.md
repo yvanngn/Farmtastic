@@ -18,7 +18,7 @@ Menu → 🎽 Équipement : tête, corps, pieds, accessoire. Le manteau d'hiver 
 - **Agir** : bouton ✋ ou espace (couper, casser, ramasser, parler, réparer…). Un court délai caché sépare deux actions quand on reste appuyé.
 - **Outils** : barre d'outils sous la scène (touches 1-8, Tab pour la roue des outils).
 - **Menus** : 🗺️ carte (ferme et région), ☰ menu (nom, niveau et XP en tête ; sac, poissons, métiers, forge, liens), 💾 sauvegarde, ⚙ réglages (zoom, son, 🔋 économie d'énergie si le téléphone chauffe). À côté du bouton d'action : ⭐ quêtes et 🛠️ recettes. Clavier : E menu, I sac, M carte, Échap ferme.
-- **Cadre du haut** (argent, date, météo, énergie) : il s'efface quand on reste immobile et revient dès qu'on bouge.
+- **Cadre du haut** (argent, date, météo, énergie) : toujours affiché. La caméra suit le héros jusqu'aux bords de chaque zone.
 
 ## 3. Une journée
 - Une journée dure **environ 15 minutes** (6 h → 1 h du matin). La nuit tombe à 18 h.

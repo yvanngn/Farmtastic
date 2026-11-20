@@ -263,6 +263,13 @@ Décrit par l'utilisateur : cabane à moitié prix ; journal dans la cabane (200
 - [x] Étapes des quêtes : couleurs foncées lisibles sur le papier beige.
 - [ ] 💡 À valider : 24 coups pour un gros caillou de bordure, 3 jours de repousse, filons de la carrière profonde (étain 15 %, fer 50 %, or 35 %).
 
+## Lot 24 — Train, Remy et Myst, chemin de Myst, caméra, simulation (demande du 20/11) ✅ v0.1.88
+- [x] Train d'après l'image fournie (vu de dessus, locomotive devant), fumée plus forte quand il roule.
+- [x] Remy et Myst d'après leurs nouvelles planches.
+- [x] Chemin de Myst visible : juste sous sa porte, trouée dans la rangée d'arbres, boîte aux lettres déplacée.
+- [x] La caméra suit le héros jusqu'aux bords ; le cadre en haut à gauche reste affiché.
+- [x] **Simulation** : `npm run simulate` (ou `node tools/simulate.mjs [jours] [graine]`) → docs/SIMULATION.md (étapes, niveaux, économie, goulets, jour par jour, où régler). Lit les vraies valeurs du jeu ; hypothèses du joueur-type en tête de tools/simulate.mjs.
+
 ## Lot 23 — Nouvelle disposition des fermes, place du panneau, Luna et Manu (demande du 19/11) ✅ v0.1.86
 - [x] Fontaine au nord de la zone résidentielle ; au nord, la **place du panneau** (calendrier : météo J à J+3, événements à venir) avec l'**étal** déplacé à côté.
 - [x] Ferme principale au nord de la place, attribuée d'office (plus de choix). Forêt à l'est, carrière au nord.

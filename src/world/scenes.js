@@ -335,10 +335,10 @@ LAYOUTS.quartier = (() => {
   for (let y = QUARTIER.remy.y + 3; y <= 28; y++) m[y][QUARTIER.remy.door] = '.'; for (let x = 15; x <= QUARTIER.remy.door; x++) m[28][x] = '.';   // allée de Remy jusqu'au chemin
   for (let y = QUARTIER.ed.y - 3; y < QUARTIER.ed.y; y++) for (let x = QUARTIER.ed.x; x < QUARTIER.ed.x + QUARTIER.ed.w; x++) if (m[y][x] === 'T') m[y][x] = 'g';   // rien devant le toit à étages
   // chemin de Myst : de sa porte (en bas), il longe le bas puis remonte jusqu'à la 2e rue
-  const my = Q.myst; for (let x = my.door; x <= 14; x++) m[my.y + 5][x] = '.'; for (let y = 19; y <= my.y + 5; y++) m[y][14] = '.';
-  for (const id of MAILBOX_IDS) { const h = Q[id]; m[h.y + (h.porch ? 4 : 3)][h.door + 1] = 'k'; }   // lot 8 : boîtes aux lettres (k), sans texte
+  const my = Q.myst; for (let x = my.door; x <= 14; x++) m[my.y + 4][x] = '.'; for (let y = 19; y <= my.y + 4; y++) m[y][14] = '.';   // 20/11 : juste sous sa porte, bien visible
+  for (const id of MAILBOX_IDS) { const h = Q[id]; m[h.y + (h.porch ? 4 : 3)][h.door + (id === 'myst' ? -1 : 1)] = 'k'; }   // lot 8 : boîtes aux lettres (k), sans texte
   for (let x = 1; x <= 12; x++) if (m[20][x] === 'g') m[20][x] = 'T';                 // rangée d'arbres : il vit à l'écart
-  for (let y = 21; y < H - 1; y++) for (const x of [11, 12]) if (m[y][x] === 'g') m[y][x] = 'T';
+  for (let y = 21; y < H - 1; y++) for (const x of [11, 12]) if (m[y][x] === 'g' && Math.abs(y - (Q.myst.y + 4)) > 1) m[y][x] = 'T';   // 20/11 : trouée dans les arbres pour voir le chemin de Myst
   for (const [x, y] of [[3, 11], [15, 11], [31, 6], [38, 11], [36, 20], [24, 22], [30, 25], [20, 26]]) if (m[y][x] === 'g') m[y][x] = 'T';
   return m.map(r => r.join(''));
 })();

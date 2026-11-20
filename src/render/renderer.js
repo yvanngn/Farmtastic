@@ -170,12 +170,13 @@ function drawBigTree(c, x, y, season, now) {
 // Farmwest : locomotive à vapeur qui entre en gare par le nord sur la voie (x1-2) et s'arrête le long du quai.
 function drawLoco(c, t, now, hero, leave = 0) {   // 18/11 (soir) : locomotive et wagons « pixel moderne » (src/render/props.js)
   const x = 16, stopY = 6 * 16, y0 = stopY - (t < 3 ? (3 - t) * (3 - t) * 50 : 0) + leave * leave * 40;   // lot 8 : repart vers le sud en accélérant
-  const L = locoSprite(), W0 = wagonSprite(hero), W1 = wagonSprite(null);
-  c.fillStyle = 'rgba(0,0,0,.3)'; c.fillRect(x + 3, y0 - 92 + 3, 28, 162);
-  if (W1) c.drawImage(W1, x, Math.round(y0 - 98)); if (W0) c.drawImage(W0, x, Math.round(y0 - 52)); if (L) c.drawImage(L, x, Math.round(y0));
-  const puff = t < 6 || leave > 0 ? 1 : .35;   // fumée : forte en arrivant, légère à l'arrêt
-  for (let k = 0; k < 6; k++) { const ph = (now / 600 + k / 6) % 1, py = y0 + 16 - ph * 44, sz = 4 + ph * 11; c.fillStyle = `rgba(235,232,228,${(1 - ph) * .6 * puff})`; c.beginPath(); c.arc(x + 15 + Math.sin(k * 2 + now / 400) * 4, py, sz / 2, 0, 7); c.fill(); }
+  const im = trainImage(), top = Math.round(y0 + 70 - TRAIN_IMG.h);   // 20/11 : train fourni par l'utilisateur (vu de dessus, locomotive devant)
+  if (im) { c.fillStyle = 'rgba(0,0,0,.3)'; c.fillRect(x + 3, top + 4, TRAIN_IMG.w, TRAIN_IMG.h); c.drawImage(im, x, top); }
+  else { const L = locoSprite(), W0 = wagonSprite(hero), W1 = wagonSprite(null); if (W1) c.drawImage(W1, x, Math.round(y0 - 98)); if (W0) c.drawImage(W0, x, Math.round(y0 - 52)); if (L) c.drawImage(L, x, Math.round(y0)); }
+  const moving = t < 3 || leave > 0, puff = moving ? 1 : .35, cy = im ? top + TRAIN_IMG.chimney : y0 + 16;   // fumée : forte quand il roule, légère à l'arrêt
+  for (let k = 0; k < (moving ? 10 : 6); k++) { const ph = (now / (moving ? 420 : 600) + k / (moving ? 10 : 6)) % 1, py = cy - ph * (moving ? 60 : 44), sz = 4 + ph * (moving ? 15 : 11); c.fillStyle = `rgba(235,232,228,${(1 - ph) * .6 * puff})`; c.beginPath(); c.arc(x + 15 + Math.sin(k * 2 + now / 400) * 4 + (moving ? ph * 6 : 0), py, sz / 2, 0, 7); c.fill(); }
 }
+let TRAIN_EL; const trainImage = () => { if (TRAIN_EL === undefined && typeof Image !== 'undefined') { TRAIN_EL = null; const im = new Image(); im.onload = () => { TRAIN_EL = im; }; im.src = TRAIN_IMG.url; } return TRAIN_EL; };
 // Farmwest : diligence tirée par deux chevaux, cocher en chapeau sur le siège ; roues qui tournent.
 function drawCoach(c, wx, wy, now) {   // 18/11 (soir) : diligence « pixel moderne » (src/render/props.js) : caisse, cocher, chevaux au trot, roues qui tournent
   const X = Math.round(wx * 16), Y = Math.round(wy * 16), fr = (now / 110 | 0) % 4, st = (now / 70 | 0) % 8;
@@ -193,6 +194,7 @@ import { ITEMS } from '../data/items.js';
 import { darkness, timeTint, sunShadow } from '../systems/weather.js';
 import { SHADOW, harmonize, shade } from './pixel.js';
 import { SHEETS } from './sheets.js';
+import { TRAIN_IMG } from './trainimg.js';
 let GHOST_IMG; const ghostSheet = () => { if (GHOST_IMG === undefined && typeof Image !== 'undefined') { GHOST_IMG = null; const im = new Image(); im.onload = () => { GHOST_IMG = im; }; im.src = SHEETS.esprit.url; } return GHOST_IMG; };
 import { SIGN_SINK } from './pixfont.js';
 const T = CFG.T;
@@ -328,8 +330,8 @@ let swing = null;
     }
     if (outside) cache = farmGround(); // reconstruit si un bâtiment vient d'être construit
     const vw = cv.width / scale, vh = cv.height / scale, MW = SC.W * T, MH = SC.H * T;
-    cam.x = MW <= vw ? (MW - vw) / 2 : Math.max(0, Math.min(MW - vw, S.x * T - vw / 2));
-    cam.y = MH <= vh ? (MH - vh) / 2 : Math.max(0, Math.min(MH - vh, S.y * T - vh / 2)); // la caméra ne bouge plus quand un dialogue s'ouvre
+    cam.x = MW <= vw && !sky ? (MW - vw) / 2 : S.x * T - vw / 2;   // 20/11 : la caméra suit le héros jusqu'aux bords (l'interface ne cache plus rien)
+    cam.y = MH <= vh && !sky ? (MH - vh) / 2 : S.y * T - vh / 2; // la caméra ne bouge plus quand un dialogue s'ouvre
     if (SC.rooms) { // salles façon Game Boy : la caméra reste centrée sur la salle du joueur
       const rw = SC.rooms.w * T, rh = SC.rooms.h * T;
       cam.x = Math.floor(S.x * T / rw) * rw - (vw - rw) / 2; cam.y = Math.floor(S.y * T / rh) * rh - (vh - rh) / 2;

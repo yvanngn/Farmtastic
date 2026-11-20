@@ -486,7 +486,7 @@ body.bande[data-nrj="vert"] #nrjVert { bottom: calc(var(--bande) + var(--pad) * 
 .st-prix { display: flex; gap: 4px; flex-wrap: wrap }
 .st-prix button.on { background: #e8c26a; color: #3a2410 }
 
-/* 19/11 : le cadre météo / argent s'efface quand on ne bouge plus, revient quand on bouge */
+/* 19/11 : cadre météo / argent (20/11 : toujours affiché) */
 #hud { transition: opacity .3s; width: auto; max-width: clamp(130px, 34vmin, 190px); padding: calc(var(--pad) * .6) var(--pad); font-size: clamp(10px, 2.6vmin, 12.5px); line-height: 1.25 }   /* 19/11 : plus petit, s'efface plus vite */
 #hud.repos { opacity: 0; pointer-events: none }
 #hXpRow[hidden], #hName[hidden] { display: none !important }
