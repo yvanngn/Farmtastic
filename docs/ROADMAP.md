@@ -284,7 +284,7 @@ Décrit par l'utilisateur : cabane à moitié prix ; journal dans la cabane (200
 
 ## Lot 29 — La carrière en dédale, l'énorme rocher, le mineur (demande du 20/11) ✅ v0.1.101
 - [x] Carrière refaite en grand dédale (52 × 42) : allées de 3 cases, lignes droites et zigzags, boucles, grande avenue de l'entrée au centre.
-- [x] 4 zones riches (grandes salles) : 40 % des cailloux y sortent 💡. Filons rares (21/11) : 3 au plus, une chance sur 3 d'en voir un nouveau par jour, la moitié dans les grandes salles 💡. Repousse chaque jour (12 cailloux, 90 au plus 💡), jamais au milieu des allées (on passe toujours).
+- [x] 4 zones riches (grandes salles) : 40 % des cailloux y sortent 💡. Filons rares (21/11) : 5 au plus, une chance sur 3 d'en voir un nouveau par jour, la moitié dans les grandes salles 💡. Repousse chaque jour (12 cailloux, 90 au plus 💡), jamais au milieu des allées (on passe toujours).
 - [x] Énorme rocher au centre : 10 000 coups, énergie d'un caillou ; tous les 10 coups 2 cailloux, un minerai une fois sur 7 environ 💡 ; fissures au fil des coups. Coups partagés à plusieurs.
 - [x] Cassé : un trou dans le sol (⏳ mène au dédale profond, lot 30). L'ancienne carrière profonde et ses bouches sont retirées (21/11) ; ses filons se trouvent dans les dédales.
 - [x] **Simplet**, le mineur, à l'entrée (21/11) : pas très malin mais très gentil, costaud, chauve, plein de suie, la pioche sur l'épaule. Son vrai nom, Timide, se découvre à 5 ❤️ (❓ à confirmer). Il adore son métier ; une lettre trouvée à l'entrée l'intrigue 🆕.
