@@ -1,6 +1,6 @@
 // Nature : fleurs à cueillir, cailloux et filons à piocher (ferme, forêt, Caverne sombre ; jamais en ville),
 // et arc-en-ciel les jours de pluie avec un trésor à son pied. Logique pure.
-import { syncForest, FOREST_ROUTE, LAYOUTS, QUARRY_ROUTE, QUARRY_RICH } from '../world/scenes.js';
+import { syncForest, FOREST_ROUTE, LAYOUTS, QUARRY_ROUTE, QUARRY_RICH, DEDALE_ROUTE } from '../world/scenes.js';
 import { key, freeForObj, isSolid } from '../world/map.js';
 import { CFG } from '../config.js';
 import { FLOWERS } from '../data/items.js';
@@ -29,7 +29,8 @@ export function freeSpot(S, sc, x, y) {
   if (sc === 'foret') return x > 0 && x < 27 && !FOREST_ROUTE.has(key(x, y)) &&   // lot 8 : jamais de caillou sur le chemin du labyrinthe
     !(S.foret && S.foret.shrooms && S.foret.shrooms[k]);
   if (sc === 'wild') return !(S.wild && S.wild.rocks && S.wild.rocks[k]) && !(x < 4 && y < 7);
-  if (sc === 'carriere') return Math.hypot(x - S.x, y - S.y) > 2 && !QUARRY_ROUTE.has(key(x, y));   // lot 29 : jamais sur le milieu des allées
+  if (sc === 'carriere') return Math.hypot(x - S.x, y - S.y) > 2 && !QUARRY_ROUTE.has(key(x, y));
+  if (sc === 'dedale') return Math.hypot(x - S.x, y - S.y) > 2 && !DEDALE_ROUTE.has(k) && !(S.dedale && S.dedale.trees[k]);   // lot 30b   // lot 29 : jamais sur le milieu des allées
   return false;
 }
 

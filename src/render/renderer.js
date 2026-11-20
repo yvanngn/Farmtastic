@@ -336,7 +336,7 @@ let swing = null;
     if (cacheSeason !== S.season || cacheScene !== scene || (scene === 'foret' && cacheForest !== forestKey)) {   // lot 11 : nouveau labyrinthe
       cacheForest = forestKey;
       SIGN_SINK.list = [];
-      cache = outside ? farmGround() : scene === 'wild' ? (interiors['wild' + S.season] ||= buildWild(S.season)) : scene === 'foret' ? (interiors['foret' + forestKey + ':' + S.season] ||= buildWild(S.season, 'foret')) : scene === 'town' ? (interiors['town' + S.season] ||= buildTown(S.season)) : scene === 'quartier' ? (interiors['quartier' + S.season] ||= buildQuartier(S.season)) : (scene === 'montagne' || scene === 'plage') ? (interiors[scene] ||= buildBiome(scene, S.season)) : scene === 'parc' ? (interiors['parc' + S.season] ||= buildParc(S.season)) : scene === 'carriere' ? (interiors[scene + S.season] ||= buildQuarry(scene, S.season)) : (scene === 'rondpoint' || scene === 'place' || scene === 'route' || scene === 'route_ville' || scene === 'route_plage' || scene === 'ranch' || scene === 'port' || scene === 'gare' || scene === 'golgolas' || /^farm:\d$/.test(scene)) ? (interiors[scene + S.season] ||= buildWest(scene, S.season)) : (scene === 'resto' ? (interiors['resto' + !!(S.resto && S.resto.oven)] ||= buildInterior(scene, S)) : (scene === 'house' || scene === 'maison') ? (interiors[scene + !!S.workbench + (S.bed !== false)] ||= buildInterior(scene, S)) : (interiors[scene] ||= buildInterior(scene, S)));
+      cache = outside ? farmGround() : scene === 'wild' ? (interiors['wild' + S.season] ||= buildWild(S.season)) : scene === 'foret' ? (interiors['foret' + forestKey + ':' + S.season] ||= buildWild(S.season, 'foret')) : scene === 'town' ? (interiors['town' + S.season] ||= buildTown(S.season)) : scene === 'quartier' ? (interiors['quartier' + S.season] ||= buildQuartier(S.season)) : (scene === 'montagne' || scene === 'plage') ? (interiors[scene] ||= buildBiome(scene, S.season)) : scene === 'parc' ? (interiors['parc' + S.season] ||= buildParc(S.season)) : (scene === 'carriere' || scene === 'dedale') ? (interiors[scene + S.season] ||= buildQuarry(scene, S.season)) : (scene === 'rondpoint' || scene === 'place' || scene === 'route' || scene === 'route_ville' || scene === 'route_plage' || scene === 'ranch' || scene === 'port' || scene === 'gare' || scene === 'golgolas' || /^farm:\d$/.test(scene)) ? (interiors[scene + S.season] ||= buildWest(scene, S.season)) : (scene === 'resto' ? (interiors['resto' + !!(S.resto && S.resto.oven)] ||= buildInterior(scene, S)) : (scene === 'house' || scene === 'maison') ? (interiors[scene + !!S.workbench + (S.bed !== false)] ||= buildInterior(scene, S)) : (interiors[scene] ||= buildInterior(scene, S)));
       if (!cache.__signs) cache.__signs = SIGN_SINK.list; SIGN_SINK.list = null;   // enseignes de ce décor
       if (cacheSeason !== S.season) initWeather();
       cacheSeason = S.season; cacheScene = scene;
@@ -353,7 +353,7 @@ let swing = null;
     ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.fillStyle = '#16121f'; ctx.fillRect(0, 0, cv.width, cv.height);
     ctx.setTransform(scale, 0, 0, scale, -camX * scale, -camY * scale);
     if (sky && (camX < 0 || camY < 0 || camX + vw > MW || camY + vh > MH)) {   // 20/11 : au-delà du bord, des arbres (ou des rochers) plutôt que du noir
-      const pat = edgePattern(scene === 'carriere' || scene === 'montagne' ? 'roche' : 'bois', S.season);
+      const pat = edgePattern(scene === 'carriere' || scene === 'dedale' || scene === 'montagne' ? 'roche' : 'bois', S.season);
       if (pat) { ctx.fillStyle = pat; const x0 = Math.floor(camX) - T, y0 = Math.floor(camY) - T, x1 = camX + vw + T, y1 = camY + vh + T;
         if (x0 < 0) ctx.fillRect(x0, y0, -x0, y1 - y0); if (x1 > MW) ctx.fillRect(MW, y0, x1 - MW, y1 - y0);
         if (y0 < 0) ctx.fillRect(0, y0, MW, -y0); if (y1 > MH) ctx.fillRect(0, MH, MW, y1 - MH); }
@@ -397,6 +397,10 @@ let swing = null;
       list.push({ z: FOREST_CHEST.y + .8, d: () => { drawChest(ctx, FOREST_CHEST.x, FOREST_CHEST.y); if (forestChestFull(S)) { ctx.fillStyle = 'rgba(255,240,170,' + (.2 + .15 * Math.sin(now / 300)) + ')'; ctx.fillRect(FOREST_CHEST.x * T, FOREST_CHEST.y * T + 2, 16, 12); } } });   // lot 8 : coffre au bout du labyrinthe
       const cols = {}; for (const ss of MUSHROOMS) for (const m of ss) cols[m.id] = m.c;
       for (const k in (S.foret && S.foret.shrooms) || {}) { const [x, y] = k.split(',').map(Number), m = S.foret.shrooms[k]; list.push({ z: y + .6, d: () => drawShroom(ctx, x, y, m, cols[m.sp]) }); }
+    }
+    if (scene === 'dedale') {   // lot 30b : arbres (dont les chênes, plus gros) et marmottes
+      for (const k in (S.dedale && S.dedale.trees) || {}) { const [x, y] = k.split(',').map(Number), o = S.dedale.trees[k]; if (x >= x0 - 1 && x <= x1 + 1 && y >= y0 - 1 && y <= y1 + 2) list.push({ z: y + .9, d: () => drawTree(ctx, x, y, { k: o.k, g: 3, shake: o.shake }, S.season, now) }); }
+      for (const e of g.enemies) list.push({ z: e.y, d: () => drawMob(ctx, e, now) });
     }
     if (scene === 'wild') {
       for (const e of g.enemies) list.push({ z: e.y, d: () => drawMob(ctx, e, now) });

@@ -6,7 +6,9 @@ export const MOBS = {
   // 21/11 (lot 30a) : combat au tour par tour avec jauge — atk (dégâts d'un coup), spd (vitesse de la jauge), xp, butin 💡
   slime_v: { n: 'Slime vert', hp: 60, speed: 1.1, dmg: 10, drop: 'slime', color: '#56c45a', atk: 7, spd: 0.8, xp: 3 },
   slime_b: { n: 'Slime bleu', hp: 100, speed: 1.7, dmg: 15, drop: 'slime', color: '#4a8ae0', atk: 11, spd: 1.1, xp: 5 },
-  pig: { n: 'Cochon qui tire', hp: 90, speed: 1.0, dmg: 10, shot: 12, reload: 2.2, money: [5, 15], atk: 9, spd: 0.95, xp: 5 }
+  pig: { n: 'Cochon qui tire', hp: 90, speed: 1.0, dmg: 10, shot: 12, reload: 2.2, money: [5, 15], atk: 9, spd: 0.95, xp: 5 },
+  // lot 30b (décrit par l'utilisateur) : la marmotte à grandes griffes, dans le dédale profond. Butin : griffes (rare) et viande 💡 chances
+  marmotte: { n: 'Marmotte à grandes griffes', hp: 140, speed: 1.3, atk: 13, spd: 1.05, xp: 9, loot: [['griffe_marmotte', 0.35, 1], ['viande_marmotte', 0.8, 1]] }
 };
 // Monstres de chaque salle (index = y * 3 + x), réapparaissent quand on revient dans la salle.
 export const ROOM_MOBS = [

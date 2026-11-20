@@ -290,10 +290,10 @@ Décrit par l'utilisateur : cabane à moitié prix ; journal dans la cabane (200
 - [x] **Simplet**, le mineur, à l'entrée (21/11) : pas très malin mais très gentil, costaud, chauve, plein de suie, la pioche sur l'épaule. Son vrai nom, Timide, se découvre à 5 ❤️ (❓ à confirmer). Il adore son métier ; une lettre trouvée à l'entrée l'intrigue 🆕.
 - [x] Niveau 5 : il envoie la lettre de l'inconnu par courrier (même si le rocher est déjà cassé) → quête secondaire « Le rocher du centre » 🆕.
 
-## Lot 30 — Le dédale profond (à faire)
-- [ ] Premier sous-sol, sous le trou de l'énorme rocher ; plus grand que la carrière.
-- [ ] Nouveaux arbres : bois normal et **bois de chêne** (plus robuste) ; cailloux, filons un peu moins rares, fleurs.
-- [ ] Monstre : la **marmotte à grandes griffes**. Butin : **griffes de marmotte** (composant rare, pour des fabrications ultérieures) et **viande de marmotte** (cuisine).
+## Lot 30 — Le dédale profond ✅ v0.1.105 (lot 30b)
+- [x] Premier sous-sol (62 × 52), sous le trou de l'énorme rocher ; une échelle au centre remonte près du trou. Plus de zigzags que la carrière.
+- [x] Arbres ordinaires et **chênes** (14 coups au lieu de 8, bûcheron niveau 3 💡) : 2 à 3 **bois de chêne** + 1 bois ; 40 arbres au plus, 8 repoussent par jour 💡. 80 cailloux, 8 filons au plus (un peu moins rares), 10 fleurs par jour 💡.
+- [x] Monstre : la **marmotte à grandes griffes** (7 à chaque descente, elles se promènent et viennent vers le joueur ; combat au tour par tour). Butin : **griffes de marmotte** (composant rare, pour des fabrications ultérieures) et **viande de marmotte** (cuisine).
 
 ## Lot 30 bis — Combat au tour par tour avec jauge (décision du 21/11)
 - Le combat en temps réel est jugé vite ennuyeux et sans profondeur : on passe à un **combat au tour par tour avec jauge** (façon « ATB » : chacun agit quand sa jauge est pleine). Permet des combats plus tactiques, parfois plus longs, et des **boss**.
@@ -304,7 +304,7 @@ Décrit par l'utilisateur : cabane à moitié prix ; journal dans la cabane (200
   - Multijoueur : on peut combattre **seul ou en équipe** ; un joueur proche peut **rejoindre un combat en cours**.
 - Découpage proposé :
   - [x] **30a** moteur de combat + écran de combat, en solo (v0.1.104) : jauges (pause pendant le choix), Attaquer, Techniques 💡 (Coup puissant 4 ⚡, Balayage 6 ⚡ sur tous), Objets (nourriture), Se défendre (dégâts ÷ 2), Fuir (6 chances sur 10 💡) ; XP et butin ; défaite = clinique. La Caverne sombre y passe : toucher un monstre lance le combat (ses voisins de salle à moins de 4 cases le rejoignent, 3 au plus) ;
-  - [ ] **30b** le dédale profond et la marmotte à grandes griffes (premier monstre du nouveau combat) ;
+  - [x] **30b** le dédale profond et la marmotte à grandes griffes (v0.1.105) ;
   - [ ] **30c** combats en équipe (rejoindre un combat en cours) ;
   - [ ] plus tard : boss, magie.
 

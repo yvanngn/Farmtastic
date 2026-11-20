@@ -51,6 +51,9 @@ export const ITEMS = {
   ruby: { n: 'Rubis', p: 250, i: '♦️' },
   emerald: { n: 'Émeraude', p: 300, i: '💚' },
   slime: { n: 'Gelée', p: 5, i: '🟢' },
+  oak_wood: { n: 'Bois de chêne', p: 8, i: '🪵' },                       // lot 30b : bois plus robuste (dédale profond) 💡 prix
+  griffe_marmotte: { n: 'Griffe de marmotte', p: 30, i: '🦴' },          // lot 30b : composant rare (fabrications à venir) 💡 prix
+  viande_marmotte: { n: 'Viande de marmotte', p: 12, i: '🥩' },          // lot 30b : pour la cuisine (recettes à venir) 💡 prix
   fence: { n: 'Clôture', p: 4, i: '🚧' },
   potion: { n: 'Potion', p: 30, i: '🧪', eat: { h: 40 }, keep: true }
 };

@@ -53,6 +53,7 @@ import { ensureNature, rainbowTick, pickFlower, digTreasure } from './systems/na
 import { doorAt } from './world/scenes.js';
 import { pickDrops, dropsAt, swapDrop, stackSize } from './systems/inventory.js';
 import { updateWild } from './systems/wild.js';
+import { updateDedale } from './systems/dedale.js';
 import { ensureShrooms, pickShroom } from './systems/foret.js';
 import { isLunaLot } from './world/map.js';
 import { isPath, isGate } from './world/map.js';
@@ -319,6 +320,7 @@ function loop(now) {
     tickTime(g, dt * 1000);
     wander(g, dt);
     updateWild(g, dt); // les monstres ne vivent que dans les Caverne sombre
+    updateDedale(g, dt);   // lot 30b : dédale profond (arbres, marmottes)
     autoPickup(g);
     pickTestSword(g, Math.floor(g.S.x), Math.floor(g.S.y - .2)); pickFieldTool(g, Math.floor(g.S.x), Math.floor(g.S.y - .2)); mystTick(g); cookTick(g); nightTip(g); ghostTick(g); fishTick(g, dt); coldTick(g, dt);
     ensureNature(g, g.S.scene || 'farm'); ensureMounds(g.S, g.S.scene || 'farm'); rainbowTick(g);
@@ -345,6 +347,7 @@ function loop(now) {
     for (const id in g.npcs) { const n = g.npcs[id]; placeNPC(n, g.S, OUT_FROM, OUT_TO); if (n.orbit && n.scene === n.orbit.scene) orbitNPC(n, now / 1000); /* essai : tour de la fontaine */ if (n.justOut) { n.justOut = false; toast(`${n.name} est sorti s'asseoir devant chez lui !`); } }
     mp && mp.tick(now);
     for (const k in g.S.objs) { const o = g.S.objs[k]; if (o.shake > 0) o.shake -= dt; }
+    if (g.S.scene === 'dedale' && g.S.dedale) for (const k in g.S.dedale.trees) { const o = g.S.dedale.trees[k]; if (o.shake > 0) o.shake -= dt; }   // lot 30b
     for (let i = g.fx.length - 1; i >= 0; i--) { const f = g.fx[i]; f.life -= dt; f.y -= dt * 0.75; if (f.life <= 0) g.fx.splice(i, 1); }
     renderer.updateParticles(dt);
     renderer.render(now);

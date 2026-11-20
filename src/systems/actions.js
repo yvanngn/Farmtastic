@@ -41,6 +41,7 @@ import { CFG as CFG_P } from '../config.js';
 // 20/11 : la fête foraine n'ouvre que le dernier jour du premier mois
 export const parcOpen = S => dayIndex(S) >= CFG_P.MONTH_DAYS;
 import { isBigRock, hitBigRock } from './bigrock.js';
+import { dedaleTree, chopDedale } from './dedale.js';
 import { readLetter, hitMeteor, zoneOpen as golgoOpen, MAILBOX } from './golgolas.js';
 import { METEOR } from '../world/scenes.js';
 
@@ -144,6 +145,7 @@ function act0(g, tx, ty) {
   if (d && !(sc === 'farm' && BUILDINGS[d.to] && !(S.built && S.built[d.to]))) { enterScene(g, d.to, d.spawn); return 'door'; }
   if (sc === 'grange') { const r = grangeAction(g, tx, ty); if (r !== 'none') return r; }
   if (sc === 'resto' && tileAt('resto', tx, ty) === 'O') return repairOven(g);   // le four du cuistot (lot 5)
+  if (sc === 'dedale' && dedaleTree(S, tx, ty)) return chopDedale(g, tx, ty) ? 'hit' : 'none';   // lot 30b
   if (sc === 'foret' && isForestChest(tx, ty)) return openForestChest(g) ? 'chest' : 'none';   // lot 8 : coffre au bout du labyrinthe
   if (sc === 'foret' && forestTreeAt(S, tx, ty)) return chopForest(g, tx, ty) ? 'hit' : 'none';
   if (sc === 'foret') { const r = chopStump(g, tx, ty); if (r) return 'hit'; }   // 19/11 : souche de la forêt

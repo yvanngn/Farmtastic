@@ -19,6 +19,7 @@ export const ROCK_HP = 6;
 export const NATURE = {
   farm: { flowers: 6, rocks: 0, rocksDay: 0, veins: 0, veinP: 0 },   // 19/11 : plus de cailloux à la ferme, tout est à la carrière
   carriere: { flowers: 0, rocks: 90, rocksDay: 12, veins: 5, veinP: 0.3, rich: 0.4, richVein: 0.5 },   // lot 29 : grand dédale (💡 90 cailloux au plus, 12 par jour) ; 21/11 : filons rares et précieux (5 au plus, une chance sur 3 d'en voir un nouveau chaque jour, plutôt dans les grandes salles)   // 19/11 : la carrière vidée se remplit petit à petit (6 cailloux par jour)
+  dedale: { flowers: 10, rocks: 80, rocksDay: 10, veins: 8, veinP: 0.5, veinW: { copper: 26, zinc: 22, iron: 22, cobalt: 12, nickel: 9, silver: 6, gold: 3 } },   // lot 30b : premier sous-sol, filons un peu moins rares 💡
   foret: { flowers: 8, rocks: 12, rocksDay: 2, veins: 2, veinP: 0.5 },
   montagne: { flowers: 0, rocks: 8, rocksDay: 3, veins: 5, veinP: 0.9 },   // plus de filons qu'ailleurs
   plage: { flowers: 0, rocks: 3, rocksDay: 1, veins: 0, veinP: 0 },

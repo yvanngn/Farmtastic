@@ -11,12 +11,12 @@ import { gainXp, toolTier, hasTool } from './skills.js';
 import { energyCost, hitReady, MINING_GAIN } from '../data/tools.js';
 import { VEINS } from '../data/nature.js';
 import { pickVein } from './nature.js';
-import { BIG_ROCK } from '../world/scenes.js';
+import { BIG_ROCK, DEDALE_LADDER } from '../world/scenes.js';
 
 export const ROCK_HITS = 10000, ROCK_EVERY = 10, ROCK_STONES = 2;
 export const ROCK_ORE_P = 0.15;       // 💡 un minerai une fois sur 7 environ, à chaque volée de cailloux
 export const ROCK_LETTER_LEVEL = 5;
-export const ROCK_HOLE = null;   // ⏳ lot 30 : le dédale profond (premier sous-sol)
+export const ROCK_HOLE = { scene: 'dedale', spawn: { x: DEDALE_LADDER.x + 1.5, y: DEDALE_LADDER.y + 1.6 } };   // lot 30b : le dédale profond (premier sous-sol)
 const R = S => (S.bigRock ||= { hits: 0, letter: false, read: false, met: false });
 export const bigRock = S => S.bigRock || { hits: 0, letter: false, read: false, met: false };
 export const rockDone = S => bigRock(S).hits >= ROCK_HITS;

@@ -84,6 +84,17 @@ export function drawForestTree(c, x, y, season, cut) {
 }
 export function drawMob(c, e, now) {
   const px = Math.round(e.x * T), py = Math.round(e.y * T), R = (a, b, w, h, col) => { c.fillStyle = col; c.fillRect(px + a, py + b, w, h); };
+  if (e.type === 'marmotte') {   // lot 30b : la marmotte à grandes griffes (dressée, grosses griffes claires)
+    const f = e.hit > 0 ? '#ffffff' : '#8a5a34', d = '#5e3a20', l = '#c89a68', bob = Math.round(Math.sin(now / 180 + e.x) * 1);
+    c.fillStyle = 'rgba(0,0,0,.25)'; c.fillRect(px - 7, py + 3, 14, 2);
+    R(-6, -12 + bob, 12, 14, f); R(-6, -12 + bob, 2, 14, d); R(-3, -8 + bob, 6, 9, l);         // corps et ventre
+    R(-5, -19 + bob, 10, 8, f); R(-4, -21 + bob, 2, 2, d); R(2, -21 + bob, 2, 2, d);             // tête, oreilles
+    R(-3, -16 + bob, 2, 2, '#1a1010'); R(1, -16 + bob, 2, 2, '#1a1010'); R(-1, -14 + bob, 2, 1, '#3a2018'); R(-1, -13 + bob, 2, 2, '#f4ece0');   // yeux, nez, dents
+    R(-10, -8 + bob, 4, 3, f); R(6, -8 + bob, 4, 3, f);                                            // bras
+    for (let k = 0; k < 3; k++) { R(-11 + k, -5 + bob, 1, 4, '#ece4d4'); R(8 + k, -5 + bob, 1, 4, '#ece4d4'); }   // grandes griffes
+    R(-5, 2, 4, 2, d); R(1, 2, 4, 2, d);
+    return;
+  }
   if (e.type === 'pig') {
     c.fillStyle = 'rgba(0,0,0,.25)'; c.fillRect(px - 6, py + 3, 12, 2);
     const f = e.hit > 0 ? '#ffffff' : '#9a6a6a', d = '#6e4648', bob = Math.round(Math.sin(now / 160 + e.x) * 1);

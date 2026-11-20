@@ -12,6 +12,7 @@ Le détail de chaque point est dans `docs/MANUEL.md`.
 
 - [ ] **Le premier étal** : rencontrer Suzie · mettre un objet en vente · première vente
 - [ ] **Le rocher du centre** : rencontrer le mineur · lire sa lettre · casser l'énorme rocher
+- [ ] **Le dédale profond** : y descendre · abattre un chêne · vaincre une marmotte · obtenir une griffe de marmotte
 - [ ] **Recycler** : jeter un objet à la décharge · revendre à un marchand
 - [ ] **La cuisine du chef** : plan du chaudron (Remy) · fabriquer · poser · cuire des baies ou des mûres
 

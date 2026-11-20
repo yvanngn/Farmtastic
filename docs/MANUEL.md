@@ -57,6 +57,10 @@ Menu → 🎽 Équipement : tête, corps, pieds, accessoire. Le manteau d'hiver 
 - Au centre, l'**énorme rocher** : 10 000 coups de pioche (2 cailloux tous les 10 coups, parfois un minerai). À plusieurs, tout le monde tape le même. Une fois cassé, un trou s'ouvre.
 - Le **mineur** attend à l'entrée ; au niveau 5, il t'envoie une lettre.
 
+## 5 bis bis. Le dédale profond
+- Une fois l'énorme rocher cassé, son trou mène au **dédale profond**, premier sous-sol, plus grand. L'échelle au centre remonte à la carrière.
+- On y trouve des arbres, des **chênes** (plus durs, bois de chêne), des cailloux, des filons un peu plus fréquents, des fleurs… et des **marmottes à grandes griffes** (griffes rares, viande pour la cuisine).
+
 ## 5 ter. Combat
 - On voit les monstres ; les **toucher** ouvre l'écran de combat (les monstres proches se joignent au combat, 3 au plus).
 - **Au tour par tour avec jauge** : chaque combattant agit quand sa jauge est pleine ; pendant que tu choisis, le temps s'arrête.

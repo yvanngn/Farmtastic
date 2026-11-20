@@ -518,6 +518,37 @@ LAYOUTS.carriere = (() => {
   }
   return m.map(r => r.join(''));
 })();
+// 21/11 (lot 30b) : le dédale profond, premier sous-sol, sous le trou de l'énorme rocher. Plus grand que la carrière
+// (62 × 52), mêmes allées larges ; au centre, l'échelle pour remonter. Arbres (dont le chêne), cailloux, filons un peu
+// moins rares, fleurs et marmottes à grandes griffes.
+export const DEDALE_COLS = 12, DEDALE_ROWS = 10, DEDALE_W = 2 + DEDALE_COLS * 5, DEDALE_H = 2 + DEDALE_ROWS * 5;
+const dx_ = i => 2 + i * 5 + 1, dy_ = j => 2 + j * 5 + 1;
+export const DEDALE_LADDER = { x: dx_(5) + 3, y: dy_(4) + 3 };
+export const DEDALE_ROUTE = new Set();
+export const DEDALE_RICH = [[0, 0, 2, 2], [9, 0, 3, 2], [0, 7, 3, 3], [9, 7, 3, 3], [5, 0, 2, 1]].map(([i, j, w, h]) => ({ x0: 2 + i * 5, y0: 2 + j * 5, x1: 2 + (i + w) * 5 - 3, y1: 2 + (j + h) * 5 - 3 }));
+LAYOUTS.dedale = (() => {
+  const W = DEDALE_W, H = DEDALE_H, m = grid(W, H, '^');
+  let seed = 30217; const rnd = () => (seed = (seed * 1103515245 + 12345) % 2147483648) / 2147483648;
+  const open = (x0, y0, x1, y1) => { for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) m[y][x] = '.'; };
+  const route = (x0, y0, x1, y1) => { for (let y = Math.min(y0, y1); y <= Math.max(y0, y1); y++) for (let x = Math.min(x0, x1); x <= Math.max(x0, x1); x++) DEDALE_ROUTE.add(x + ',' + y); };
+  const link = (i, j, k, l) => { open(Math.min(dx_(i), dx_(k)) - 1, Math.min(dy_(j), dy_(l)) - 1, Math.max(dx_(i), dx_(k)) + 1, Math.max(dy_(j), dy_(l)) + 1); route(dx_(i), dy_(j), dx_(k), dy_(l)); };
+  const seen = new Set(['5,4']), stack = [[5, 4]]; let last = null;
+  open(dx_(5) - 1, dy_(4) - 1, dx_(5) + 1, dy_(4) + 1);
+  const dirs = [[1, 0], [-1, 0], [0, 1], [0, -1]];
+  while (stack.length) {
+    const [i, j] = stack[stack.length - 1];
+    const nb = dirs.map(d => [i + d[0], j + d[1], d]).filter(([a, b]) => a >= 0 && b >= 0 && a < DEDALE_COLS && b < DEDALE_ROWS && !seen.has(a + ',' + b));
+    if (!nb.length) { stack.pop(); last = null; continue; }
+    const same = last && nb.find(n => n[2] === last);
+    const [a, b, d] = same && rnd() < .3 ? same : nb[rnd() * nb.length | 0];
+    seen.add(a + ',' + b); link(i, j, a, b); stack.push([a, b]); last = d;
+  }
+  for (let k = 0; k < 20; k++) { const i = rnd() * (DEDALE_COLS - 1) | 0, j = rnd() * (DEDALE_ROWS - 1) | 0; if (rnd() < .5) link(i, j, i + 1, j); else link(i, j, i, j + 1); }
+  for (const R of DEDALE_RICH) open(R.x0, R.y0, R.x1, R.y1);
+  open(dx_(5) - 1, dy_(4) - 1, dx_(6) + 1, dy_(5) + 1);   // la salle de l'échelle, au centre
+  m[DEDALE_LADDER.y][DEDALE_LADDER.x] = 'D';
+  return m.map(r => r.join(''));
+})();
 LAYOUTS.rondpoint = (() => {
   const W = 26, H = 18, m = grid(W, H, 's');
   for (let y = 0; y < H; y++) { m[y][12] = '.'; m[y][13] = '.'; } for (let x = 0; x < W; x++) { m[8][x] = '.'; m[9][x] = '.'; }
@@ -641,6 +672,7 @@ export const SCENES = {
   franck: { W: 9, H: 7, doors: [{ x: 4, y: 6, to: 'quartier', spawn: { x: 10.5, y: 15.8 } }] },
   clinique: { W: 9, H: 7, doors: [{ x: 4, y: 6, to: 'quartier', spawn: { x: 28.5, y: 6.8 } }] },
   hailey: { W: 9, H: 7, doors: [{ x: 4, y: 6, to: 'quartier', spawn: { x: 26.5, y: 15.8 } }] },
+  dedale: { W: DEDALE_W, H: DEDALE_H, underground: true, doors: [{ x: DEDALE_LADDER.x, y: DEDALE_LADDER.y, to: 'carriere', spawn: { x: BIG_ROCK.x + 2, y: BIG_ROCK.y + BIG_ROCK.h + .9 } }] },   // lot 30b : l'échelle remonte près du trou
   carriere: { W: QUARRY_W, H: QUARRY_H, outdoor: true, doors: [...[-1, 0, 1].map(d => ({ x: QUARRY_DOOR_S + d, y: QUARRY_H - 1, to: 'lot', lot: 0, dir: 'S' })), ...[-1, 0, 1].map(d => ({ x: 0, y: QUARRY_DOOR_W + d, to: 'lot', lot: 3, dir: 'W' }))] },
   ...Object.fromEntries([0, 1, 2, 3].map(lot => { const D = [];
     for (const x of [15, 16]) { D.push({ x, y: 0, to: 'edge:N' }); D.push({ x, y: 21, to: 'edge:S' }); }
