@@ -314,9 +314,10 @@ Décrit par l'utilisateur : cabane à moitié prix ; journal dans la cabane (200
 ## Lot 32 — Nouveaux décors d'après les images de l'utilisateur ✅ v0.1.108
 - Découpe : `python3 -I tools/decors-from-planches.py --all` (docs/sprites/decors/*.jpg → assets/decors/*.png, fond retiré, trous bouchés, qualité d'origine) ; affichage net par `src/render/decors.js` (réduit une fois à la taille de l'écran, en cache ; ancien dessin en secours).
 - [x] Cactus (grands, petits) et broussailles un peu partout (zones de l'Ouest) ; cailloux de 6 formes (petit, tas, bas, plat ; gros rocher ; rocher et pilier) ; filons cuivre, étain, argent, fer, or, cobalt, zinc, nickel (💡 la pierre blanche « zinc » sert au nickel) ; sapin, cyprès et arbre en fleurs (sapins partout, cyprès et arbres en fleurs dans le dédale profond).
-- [x] Saloon du centre-ville (« Red Eye Saloon » sur l'image ; ❓ garder ce nom ?).
-- [x] Fontaine au cheval cabré (rond-point et centre-ville).
+- [x] Saloon du centre-ville (21/11 : le panneau dit seulement « SALOON », décision de l'utilisateur).
+- [x] Fontaine au cheval cabré au rond-point, la **place de la cavalerie** (pancarte, eau qui coule, v0.1.110). Fontaine du centre-ville retirée (21/11).
 - [x] Diligence de l'intro (profil droit ; ⏳ gauche, face et dos prêts pour les futurs trajets). v0.1.109 : franges violettes retirées, roues découpées à part qui tournent.
+- [x] v0.1.110 : diligence déjà à l'arrêt à la gare au début de l'intro, chevaux animés (corps et têtes), plus d'ombre ; voie ferrée prolongée au-dessus et au-dessous de la gare ; **tous les arbres** d'après la planche (chêne → arbre en fleurs, sapin → sapin, bouleau → cyprès) ; plus d'arbre qui déborde sur une sortie ; images 2,9 → 1,1 Mo (ramenées à 4 × leur taille d'affichage).
 - [x] v0.1.109 : caméra façon Stardew (centrée sur le héros, arrêtée aux bords ; petite zone centrée) ; plus d'arbre ni de barrière au milieu d'une route ni à côté d'une sortie (sorties sur toute la largeur de la route, test).
 
 ## Lot 28 — Intro jouable et racontée (demande du 20/11) ✅ v0.1.92

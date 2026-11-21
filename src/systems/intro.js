@@ -34,6 +34,7 @@ export function introTick(g, dt) {
   const S = g.S;
   if (!introActive(S) || g.introWait) return null;
   const I = S.intro;
+  g.parkedCoach = ['train', 'descente', 'myst'].includes(I.step) ? { scene: 'gare', x: RIDE.gare.from, y: RIDE.gare.y } : null;   // 21/11 : la diligence attend déjà, à l'arrêt
   if (I.step === 'train') {
     if (S.scene !== 'gare') { S.scene = 'gare'; g.bus.emit('scene', 'gare'); }
     Object.assign(S, TRAIN_DOOR); g.introHidden = true;   // le héros arrive DANS le train

@@ -58,7 +58,7 @@ test('interagir avec le décor : un petit texte du héros', () => {
   assert.equal(act2(g, 3, 2), 'look');
   assert.equal(said.at(-1), EXAMINE.farm.house);
   assert.equal(act2(g, 12, 24), 'look', 'la mare');
-  S.scene = 'town'; act2(g, 16, 7);
+  S.scene = 'rondpoint'; S.x = 12.5; S.y = 10.6; act2(g, 12, 9);   // 21/11 : la fontaine du centre-ville est retirée ; celle du rond-point reste
   assert.equal(said.at(-1), EXAMINE.tiles.F);
   S.scene = 'house'; assert.equal(act2(g, 4, 4), 'journal', '19/11 : la table de la cabane porte le journal');
   assert.notEqual(act2(g, 10, 3), 'look', 'le lit sert à dormir');

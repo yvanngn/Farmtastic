@@ -42,12 +42,17 @@ export function drawDecorRot(c, n, cx, cy, w, ang) {
   const s = Math.abs(c.getTransform().a) || 1, im = scaled(n, Math.max(1, Math.round(w * s)), Math.max(1, Math.round(w * s))); if (!im) return false;
   c.save(); c.translate(cx, cy); c.rotate(ang); c.drawImage(im, -w / 2, -w / 2, w, w); c.restore(); return true;
 }
-// La diligence : caisse et chevaux, puis les roues qui tournent (angle selon le temps).
-export function drawCoachDecor(c, n, cx, by, w, now) {
+// La diligence : caisse, chevaux qui trottent (corps et têtes qui dodelinent, en décalé), puis les roues qui tournent.
+// Coordonnées des roues et des chevaux données dans l'image d'origine (626 px de large).
+const COACH_W0 = 626, HORSE_X0 = 385, HEAD_X0 = 540;
+export function drawCoachDecor(c, n, cx, by, w, now, moving = true) {
   const src = decor(n); if (!src || !decor('roue')) return false;
-  const k = w / src.naturalWidth, x0 = cx - w / 2, y0 = by - src.naturalHeight * k;
-  drawDecor(c, n, cx, by, w);
-  const ang = (now / 1000) * 5 * (n === 'diligence_gauche' ? -1 : 1);
-  for (const [wx, wy, r] of COACH_WHEELS[n] || []) drawDecorRot(c, 'roue', x0 + wx * k, y0 + wy * k, 2 * r * k, ang * 62 / r);
+  const k = w / COACH_W0, h = w * src.naturalHeight / src.naturalWidth, x0 = cx - w / 2, y0 = by - h, left = n === 'diligence_gauche';
+  const s = Math.abs(c.getTransform().a) || 1, im = scaled(n, Math.max(1, Math.round(w * s)), Math.max(1, Math.round(h * s)));
+  const sx = im.width / w, part = (a, b, dy) => { const xa = left ? w - b * k : a * k, xb = left ? w - a * k : b * k; c.drawImage(im, xa * sx, 0, (xb - xa) * sx, im.height, x0 + xa, y0 + dy, xb - xa, h); };
+  const t = now / (moving ? 95 : 260), body = Math.round(Math.sin(t)) * (moving ? 1 : .5), head = Math.round(Math.sin(t + 1.4) * (moving ? 1.5 : 1));
+  part(0, HORSE_X0, 0); part(HORSE_X0, HEAD_X0, body); part(HEAD_X0, COACH_W0, body + head);
+  const ang = moving ? (now / 1000) * 5 * (left ? -1 : 1) : 0;
+  for (const [wx, wy, r] of COACH_WHEELS[n] || []) drawDecorRot(c, 'roue', x0 + wx * k, y0 + wy * k * (COACH_W0 / src.naturalWidth) * (src.naturalWidth / COACH_W0), 2 * r * k, ang * 62 / r);
   return true;
 }

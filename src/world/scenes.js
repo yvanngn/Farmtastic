@@ -838,3 +838,6 @@ export function widenRoads(sc) {
   LAYOUTS[sc] = L.map(r => r.join(''));
 }
 for (const sc of Object.keys(SCENES)) if (SCENES[sc].outdoor && LAYOUTS[sc] && !WIDE_SKIP.has(sc)) widenRoads(sc);
+
+// 21/11 (demande de l'utilisateur) : plus de fontaine au centre-ville (la place pavée reste) ; seule la fontaine du rond-point (place de la cavalerie) est gardée.
+LAYOUTS.town = LAYOUTS.town.map(r => r.replace(/F/g, '.'));

@@ -1,4 +1,4 @@
-import { drawDecor } from './decors.js';
+import { drawDecor, decor } from './decors.js';
 // Sprites pixel art procéduraux, ombrés et contourés, mis en cache.
 import { CFG } from '../config.js';
 import { CROPS } from '../data/crops.js';
@@ -405,7 +405,7 @@ const TREE_PAL = [
   ['#7e3417', '#c25e1d', '#eea13a', null],
   ['#4f5d63', '#7d9096', '#eef5f7', null]
 ];
-export function treeSprite(season, v) {
+function treeSprite0(season, v) {
   return cache('t' + season + v, () => {
     const s = canvas(34, 44), c = s.getContext('2d'), p = TREE_PAL[season], r = rng(v * 97 + 3);   // 7d : canopée sur 0-31
     // tronc + racines
@@ -428,7 +428,7 @@ export function treeSprite(season, v) {
 }
 // Sapin : étages de branches en triangle, reste vert l'hiver (neige sur les branches).
 const PINE_PAL = [['#1f4a34', '#2f6b47', '#4f9461'], ['#1c4530', '#2b6342', '#468a58'], ['#1f4a34', '#2f6b47', '#5a9461'], ['#1f4234', '#2c5c45', '#eef5f7']];
-export function pineSprite(season, v) {
+function pineSprite0(season, v) {
   return cache('p' + season + v, () => {
     const s = canvas(34, 46), c = s.getContext('2d'), p = PINE_PAL[season], r = rng(v * 53 + 11);
     c.fillStyle = '#5b3a22'; c.fillRect(15, 34, 4, 10); c.fillStyle = '#7a4f2e'; c.fillRect(15, 34, 1, 10);
@@ -447,7 +447,7 @@ export function pineSprite(season, v) {
 }
 // Bouleau : tronc blanc tacheté de noir, feuillage léger et clair.
 const BIRCH_PAL = [['#4f8a35', '#79b54a', '#b4dc6e'], ['#47802f', '#6fa843', '#a2d062'], ['#b8761a', '#e6ad2c', '#ffe07a'], [null, null, null]];
-export function birchSprite(season, v) {
+function birchSprite0(season, v) {
   return cache('b' + season + v, () => {
     const s = canvas(34, 46), c = s.getContext('2d'), p = BIRCH_PAL[season], r = rng(v * 31 + 7);
     c.fillStyle = '#e9e4d6'; c.fillRect(15, 18, 4, 26); c.fillStyle = '#c9c2b0'; c.fillRect(18, 18, 1, 26);
@@ -488,8 +488,20 @@ export function pebbleSprite(v) {
     return outline(s, '#4a2a18');
   });
 }
+// 21/11 (demande de l'utilisateur) : tous les arbres viennent de la planche fournie — chêne → arbre en fleurs, sapin → sapin,
+// bouleau → cyprès. Même taille d'image que les anciens arbres (les fonds pré-dessinés restent alignés) ; ancien dessin en secours.
+const TREE_SUB = new Map();
+function viaDecor(orig, name, w) {
+  return (season, v) => {
+    const base = orig(season, v); if (!decor(name)) return base;
+    const k = name + season + ':' + v; let c = TREE_SUB.get(k); if (c) return c;
+    c = canvas(base.width, base.height); const g = c.getContext('2d');
+    drawDecor(g, name, base.width / 2, base.height - 1, w); TREE_SUB.set(k, c); return c;
+  };
+}
+export const treeSprite = viaDecor(treeSprite0, 'arbre_fleurs', 34), pineSprite = viaDecor(pineSprite0, 'sapin', 26), birchSprite = viaDecor(birchSprite0, 'cypres', 14);
 export const KIND_SPRITE = { oak: treeSprite, pine: pineSprite, birch: birchSprite };
-const TREE_DECOR = { pine: 'sapin', cypres: 'cypres', fleurs: 'arbre_fleurs' }, TREE_W = { sapin: 26, cypres: 14, arbre_fleurs: 34 };
+const TREE_DECOR = { pine: 'sapin', cypres: 'cypres', fleurs: 'arbre_fleurs', oak: 'arbre_fleurs', birch: 'cypres' }, TREE_W = { sapin: 26, cypres: 14, arbre_fleurs: 34 };
 const KIND_IDS = ['oak', 'pine', 'birch'];
 // Jeune arbre : pousse (jour 0), arbuste (jour 1), petit arbre (jour 2), puis adulte.
 function saplingSprite(kind, stage, season) {

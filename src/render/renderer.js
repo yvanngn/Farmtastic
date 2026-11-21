@@ -1,3 +1,4 @@
+import { signBoard } from './pixfont.js';
 import { drawDecor, decor, VEIN_DECOR, drawCoachDecor } from './decors.js';
 import { folkSprite, CAST } from './folk.js';
 import { coachBody, coachWheel, horse, locoSprite, wagonSprite, fountainSprite, houseSprite } from './props.js';
@@ -141,7 +142,7 @@ function drawRainbow(c, fx, fy, minute, R) {
   c.restore();
 }
 import { buildGround, drawWaterShimmer, LIGHTS, drawSoil } from './ground.js';
-import { heroToolSheet, drawHeroPick, drawChar, drawTree, drawRock, drawCrop, drawAnimal, drawSlime, drawSwing, treeSprite, KIND_SPRITE } from './sprites.js';
+import { heroToolSheet, drawHeroPick, drawChar, drawTree, drawRock, drawCrop, drawAnimal, drawSlime, drawSwing, treeSprite, pineSprite, KIND_SPRITE } from './sprites.js';
 import { buildInterior } from './interiors.js';
 import { buildParc, buildBiome, buildQuartier, buildTown, TOWN_LIGHTS } from './town.js';
 import { buildWest } from './west.js';
@@ -180,7 +181,7 @@ function edgePattern(kind, season) {
   if (typeof document === 'undefined') return null;
   const c = document.createElement('canvas'); c.width = c.height = 128; const g = c.getContext('2d');
   if (kind === 'roche') { g.fillStyle = '#5a5058'; g.fillRect(0, 0, 128, 128); for (let i = 0; i < 40; i++) { const x = (i * 53) % 128, y = (i * 37) % 128, r = 6 + (i * 7) % 10; g.fillStyle = ['#6a6068', '#7a7078', '#4a4248'][i % 3]; g.beginPath(); g.ellipse(x, y, r, r * .7, 0, 0, 7); g.fill(); } }
-  else { g.fillStyle = '#2c5a2a'; g.fillRect(0, 0, 128, 128); for (let y = -24; y < 128; y += 14) for (let x = -16; x < 128; x += 16) { const im = treeSprite(season, ((x * 7 + y * 13) & 0xffff) % 4); if (im) g.drawImage(im, x + ((y / 14) % 2 ? 8 : 0) - 8, y - 20); } }
+  else { g.fillStyle = '#2c5a2a'; g.fillRect(0, 0, 128, 128); for (let y = -24; y < 128; y += 14) for (let x = -16; x < 128; x += 16) { const im = (((x * 3 + y * 5) >> 4) % 5 === 0 ? treeSprite : pineSprite)(season, ((x * 7 + y * 13) & 0xffff) % 4); if (im) g.drawImage(im, x + ((y / 14) % 2 ? 8 : 0) - 8, y - 20); } }
   return (EDGE_PAT[k] = g.createPattern(c, 'repeat'));
 }
 // Farmwest : locomotive à vapeur qui entre en gare par le nord sur la voie (x1-2) et s'arrête le long du quai.
@@ -194,10 +195,30 @@ function drawLoco(c, t, now, hero, leave = 0) {   // 18/11 (soir) : locomotive e
 }
 let TRAIN_EL; const trainImage = () => { if (TRAIN_EL === undefined && typeof Image !== 'undefined') { TRAIN_EL = null; const im = new Image(); im.onload = () => { TRAIN_EL = im; }; im.src = TRAIN_IMG.url; } return TRAIN_EL; };
 // Farmwest : diligence tirée par deux chevaux, cocher en chapeau sur le siège ; roues qui tournent.
-function drawCoach(c, wx, wy, now) {   // 18/11 (soir) : diligence « pixel moderne » (src/render/props.js) : caisse, cocher, chevaux au trot, roues qui tournent
+// 21/11 : l'eau de la fontaine au cheval cabré : deux jets en arc depuis la bouche du cheval, gouttes qui retombent,
+// filets des têtes de cheval sur le bord et rides dans le bassin (fractions de l'image fournie).
+function fountainWater(c, cx, by, fw, now) {
+  const fh = fw * 648 / 771, x0 = cx - fw / 2, y0 = by - fh, P = (fx, fy) => [x0 + fx * fw, y0 + fy * fh];
+  const arcs = [[[.47, .13], [.30, .02], [.22, .62]], [[.53, .13], [.70, .02], [.80, .62]]];
+  c.save();
+  for (const [a, m, b] of arcs) for (let k = 0; k < 14; k++) {
+    const t = ((now / 900) + k / 14) % 1, u = 1 - t, [ax, ay] = P(...a), [mx, my] = P(...m), [bx, bz] = P(...b);
+    const x = u * u * ax + 2 * u * t * mx + t * t * bx, y = u * u * ay + 2 * u * t * my + t * t * bz;
+    c.fillStyle = `rgba(${200 + (k % 3) * 20},240,255,${.55 + .35 * Math.sin(t * 3.1)})`; c.fillRect(x - .6, y - .6, 1.3, 1.3);
+  }
+  for (const [fx, fy] of [[.12, .66], [.88, .66], [.42, .55], [.58, .55]]) for (let k = 0; k < 4; k++) {   // petits filets qui tombent dans le bassin
+    const t = ((now / 500) + k / 4) % 1, [x, y] = P(fx, fy); c.fillStyle = `rgba(210,240,255,${.7 - t * .5})`; c.fillRect(x - .5, y + t * fh * .08, 1, 1.2);
+  }
+  for (let k = 0; k < 3; k++) {   // rides
+    const t = ((now / 1600) + k / 3) % 1, [x, y] = P(.5, .66); c.strokeStyle = `rgba(220,245,255,${.45 * (1 - t)})`; c.lineWidth = .6;
+    c.beginPath(); c.ellipse(x + (k - 1) * fw * .18, y, 2 + t * fw * .08, (2 + t * fw * .08) * .35, 0, 0, 7); c.stroke();
+  }
+  c.restore();
+}
+function drawCoach(c, wx, wy, now, moving = true) {   // 18/11 (soir) : diligence « pixel moderne » (src/render/props.js) : caisse, cocher, chevaux au trot, roues qui tournent
   const X = Math.round(wx * 16), Y = Math.round(wy * 16), fr = (now / 110 | 0) % 4, st = (now / 70 | 0) % 8;
-  c.fillStyle = 'rgba(30,15,5,.3)'; c.beginPath(); c.ellipse(X + 12, Y + 9, 52, 5, 0, 0, 7); c.fill();
-  if (drawCoachDecor(c, 'diligence_droite', X + 18, Y + 11 + ((now / 160 | 0) % 2), 126, now)) return;   // lot 32 : diligence de la planche fournie (petit cahot, roues qui tournent)
+  if (drawCoachDecor(c, 'diligence_droite', X + 18, Y + 11 + (moving ? (now / 160 | 0) % 2 : 0), 126, now, moving)) return;   // 21/11 : plus d'ombre ; chevaux animés
+  c.fillStyle = 'rgba(30,15,5,.3)'; c.beginPath(); c.ellipse(X + 12, Y + 9, 52, 5, 0, 0, 7); c.fill();   // lot 32 : diligence de la planche fournie (petit cahot, roues qui tournent)
   const h1 = horse('#5a3a22', fr), h2 = horse('#8a5a32', (fr + 2) % 4), body = coachBody(), wb = coachWheel(10, st), wf = coachWheel(8, st);
   if (h1) c.drawImage(h1, X + 40, Y - 21);
   if (body) c.drawImage(body, X - 40, Y - 64);
@@ -369,6 +390,10 @@ let swing = null;
     ctx.imageSmoothingEnabled = false;
     if (!cache.__pal) { const col = scene !== 'wild' && scene !== 'grange'; harmonize(cache, col); for (const o of cache.__over || []) { const k = document.createElement('canvas'); k.width = o.w; k.height = o.h; k.getContext('2d').drawImage(o.im, 0, 0); o.im = harmonize(k, col) || k; } }   // 19/11 : bâtiments retenus, mêmes couleurs que le décor   // lot 11g : palette unique + contours colorés (une fois par décor)
     ctx.drawImage(cache, 0, 0);
+    if (scene === 'gare') {   // 21/11 : la gare est moins haute que l'écran : on prolonge sa première et sa dernière rangée (la voie ferrée continue)
+      for (let y = -T; y > camY - T; y -= T) ctx.drawImage(cache, 0, 0, MW, T, 0, y, MW, T);
+      for (let y = MH; y < camY + vh + T; y += T) ctx.drawImage(cache, 0, MH - T, MW, T, 0, y, MW, T);
+    }
     const drawSigns = (only) => { if (!(cache.__signs && cache.__signs.length)) return;   // enseignes nettes (19/11 : redessinées si un toit vient de recouvrir le héros)   // enseignes réécrites nettes, à la résolution de l'écran (lisibles à tout zoom)
       ctx.save(); ctx.setTransform(1, 0, 0, 1, 0, 0);
       for (const sg of cache.__signs) { if (only && !only.some(r => sg.x < r[2] && sg.x + sg.w > r[0] && sg.y < r[3] && sg.y + sg.h > r[1])) continue;
@@ -519,7 +544,8 @@ let swing = null;
     // (bijou d'Igor retiré le 17/11 : quête supprimée)
     if (scene === 'gare' && S.intro && S.intro.step !== 'done' && !(g.ride && g.ride.scene === 'gare' && g.ride.t > 6)) list.push({ z: 0.5, d: () => drawLoco(ctx, S.intro.step === 'train' ? (g.introT || 0) / 1000 : 99, now, g.introHidden ? S.look : null, g.ride && g.ride.scene === 'gare' ? g.ride.t : 0) });   // lot 8 : elle repart une fois le héros dans la diligence   // Farmwest : la locomotive à quai
     if (g.cueille && g.cueille.scene === scene) { const q = g.cueille; list.push({ z: 9990, d: () => { const x = q.x * T, y = q.y * T - 6; ctx.fillStyle = 'rgba(0,0,0,.6)'; ctx.fillRect(x - 1, y - 1, 18, 5); ctx.fillStyle = '#7ad04a'; ctx.fillRect(x, y, Math.round(16 * q.n / CUEILLE_HITS), 3); } }); }   // jauge de cueillette
-    if (g.ride && g.ride.scene === scene) list.push({ z: g.ride.y + .2, d: () => drawCoach(ctx, g.ride.x, g.ride.y, now) });   // la diligence
+    if (!g.ride && g.parkedCoach && g.parkedCoach.scene === scene) { const P = g.parkedCoach; list.push({ z: P.y + .2, d: () => drawCoach(ctx, P.x, P.y, now, false) }); }
+    if (g.ride && g.ride.scene === scene) { const R = g.ride, mv = R._px == null || Math.abs(R.x - R._px) + Math.abs(R.y - R._py) > 1e-4; R._px = R.x; R._py = R.y; if (mv) R._mt = now; list.push({ z: R.y + .2, d: () => drawCoach(ctx, R.x, R.y, now, now - (R._mt || 0) < 150) }); }   // la diligence
     if (scene === 'farm' && testSwordHere(S)) list.push({ z: TEST_SWORD.y + .4, d: () => {
       const b = Math.round(Math.sin(now / 250) * 1.5), x = TEST_SWORD.x * T, y = TEST_SWORD.y * T;
       ctx.fillStyle = 'rgba(0,0,0,.25)'; ctx.fillRect(x + 3, y + 12, 10, 2);
@@ -609,8 +635,12 @@ let swing = null;
       const n = Math.floor(10 * hits / ROCK_HITS);   // fissures qui s'étendent (une tous les 1 000 coups)
       for (let k = 0; k < n; k++) { const cx = 10 + (k * 23) % (w - 20), cy = -12 - (k * 37) % (Hh - 30); for (let s = 0; s < 6; s++) R2(cx + (s % 2) * 2, cy - s * 3, 1, 3, '#2a2620'); }
     } }); }
-    if (scene === 'rondpoint' && decor('fontaine')) list.push({ z: 10.6, d: () => drawDecor(ctx, 'fontaine', 12.5 * T + 8, 8.5 * T + 8 + 34 * .62 + 8, 88) });   // lot 32 : fontaine au cheval cabré
-    if (scene === 'town' && decor('fontaine')) list.push({ z: TOWN_B2.F.y + 2.6, d: () => drawDecor(ctx, 'fontaine', TOWN_B2.F.x * T + 24, TOWN_B2.F.y * T + 24 + 23 * .62 + 8, 60) });
+    if (scene === 'rondpoint' && decor('fontaine')) list.push({ z: 10.6, d: () => { const fw = 88, cx = 12.5 * T + 8, by = 8.5 * T + 8 + 34 * .62 + 8; drawDecor(ctx, 'fontaine', cx, by, fw); fountainWater(ctx, cx, by, fw, now); } });   // lot 32 : fontaine au cheval cabré ; 21/11 : l'eau coule
+    if (scene === 'rondpoint') list.push({ z: 6.9, d: () => {   // 21/11 : pancarte « Place de la cavalerie »
+      const R2 = (x, y, w, h, k) => { ctx.fillStyle = k; ctx.fillRect(x, y, w, h); }, px = 16 * T + 8, py = 6 * T;
+      R2(px - 1, py - 2, 3, 17, '#5b3a22'); R2(px - 3, py + 14, 7, 2, 'rgba(30,15,5,.3)');
+      signBoard(R2, px, py - 6, 'PLACE DE LA CAVALERIE');
+    } });
     if (scene === 'town' && decor('saloon')) list.push({ z: TOWN_B2.R.y + TOWN_B2.R.h - .05, d: () => drawDecor(ctx, 'saloon', (TOWN_B2.R.x + TOWN_B2.R.w / 2) * T, (TOWN_B2.R.y + TOWN_B2.R.h) * T + 7, 112) });   // lot 32 : le saloon
     if (scene === 'place') list.push({ z: DUMP_POS.y + .9, d: () => {   // 20/11 : la décharge (benne et tas de ferraille)
       const x = DUMP_POS.x * T, y = DUMP_POS.y * T, R2 = (a, b, w, h, k) => { ctx.fillStyle = k; ctx.fillRect(x + a, y + b, w, h); };

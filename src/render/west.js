@@ -134,9 +134,11 @@ export function buildWest(name, season) {
   { const spots = []; for (let y = 2; y < H - 2; y++) for (let x = 2; x < W - 2; x++) { const ch = at(x, y); if ((ch === 's' || ch === 'g') && at(x, y - 1) !== '.' && at(x, y + 1) !== '.' && at(x - 1, y) !== '.' && at(x + 1, y) !== '.' && ((x * 31 + y * 17) % (DESERT.includes(name) ? 19 : 41)) === 0) spots.push([x, y]); }
     for (const [x, y] of spots) { const k = (x * 7 + y) % 5, n = k < 2 ? 'broussaille' : k < 4 ? 'cactus_petit' : 'cactus_grand'; drawDecor(g, n, x * T + 8, y * T + 15, n === 'broussaille' ? 13 : n === 'cactus_petit' ? 9 : 12); } }
   // 6. arbres (bords et bosquets), triés de haut en bas
-  canopy(g, W, H, (x, y) => (L[y] || '')[x] === 'T' && [[1, 0], [-1, 0], [0, 1], [0, -1]].filter(([a, b]) => (L[y + b] || '')[x + a] === 'T').length >= 2, season);   // lot 11b : canopée continue
+  const nearDoor = (x, y) => [[1, 0], [-1, 0], [0, 1], [0, -1], [2, 0], [-2, 0], [0, 2], [0, -2]].some(([a, b]) => at(x + a, y + b) === 'D');   // 21/11 : rien qui déborde sur une sortie
+  canopy(g, W, H, (x, y) => (L[y] || '')[x] === 'T' && !nearDoor(x, y) && [[1, 0], [-1, 0], [0, 1], [0, -1]].filter(([a, b]) => (L[y + b] || '')[x + a] === 'T').length >= 2, season);   // lot 11b : canopée continue
   for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) if (at(x, y) === 'T') {
     const v = (x * 7 + y * 3) % 4;
+    if (nearDoor(x, y)) { drawDecor(g, 'broussaille', x * T + 8, y * T + 15, 13); continue; }
     // 7d : côté désert (gare, rond-point, ranch), des cactus se mêlent aux arbres de bordure
     if (DESERT.includes(name) && (x * 5 + y * 3) % 4 === 0) { if (drawDecor(g, (x + y) % 3 ? 'cactus_grand' : 'cactus_petit', x * T + 8, y * T + 15, (x + y) % 3 ? 13 : 9)) continue; g.drawImage(cactusSprite(season, v), x * T - 3, y * T - 18); continue; }
     const im = (x + y) % 2 ? pineSprite(season, v) : treeSprite(season, v);

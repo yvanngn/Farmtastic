@@ -112,3 +112,24 @@ if __name__ == '__main__' and sys.argv[1:] == ['--all']:
     for f in os.listdir('assets/decors'):
         if f.endswith('.png') and f != 'roue.png': defringe('assets/decors/' + f, big=f.startswith('diligence'))
     wheels()
+# 21/11 : le panneau du saloon dit seulement « SALOON » (on efface « RED EYE » et on recentre le mot).
+def saloon_sign(path='assets/decors/saloon.png'):
+    im = np.array(Image.open(path).convert('RGBA')); fill = np.median(im[322:330, 372:388, :].reshape(-1, 4), axis=0).astype('uint8')
+    word = im[350:404, 364:616].copy()
+    im[310:404, 364:616] = fill
+    im[331:385, 364:616] = word   # le mot remonte au milieu du panneau
+    Image.fromarray(im).save(path)
+if __name__ == '__main__' and sys.argv[1:] == ['--all']: saloon_sign()
+# 21/11 : poids réduit sans perte visible — chaque image est ramenée à 4 × sa largeur d'affichage dans le monde
+# (le plus grand agrandissement de l'écran : téléphone haute définition au zoom le plus proche), PNG optimisé.
+DISPLAY_W = { 'saloon': 112, 'fontaine': 88, 'diligence_droite': 126, 'diligence_gauche': 126, 'diligence_face': 60, 'diligence_dos': 60, 'roue': 26,
+  'sapin': 26, 'cypres': 14, 'arbre_fleurs': 34, 'cactus_grand': 13, 'cactus_petit': 9, 'broussaille': 13, 'rocher_grand': 28, 'roche_pilier': 26,
+  'rocher_bas': 20, 'roche_plate': 19, 'cailloux': 17, 'caillou': 13 }
+def shrink():
+    import os
+    for f in os.listdir('assets/decors'):
+        if not f.endswith('.png'): continue
+        n = f[:-4]; w0 = DISPLAY_W.get(n, 22) * 4; im = Image.open('assets/decors/' + f).convert('RGBA')
+        if im.width > w0: im = im.resize((w0, max(1, round(im.height * w0 / im.width))), Image.LANCZOS)
+        im.save('assets/decors/' + f, optimize=True)
+if __name__ == '__main__' and sys.argv[1:] == ['--all']: shrink()

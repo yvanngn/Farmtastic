@@ -1,4 +1,4 @@
-import { decor } from './decors.js';
+import { decor, drawDecor } from './decors.js';
 import { fountainSprite, facadeSprite, houseSprite , blit } from './props.js';
 import { paintGrass, paintOchre, paintRoad, paintPlanks, softEdge, OCHRE, paintRiver, paintBridge, paintCliff, autotile, ROAD, canopy, dress, roofFor, softPatches, barrel } from './terrain.js';
 // Centre du village pré-rendu : place pavée, halle du marché, panneau d'affichage,
@@ -215,7 +215,7 @@ export function buildTown(season) {
   }, { wall: '#8a6a4a' });
   // fontaine (x11-13, y8-10)
   const fx = TOWN_B.F.x * T + 24, fy = TOWN_B.F.y * T + 24;
-  if (!decor('fontaine')) { const im = fountainSprite(23); if (im) g.drawImage(im, Math.round(fx - im.width / 2), Math.round(fy + 23 * .62 + 6 - im.height)); }   // 18/11 (soir) : fontaine « pixel moderne »
+  if (false) { const im = fountainSprite(23); if (im) g.drawImage(im, Math.round(fx - im.width / 2), Math.round(fy + 23 * .62 + 6 - im.height)); }   // 18/11 (soir) : fontaine « pixel moderne »
 
   for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
     const ch = L[y][x], px = x * T, py = y * T;
@@ -225,7 +225,7 @@ export function buildTown(season) {
       r2(7, 7, 2, 25, '#2b2730'); r2(5, 30, 6, 2, '#2b2730'); r2(4, 1, 8, 7, '#2b2730'); r2(5, 2, 6, 5, '#ffd98a'); r2(3, 0, 10, 2, '#3a3540'); blit(g, lc, px, py - 17); }
   }
   canopy(g, W, H, (x, y) => (L[y] || '')[x] === 'T' && [[1, 0], [-1, 0], [0, 1], [0, -1]].filter(([a, b]) => (L[y + b] || '')[x + a] === 'T').length >= 2, season);   // lot 11b : canopée continue
-  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) if (L[y][x] === 'T') g.drawImage(treeSprite(season, (x + y) % 4), x * T - 9, y * T - 28);
+  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) if (L[y][x] === 'T') { if ([[1, 0], [-1, 0], [0, 1], [0, -1], [2, 0], [-2, 0], [0, 2], [0, -2]].some(([a, b]) => (L[y + b] || '')[x + a] === 'D')) { drawDecor(g, 'broussaille', x * T + 8, y * T + 15, 13); continue; } g.drawImage(treeSprite(season, (x + y) % 4), x * T - 9, y * T - 28); }   // 21/11 : rien qui déborde sur une sortie
   // (villa du Maire effacée le 17/11 : Manu vit dans son ranch)
   drawHedges(R, LAYOUTS.town);   // haies de bordure
   // lot 11f : décor dense (tonneaux, caisses, fleurs, cailloux)
@@ -334,7 +334,7 @@ export function buildQuartier(season) {
   for (const [x, yb] of [[3 * T, 10], [33 * T, 10], [20 * T, 19], [28 * T, 19]]) { const by = yb * T; R(x, by + 6, 22, 3, '#8a5a32'); R(x, by + 6, 22, 1, '#c99560'); R(x + 1, by + 9, 2, 3, '#5b3a22'); R(x + 19, by + 9, 2, 3, '#5b3a22'); } for (const x of []) { R(x, 10 * T + 6, 22, 3, '#8a5a32'); R(x, 10 * T + 6, 22, 1, '#c99560'); R(x + 1, 10 * T + 9, 2, 3, '#5b3a22'); R(x + 19, 10 * T + 9, 2, 3, '#5b3a22'); }
   drawHedges(R, L);
   canopy(g, W, H, (x, y) => (L[y] || '')[x] === 'T' && [[1, 0], [-1, 0], [0, 1], [0, -1]].filter(([a, b]) => (L[y + b] || '')[x + a] === 'T').length >= 2, season);   // lot 11b : canopée continue
-  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) if (L[y][x] === 'T') g.drawImage(treeSprite(season, (x + y) % 4), x * T - 9, y * T - 28);
+  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) if (L[y][x] === 'T') { if ([[1, 0], [-1, 0], [0, 1], [0, -1], [2, 0], [-2, 0], [0, 2], [0, -2]].some(([a, b]) => (L[y + b] || '')[x + a] === 'D')) { drawDecor(g, 'broussaille', x * T + 8, y * T + 15, 13); continue; } g.drawImage(treeSprite(season, (x + y) % 4), x * T - 9, y * T - 28); }   // 21/11 : rien qui déborde sur une sortie
   return c;
 }
 
@@ -429,7 +429,7 @@ export function buildParc(season) {
   for (let k = 0; k < W * T; k += 12) { R(k, 8 * T + 2 + Math.round(Math.sin(k / 30) * 3), 2, 2, ['#f2c832', '#e8402a', '#3a8ae0', '#4ab04a'][(k / 12 | 0) % 4]); }   // guirlande
   signBoard(R, 17 * T, 21 * T, 'FÊTE FORAINE');
   canopy(g, W, H, (x, y) => (L[y] || '')[x] === 'T' && [[1, 0], [-1, 0], [0, 1], [0, -1]].filter(([a, b]) => (L[y + b] || '')[x + a] === 'T').length >= 2, season);   // lot 11b : canopée continue
-  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) if (L[y][x] === 'T') g.drawImage(treeSprite(season, (x + y) % 4), x * T - 9, y * T - 28);
+  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) if (L[y][x] === 'T') { if ([[1, 0], [-1, 0], [0, 1], [0, -1], [2, 0], [-2, 0], [0, 2], [0, -2]].some(([a, b]) => (L[y + b] || '')[x + a] === 'D')) { drawDecor(g, 'broussaille', x * T + 8, y * T + 15, 13); continue; } g.drawImage(treeSprite(season, (x + y) % 4), x * T - 9, y * T - 28); }   // 21/11 : rien qui déborde sur une sortie
   return c;
 }
 
