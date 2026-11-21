@@ -259,6 +259,7 @@ export function createRenderer(cv, g) {
   let scale = 3, dpr = 1, cache = null, cacheSeason = -1, cacheScene = '', cacheForest = '';
   const interiors = {};
   let farm = null, farmSeason = -1;
+  const gpuCopy = src => { const k = document.createElement('canvas'); k.width = src.width; k.height = src.height; k.getContext('2d').drawImage(src, 0, 0); return k; };
   function farmGround() { setFarmLot(g.S.farmLot); const b = g.S.built || {}, fx = { house: isRepaired(g.S, 'house'), grange: isRepaired(g.S, 'grange') }, key = g.S.season + JSON.stringify(b) + fx.house + fx.grange + ':' + (g.S.farmLot || 0); if (farmSeason !== key) { farm = buildGround(g.S.season, b, fx); farmSeason = key; } return farm; }
   let vignette = null, light = null, lastStep = 0;
   const cam = { x: 0, y: 0 }, screenFx = [], worldFx = [];
@@ -402,11 +403,12 @@ let swing = null;
         if (y0 < 0) ctx.fillRect(0, y0, MW, -y0); if (y1 > MH) ctx.fillRect(0, MH, MW, y1 - MH); }
     }
     ctx.imageSmoothingEnabled = false;
-    if (!cache.__pal) { const col = scene !== 'wild' && scene !== 'grange'; harmonize(cache, col); for (const o of cache.__over || []) { const k = document.createElement('canvas'); k.width = o.w; k.height = o.h; k.getContext('2d').drawImage(o.im, 0, 0); o.im = harmonize(k, col) || k; } }   // 19/11 : bâtiments retenus, mêmes couleurs que le décor   // lot 11g : palette unique + contours colorés (une fois par décor)
-    ctx.drawImage(cache, 0, 0);
+    if (!cache.__pal) { const col = scene !== 'wild' && scene !== 'grange'; harmonize(cache, col); for (const o of cache.__over || []) { const k = document.createElement('canvas'); k.width = o.w; k.height = o.h; k.getContext('2d').drawImage(o.im, 0, 0); o.im = gpuCopy(harmonize(k, col) || k); } cache.__blit = gpuCopy(cache); }   // 21/11 : copie jamais relue → reste sur la carte graphique (sinon renvoyée en entier à chaque image)   // 19/11 : bâtiments retenus, mêmes couleurs que le décor   // lot 11g : palette unique + contours colorés (une fois par décor)
+    { const B = cache.__blit || cache, sx = Math.max(0, Math.floor(camX) - 1), sy = Math.max(0, Math.floor(camY) - 1), sw = Math.min(B.width - sx, Math.ceil(vw) + 2), sh = Math.min(B.height - sy, Math.ceil(vh) + 2);
+      if (sw > 0 && sh > 0) ctx.drawImage(B, sx, sy, sw, sh, sx, sy, sw, sh); }   // 21/11 : seulement la partie visible du sol
     if (scene === 'gare') {   // 21/11 : la gare est moins haute que l'écran : on prolonge sa première et sa dernière rangée (la voie ferrée continue)
-      for (let y = -T; y > camY - T; y -= T) ctx.drawImage(cache, 0, 0, MW, T, 0, y, MW, T);
-      for (let y = MH; y < camY + vh + T; y += T) ctx.drawImage(cache, 0, MH - T, MW, T, 0, y, MW, T);
+      for (let y = -T; y > camY - T; y -= T) ctx.drawImage(cache.__blit || cache, 0, 0, MW, T, 0, y, MW, T);
+      for (let y = MH; y < camY + vh + T; y += T) ctx.drawImage(cache.__blit || cache, 0, MH - T, MW, T, 0, y, MW, T);
     }
     const drawSigns = (only) => { if (!(cache.__signs && cache.__signs.length)) return;   // enseignes nettes (19/11 : redessinées si un toit vient de recouvrir le héros)   // enseignes réécrites nettes, à la résolution de l'écran (lisibles à tout zoom)
       ctx.save(); ctx.setTransform(1, 0, 0, 1, 0, 0);

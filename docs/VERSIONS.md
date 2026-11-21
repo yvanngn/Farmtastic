@@ -2,6 +2,7 @@
 
 Semver horodaté (heure de Paris). Patch automatique à chaque publication ; mineure et majeure sur décision de l'utilisateur.
 
+- **0.1.116** — 2026-11-21 10:47 — sol gardé sur la carte graphique, seule la partie visible est dessinée (moins de saccades en défilant)
 - **0.1.115** — 2026-11-21 10:37 — Joystick flottant façon Brawl Stars ; plus de sac à dos sur le héros
 - **0.1.114** — 2026-11-21 10:32 — Profil du héros : vrais pas (jambes réunies entre deux pas)
 - **0.1.113** — 2026-11-21 10:15 — L'esprit d'après la nouvelle planche (flottement en 4 temps)
