@@ -33,6 +33,9 @@ export function createHud(g, controls) {
     show() { ['#hud', '#topbtns', '#controls', '#vitals'].forEach(s => { $(s).style.display = ''; }); },
     update() {
       const S = g.S;
+      { const h = g.heroScreen;   // 21/11 : le héros passe sous un cadre du haut (bord haut de la carte) → le cadre devient translucide
+        for (const id of ['hud', 'vitals', 'topbtns']) { const el = document.getElementById(id); if (!el) continue; const r = el.getBoundingClientRect(), m = 18;
+          el.classList.toggle('voile', !!h && r.width > 0 && h.x + h.w > r.left - m && h.x - h.w < r.right + m && h.top < r.bottom + m && h.y > r.top - m); } }
       $('#hName').textContent = S.name; $('#hMoney').textContent = S.money;
       const where = { house: ' · 🏠', coop: ' · 🐔', pigsty: ' · 🐷', barn: ' · 🐑', luna: ' · 🏡', franck: ' · 🏚️', grange: ' · 🕳️', wild: ' · 🕳️ Caverne (étage 1)', foret: ' · 🌲', town: ' · 🏙️', quartier: ' · 🏘️', montagne: ' · 🏔️', plage: ' · 🎣', parc: ' · 🎡' }[S.scene] || '';
       $('#hTime').textContent = `${weekdayName(S)} ${S.day} · ${SEASONS[S.season]}, an ${S.year || 1} · ${fmtTime(S.minute)} · ${WEATHER_LABELS[S.weather].split(' ')[0]}${where}`;

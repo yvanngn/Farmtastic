@@ -91,8 +91,10 @@ export function rng(seed) {
   return () => (s = (s * 1664525 + 1013904223) >>> 0) / 4294967296;
 }
 
+// 21/11 : rien à moins de 3 cases d'une sortie de la ferme (chemin qui touche le bord) : la route se voit jusqu'au bout.
+export const nearFarmExit = (x, y) => { for (let b = y - 3; b <= y + 3; b++) for (let a = x - 3; a <= x + 3; a++) if ((a === 0 || b === 0 || a === CFG.W - 1 || b === CFG.H - 1) && a >= 0 && b >= 0 && a < CFG.W && b < CFG.H && isPath(a, b)) return true; return false; };
 export function freeForObj(x, y) {
-  return !isHouse(x, y) && !isPlot(x, y) && !isPond(x, y) && !isPath(x, y) && !inRect(x, y, 17, 5, 33, 14)
+  return !nearFarmExit(x, y) && !isHouse(x, y) && !isPlot(x, y) && !isPond(x, y) && !isPath(x, y) && !inRect(x, y, 17, 5, 33, 14)
     && !isBin(x, y) && !isLunaLot(x, y) && !inRect(x, y, 9, 0, 14, 5) && !inRect(x, y, 44, 16, 47, 20) && !inRect(x, y, 4, 5, 9, 7) && !inRect(x, y, 39, 0, 47, 6) && !AXE_SPOT(x, y) && !BUSH_SET.has(x + ',' + y) && x > 0 && y > 0 && x < CFG.W - 1 && y < CFG.H - 1;
 }
 

@@ -72,3 +72,17 @@ test('21/11 : aucune route ne bute sur un arbre ou une barrière (ni au milieu, 
   assert.deepEqual(bad, []);
   const { isFarmFence } = await import('../src/world/map.js'); assert.ok(!isFarmFence(15, 0) && !isFarmFence(17, 0), 'passage nord de la ferme sur 3 cases');
 });
+
+test('21/11 : aucun arbre à moins de 3 cases d’une sortie (la route se voit jusqu’au bord)', async () => {
+  const { LAYOUTS, SCENES } = await import('../src/world/scenes.js');
+  for (const [k, S] of Object.entries(SCENES)) { const L = LAYOUTS[k]; if (!S.outdoor || !Array.isArray(L) || k === 'foret' || k === 'wild') continue;
+    for (const d of S.doors || []) for (let y = d.y - 3; y <= d.y + 3; y++) for (let x = d.x - 3; x <= d.x + 3; x++) {
+      if (x <= 0 || y <= 0 || x >= S.W - 1 || y >= S.H - 1) continue;
+      assert.notEqual((L[y] || '')[x], 'T', `${k} : arbre en (${x},${y}) près de la sortie (${d.x},${d.y})`); } }
+});
+
+test('21/11 : ferme — aucun arbre ni caillou à moins de 3 cases d’une sortie', async () => {
+  const { genObjects, nearFarmExit } = await import('../src/world/map.js');
+  const o = genObjects(12345); for (const k in o) { const [x, y] = k.split(',').map(Number); if (o[k].t !== 'bigtree') assert.ok(!nearFarmExit(x, y), `objet en ${k}`); }
+  assert.ok(nearFarmExit(46, 18) && !nearFarmExit(20, 25));
+});

@@ -139,7 +139,7 @@ export const FRANCK = {
 // (trop antisocial) : il est content qu'on arrive bousculer un peu les choses.
 export const MYST = {
   id: 'myst', name: 'Myst', de: 'de lui', color: '#a99ad0', voice: 'voiceFranck',
-  look: { planche: 'myst_v2', folk: 'myst', body: 'h', bottom: 'pant', skin: '#dcdcd6', hair: 2, hairC: '#1c1a20', shirt: '#1d1b22', pants: '#141218', shoes: '#2a2228', tall: true, coat: true },   // 18/11 : poupée dessinée par le code (src/render/paperdoll.js), tenue d'après son sprite
+  look: { planche: 'myst_v3', folk: 'myst', body: 'h', bottom: 'pant', skin: '#dcdcd6', hair: 2, hairC: '#1c1a20', shirt: '#1d1b22', pants: '#141218', shoes: '#2a2228', tall: true, coat: true },   // 18/11 : poupée dessinée par le code (src/render/paperdoll.js), tenue d'après son sprite
   home: null, mystic: true,
   // trajet du quartier jusqu'à la cabane : du portail sud de la ferme, on remonte le grand chemin
   route: [{ x: 16.5, y: 34.4 }, { x: 16.5, y: 20.6 }, { x: 3.6, y: 20.6 }],   // de la gare au quartier par le grand chemin

@@ -455,7 +455,8 @@ export function syncForest(S) {
 // s terre ocre, g herbe, . chemin, D sortie, T arbre, F fontaine, P panneau, f clôture, H maison du ranch, B grange du ranch,
 // E entrepôt du port, = planches (quai, ponton), w eau
 const grid = (W, H, ch) => Array.from({ length: H }, () => Array.from({ length: W }, () => ch));
-const border = (m, exits) => { const H = m.length, W = m[0].length; for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) if (x === 0 || y === 0 || x === W - 1 || y === H - 1) m[y][x] = 'T'; for (const [x, y] of exits) m[y][x] = 'D'; };
+const border = (m, exits) => { const H = m.length, W = m[0].length; for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) if (x === 0 || y === 0 || x === W - 1 || y === H - 1) m[y][x] = 'T'; for (const [x, y] of exits) m[y][x] = 'D';
+  for (let y = 1; y < H - 1; y++) for (let x = 1; x < W - 1; x++) if (m[y][x] === 'T' && exits.some(([a, b]) => Math.abs(a - x) <= 3 && Math.abs(b - y) <= 3)) m[y][x] = [m[y][x - 1], m[y][x + 1], m[y - 1][x], m[y + 1][x]].find(c => 'sg'.includes(c)) || 's'; };   // 21/11 : aucun arbre à moins de 3 cases d'une sortie (son feuillage cacherait la route)
 // Gare (24 × 14) : voie ferrée à l'ouest (r), quai en planches (=), bâtiment de la gare (G), route vers le centre-ville à l'est
 LAYOUTS.gare = (() => {
   const W = 24, H = 14, m = grid(W, H, 's');
@@ -838,6 +839,10 @@ export function widenRoads(sc) {
   LAYOUTS[sc] = L.map(r => r.join(''));
 }
 for (const sc of Object.keys(SCENES)) if (SCENES[sc].outdoor && LAYOUTS[sc] && !WIDE_SKIP.has(sc)) widenRoads(sc);
+// 21/11 : aucun arbre à moins de 3 cases d'une sortie, dans toutes les zones extérieures (son feuillage cacherait la route).
+for (const [sc, S] of Object.entries(SCENES)) { const L = LAYOUTS[sc]; if (!S.outdoor || !Array.isArray(L) || sc === 'foret' || sc === 'wild') continue;
+  for (const d of S.doors || []) for (let y = Math.max(1, d.y - 3); y <= Math.min(S.H - 2, d.y + 3); y++) for (let x = Math.max(1, d.x - 3); x <= Math.min(S.W - 2, d.x + 3); x++)
+    if (L[y][x] === 'T') setCell(sc, x, y, [L[y][x - 1], L[y][x + 1], L[y - 1][x], L[y + 1][x]].find(c => 'sg'.includes(c)) || 's'); }
 
 // 21/11 (demande de l'utilisateur) : plus de fontaine au centre-ville (la place pavée reste) ; seule la fontaine du rond-point (place de la cavalerie) est gardée.
 LAYOUTS.town = LAYOUTS.town.map(r => r.replace(/F/g, '.'));

@@ -10,7 +10,7 @@ test('20/11 : chaque planche demandée existe, et sheets.js ne garde que les pla
   for (const k of Object.keys(SHEETS)) { const S = SHEETS[k]; assert.ok(S.sw && S.sh && S.fw && S.fh, `${k} : tailles sw/sh/fw/fh`); }
 });
 
-test('21/11 : Simplet affiché d’après sa planche (3 rangées de 4 images)', () => {
-  assert.equal(N.MINEUR.look.planche, 'simplet_v2');
+test('21/11 : Simplet et Myst affichés d’après sa planche (3 rangées de 4 images)', () => {
+  assert.equal(N.MINEUR.look.planche, 'simplet_v2'); assert.equal(N.MYST.look.planche, 'myst_v3');
   const S = SHEETS.simplet_v2; assert.equal(S.n, 4); assert.ok(S.fh >= 40);
 });

@@ -260,6 +260,19 @@ export function createRenderer(cv, g) {
   const interiors = {};
   let farm = null, farmSeason = -1;
   const gpuCopy = src => { const k = document.createElement('canvas'); k.width = src.width; k.height = src.height; k.getContext('2d').drawImage(src, 0, 0); return k; };
+  // 21/11 : au-delà du bord, chaque case de sortie (porte sur le bord) est prolongée en répétant sa case jusqu'au bout de l'écran.
+  function roadOut(scene, SC, camX, camY, vw, vh, MW, MH) {
+    if (camX >= 0 && camY >= 0 && camX + vw <= MW && camY + vh <= MH) return;
+    const B = cache.__blit || cache;
+    for (const d of SC.doors || []) {
+      const L = d.x === 0, R = d.x === SC.W - 1, U = d.y === 0, D = d.y === SC.H - 1; if (!(L || R || U || D)) continue;
+      const sx = d.x * T, sy = d.y * T;
+      if (U) for (let y = -T; y > camY - T; y -= T) ctx.drawImage(B, sx, sy, T, T, sx, y, T, T);
+      if (D) for (let y = MH; y < camY + vh + T; y += T) ctx.drawImage(B, sx, sy, T, T, sx, y, T, T);
+      if (L) for (let x = -T; x > camX - T; x -= T) ctx.drawImage(B, sx, sy, T, T, x, sy, T, T);
+      if (R) for (let x = MW; x < camX + vw + T; x += T) ctx.drawImage(B, sx, sy, T, T, x, sy, T, T);
+    }
+  }
   function farmGround() { setFarmLot(g.S.farmLot); const b = g.S.built || {}, fx = { house: isRepaired(g.S, 'house'), grange: isRepaired(g.S, 'grange') }, key = g.S.season + JSON.stringify(b) + fx.house + fx.grange + ':' + (g.S.farmLot || 0); if (farmSeason !== key) { farm = buildGround(g.S.season, b, fx); farmSeason = key; } return farm; }
   let vignette = null, light = null, lastStep = 0;
   const cam = { x: 0, y: 0 }, screenFx = [], worldFx = [];
@@ -394,6 +407,7 @@ let swing = null;
       cam.x = Math.floor(S.x * T / rw) * rw - (vw - rw) / 2; cam.y = Math.floor(S.y * T / rh) * rh - (vh - rh) / 2;
     }
     const camX = Math.round(cam.x * scale) / scale, camY = Math.round(cam.y * scale) / scale;
+    { const k = scale / dpr; g.heroScreen = { x: (S.x * T - camX) * k, y: (S.y * T - camY) * k, top: (S.y * T - 34 - camY) * k, w: 12 * k }; }   // 21/11 : où est le héros à l'écran (cadres du haut translucides)
     ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.fillStyle = '#16121f'; ctx.fillRect(0, 0, cv.width, cv.height);
     ctx.setTransform(scale, 0, 0, scale, -camX * scale, -camY * scale);
     if (sky && (camX < 0 || camY < 0 || camX + vw > MW || camY + vh > MH)) {   // 20/11 : au-delà du bord, des arbres (ou des rochers) plutôt que du noir
@@ -402,6 +416,7 @@ let swing = null;
         if (x0 < 0) ctx.fillRect(x0, y0, -x0, y1 - y0); if (x1 > MW) ctx.fillRect(MW, y0, x1 - MW, y1 - y0);
         if (y0 < 0) ctx.fillRect(0, y0, MW, -y0); if (y1 > MH) ctx.fillRect(0, MH, MW, y1 - MH); }
     }
+    roadOut(scene, SC, camX, camY, vw, vh, MW, MH);   // 21/11 : une route qui sort de la zone continue au-delà du bord (pas d'arbres devant)
     ctx.imageSmoothingEnabled = false;
     if (!cache.__pal) { const col = scene !== 'wild' && scene !== 'grange'; harmonize(cache, col); for (const o of cache.__over || []) { const k = document.createElement('canvas'); k.width = o.w; k.height = o.h; k.getContext('2d').drawImage(o.im, 0, 0); o.im = gpuCopy(harmonize(k, col) || k); } cache.__blit = gpuCopy(cache); }   // 21/11 : copie jamais relue → reste sur la carte graphique (sinon renvoyée en entier à chaque image)   // 19/11 : bâtiments retenus, mêmes couleurs que le décor   // lot 11g : palette unique + contours colorés (une fois par décor)
     { const B = cache.__blit || cache, sx = Math.max(0, Math.floor(camX) - 1), sy = Math.max(0, Math.floor(camY) - 1), sw = Math.min(B.width - sx, Math.ceil(vw) + 2), sh = Math.min(B.height - sy, Math.ceil(vh) + 2);

@@ -543,3 +543,7 @@ body.bande[data-nrj="vert"] #nrjVert { bottom: calc(var(--bande) + var(--pad) * 
 #bJoinFight { position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(150px + env(safe-area-inset-bottom, 0px)); z-index: 30; animation: pulse 1.2s ease-in-out infinite alternate }
 @keyframes pulse { to { filter: brightness(1.25) } }
 @media (prefers-reduced-motion: reduce) { #bJoinFight { animation: none } }
+
+/* 21/11 : cadres du haut translucides quand le héros passe dessous */
+#hud, #vitals, #topbtns { transition: opacity .25s }
+#hud.voile:not(.repos), #vitals.voile, #topbtns.voile { opacity: .3 }

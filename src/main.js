@@ -57,7 +57,7 @@ import { updateWild } from './systems/wild.js';
 import { updateDedale } from './systems/dedale.js';
 import { ensureShrooms, pickShroom } from './systems/foret.js';
 import { isLunaLot } from './world/map.js';
-import { isPath, isGate } from './world/map.js';
+import { isPath, isGate, nearFarmExit } from './world/map.js';
 import { createPlayerMarket } from './net/market.js';
 import { facingTile } from './systems/movement.js';
 import { aimTile } from './systems/reach.js';
@@ -185,7 +185,7 @@ async function continueGame(gm) {
   if (!s) { toast('⚠️ Sauvegarde introuvable pour cette partie.'); return; }
   title.close(); custom.close();
   g.S = s; if (!g.S.objs) g.S.objs = genObjects(g.S.treeSeed || 12345);
-  for (const k in g.S.objs) { const [x, y] = k.split(',').map(Number); if (isPath(x, y) && g.S.objs[k].t !== 'bigtree') delete g.S.objs[k]; }   // 20/11 : nouvelles sorties au milieu de la ferme
+  for (const k in g.S.objs) { const [x, y] = k.split(',').map(Number); if ((isPath(x, y) || nearFarmExit(x, y)) && g.S.objs[k].t !== 'bigtree') delete g.S.objs[k]; }   // 20/11 : nouvelles sorties au milieu de la ferme
   g.S.game = { id: gm.id, code: gm.code || null, mode: gm.mode || 'solo' }; if (gm.lot != null) g.S.farmLot = gm.lot;
   begin();
 }
