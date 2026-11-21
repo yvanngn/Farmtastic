@@ -163,3 +163,4 @@ Fait : sol de la ferme (v0.1.5) ; **7a** palette Far West et sols (centre-ville 
 - 21/11 (matin) : v0.1.110 — panneau « SALOON » seul, fontaine du centre-ville retirée, place de la cavalerie (pancarte, eau), diligence à l'arrêt et chevaux animés, arbres fournis partout, images allégées. Marche vers la gauche : même vitesse mesurée (4,5 cases/s), ❓ à préciser.
 - 21/11 : v0.1.111 — nouveau train (planche docs/sprites/decors/train.jpg), vues horizontales gardées pour plus tard. Style à viser pour les décors : gros pixels, 16–24 couleurs, contour teinté, ombrage plat (prompt Gemini donné le 21/11 ; la fontaine et la diligence sont jugées trop réalistes, à régénérer).
 - 21/11 : v0.1.112 — héros (avec sac) d'après la nouvelle planche Gemini ; skill « demande-sprites-gemini » (fond blanc uni, cases nommées R1C1…R3C4).
+- 21/11 : v0.1.113 — l'esprit d'après la nouvelle planche (flottement en 4 temps).

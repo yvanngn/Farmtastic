@@ -4,8 +4,8 @@ import { SHEETS } from '../src/render/sheets.js';
 import * as N from '../src/data/npcs.js';
 
 test('20/11 : chaque planche demandée existe, et sheets.js ne garde que les planches utilisées', () => {
-  const used = new Set(['esprit']);   // le fantôme (renderer.js)
+  const used = new Set(['esprit2']);   // le fantôme (renderer.js, 21/11 : planche générée par l'utilisateur)
   for (const n of Object.values(N)) if (n && n.look && n.look.planche) { assert.ok(SHEETS[n.look.planche], `${n.name} : planche ${n.look.planche} absente`); used.add(n.look.planche); }
   for (const k of Object.keys(SHEETS)) assert.ok(used.has(k) || k.startsWith('hero_'), `planche inutilisée dans sheets.js : ${k}`);
-  for (const k of Object.keys(SHEETS).filter(k => k !== 'esprit')) { const S = SHEETS[k]; assert.ok(S.sw && S.sh && S.fw && S.fh, `${k} : tailles sw/sh/fw/fh`); }
+  for (const k of Object.keys(SHEETS)) { const S = SHEETS[k]; assert.ok(S.sw && S.sh && S.fw && S.fh, `${k} : tailles sw/sh/fw/fh`); }
 });
