@@ -8,6 +8,7 @@ src = open(os.path.join(ROOT, 'tools/hero-sheets.py')).read(); exec(src[:src.ind
 PL = [
   dict(name='simplet_v2', path='docs/sprites/simplet-v2.jpg', H=44, flip=True, backfix={0: 1, 2: 3}),   # pioche absente de dos en 1 et 3
   dict(name='myst_v3', path='docs/sprites/myst-v3.jpg', H=44, flip=True, backfix={}),
+  dict(name='jade_v3', path='docs/sprites/jade-v3.jpg', H=32, flip=False, backfix={}),   # enfant : même taille que l'ancienne Jade ; profil déjà vers la gauche
 ]
 def defringe(c, n=3):   # pixels gris clairs collés au fond (reste du blanc du JPEG) → transparents
     from scipy import ndimage

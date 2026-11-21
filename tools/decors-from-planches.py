@@ -57,7 +57,7 @@ NAMES = {
 }
 def run_all():
     out = {}
-    for planche in ['nature', 'saloon', 'fontaine', 'diligence']:
+    for planche in ['nature', 'saloon', 'fontaine']:   # 21/11 : la diligence vient maintenant de tools/diligence-v2.py
         im, fg, comps = cut(f'docs/sprites/decors/{planche}.jpg')
         comps.sort(key=lambda c: (round(c['y0'] / 120), c['x0']))
         names = NAMES.get(planche)
@@ -110,8 +110,7 @@ def wheels():
 if __name__ == '__main__' and sys.argv[1:] == ['--all']:
     import os
     for f in os.listdir('assets/decors'):
-        if f.endswith('.png') and f != 'roue.png': defringe('assets/decors/' + f, big=f.startswith('diligence'))
-    wheels()
+        if f.endswith('.png') and f != 'roue.png' and not f.startswith('diligence'): defringe('assets/decors/' + f, big=f.startswith('diligence'))
 # 21/11 : le panneau du saloon dit seulement « SALOON » (on efface « RED EYE » et on recentre le mot).
 def saloon_sign(path='assets/decors/saloon.png'):
     im = np.array(Image.open(path).convert('RGBA')); fill = np.median(im[322:330, 372:388, :].reshape(-1, 4), axis=0).astype('uint8')
@@ -122,7 +121,7 @@ def saloon_sign(path='assets/decors/saloon.png'):
 if __name__ == '__main__' and sys.argv[1:] == ['--all']: saloon_sign()
 # 21/11 : poids réduit sans perte visible — chaque image est ramenée à 4 × sa largeur d'affichage dans le monde
 # (le plus grand agrandissement de l'écran : téléphone haute définition au zoom le plus proche), PNG optimisé.
-DISPLAY_W = { 'train_sud': 32, 'train_nord': 32, 'train_est': 280, 'train_ouest': 280, 'saloon': 112, 'fontaine': 88, 'diligence_droite': 126, 'diligence_gauche': 126, 'diligence_face': 60, 'diligence_dos': 60, 'roue': 26,
+DISPLAY_W = { 'train_sud': 32, 'train_nord': 32, 'train_est': 280, 'train_ouest': 280, 'saloon': 112, 'fontaine': 88, 
   'sapin': 26, 'cypres': 14, 'arbre_fleurs': 34, 'cactus_grand': 13, 'cactus_petit': 9, 'broussaille': 13, 'rocher_grand': 28, 'roche_pilier': 26,
   'rocher_bas': 20, 'roche_plate': 19, 'cailloux': 17, 'caillou': 13 }
 def shrink():

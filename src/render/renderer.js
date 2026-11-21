@@ -228,9 +228,9 @@ function fountainWater(c, cx, by, fw, now) {
   }
   c.restore();
 }
-function drawCoach(c, wx, wy, now, moving = true) {   // 18/11 (soir) : diligence « pixel moderne » (src/render/props.js) : caisse, cocher, chevaux au trot, roues qui tournent
+function drawCoach(c, wx, wy, now, moving = true, dir = 'droite') {   // 18/11 (soir) : diligence « pixel moderne » (src/render/props.js) : caisse, cocher, chevaux au trot, roues qui tournent
   const X = Math.round(wx * 16), Y = Math.round(wy * 16), fr = (now / 110 | 0) % 4, st = (now / 70 | 0) % 8;
-  if (drawCoachDecor(c, 'diligence_droite', X + 18, Y + 11 + (moving ? (now / 160 | 0) % 2 : 0), 126, now, moving)) return;   // 21/11 : plus d'ombre ; chevaux animés
+  if (drawCoachDecor(c, dir, X + (dir === 'droite' ? 18 : dir === 'gauche' ? -18 : 8), Y + 11 + (moving ? (now / 160 | 0) % 2 : 0), now, moving)) return;   // 21/11 : 4 directions, trot en 4 images   // 21/11 : plus d'ombre ; chevaux animés
   c.fillStyle = 'rgba(30,15,5,.3)'; c.beginPath(); c.ellipse(X + 12, Y + 9, 52, 5, 0, 0, 7); c.fill();   // lot 32 : diligence de la planche fournie (petit cahot, roues qui tournent)
   const h1 = horse('#5a3a22', fr), h2 = horse('#8a5a32', (fr + 2) % 4), body = coachBody(), wb = coachWheel(10, st), wf = coachWheel(8, st);
   if (h1) c.drawImage(h1, X + 40, Y - 21);
@@ -576,7 +576,7 @@ let swing = null;
     if (scene === 'gare' && S.intro && S.intro.step !== 'done' && !(g.ride && g.ride.scene === 'gare' && g.ride.t > 6)) list.push({ z: 0.5, d: () => drawLoco(ctx, S.intro.step === 'train' ? (g.introT || 0) / 1000 : 99, now, g.introHidden ? S.look : null, g.ride && g.ride.scene === 'gare' ? g.ride.t : 0) });   // lot 8 : elle repart une fois le héros dans la diligence   // Farmwest : la locomotive à quai
     if (g.cueille && g.cueille.scene === scene) { const q = g.cueille; list.push({ z: 9990, d: () => { const x = q.x * T, y = q.y * T - 6; ctx.fillStyle = 'rgba(0,0,0,.6)'; ctx.fillRect(x - 1, y - 1, 18, 5); ctx.fillStyle = '#7ad04a'; ctx.fillRect(x, y, Math.round(16 * q.n / CUEILLE_HITS), 3); } }); }   // jauge de cueillette
     if (!g.ride && g.parkedCoach && g.parkedCoach.scene === scene) { const P = g.parkedCoach; list.push({ z: P.y + .2, d: () => drawCoach(ctx, P.x, P.y, now, false) }); }
-    if (g.ride && g.ride.scene === scene) { const R = g.ride, mv = R._px == null || Math.abs(R.x - R._px) + Math.abs(R.y - R._py) > 1e-4; R._px = R.x; R._py = R.y; if (mv) R._mt = now; list.push({ z: R.y + .2, d: () => drawCoach(ctx, R.x, R.y, now, now - (R._mt || 0) < 150) }); }   // la diligence
+    if (g.ride && g.ride.scene === scene) { const R = g.ride, mv = R._px == null || Math.abs(R.x - R._px) + Math.abs(R.y - R._py) > 1e-4; if (R._px != null && mv) { const dx = R.x - R._px, dy = R.y - R._py; R._dir = Math.abs(dx) >= Math.abs(dy) ? (dx < 0 ? 'gauche' : 'droite') : (dy < 0 ? 'dos' : 'face'); } R._px = R.x; R._py = R.y; if (mv) R._mt = now; list.push({ z: R.y + .2, d: () => drawCoach(ctx, R.x, R.y, now, now - (R._mt || 0) < 150, R._dir) }); }   // la diligence
     if (scene === 'farm' && testSwordHere(S)) list.push({ z: TEST_SWORD.y + .4, d: () => {
       const b = Math.round(Math.sin(now / 250) * 1.5), x = TEST_SWORD.x * T, y = TEST_SWORD.y * T;
       ctx.fillStyle = 'rgba(0,0,0,.25)'; ctx.fillRect(x + 3, y + 12, 10, 2);

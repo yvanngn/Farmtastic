@@ -4,11 +4,9 @@
 // dessin par code sert de secours.
 export const DECORS = ['cactus_grand', 'cactus_petit', 'broussaille', 'sapin', 'cypres', 'arbre_fleurs', 'rocher_grand', 'rocher_bas', 'cailloux', 'caillou', 'roche_plate', 'roche_pilier',
   'filon_cuivre', 'filon_etain', 'filon_argent', 'filon_fer', 'filon_or', 'filon_or2', 'filon_cobalt', 'filon_zinc', 'filon_nickel', 'saloon', 'fontaine',
-  'diligence_droite', 'diligence_gauche', 'diligence_face', 'diligence_dos', 'roue',
+  'diligence_gauche', 'diligence_face', 'diligence_dos', 'roue',
   'train_sud', 'train_nord', 'train_est', 'train_ouest'];   // 21/11 : train (vues nord, est, ouest gardées pour plus tard)
 export const TRAIN_CHIMNEY = 0.825;   // hauteur de la cheminée dans train_sud (fraction depuis le haut)
-// 21/11 : roues de la diligence (dans l'image d'origine, 626 px de large) : centre x, centre y, rayon — elles tournent à part.
-export const COACH_WHEELS = { diligence_droite: [[83, 186, 62], [302, 186, 58]], diligence_gauche: [[543, 186, 62], [324, 186, 58]] };
 export const VEIN_DECOR = { copper: 'filon_cuivre', tin: 'filon_etain', silver: 'filon_argent', iron: 'filon_fer', gold: 'filon_or', cobalt: 'filon_cobalt', zinc: 'filon_zinc', nickel: 'filon_nickel' };
 const IM = {}, CACHE = new Map();
 let ready = 0;
@@ -44,17 +42,22 @@ export function drawDecorRot(c, n, cx, cy, w, ang) {
   const s = Math.abs(c.getTransform().a) || 1, im = scaled(n, Math.max(1, Math.round(w * s)), Math.max(1, Math.round(w * s))); if (!im) return false;
   c.save(); c.translate(cx, cy); c.rotate(ang); c.drawImage(im, -w / 2, -w / 2, w, w); c.restore(); return true;
 }
-// La diligence : caisse, chevaux qui trottent (corps et têtes qui dodelinent, en décalé), puis les roues qui tournent.
-// Coordonnées des roues et des chevaux données dans l'image d'origine (626 px de large).
-const COACH_W0 = 626, HORSE_X0 = 385, HEAD_X0 = 540;
-export function drawCoachDecor(c, n, cx, by, w, now, moving = true) {
-  const src = decor(n); if (!src || !decor('roue')) return false;
-  const k = w / COACH_W0, h = w * src.naturalHeight / src.naturalWidth, x0 = cx - w / 2, y0 = by - h, left = n === 'diligence_gauche';
-  const s = Math.abs(c.getTransform().a) || 1, im = scaled(n, Math.max(1, Math.round(w * s)), Math.max(1, Math.round(h * s)));
-  const sx = im.width / w, part = (a, b, dy) => { const xa = left ? w - b * k : a * k, xb = left ? w - a * k : b * k; c.drawImage(im, xa * sx, 0, (xb - xa) * sx, im.height, x0 + xa, y0 + dy, xb - xa, h); };
-  const t = now / (moving ? 95 : 260), body = Math.round(Math.sin(t)) * (moving ? 1 : .5), head = Math.round(Math.sin(t + 1.4) * (moving ? 1.5 : 1));
-  part(0, HORSE_X0, 0); part(HORSE_X0, HEAD_X0, body); part(HEAD_X0, COACH_W0, body + head);
-  const ang = moving ? (now / 1000) * 5 * (left ? -1 : 1) : 0;
-  for (const [wx, wy, r] of COACH_WHEELS[n] || []) drawDecorRot(c, 'roue', x0 + wx * k, y0 + wy * k * (COACH_W0 / src.naturalWidth) * (src.naturalWidth / COACH_W0), 2 * r * k, ang * 62 / r);
-  return true;
+// 21/11 : diligence d'après les 3 bandes Gemini (tools/diligence-v2.py) : 4 images de trot par vue (profil gauche, face, dos),
+// profil droit = miroir ; de profil, les roues tournent à part (retirées des images, dessinées par-dessus).
+export const COACH_CELL = 485;                                  // largeur d'une case du profil dans l'image d'origine
+export const COACH_WHEELS = [[275, 212, 40], [423, 202, 50]];   // profil gauche : centre x, centre y, rayon (dans une case)
+export const COACH_VIEW = { droite: 'diligence_gauche', gauche: 'diligence_gauche', face: 'diligence_face', dos: 'diligence_dos' };
+export const COACH_W = { droite: 126, gauche: 126, face: 60, dos: 60 };
+export function drawCoachDecor(c, dir, cx, by, now, moving = true) {
+  const n = COACH_VIEW[dir], src = decor(n); if (!src || !decor('roue')) return false;
+  const w = COACH_W[dir], cw = src.naturalWidth / 4, h = w * src.naturalHeight / cw, flip = dir === 'droite';
+  const s = Math.abs(c.getTransform().a) || 1, im = scaled(n, Math.max(4, Math.round(4 * w * s)), Math.max(1, Math.round(h * s))); if (!im) return false;
+  const f = moving ? (now / 120 | 0) % 4 : 0, fw = im.width / 4;
+  c.save(); c.translate(cx, by - h); if (flip) c.scale(-1, 1);
+  c.drawImage(im, f * fw, 0, fw, im.height, -w / 2, 0, w, h);
+  if (dir === 'droite' || dir === 'gauche') {
+    const k = w / COACH_CELL, d = moving ? now / 1000 * 70 : 0;   // les roues roulent sans glisser (70 px du monde par seconde)
+    for (const [wx, wy, r] of COACH_WHEELS) drawDecorRot(c, 'roue', -w / 2 + wx * k, wy * k, 2 * r * k, -d / (r * k));
+  }
+  c.restore(); return true;
 }
