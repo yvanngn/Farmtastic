@@ -230,7 +230,7 @@ function fountainWater(c, cx, by, fw, now) {
 }
 function drawCoach(c, wx, wy, now, moving = true, dir = 'droite') {   // 18/11 (soir) : diligence « pixel moderne » (src/render/props.js) : caisse, cocher, chevaux au trot, roues qui tournent
   const X = Math.round(wx * 16), Y = Math.round(wy * 16), fr = (now / 110 | 0) % 4, st = (now / 70 | 0) % 8;
-  if (drawCoachDecor(c, dir, X + (dir === 'droite' ? 18 : dir === 'gauche' ? -18 : 8), Y + 11 + (moving ? (now / 160 | 0) % 2 : 0), now, moving)) return;   // 21/11 : 4 directions, trot en 4 images   // 21/11 : plus d'ombre ; chevaux animés
+  if (drawCoachDecor(c, dir, X + (dir === 'droite' ? 18 : dir === 'gauche' ? -18 : 8), Y + 11, now, moving)) return;   // 21/11 : 4 directions (les images de trot font déjà le cahot), trot en 4 images   // 21/11 : plus d'ombre ; chevaux animés
   c.fillStyle = 'rgba(30,15,5,.3)'; c.beginPath(); c.ellipse(X + 12, Y + 9, 52, 5, 0, 0, 7); c.fill();   // lot 32 : diligence de la planche fournie (petit cahot, roues qui tournent)
   const h1 = horse('#5a3a22', fr), h2 = horse('#8a5a32', (fr + 2) % 4), body = coachBody(), wb = coachWheel(10, st), wf = coachWheel(8, st);
   if (h1) c.drawImage(h1, X + 40, Y - 21);

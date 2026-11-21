@@ -6,9 +6,9 @@ from PIL import Image
 from scipy import ndimage
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SRC = os.path.join(ROOT, 'docs/sprites/decors/dilig-v2')
-# Images gardées dans l'ordre du cycle (profil : l'image 1 montre deux chevaux séparés, les autres un seul → 2, 3, 4, 3).
+# Images gardées dans l'ordre du cycle (profil : Gemini montre tantôt un, tantôt deux chevaux ; les images 2 et 4 en montrent un seul → 2, 4, 2, 4).
 # Face : l'image 4 montre les chevaux tête levée (les autres de dos) → 1, 2, 3, 2.
-ORDER = { 'profil': [1, 2, 3, 2], 'face': [0, 1, 2, 1], 'dos': [0, 1, 2, 3] }
+ORDER = { 'profil': [1, 3, 1, 3], 'face': [0, 1, 2, 1], 'dos': [0, 1, 2, 3] }
 OUT = { 'profil': 'diligence_gauche', 'face': 'diligence_face', 'dos': 'diligence_dos' }
 MAXW = 4 * 126   # 4 × la largeur d'affichage du profil au plus
 
@@ -51,9 +51,29 @@ for v, out in OUT.items():
     if k < 1: im = im.resize((round(im.width * k / 4) * 4, round(im.height * k)), Image.LANCZOS)
     im.save(os.path.join(ROOT, 'assets/decors', out + '.png')); print(out, im.size)
 
-# Profil : les roues tournent à part dans le jeu. Centre x, centre y, rayon dans une case (485 px de large, 252 de haut).
-WHEELS = [(275, 212, 40), (423, 202, 50)]
-p = os.path.join(ROOT, 'assets/decors/diligence_gauche.png'); sh = np.array(Image.open(p).convert('RGBA')); sh = np.pad(sh, ((0, 2), (0, 0), (0, 0))); CW = sh.shape[1] // 4
+# Gemini redessine toute la diligence à chaque image (caisse décalée de quelques pixels → saccades). On garde la caisse
+# de l'image 1 pour les 4 images ; seuls les chevaux viennent de chaque image, recalés sur la caisse (meilleur décalage).
+HORSES = { 'diligence_gauche': lambda yy, xx: xx < 240, 'diligence_face': lambda yy, xx: yy >= 155, 'diligence_dos': lambda yy, xx: yy < 118 }
+for out, zone in HORSES.items():
+    p = os.path.join(ROOT, 'assets/decors', out + '.png'); a = np.array(Image.open(p).convert('RGBA')); CW = a.shape[1] // 4
+    f = [a[:, i * CW:(i + 1) * CW].copy() for i in range(4)]
+    yy, xx = np.mgrid[:a.shape[0], :CW]; hz = zone(yy, xx); ref = f[0].astype(int)
+    for i in range(1, 4):
+        best = None
+        for dy in range(-8, 9):
+            for dx in range(-8, 9):
+                s = np.roll(f[i], (dy, dx), (0, 1)).astype(int)
+                e = (np.abs(s - ref).sum(2) * ~hz).sum()
+                if best is None or e < best[0]: best = (e, dy, dx)
+        s = np.roll(f[i], best[1:], (0, 1))
+        f[i] = np.where(hz[..., None], s, f[0])
+        print(out, i, 'recalée de', best[1:])
+    Image.fromarray(np.concatenate(f, 1)).save(p)
+
+# Profil : les roues tournent à part dans le jeu (centre x, centre y, rayon dans une case ; à recopier dans COACH_WHEELS de decors.js).
+p = os.path.join(ROOT, 'assets/decors/diligence_gauche.png'); sh = np.array(Image.open(p).convert('RGBA')); CW = sh.shape[1] // 4; H0 = sh.shape[0]; sh = np.pad(sh, ((0, 2), (0, 0), (0, 0)))
+# roues repérées depuis le bord droit et le bas de la case (la caisse est calée à droite, posée en bas)
+WHEELS = [(CW - 210, H0 - 40, 40), (CW - 62, H0 - 50, 50)]
 # fenêtres : trous fermés de la caisse (hors roues) remplis en brun sombre
 holes = ndimage.binary_fill_holes(sh[..., 3] > 0) & (sh[..., 3] == 0)
 lab, n = ndimage.label(holes)
@@ -76,4 +96,4 @@ for i in range(4):
     for cx, cy, r in WHEELS:
         z = ((xx - i * CW - cx) ** 2 + (yy - cy) ** 2 <= (r + 3) ** 2) & (yy > cy - r * .35) & ~horse
         sh[z] = 0
-Image.fromarray(sh).save(p); print('roues', WHEELS)
+Image.fromarray(sh).save(p); print('roues', WHEELS, 'case', CW)

@@ -2,6 +2,7 @@
 
 Semver horodaté (heure de Paris). Patch automatique à chaque publication ; mineure et majeure sur décision de l'utilisateur.
 
+- **0.1.120** — 2026-11-21 16:28 — Diligence : caisse fixe d'une image à l'autre, seuls les chevaux trottent (plus de saccades)
 - **0.1.119** — 2026-11-21 16:01 — Jade d'après sa planche Gemini, diligence refaite dans les 4 directions (chevaux au trot, roues qui tournent)
 - **0.1.118** — 2026-11-21 11:25 — Myst refait, routes prolongées aux sorties, cadres du haut translucides
 - **0.1.117** — 2026-11-21 11:15 — Simplet d'après sa planche

@@ -44,8 +44,8 @@ export function drawDecorRot(c, n, cx, cy, w, ang) {
 }
 // 21/11 : diligence d'après les 3 bandes Gemini (tools/diligence-v2.py) : 4 images de trot par vue (profil gauche, face, dos),
 // profil droit = miroir ; de profil, les roues tournent à part (retirées des images, dessinées par-dessus).
-export const COACH_CELL = 485;                                  // largeur d'une case du profil dans l'image d'origine
-export const COACH_WHEELS = [[275, 212, 40], [423, 202, 50]];   // profil gauche : centre x, centre y, rayon (dans une case)
+export const COACH_CELL = 434;                                  // largeur d'une case du profil dans l'image d'origine
+export const COACH_WHEELS = [[224, 212, 40], [372, 202, 50]];   // profil gauche : centre x, centre y, rayon (dans une case)
 export const COACH_VIEW = { droite: 'diligence_gauche', gauche: 'diligence_gauche', face: 'diligence_face', dos: 'diligence_dos' };
 export const COACH_W = { droite: 126, gauche: 126, face: 60, dos: 60 };
 export function drawCoachDecor(c, dir, cx, by, now, moving = true) {
