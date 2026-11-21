@@ -19,6 +19,18 @@ W = int(np.ceil(2 * max(max(head_x(c), c.shape[1] - head_x(c)) for r in rows for
 sh = np.zeros((Hh * 3, W * 4, 4), 'uint8')
 for ri, r in enumerate(rows):
     for ci, c in enumerate(r): sh[ri * Hh:(ri + 1) * Hh, ci * W:(ci + 1) * W] = pad(c, W, Hh)
+# Profil : Gemini n'a dessiné que des grands pas presque identiques. Les images 2 et 4 deviennent des « passages »
+# (jambes réunies) : buste de l'image précédente + jambes de l'ancienne image à l'arrêt (docs/sprites/heros-profil-arret.png,
+# même personnage), corps remonté d'1 pixel.
+legs = np.array(Image.open(os.path.join(ROOT, 'docs/sprites/heros-profil-arret.png')).convert('RGBA'))
+CUT = 31   # ligne de coupe (hanches), dans la case de la nouvelle planche
+for ci, src_c in ((1, 0), (3, 2)):
+    top = sh[2 * Hh:3 * Hh, src_c * W:(src_c + 1) * W].copy(); out = np.zeros_like(top)
+    lh = legs.shape[0]; off = Hh - lh   # aligne les bas des cases (pieds)
+    out[:CUT - 1] = top[1:CUT]                                       # buste remonté d'1 pixel
+    for y in range(CUT - 1, Hh):
+        ly = y - off + 1; out[y] = legs[ly, :W] if 0 <= ly < lh else 0
+    sh[2 * Hh:3 * Hh, ci * W:(ci + 1) * W] = out
 hair, _ = ns['hair_mask'](sh, W, Hh, 4)
 mk = np.zeros_like(sh); mk[..., 0] = hair * 255; mk[..., 3] = 255
 Image.fromarray(sh).save(os.path.join(ROOT, 'assets/sprites/hero_h_p.png'))

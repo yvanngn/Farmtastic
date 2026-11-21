@@ -2,6 +2,7 @@
 
 Semver horodaté (heure de Paris). Patch automatique à chaque publication ; mineure et majeure sur décision de l'utilisateur.
 
+- **0.1.114** — 2026-11-21 10:32 — Profil du héros : vrais pas (jambes réunies entre deux pas)
 - **0.1.113** — 2026-11-21 10:15 — L'esprit d'après la nouvelle planche (flottement en 4 temps)
 - **0.1.112** — 2026-11-21 10:08 — Nouvelle planche du héros (marche en 4 images différentes)
 - **0.1.111** — 2026-11-21 09:59 — Nouveau train d'après l'image fournie
