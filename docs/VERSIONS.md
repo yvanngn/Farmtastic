@@ -2,6 +2,7 @@
 
 Semver horodaté (heure de Paris). Patch automatique à chaque publication ; mineure et majeure sur décision de l'utilisateur.
 
+- **0.1.112** — 2026-11-21 10:08 — Nouvelle planche du héros (marche en 4 images différentes)
 - **0.1.111** — 2026-11-21 09:59 — Nouveau train d'après l'image fournie
 - **0.1.110** — 2026-11-21 09:46 — Diligence à l'arrêt et chevaux animés, arbres fournis partout, fontaine de la cavalerie, images allégées
 - **0.1.109** — 2026-11-21 01:02 — Caméra façon Stardew, diligence nettoyée aux roues qui tournent, routes dégagées
