@@ -165,3 +165,4 @@ Fait : sol de la ferme (v0.1.5) ; **7a** palette Far West et sols (centre-ville 
 - 21/11 : v0.1.112 — héros (avec sac) d'après la nouvelle planche Gemini ; skill « demande-sprites-gemini » (fond blanc uni, cases nommées R1C1…R3C4).
 - 21/11 : v0.1.113 — l'esprit d'après la nouvelle planche (flottement en 4 temps).
 - 21/11 : v0.1.114 — profil du héros en vrais pas (passages fabriqués). Leçon : Gemini rate les cycles de marche (mêmes poses, mauvais côté) et ressert la même image dans une conversation ; mieux vaut une nouvelle conversation, ou une pose par image.
+- 21/11 : v0.1.115 — joystick flottant façon Brawl Stars (moitié gauche de l'écran) ; sacs à dos retirés des héros et de la personnalisation (retour aux planches `hero_*_n`, profil en 2 poses, à refaire). Liste des images à redessiner : doc claude.ai « Farmwest — images à redessiner » (https://claude.ai/artifact/4E54A5qAmTfujkreuu1Foh), avec statut par ligne.
