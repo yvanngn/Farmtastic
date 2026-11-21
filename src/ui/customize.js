@@ -20,7 +20,7 @@ export function createCustomizer({ getLook, getName, onStart, onContinue, onBack
     // 18/11 (soir) : héros en « pixel moderne » — sexe et plus de choix (src/render/folk.js, HERO_OPTS)
     // 19/11 : personnalisation simplifiée (planches fournies) : homme ou femme, sac à dos, couleur des cheveux
     const O = HERO_OPTS, bt = (title, k) => sec(title, k, Object.keys(O[k]), O[k]);
-    $('#lookOpts').innerHTML = bt('Sexe', 'body') + bt('Sac à dos', 'backpack')
+    $('#lookOpts').innerHTML = bt('Sexe', 'body')
       + `<div style="margin-top:8px"><b>Couleur des cheveux</b><div class="row">` + HERO_HAIR.map(v => v ? `<div class="chip ${L.hairC === v ? 'sel' : ''}" style="background:${v}" data-k="hairC" data-v="${v}"></div>` : `<button class="${!HERO_HAIR.includes(L.hairC) || !L.hairC ? 'on' : ''}" data-k="hairC" data-v="">Naturelle</button>`).join('') + '</div></div>';
   }
   // couleur facultative : « Aucun » puis le nuancier

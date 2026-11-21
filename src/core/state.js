@@ -6,7 +6,7 @@ export function defaultState() {
   return {
     v: CFG.VERSION, name: 'Cloud Jimny', bigRock: { hits: 0, letter: false, read: false, met: false },   // lot 29 : l'énorme rocher de la carrière
       // nom par défaut (modifiable à la création)
-    look: { doll: true, body: 'h', skin: '#f4c8a0', eye: '#3a6aa8', hair: 'messy', hairC: '#8a4f28', beard: '', hat: '', hatC: '#8a4a26', top: 'plaid', shirt: '#c0342e', extra: 'overalls', extraC: '#3f62a8', scarf: '', bottom: 'pant', pants: '#4a6aaa', shoes: '#6a3e22', backpack: 1 },   // héros en poupée de sprites (src/render/heroDoll.js)   // hero : dessiné depuis la planche de sprites, recolorée selon la personnalisation   // planche docs/personnages-reference.jpg : salopette bleue, chemise à carreaux, sac à dos
+    look: { doll: true, body: 'h', skin: '#f4c8a0', eye: '#3a6aa8', hair: 'messy', hairC: '#8a4f28', beard: '', hat: '', hatC: '#8a4a26', top: 'plaid', shirt: '#c0342e', extra: 'overalls', extraC: '#3f62a8', scarf: '', bottom: 'pant', pants: '#4a6aaa', shoes: '#6a3e22', backpack: 0 },   // héros en poupée de sprites (src/render/heroDoll.js)   // hero : dessiné depuis la planche de sprites, recolorée selon la personnalisation   // planche docs/personnages-reference.jpg : salopette bleue, chemise à carreaux, sac à dos
     money: 500, energy: 100, maxE: 100, hp: 100, maxHp: 100,
     day: 1, season: 0, year: 1, minute: CFG.DAY_START, weather: 'sun',
     inv: { tent: 1 },   // 17/11 : seulement la tente au départ (plus de graines, de foin ni de sac à dos)
@@ -81,6 +81,7 @@ export function migrate(raw) {
   for (const [o, n] of [['soupe_baies', 'confiture_baies'], ['soupe_mures', 'confiture_mures']]) if (s.inv && s.inv[o]) { s.inv[n] = (s.inv[n] || 0) + s.inv[o]; delete s.inv[o]; }   // 16/11 : soupes → confitures
   if (s.scene === 'carriere2') { s.scene = 'carriere'; s.x = 23.5; s.y = 38.6; }   // 21/11 : l'ancienne carrière profonde n'existe plus
   if (s.nature) delete s.nature.carriere2;
+  if (s.look) s.look.backpack = 0;   // 21/11 : plus de sac à dos sur le héros
   s.v = CFG.VERSION;
   return s;
 }

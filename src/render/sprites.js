@@ -202,7 +202,7 @@ function drawCell(c, key, img, S, col, row, d, x, y) {
 // Les cheveux se recolorent (masque des cheveux, teinte choisie modulée par la lumière d'origine). Une pose toutes les 150 ms.
 export const HERO_SHEET_MS = 150;
 export const HERO_HAIR = ['', '#2a2026', '#4a2c1a', '#d8a850', '#b8482a', '#e8e0d0', '#6a6a72', '#3a5a9a'];   // '' = naturel
-export const heroSheetName = L => 'hero_' + (L.body === 'f' ? 'f' : 'h') + '_' + (L.backpack === 0 || L.backpack === false ? 'n' : 'p');
+export const heroSheetName = L => 'hero_' + (L.body === 'f' ? 'f' : 'h') + '_n';   // 21/11 (décision de l'utilisateur) : plus de sac à dos sur les héros, une seule planche par personnage
 const HERO_RECOLOR = new Map();
 function heroSheetImage(name, hairC) {
   const base = sheetImage(name); if (!base || !base.complete || !base.naturalWidth) return base && base.complete ? base : null;

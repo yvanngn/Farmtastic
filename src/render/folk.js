@@ -403,7 +403,7 @@ export function heroSpec(L) {
   const exC = L.extraC || L.overalls || '#3f62a8', hatC = L.hat === 'paille' ? '#e6c870' : (L.hatC || '#8a4a26');
   const garments = [];
   if (extra === 'overalls') garments.push('overalls'); if (extra === 'vest') garments.push('vest'); if (extra === 'jacket') garments.push('jacket', 'lapels'); if (extra === 'coat') garments.push('coat', 'lapels'); if (extra === 'apron') garments.push('apron');
-  if (L.top === 'hoodie') garments.push('hoodie'); if (L.scarf) garments.push('scarf'); if (L.backpack !== 0 && L.backpack !== false) garments.push('backpack');
+  if (L.top === 'hoodie') garments.push('hoodie'); if (L.scarf) garments.push('scarf'); /* 21/11 : plus de sac à dos */
   const pattern = L.top === 'plain' || L.top === 'hoodie' ? {} : L.top === 'knit' ? { top: { type: 'knit' } } : { top: { type: 'plaid' } };
   return { id: 'heros', hair: hair === 'bald' ? undefined : hair, eye: L.eye || '#3a6aa8', blush: 1, f, dress: skirt,
     hat: L.hat === 'paille' ? 'cowboy' : L.hat || undefined, beard: !f && (L.beard === 'short' || L.beard === 'big') ? L.beard : undefined, mustache: !f && L.beard === 'mustache',
