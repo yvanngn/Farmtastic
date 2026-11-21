@@ -1,5 +1,5 @@
 import { signBoard } from './pixfont.js';
-import { drawDecor, decor, VEIN_DECOR, drawCoachDecor } from './decors.js';
+import { drawDecor, decor, decorH, VEIN_DECOR, drawCoachDecor, TRAIN_CHIMNEY } from './decors.js';
 import { folkSprite, CAST } from './folk.js';
 import { coachBody, coachWheel, horse, locoSprite, wagonSprite, fountainSprite, houseSprite } from './props.js';
 import { MAILBOX, METEOR_HITS } from '../systems/golgolas.js';
@@ -185,9 +185,18 @@ function edgePattern(kind, season) {
   return (EDGE_PAT[k] = g.createPattern(c, 'repeat'));
 }
 // Farmwest : locomotive à vapeur qui entre en gare par le nord sur la voie (x1-2) et s'arrête le long du quai.
+// 21/11 : fumée de la locomotive (forte quand elle roule, légère à l'arrêt), depuis la cheminée en (x, cy).
+function trainSmoke(c, x, cy, moving, now) {
+  const puff = moving ? 1 : .35;
+  for (let k = 0; k < (moving ? 10 : 6); k++) { const ph = (now / (moving ? 420 : 600) + k / (moving ? 10 : 6)) % 1, py = cy - ph * (moving ? 60 : 44), sz = 4 + ph * (moving ? 15 : 11); c.fillStyle = `rgba(235,232,228,${(1 - ph) * .6 * puff})`; c.beginPath(); c.arc(x + 15 + Math.sin(k * 2 + now / 400) * 4 + (moving ? ph * 6 : 0), py, sz / 2, 0, 7); c.fill(); }
+}
 function drawLoco(c, t, now, hero, leave = 0) {   // 18/11 (soir) : locomotive et wagons « pixel moderne » (src/render/props.js)
   const x = 16, stopY = 6 * 16, y0 = stopY - (t < 3 ? (3 - t) * (3 - t) * 50 : 0) + leave * leave * 40;   // lot 8 : repart vers le sud en accélérant
   const im = trainImage(), top = Math.round(y0 + 70 - TRAIN_IMG.h);   // 20/11 : train fourni par l'utilisateur (vu de dessus, locomotive devant)
+  const th = decorH('train_sud', 32);
+  if (th && drawDecor(c, 'train_sud', x + 16, Math.round(y0 + 70), 32)) {   // 21/11 : nouveau train, plus « jeu », même taille et même angle
+    trainSmoke(c, x, Math.round(y0 + 70 - th + TRAIN_CHIMNEY * th), t < 3 || leave > 0, now); return;
+  }
   if (im) { c.fillStyle = 'rgba(0,0,0,.3)'; c.fillRect(x + 3, top + 4, TRAIN_IMG.w, TRAIN_IMG.h); c.drawImage(im, x, top); }
   else { const L = locoSprite(), W0 = wagonSprite(hero), W1 = wagonSprite(null); if (W1) c.drawImage(W1, x, Math.round(y0 - 98)); if (W0) c.drawImage(W0, x, Math.round(y0 - 52)); if (L) c.drawImage(L, x, Math.round(y0)); }
   const moving = t < 3 || leave > 0, puff = moving ? 1 : .35, cy = im ? top + TRAIN_IMG.chimney : y0 + 16;   // fumée : forte quand il roule, légère à l'arrêt

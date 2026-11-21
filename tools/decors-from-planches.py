@@ -122,7 +122,7 @@ def saloon_sign(path='assets/decors/saloon.png'):
 if __name__ == '__main__' and sys.argv[1:] == ['--all']: saloon_sign()
 # 21/11 : poids réduit sans perte visible — chaque image est ramenée à 4 × sa largeur d'affichage dans le monde
 # (le plus grand agrandissement de l'écran : téléphone haute définition au zoom le plus proche), PNG optimisé.
-DISPLAY_W = { 'saloon': 112, 'fontaine': 88, 'diligence_droite': 126, 'diligence_gauche': 126, 'diligence_face': 60, 'diligence_dos': 60, 'roue': 26,
+DISPLAY_W = { 'train_sud': 32, 'train_nord': 32, 'train_est': 280, 'train_ouest': 280, 'saloon': 112, 'fontaine': 88, 'diligence_droite': 126, 'diligence_gauche': 126, 'diligence_face': 60, 'diligence_dos': 60, 'roue': 26,
   'sapin': 26, 'cypres': 14, 'arbre_fleurs': 34, 'cactus_grand': 13, 'cactus_petit': 9, 'broussaille': 13, 'rocher_grand': 28, 'roche_pilier': 26,
   'rocher_bas': 20, 'roche_plate': 19, 'cailloux': 17, 'caillou': 13 }
 def shrink():
@@ -133,3 +133,12 @@ def shrink():
         if im.width > w0: im = im.resize((w0, max(1, round(im.height * w0 / im.width))), Image.LANCZOS)
         im.save('assets/decors/' + f, optimize=True)
 if __name__ == '__main__' and sys.argv[1:] == ['--all']: shrink()
+
+# 21/11 : le train (planche « train.jpg », fond blanc) — 4 vues ; le jeu utilise train_sud (locomotive en bas).
+def train():
+    im, fg, comps = cut('docs/sprites/decors/train.jpg', min_area=2000)
+    big = sorted(comps, key=lambda c: -c['n'])[:4]
+    for c in big:
+        n = 'train_sud' if c['x0'] < 300 else 'train_nord' if c['x0'] < 650 else 'train_est' if c['y0'] < 400 else 'train_ouest'
+        save(im, fg, c, f'assets/decors/{n}.png'); defringe(f'assets/decors/{n}.png', bg=(255, 255, 255), tol=40)
+if __name__ == '__main__' and sys.argv[1:] == ['--all']: train()

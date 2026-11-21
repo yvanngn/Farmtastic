@@ -4,7 +4,9 @@
 // dessin par code sert de secours.
 export const DECORS = ['cactus_grand', 'cactus_petit', 'broussaille', 'sapin', 'cypres', 'arbre_fleurs', 'rocher_grand', 'rocher_bas', 'cailloux', 'caillou', 'roche_plate', 'roche_pilier',
   'filon_cuivre', 'filon_etain', 'filon_argent', 'filon_fer', 'filon_or', 'filon_or2', 'filon_cobalt', 'filon_zinc', 'filon_nickel', 'saloon', 'fontaine',
-  'diligence_droite', 'diligence_gauche', 'diligence_face', 'diligence_dos', 'roue'];
+  'diligence_droite', 'diligence_gauche', 'diligence_face', 'diligence_dos', 'roue',
+  'train_sud', 'train_nord', 'train_est', 'train_ouest'];   // 21/11 : train (vues nord, est, ouest gardées pour plus tard)
+export const TRAIN_CHIMNEY = 0.825;   // hauteur de la cheminée dans train_sud (fraction depuis le haut)
 // 21/11 : roues de la diligence (dans l'image d'origine, 626 px de large) : centre x, centre y, rayon — elles tournent à part.
 export const COACH_WHEELS = { diligence_droite: [[83, 186, 62], [302, 186, 58]], diligence_gauche: [[543, 186, 62], [324, 186, 58]] };
 export const VEIN_DECOR = { copper: 'filon_cuivre', tin: 'filon_etain', silver: 'filon_argent', iron: 'filon_fer', gold: 'filon_or', cobalt: 'filon_cobalt', zinc: 'filon_zinc', nickel: 'filon_nickel' };

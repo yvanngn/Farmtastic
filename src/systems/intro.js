@@ -12,7 +12,7 @@ export const GARE_QUAI = { x: 4.5, y: 7.6 }, MYST_QUAI = { x: 4.5, y: 5.8 };
 export const TRAIN_DOOR = { x: 2.9, y: 4.6 };   // porte du wagon, une fois le train à quai (le héros est assis dedans)
 export const STEP_SPEED = 2.4;                    // cases par seconde quand il descend sur le quai
 export const RIDE = {
-  gare: { y: 8.6, from: 5.2, to: 23.6 },   // lot 8 : le héros monte dans la diligence au bout du quai ; la locomotive repart
+  gare: { y: 8.6, from: 8.4, to: 23.6 },   // 21/11 : la diligence attend à droite du train (elle ne le chevauche plus)   // lot 8 : le héros monte dans la diligence au bout du quai ; la locomotive repart
   town: { y: 10.6, from: -.5, to: 33.6 },
   route_ville: { y: 4.9, from: -.5, to: 39.6 },   // 20/11 : la route du centre-ville
   rondpoint: { y: 9, from: -.5, to: 8.5 },
