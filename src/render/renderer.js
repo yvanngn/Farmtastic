@@ -1,4 +1,4 @@
-import { drawDecor, decor, VEIN_DECOR } from './decors.js';
+import { drawDecor, decor, VEIN_DECOR, drawCoachDecor } from './decors.js';
 import { folkSprite, CAST } from './folk.js';
 import { coachBody, coachWheel, horse, locoSprite, wagonSprite, fountainSprite, houseSprite } from './props.js';
 import { MAILBOX, METEOR_HITS } from '../systems/golgolas.js';
@@ -197,7 +197,7 @@ let TRAIN_EL; const trainImage = () => { if (TRAIN_EL === undefined && typeof Im
 function drawCoach(c, wx, wy, now) {   // 18/11 (soir) : diligence « pixel moderne » (src/render/props.js) : caisse, cocher, chevaux au trot, roues qui tournent
   const X = Math.round(wx * 16), Y = Math.round(wy * 16), fr = (now / 110 | 0) % 4, st = (now / 70 | 0) % 8;
   c.fillStyle = 'rgba(30,15,5,.3)'; c.beginPath(); c.ellipse(X + 12, Y + 9, 52, 5, 0, 0, 7); c.fill();
-  if (drawDecor(c, 'diligence_droite', X + 18, Y + 11 + ((now / 160 | 0) % 2), 126)) return;   // lot 32 : diligence de la planche fournie (petit cahot)
+  if (drawCoachDecor(c, 'diligence_droite', X + 18, Y + 11 + ((now / 160 | 0) % 2), 126, now)) return;   // lot 32 : diligence de la planche fournie (petit cahot, roues qui tournent)
   const h1 = horse('#5a3a22', fr), h2 = horse('#8a5a32', (fr + 2) % 4), body = coachBody(), wb = coachWheel(10, st), wf = coachWheel(8, st);
   if (h1) c.drawImage(h1, X + 40, Y - 21);
   if (body) c.drawImage(body, X - 40, Y - 64);
@@ -348,8 +348,11 @@ let swing = null;
     }
     if (outside) cache = farmGround(); // reconstruit si un bâtiment vient d'être construit
     const vw = cv.width / scale, vh = cv.height / scale, MW = SC.W * T, MH = SC.H * T;
-    cam.x = MW <= vw && !sky ? (MW - vw) / 2 : S.x * T - vw / 2;   // 20/11 : la caméra suit le héros jusqu'aux bords (l'interface ne cache plus rien)
-    cam.y = MH <= vh && !sky ? (MH - vh) / 2 : S.y * T - vh / 2; // la caméra ne bouge plus quand un dialogue s'ouvre
+    // 21/11 : caméra façon Stardew Valley — centrée sur le héros, mais elle s'arrête aux bords de la zone (on ne voit jamais
+    // le vide au-delà) ; une zone plus petite que l'écran est centrée. La caméra ne bouge pas quand un dialogue s'ouvre.
+    const clampC = (p, M, v) => M <= v ? (M - v) / 2 : Math.max(0, Math.min(M - v, p - v / 2));
+    cam.x = clampC(S.x * T, MW, vw);
+    cam.y = clampC(S.y * T, MH, vh);
     if (SC.rooms) { // salles façon Game Boy : la caméra reste centrée sur la salle du joueur
       const rw = SC.rooms.w * T, rh = SC.rooms.h * T;
       cam.x = Math.floor(S.x * T / rw) * rw - (vw - rw) / 2; cam.y = Math.floor(S.y * T / rh) * rh - (vh - rh) / 2;

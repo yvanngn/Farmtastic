@@ -56,3 +56,19 @@ test('20/11 : aucun chemin ne touche un bord sans sortie', () => {
   }
   assert.deepEqual(bad, []);
 });
+
+test('21/11 : aucune route ne bute sur un arbre ou une barrière (ni au milieu, ni à côté d’une sortie)', async () => {
+  const m = await import('../src/world/scenes.js'), bad = [];
+  for (const [sc, S] of Object.entries(m.SCENES)) {
+    if (!S.outdoor || !m.LAYOUTS[sc] || m.WIDE_SKIP.has(sc)) continue;
+    const L = m.LAYOUTS[sc], H = L.length, W = L[0].length, at = (x, y) => (L[y] || '')[x], door = (x, y) => S.doors.some(d => d.x === x && d.y === y), N = [[1, 0], [-1, 0], [0, 1], [0, -1]];
+    for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
+      if (!'Tfh'.includes(at(x, y))) continue;
+      const rd = (a, b) => at(a, b) === '.' || at(a, b) === 'D';
+      if ((rd(x - 1, y) && rd(x + 1, y)) || (rd(x, y - 1) && rd(x, y + 1))) bad.push(`${sc} ${x},${y}`);
+      if ((x === 0 || y === 0 || x === W - 1 || y === H - 1) && N.some(([a, b]) => door(x + a, y + b)) && N.some(([a, b]) => at(x + a, y + b) === '.')) bad.push(`${sc} ${x},${y} (sortie)`);
+    }
+  }
+  assert.deepEqual(bad, []);
+  const { isFarmFence } = await import('../src/world/map.js'); assert.ok(!isFarmFence(15, 0) && !isFarmFence(17, 0), 'passage nord de la ferme sur 3 cases');
+});

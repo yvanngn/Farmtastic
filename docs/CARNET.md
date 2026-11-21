@@ -159,3 +159,4 @@ Fait : sol de la ferme (v0.1.5) ; **7a** palette Far West et sols (centre-ville 
 - 21/11 : lot 30c (v0.1.106) — combats en équipe (hôte qui diffuse, bouton Rejoindre, 3 alliés au plus).
 - 21/11 : lot 31 (v0.1.107) — routes 2 → 4 cases partout, passages élargis. Lot 32 : 4 planches d'images fournies (cactus, cailloux, filons, arbres ; saloon ; fontaine ; diligence).
 - 21/11 : lot 32 (v0.1.108) — décors des 4 planches fournies (cactus, broussailles, cailloux, filons, arbres, saloon, fontaine, diligence). ❓ Nom « Red Eye Saloon ».
+- 21/11 : v0.1.109 — caméra façon Stardew (arrêtée aux bords), diligence nettoyée (roues qui tournent), sorties sur toute la largeur des routes.

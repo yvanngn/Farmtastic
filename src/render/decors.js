@@ -4,7 +4,9 @@
 // dessin par code sert de secours.
 export const DECORS = ['cactus_grand', 'cactus_petit', 'broussaille', 'sapin', 'cypres', 'arbre_fleurs', 'rocher_grand', 'rocher_bas', 'cailloux', 'caillou', 'roche_plate', 'roche_pilier',
   'filon_cuivre', 'filon_etain', 'filon_argent', 'filon_fer', 'filon_or', 'filon_or2', 'filon_cobalt', 'filon_zinc', 'filon_nickel', 'saloon', 'fontaine',
-  'diligence_droite', 'diligence_gauche', 'diligence_face', 'diligence_dos'];
+  'diligence_droite', 'diligence_gauche', 'diligence_face', 'diligence_dos', 'roue'];
+// 21/11 : roues de la diligence (dans l'image d'origine, 626 px de large) : centre x, centre y, rayon — elles tournent à part.
+export const COACH_WHEELS = { diligence_droite: [[83, 186, 62], [302, 186, 58]], diligence_gauche: [[543, 186, 62], [324, 186, 58]] };
 export const VEIN_DECOR = { copper: 'filon_cuivre', tin: 'filon_etain', silver: 'filon_argent', iron: 'filon_fer', gold: 'filon_or', cobalt: 'filon_cobalt', zinc: 'filon_zinc', nickel: 'filon_nickel' };
 const IM = {}, CACHE = new Map();
 let ready = 0;
@@ -33,3 +35,19 @@ export function drawDecor(c, n, cx, by, w, flip = false) {
   return true;
 }
 export const decorH = (n, w) => { const i = decor(n); return i ? w * i.naturalHeight / i.naturalWidth : 0; };
+
+// Décor tourné d'un angle (radians) autour de son centre (cx, cy), large de w pixels du monde.
+export function drawDecorRot(c, n, cx, cy, w, ang) {
+  const src = decor(n); if (!src) return false;
+  const s = Math.abs(c.getTransform().a) || 1, im = scaled(n, Math.max(1, Math.round(w * s)), Math.max(1, Math.round(w * s))); if (!im) return false;
+  c.save(); c.translate(cx, cy); c.rotate(ang); c.drawImage(im, -w / 2, -w / 2, w, w); c.restore(); return true;
+}
+// La diligence : caisse et chevaux, puis les roues qui tournent (angle selon le temps).
+export function drawCoachDecor(c, n, cx, by, w, now) {
+  const src = decor(n); if (!src || !decor('roue')) return false;
+  const k = w / src.naturalWidth, x0 = cx - w / 2, y0 = by - src.naturalHeight * k;
+  drawDecor(c, n, cx, by, w);
+  const ang = (now / 1000) * 5 * (n === 'diligence_gauche' ? -1 : 1);
+  for (const [wx, wy, r] of COACH_WHEELS[n] || []) drawDecorRot(c, 'roue', x0 + wx * k, y0 + wy * k, 2 * r * k, ang * 62 / r);
+  return true;
+}

@@ -70,3 +70,45 @@ def run_all():
         for i, n in names.items(): out[n] = save(im, fg, comps[i], f'assets/decors/{n}.png')
     print(json.dumps(out))
 if __name__ == '__main__' and sys.argv[1:] == ['--all']: run_all()
+
+# 21/11 : franges violettes — près du bord transparent, les pixels trop proches de la couleur du fond deviennent transparents.
+def defringe(path, bg=(102, 93, 110), r=3, tol=58, big=False):
+    im = np.array(Image.open(path).convert('RGBA')).astype(int); a = im[..., 3] > 0
+    near = np.zeros_like(a)
+    for dy in range(-r, r + 1):
+        for dx in range(-r, r + 1):
+            near |= ~np.roll(np.roll(a, dy, 0), dx, 1)
+    d = np.sqrt(((im[..., :3] - np.array(bg)) ** 2).sum(2)); purple = (im[..., 2] >= im[..., 1]) & (d < tol)
+    im[a & near & purple, 3] = 0
+    if big:   # la diligence : le fond violet enfermé entre la caisse, les harnais et les chevaux
+        P = (im[..., 3] > 0) & purple; seen = np.zeros_like(P); H, W = P.shape
+        for y in range(H):
+            for x in range(W):
+                if not P[y, x] or seen[y, x]: continue
+                q = deque([(y, x)]); seen[y, x] = 1; pts = []
+                while q:
+                    cy, cx = q.popleft(); pts.append((cy, cx))
+                    for dy, dx in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+                        ny, nx = cy + dy, cx + dx
+                        if 0 <= ny < H and 0 <= nx < W and P[ny, nx] and not seen[ny, nx]: seen[ny, nx] = 1; q.append((ny, nx))
+                if len(pts) > 40:
+                    for py, px in pts: im[py, px, 3] = 0
+    Image.fromarray(im.astype('uint8')).save(path)
+# Diligence : la roue (pour la faire tourner) ; les roues fixes sont retirées de la caisse.
+WHEELS = { 'diligence_droite': [(83, 186, 62), (302, 186, 58)], 'diligence_gauche': [(543, 186, 62), (324, 186, 58)] }   # (centre x, centre y, rayon)
+def wheels():
+    src = np.array(Image.open('assets/decors/diligence_droite.png').convert('RGBA'))
+    cx, cy, R = WHEELS['diligence_droite'][0]
+    w = np.zeros((2 * R, 2 * R, 4), 'uint8'); y0, x0 = cy - R, max(0, cx - R); part = src[y0:cy + R, x0:cx + R]; w[:part.shape[0], 2 * R - part.shape[1]:] = part
+    yy, xx = np.mgrid[-R:R, -R:R]; w[(xx ** 2 + yy ** 2) > R * R, 3] = 0
+    w[:, :R] = np.where(w[:, :R, 3:4] == 0, np.flip(np.flip(w, 0), 1)[:, :R], w[:, :R])   # la roue touche le bord gauche : on complète par symétrie
+    Image.fromarray(w).save('assets/decors/roue.png')
+    for n, cs in WHEELS.items():
+        im = np.array(Image.open(f'assets/decors/{n}.png').convert('RGBA')); H, W = im.shape[:2]; yy, xx = np.mgrid[0:H, 0:W]
+        for cx, cy, R in cs: im[((xx - cx) ** 2 + (yy - cy) ** 2) <= (R + 1) ** 2, 3] = 0
+        Image.fromarray(im).save(f'assets/decors/{n}.png')
+if __name__ == '__main__' and sys.argv[1:] == ['--all']:
+    import os
+    for f in os.listdir('assets/decors'):
+        if f.endswith('.png') and f != 'roue.png': defringe('assets/decors/' + f, big=f.startswith('diligence'))
+    wheels()

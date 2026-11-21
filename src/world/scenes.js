@@ -629,7 +629,7 @@ export const SCENES = {
     { x: 20, y: 7, to: 'pigsty', spawn: { x: 5.5, y: 5.4 } },
     { x: 28, y: 7, to: 'barn', spawn: { x: 5.5, y: 6.4 } },
     { x: 12, y: 4, to: 'grange', spawn: { x: 5.5, y: 5.2 } },
-    { x: 16, y: 0, to: 'edge:N' },   // 19/11 : au nord (carrière pour la ferme principale)
+    { x: 16, y: 0, to: 'edge:N' }, { x: 15, y: 0, to: 'edge:N' }, { x: 17, y: 0, to: 'edge:N' },   // 19/11 : au nord (carrière pour la ferme principale)
     { x: 16, y: 35, to: 'edge:S' }, { x: 15, y: 35, to: 'edge:S' }, { x: 17, y: 35, to: 'edge:S' },   // Farmwest : au sud des fermes, le rond-point
     { x: 0, y: 17, to: 'edge:W' }, { x: 0, y: 18, to: 'edge:W' }, { x: 0, y: 19, to: 'edge:W' },   // 19/11 : sorties selon l'emplacement de la ferme (FARM_LINKS)
     { x: 47, y: 18, to: 'edge:E' }, { x: 47, y: 17, to: 'edge:E' }, { x: 47, y: 19, to: 'edge:E' }   // Farmwest : à l'est des fermes, la forêt
@@ -812,15 +812,26 @@ export function widenRoads(sc) {
     if (!WIDE_GROUND.includes(L0[y][x])) continue;
     if (road(x - 1, y) || road(x + 1, y) || road(x, y - 1) || road(x, y + 1)) L[y][x] = '.';
   }
-  const isDoor = (x, y) => D.find(d => d.x === x && d.y === y);
+  // 21/11 : plus d'arbre ni de barrière au milieu d'une route (pris entre deux cases de route)
+  for (let y = 1; y < H - 1; y++) for (let x = 1; x < W - 1; x++) if ('Tfh'.includes(L[y][x])) {
+    const rd = (a, b) => L[b][a] === '.' || L[b][a] === 'D';
+    if ((rd(x - 1, y) && rd(x + 1, y)) || (rd(x, y - 1) && rd(x, y + 1))) L[y][x] = '.';
+  }
+  // chaque sortie prend toute la largeur de sa route : une case de bord devient la même porte si la case intérieure est
+  // de la route et qu'elle touche déjà une porte (on répète jusqu'à ce que plus rien ne change)
+  const isDoor = (x, y) => D.find(d => d.x === x && d.y === y) || added.find(d => d.x === x && d.y === y);
   const added = [];
-  for (const d of D) {
-    const onH = d.y === 0 || d.y === H - 1, onV = d.x === 0 || d.x === W - 1; if (!onH && !onV) continue;
-    for (const s of [-1, 1]) {
-      const x = onH ? d.x + s : d.x, y = onH ? d.y : d.y + s, ix = onV ? (d.x === 0 ? 1 : W - 2) : x, iy = onH ? (d.y === 0 ? 1 : H - 2) : y;
-      if (x <= 0 || y <= 0 || x >= W - 1 || y >= H - 1 && onV || isDoor(x, y) || added.some(a => a.x === x && a.y === y)) continue;
-      if (L[iy][ix] !== '.' || L0[iy][ix] === '.') continue;   // seulement là où la route vient d'être élargie
-      L[y][x] = L0[d.y][d.x]; added.push({ ...d, x, y });
+  for (let changed = true; changed;) {
+    changed = false;
+    for (let x = 1; x < W - 1; x++) for (const [y, iy] of [[0, 1], [H - 1, H - 2]]) {
+      if (isDoor(x, y) || L[iy][x] !== '.') continue;
+      const n = isDoor(x - 1, y) || isDoor(x + 1, y); if (!n) continue;
+      L[y][x] = L[n.y][n.x]; added.push({ ...n, x, y }); changed = true;
+    }
+    for (let y = 1; y < H - 1; y++) for (const [x, ix] of [[0, 1], [W - 1, W - 2]]) {
+      if (isDoor(x, y) || L[y][ix] !== '.') continue;
+      const n = isDoor(x, y - 1) || isDoor(x, y + 1); if (!n) continue;
+      L[y][x] = L[n.y][n.x]; added.push({ ...n, x, y }); changed = true;
     }
   }
   D.push(...added);

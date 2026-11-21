@@ -47,7 +47,7 @@ const closedEdge = (x, y) => (!linkOf('S') && y === 35 && x >= 15 && x <= 17) ||
 export const isHedge0 = (x, y) => (y === 35 && (x < 15 || x > 17)) || (x === 47 && y < 35 && (y < 17 || y > 19));
 // Bord nord de la ferme : une barrière en bois ; bord ouest (au-dessus de la gare) : une falaise rocheuse.
 export const isHedge = (x, y) => (isHedge0(x, y) && !isFarmGap(x, y)) || closedEdge(x, y);
-export const isFarmFence = (x, y) => y === 0 && x > 0 && x < 47 && (x !== 16 || !linkOf('N'));   // 19/11 : passage vers la carrière
+export const isFarmFence = (x, y) => y === 0 && x > 0 && x < 47 && (x < 15 || x > 17 || !linkOf('N'));   // 21/11 : passage de 3 cases (route élargie, plus de poteau dans le chemin)   // 19/11 : passage vers la carrière
 export const isCliff = (x, y) => x === 0 && !isFarmGap(x, y);   // lot 8 : plus de gare dans la ferme, la falaise court sur tout le bord ouest
 // Lot 8 : plus de gare dans la ferme (la gare est une zone à part, à l'ouest du centre-ville).
 export const isStation = () => false;
