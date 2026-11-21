@@ -486,7 +486,7 @@ export const GOLGOLAS = {
 // il l'enverra au joueur au niveau 5. Répliques 💡.
 export const MINEUR = {
   id: 'mineur', name: 'Simplet', title: 'mineur', de: 'de lui', color: '#c8a878', voice: 'voiceChef',
-  look: { folk: 'mineur', body: 'h' }, home: 'carriere', stay: true, inside: { x: 25.5, y: 37.6 },
+  look: { planche: 'simplet_v2', folk: 'mineur', body: 'h' }, home: 'carriere', stay: true, inside: { x: 25.5, y: 37.6 },
   traits: ['Mineur, étudie la carrière', 'Pas très malin, mais très gentil', 'Toujours plein de suie, la pioche sur l’épaule', 'Costaud et chauve', 'Cherche à percer un mystère'],
   taste: { adore: [], aime: [], naime: ['slime'], deteste: [] },   // ⏳ à décrire
   intro: [
